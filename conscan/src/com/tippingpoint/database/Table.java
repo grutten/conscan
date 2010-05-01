@@ -78,8 +78,7 @@ public class Table extends Element {
 
 	/**
 	 * This method removes the constraint from the table. Note that this does not change the database, it simply changes
-	 * the
-	 * definition.
+	 * the definition.
 	 * 
 	 * @param constraint Constraint to be dropped.
 	 */

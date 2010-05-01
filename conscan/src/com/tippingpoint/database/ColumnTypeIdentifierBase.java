@@ -5,9 +5,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
- * This class is used for a base class for both ids and sequences. Since we currently only have
- * integer representations of both of these classes, then the majority of the implementation between
- * the ids and sequences are the same.
+ * This class is used for a base class for both ids and sequences. Since we currently only have integer representations
+ * of both of these classes, then the majority of the implementation between the ids and sequences are the same.
  */
 abstract class ColumnTypeIdentifierBase extends ColumnType {
 	/**
@@ -44,8 +43,7 @@ abstract class ColumnTypeIdentifierBase extends ColumnType {
 	}
 
 	/**
-	 * This method interprets the object returned from a ResultSet and
-	 * translates it into an appropriate object.
+	 * This method interprets the object returned from a ResultSet and translates it into an appropriate object.
 	 */
 	protected abstract Object translateObject(int nValue, boolean bWasNull);
 }

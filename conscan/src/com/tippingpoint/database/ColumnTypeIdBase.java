@@ -12,8 +12,7 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 	}
 
 	/**
-	 * This method interprets the object returned from a ResultSet and
-	 * translates it into an appropriate object.
+	 * This method interprets the object returned from a ResultSet and translates it into an appropriate object.
 	 */
 	@Override
 	protected Object translateObject(final int nValue, final boolean bWasNull) {
