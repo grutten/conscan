@@ -5,18 +5,18 @@ package com.tippingpoint.database;
  */
 public interface Column {
 	/**
-	 * This method returns the name of the column.
-	 *
-	 * @return Returns the name.
-	 */
-	String getName();
-
-	/**
 	 * This method returns the fully qualified name of the column.
-	 *
+	 * 
 	 * @return Returns the name.
 	 */
 	String getFQName();
+
+	/**
+	 * This method returns the name of the column.
+	 * 
+	 * @return Returns the name.
+	 */
+	String getName();
 
 	/**
 	 * This method returns the table associated with the column.
@@ -25,7 +25,7 @@ public interface Column {
 
 	/**
 	 * This method returns the type of the column.
-	 *
+	 * 
 	 * @return Returns the type.
 	 */
 	ColumnType getType();

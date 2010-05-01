@@ -6,7 +6,7 @@ import org.apache.commons.lang.ObjectUtils;
  * This class is used to hold the identify of a database object.
  */
 public class Id {
-	public static final Id UNKNOWN_ID = new Id(-1);
+	public static final Id UNKNOWN_ID = new Id( -1);
 
 	/** This member holds the identifier. */
 	private Integer m_intValue;

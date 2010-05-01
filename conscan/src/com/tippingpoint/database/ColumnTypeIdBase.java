@@ -7,7 +7,7 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 	/**
 	 * This method constructs a new identifier type column type.
 	 */
-	protected ColumnTypeIdBase(String strType) {
+	protected ColumnTypeIdBase(final String strType) {
 		super(strType);
 	}
 
@@ -15,7 +15,8 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 	 * This method interprets the object returned from a ResultSet and
 	 * translates it into an appropriate object.
 	 */
-	protected Object translateObject(int nValue, boolean bWasNull) {
+	@Override
+	protected Object translateObject(final int nValue, final boolean bWasNull) {
 		return !bWasNull ? new Id(new Integer(nValue)) : null;
 	}
 }

@@ -31,7 +31,7 @@ public class Table extends Element {
 
 	/** This member holds the constraints to this table. */
 	private final List<WeakReference<ForeignKeyConstraint>> m_listParentForeignKeys =
-			new ArrayList<WeakReference<ForeignKeyConstraint>>();
+		new ArrayList<WeakReference<ForeignKeyConstraint>>();
 
 	/**
 	 * This method constructs a new table.
@@ -59,7 +59,7 @@ public class Table extends Element {
 
 	/**
 	 * This method adds a constraint to the table.
-	 *
+	 * 
 	 * @throws DatabaseElementException
 	 */
 	public void add(final Constraint constraint) throws DatabaseElementException {
@@ -67,24 +67,30 @@ public class Table extends Element {
 
 		if (constraint instanceof PrimaryKeyConstraint) {
 			setPrimaryKey((PrimaryKeyConstraint)constraint);
-		} else if (constraint instanceof LogicalKeyConstraint) {
+		}
+		else if (constraint instanceof LogicalKeyConstraint) {
 			setLogicalKey((LogicalKeyConstraint)constraint);
-		} else {
+		}
+		else {
 			m_constraints.add(constraint);
 		}
 	}
 
 	/**
-	 * This method removes the constraint from the table. Note that this does not change the database, it simply changes the
+	 * This method removes the constraint from the table. Note that this does not change the database, it simply changes
+	 * the
 	 * definition.
+	 * 
 	 * @param constraint Constraint to be dropped.
 	 */
 	public void drop(final Constraint constraint) {
 		if (m_constraintPrimaryKey != null && m_constraintPrimaryKey.equals(constraint)) {
 			m_constraintPrimaryKey = null;
-		} else if (m_constraintLogicalKey != null && m_constraintLogicalKey.equals(constraint)) {
+		}
+		else if (m_constraintLogicalKey != null && m_constraintLogicalKey.equals(constraint)) {
 			m_constraintLogicalKey = null;
-		} else {
+		}
+		else {
 			for (int nIndex = 0; nIndex < m_constraints.size(); ++nIndex) {
 				final Constraint constraintCurrent = m_constraints.get(nIndex);
 				if (constraintCurrent.equals(constraint)) {
@@ -118,6 +124,7 @@ public class Table extends Element {
 
 	/**
 	 * This method returns the named constraint.
+	 * 
 	 * @param strName String containing the name of the constraint to search.
 	 */
 	public Constraint getConstraint(final String strName) {
@@ -125,9 +132,11 @@ public class Table extends Element {
 
 		if (m_constraintPrimaryKey != null && strName.equals(m_constraintPrimaryKey.getName())) {
 			constraint = m_constraintPrimaryKey;
-		} else if (m_constraintLogicalKey != null && strName.equals(m_constraintLogicalKey.getName())) {
+		}
+		else if (m_constraintLogicalKey != null && strName.equals(m_constraintLogicalKey.getName())) {
 			constraint = m_constraintLogicalKey;
-		} else {
+		}
+		else {
 			for (int nIndex = 0; nIndex < m_constraints.size() && constraint == null; ++nIndex) {
 				final Constraint constraintCurrent = m_constraints.get(nIndex);
 				if (strName.equals(constraintCurrent.getName())) {
@@ -188,7 +197,8 @@ public class Table extends Element {
 	 * This method returns the foreign keys that are referencing this table.
 	 */
 	public List<ForeignKeyConstraint> getReferences() {
-		final List<ForeignKeyConstraint> listReferences = new ArrayList<ForeignKeyConstraint>(m_listParentForeignKeys.size());
+		final List<ForeignKeyConstraint> listReferences =
+			new ArrayList<ForeignKeyConstraint>(m_listParentForeignKeys.size());
 
 		for (int nIndex = 0; nIndex < m_listParentForeignKeys.size(); ++nIndex) {
 			listReferences.add(m_listParentForeignKeys.get(nIndex).get());
@@ -220,7 +230,7 @@ public class Table extends Element {
 
 	/**
 	 * This member sets the logical key for the table.
-	 *
+	 * 
 	 * @throws DatabaseElementException
 	 */
 	private void setLogicalKey(final LogicalKeyConstraint constraintLogicalKey) throws DatabaseElementException {
@@ -233,7 +243,7 @@ public class Table extends Element {
 
 	/**
 	 * This member sets the primary key for the table.
-	 *
+	 * 
 	 * @throws DatabaseElementException
 	 */
 	private void setPrimaryKey(final PrimaryKeyConstraint constraintPrimaryKey) throws DatabaseElementException {
