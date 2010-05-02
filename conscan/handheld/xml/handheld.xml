@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<configuration>
+	<tier>
+		<name>tier1</name>
+		<locations>
+			<location>
+				<name>T162-A-012L</name>
+				<offenders>
+					<offender>
+						<name>Iverson</name>
+						<bookingnumber>345345345</bookingnumber>
+						<barcode>345345345</barcode>
+					</offender>
+					<offender>
+						<name>Page</name>
+						<bookingnumber>123456789</bookingnumber>
+						<barcode>123456789</barcode>
+					</offender>
+				</offenders>
+			</location>
+			<location>
+				<name>T162-A-011L</name>
+				<offenders>
+					<offender>
+						<name>Irving</name>
+						<bookingnumber>234567890</bookingnumber>
+						<barcode>234567890</barcode>
+					</offender>
+				</offenders>
+			</location>
+			<location>T162-A-010L</location>
+			<location>T162-A-009L</location>
+			<location>T162-A-008L</location>
+			<location>T162-A-007L</location>
+			<location>T162-A-006L</location>
+			<location>T162-A-005L</location>
+			<location>T162-A-004L</location>
+			<location>T162-A-003L</location>
+			<location>T162-A-002L</location>
+			<location>T162-A-001L</location>
+		</locations>
+	</tier>
+	<activities>
+		<activity>
+			<name>bedding exchange</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>blanket exchange</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>outerwear exchange</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>underwear exchange</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>towel exchange</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>showers</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>recreation</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>library</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>mail call</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>meals</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>dayroom/indoor recreation</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>religious services</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>school</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>stores/canteen</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>video orientation</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>telephones</name>
+			<compliancevalues>
+				<value default="true">comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		<activity>
+			<name>legal mail</name>
+			<compliancevalues>
+				<value default="true">not applicable</value>
+				<value>comply</value>
+				<value>out to court</value>
+				<value>refuse</value>
+				<value>sick</value>
+			</compliancevalues>
+		</activity>
+		
+	</activities>
+</configuration>
