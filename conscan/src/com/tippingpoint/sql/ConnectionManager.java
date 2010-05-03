@@ -30,6 +30,8 @@ import com.tippingpoint.database.Index;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.mysql.SqlManagerMySql;
+import com.tippingpoint.sql.sqlserver.SqlManagerSqlServer;
 import com.tippingpoint.utilities.StringProperties;
 
 /**
@@ -44,8 +46,8 @@ public final class ConnectionManager {
 	/** This member holds the schema definition of the tables found in the database associated with this manager. */
 	private Schema m_schema;
 
-	/** This member holds the SQL builder used to generate SQL statements against the database. */
-	private SqlBuilder m_sqlBuilder;
+	/** This member holds the SQL manager used to generate and execute SQL statements against the database. */
+	private SqlManager m_sqlManager;
 
 	/**
 	 * This method constructs an new default connection manager.
@@ -109,10 +111,10 @@ public final class ConnectionManager {
 	}
 
 	/**
-	 * This method returns a SQL builder class specific to the database defined by the connections.
+	 * This method returns a SQL manager class specific to the database defined by the connections.
 	 */
-	public SqlBuilder getSqlBuilder() {
-		return m_sqlBuilder;
+	public SqlManager getSqlManager() {
+		return m_sqlManager;
 	}
 
 	/**
@@ -177,7 +179,7 @@ public final class ConnectionManager {
 	 */
 	private void readTable(final Schema schema, final Table table) throws SQLException {
 		final String strSql =
-			MessageFormat.format(m_sqlBuilder.getTableDefinitionSql(), schema.getName(), table.getName());
+			MessageFormat.format(m_sqlManager.getTableDefinitionSql(), schema.getName(), table.getName());
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -197,7 +199,7 @@ public final class ConnectionManager {
 				final int nColumnSize = rs.getInt("CHARACTER_MAXIMUM_LENGTH");
 
 				final ColumnDefinition column =
-					new ColumnDefinition(table, strColumnName, getSqlBuilder().getType(strDataType, bIdColumn));
+					new ColumnDefinition(table, strColumnName, getSqlManager().getType(strDataType, bIdColumn));
 
 				if (column.getType().hasLength()) {
 					column.setLength(nColumnSize);
@@ -383,12 +385,12 @@ public final class ConnectionManager {
 	}
 
 	/**
-	 * This method sets the builder to the passed in instance.
+	 * This method sets the manager to used for SQL exeuctions.
 	 * 
-	 * @param sqlBuilderImpl
+	 * @param sqlManager SqlManager instance for this connection.
 	 */
-	private void setBuilder(final SqlBuilder sqlBuilder) {
-		m_sqlBuilder = sqlBuilder;
+	private void setManager(final SqlManager sqlManager) {
+		m_sqlManager = sqlManager;
 	}
 
 	/**
@@ -406,10 +408,10 @@ public final class ConnectionManager {
 
 			final String strDatabaseType = metaData.getDatabaseProductName();
 			if ("MySQL".equals(strDatabaseType)) {
-				setBuilder(new SqlMySqlBuilder());
+				setManager(new SqlManagerMySql());
 			}
 			else if (strDatabaseType.contains("Microsoft")) {
-				setBuilder(new SqlServerBuilder());
+				setManager(new SqlManagerSqlServer());
 			}
 			else {
 				throw new DatabaseException("Could not recognize database type '" + strDatabaseType + "'");
@@ -459,7 +461,7 @@ public final class ConnectionManager {
 				bValid = conn != null;
 			}
 			catch (final SQLException e) {
-				m_log.info("Could not validate a connection for '" + this + "'.");
+				m_log.info("Could not validate a connection for '" + this + "'.", e);
 			}
 			finally {
 				DbUtils.closeQuietly(conn);
@@ -558,6 +560,14 @@ public final class ConnectionManager {
 		 */
 		public DriverConnectionSource(final String strUrl, final String strUser, final String strPassword,
 				final String strDatabase) {
+			if (strUrl == null || strUrl.length() == 0) {
+				throw new IllegalArgumentException("Could not establish a driver connection with no URL.");
+			}
+			
+			if (strUser == null || strUser.length() == 0) {
+				throw new IllegalArgumentException("Could not establish a driver connection with no user.");
+			}
+
 			m_strUrl = strUrl;
 			m_strUser = strUser;
 			m_strPassword = strPassword;

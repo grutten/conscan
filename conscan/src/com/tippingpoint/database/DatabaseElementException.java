@@ -6,7 +6,7 @@ import org.apache.commons.lang.ClassUtils;
  * This class is used to indicate an exception with the construction or state of a database element.
  */
 public class DatabaseElementException extends DatabaseException {
-	private static final long serialVersionUID = 8091322897134994625L;
+	private static final long serialVersionUID = -1825323786475715928L;
 
 	/**
 	 * This method is used to construct a database element exception where the exception is defined in terms of

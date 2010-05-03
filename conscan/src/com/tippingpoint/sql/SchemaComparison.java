@@ -44,9 +44,9 @@ public final class SchemaComparison {
 	 * @param connectionManager ConnectionManager used to modify the database.
 	 * @throws SQLException
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
-	public void process(final ConnectionManager connectionManager) throws SQLException, SqlBuilderException,
+	public void process(final ConnectionManager connectionManager) throws SQLException, SqlManagerException,
 			SqlExecutionException {
 		Connection conn = null;
 		final SqlBuilder sqlBuilder = connectionManager.getSqlBuilder();
@@ -86,10 +86,10 @@ public final class SchemaComparison {
 	 * @param tableCurrent Table definition for the currently defined table
 	 * @param column Column definition of the new column.
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	private void alter(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent,
-			final ColumnDefinition column) throws SqlExecutionException, SqlBuilderException {
+			final ColumnDefinition column) throws SqlExecutionException, SqlManagerException {
 		// if this is not a new column, then check for containing constraints
 		final Column columnCurrent = tableCurrent.getColumn(column.getName());
 		if (columnCurrent != null) {
@@ -127,10 +127,10 @@ public final class SchemaComparison {
 	 * @param table Table definition for the currently defined table
 	 * @param constraint Constraint definition of the new constraint.
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	private void alter(final Connection conn, final SqlBuilder sqlBuilder, final Table table,
-			final Constraint constraint) throws SqlExecutionException, SqlBuilderException {
+			final Constraint constraint) throws SqlExecutionException, SqlManagerException {
 		final SqlAlter sqlAlter = sqlBuilder.getAlter(table);
 
 		sqlAlter.add(constraint);
@@ -150,10 +150,10 @@ public final class SchemaComparison {
 	 * @param tableCurrent Table definition of the current table.
 	 * @param constraint Constraint definition of the desired constraint.
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	private void compare(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent,
-			final Constraint constraint) throws SqlBuilderException, SqlExecutionException {
+			final Constraint constraint) throws SqlManagerException, SqlExecutionException {
 		if (constraint != null) {
 			Constraint constraintCurrent = null;
 
@@ -177,10 +177,10 @@ public final class SchemaComparison {
 	 * @param tableCurrent Table definition of the current table.
 	 * @param table Table definition of the desired table.
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	private void compare(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent, final Table table)
-			throws SqlBuilderException, SqlExecutionException {
+			throws SqlManagerException, SqlExecutionException {
 		final List<Column> listChangedColumns = getChangedColumns(tableCurrent, table);
 		if (!listChangedColumns.isEmpty()) {
 			// drop all references to the column to avoid conflicts in the changing column--any existing keys will be
@@ -249,12 +249,12 @@ public final class SchemaComparison {
 	 * @param tableCurrent Table definition for the currently defined table
 	 * @param constraintCurrent Constraint containing the current definition of the constraint to check
 	 * @param column Column from the current table of the column to check
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 * @throws SqlExecutionException
 	 */
 	private boolean dropContainingConstraint(final Connection conn, final SqlBuilder sqlBuilder,
 			final Table tableCurrent, final Constraint constraintCurrent, final Column column)
-			throws SqlBuilderException, SqlExecutionException {
+			throws SqlManagerException, SqlExecutionException {
 		boolean bDropped = false;
 		if (constraintContainsColumn(constraintCurrent, column)) {
 			final SqlAlter sqlAlter = sqlBuilder.getAlter(tableCurrent);
@@ -285,11 +285,11 @@ public final class SchemaComparison {
 	 * @param listChangedColumns List containing the columns that have changed
 	 * @param constraintCurrent Constraint containing the current definition of the constraint to check
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	private boolean dropContainingConstraint(final Connection conn, final SqlBuilder sqlBuilder,
 			final Table tableCurrent, final List<Column> listChangedColumns, final Constraint constraintCurrent)
-			throws SqlBuilderException, SqlExecutionException {
+			throws SqlManagerException, SqlExecutionException {
 		boolean bDropped = false;
 
 		// check to see if any changing columns are in the key

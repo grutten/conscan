@@ -12,6 +12,8 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlExecution;
+import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlManagerException;
 
 /**
  * This class is a common base class for unit test that relies on having a connection to a database. Unit test
@@ -26,10 +28,10 @@ public abstract class TestDbCase extends TestCommonCase {
 	 * @throws SQLException
 	 * @throws DatabaseElementException
 	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
 	protected void refreshDb(final Schema schemaNew) throws DatabaseElementException, SQLException,
-			SqlBuilderException, SqlExecutionException {
+			SqlManagerException, SqlExecutionException {
 		// get the schema based on what is in the database
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 		final Schema schemaCurrent = manager.getSchema(UNIT_TEST_SCHEMA_NAME);
@@ -119,7 +121,7 @@ public abstract class TestDbCase extends TestCommonCase {
 				fail("Cannot drop the following tables: " + listTables);
 			}
 		}
-		catch (final SqlBuilderException e) {
+		catch (final SqlManagerException e) {
 			e.printStackTrace();
 			fail("SQL Builder Exception: " + e.getMessage());
 		}

@@ -12,9 +12,9 @@ public abstract class Command {
 	/**
 	 * This method returns a class used to execute the statement.
 	 * 
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
-	public SqlExecution getExecution() throws SqlBuilderException {
+	public SqlExecution getExecution() throws SqlManagerException {
 		if (m_sql == null) {
 			m_sql = createExecution();
 		}
@@ -35,7 +35,7 @@ public abstract class Command {
 				strValue = sql.toString();
 			}
 		}
-		catch (final SqlBuilderException e) {
+		catch (final SqlManagerException e) {
 			strValue = new StringBuilder().append("Unable to generate a SQL statement. ").append(e).toString();
 		}
 
@@ -45,9 +45,9 @@ public abstract class Command {
 	/**
 	 * This method creates the statement used to execution the SQL command.
 	 * 
-	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
 	 */
-	protected abstract SqlExecution createExecution() throws SqlBuilderException;
+	protected abstract SqlExecution createExecution() throws SqlManagerException;
 
 	/**
 	 * This method resets the command so that it will get regenerated.

@@ -20,7 +20,12 @@ import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
+import com.tippingpoint.sql.Operation;
+import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlExecution;
+import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.sql.ValueCondition;
 
 /**
  * This class is used for importing data into a schema.
@@ -78,7 +83,7 @@ public final class Importer {
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 		final Table table = tableValue.getTable();
-		final SqlQuery sqlQuery = manager.getSqlBuilder().getQuery();
+		final SqlQuery sqlQuery = manager.getSqlManager().getQuery();
 
 		sqlQuery.add(table);
 
@@ -117,7 +122,7 @@ public final class Importer {
 		catch (final DatabaseException e) {
 			addMessage("Database Exception getting value", e);
 		}
-		catch (final SqlBuilderException e) {
+		catch (final SqlManagerException e) {
 			addMessage("SQL Builder Exception getting value", e);
 		}
 		catch (final SQLException e) {
@@ -183,7 +188,7 @@ public final class Importer {
 
 							sqlExecution.executeUpdate(conn);
 						}
-						catch (final SqlBuilderException e) {
+						catch (final SqlManagerException e) {
 							addMessage("SQL Builder Exception inserting row.", e);
 						}
 						catch (final SqlExecutionException e) {
@@ -337,7 +342,7 @@ public final class Importer {
 			catch (final DatabaseException e) {
 				addMessage("Database Exception checking on row.", e);
 			}
-			catch (final SqlBuilderException e) {
+			catch (final SqlManagerException e) {
 				addMessage("SQL Builder Exception checking on row.", e);
 			}
 			catch (final SqlExecutionException e) {

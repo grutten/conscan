@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.SQLException;
-import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 import com.tippingpoint.database.Column;
@@ -16,13 +15,16 @@ import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.test.TestDbCase;
 
 /**
  * This class tests the parsing of a database configuration file.
  */
-public class TestParser extends TestCase {
+public class TestParser extends TestDbCase {
 	private static final String[] DB =
-		{"<?xml version=\"1.0\" encoding=\"UTF-8\"?> ",
+			{"<?xml version=\"1.0\" encoding=\"UTF-8\"?> ",
 				"<Schema name=\"testparserschema\">                                              ",
 				"  <Table name=\"contributor\">                                         ",
 				"    <Column name=\"contributorid\" type=\"id\"/>                       ",
@@ -227,7 +229,7 @@ public class TestParser extends TestCase {
 			e.printStackTrace();
 			fail("SQL Exception: " + e.getMessage());
 		}
-		catch (final SqlBuilderException e) {
+		catch (final SqlManagerException e) {
 			e.printStackTrace();
 			fail("SQL Builder Exception: " + e.getMessage());
 		}
