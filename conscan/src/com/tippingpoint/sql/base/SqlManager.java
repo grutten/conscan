@@ -1,4 +1,4 @@
-package com.tippingpoint.sql;
+package com.tippingpoint.sql.base;
 
 import java.sql.Types;
 import java.util.HashMap;
@@ -13,11 +13,19 @@ import com.tippingpoint.database.ColumnTypeInteger;
 import com.tippingpoint.database.ColumnTypeSmallInteger;
 import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
+import com.tippingpoint.database.DataConversion;
+import com.tippingpoint.sql.Command;
+import com.tippingpoint.sql.SqlCreate;
+import com.tippingpoint.sql.base.SqlExecution;
+import com.tippingpoint.sql.SqlManagerException;
 
 public abstract class SqlManager {
 	protected static final String KEYWORD_MODIFY_COLUMN = "modify.column";
 	protected static final String KEYWORD_MODIFY_CONSTRAINT = "modify.constraint";
 	static final String KEYWORD_COLUMN_DEFAULT = "column.default";
+
+	/** This member holds a conversion mechanism used to convert a value. */
+	protected DataConversion m_converter = new DataConversion();
 
 	/** This member holds a map of keywords. */
 	private final Map<String, String> m_mapKeywords = new HashMap<String, String>();
@@ -25,6 +33,9 @@ public abstract class SqlManager {
 	/** This member holds the conversion of the types. */
 	private final Map<Class<? extends ColumnType>, ColumnTypeConverter> m_mapTypeConverters =
 		new HashMap<Class<? extends ColumnType>, ColumnTypeConverter>();
+	
+	/** This member holds the factories used to execution SQL commands. */
+	private Map<Class<? extends Command>, SqlExecutionFactory> m_mapSqlExecutionFactories = new HashMap<Class<? extends Command>, SqlExecutionFactory>();
 
 	/**
 	 * This method constructs a new builder, registering the types handled by the base class.
@@ -40,6 +51,40 @@ public abstract class SqlManager {
 		register(KEYWORD_MODIFY_COLUMN, "MODIFY");
 		register(KEYWORD_MODIFY_CONSTRAINT, "MODIFY");
 		register(KEYWORD_COLUMN_DEFAULT, "DEFAULT");
+		
+		register(new SqlExecutionCreateFactory(), SqlCreate.class);
+	}
+
+	/**
+	 * This method registers a SQL Execution factory for this manager.
+	 * @param sqlExecutionCreateFactory SqlExecutionFactory used to generate the execution classes.
+	 * @param clsCommand Class of command for which the factory is registered.
+	 */
+	private void register(SqlExecutionFactory sqlExecutionFactory, Class<? extends Command> clsCommand) {
+		m_mapSqlExecutionFactories.put(clsCommand, sqlExecutionFactory);
+	}
+
+	/**
+	 * This method is used to execute the statement.
+	 */
+	public void execute(final SqlCreate sqlCreate) {
+
+	}
+
+	/**
+	 * This method returns the converter set for this builder.
+	 */
+	public DataConversion getConverter() {
+		return m_converter;
+	}
+
+	/**
+	 * This method returns a key for the database.
+	 * 
+	 * @param strKeyword String containing a reference to a keyword.
+	 */
+	public String getKeyword(final String strKeyword) {
+		return m_mapKeywords.get(strKeyword);
 	}
 
 	/**
@@ -240,5 +285,25 @@ public abstract class SqlManager {
 		public String get(final ColumnDefinition column) {
 			return new StringBuilder().append("VARCHAR(").append(column.getLength()).append(')').toString();
 		}
+	}
+
+	/**
+	 * This method is used to generate an execution instance for the given SQL statement.
+	 * @param sqlCreate 
+	 * @throws SqlManagerException 
+	 */
+	public SqlExecution getExecution(Command sqlCommand) throws SqlManagerException {
+		SqlExecution execution = null;
+
+		SqlExecutionFactory factory = m_mapSqlExecutionFactories.get(sqlCommand.getClass());
+		if (factory != null) {
+			execution = factory.getExecution(this, sqlCommand);
+		}
+		
+		if (execution == null) {
+			throw new SqlManagerException("No factory found for SQL type of '" + sqlCommand.getClass() + "'");
+		}
+		
+		return execution;
 	}
 }

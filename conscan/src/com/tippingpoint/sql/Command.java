@@ -23,7 +23,7 @@ public abstract class Command {
 	}
 
 	/**
-	 * This method dumps the sql statement.
+	 * This method dumps the SQL statement.
 	 */
 	@Override
 	public String toString() {
@@ -47,7 +47,10 @@ public abstract class Command {
 	 * 
 	 * @throws SqlManagerException
 	 */
-	protected abstract SqlExecution createExecution() throws SqlManagerException;
+	protected SqlExecution createExecution() throws SqlManagerException {
+		// FUTURE: remove
+		return null;
+	}
 
 	/**
 	 * This method resets the command so that it will get regenerated.

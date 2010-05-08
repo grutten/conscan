@@ -30,6 +30,7 @@ import com.tippingpoint.database.Index;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.sql.mysql.SqlManagerMySql;
 import com.tippingpoint.sql.sqlserver.SqlManagerSqlServer;
 import com.tippingpoint.utilities.StringProperties;

@@ -3,7 +3,7 @@ package com.tippingpoint.sql.sqlserver;
 import com.tippingpoint.database.ColumnType;
 import com.tippingpoint.database.ColumnTypeFactory;
 import com.tippingpoint.database.ColumnTypeId;
-import com.tippingpoint.sql.SqlManager;
+import com.tippingpoint.sql.base.SqlManager;
 
 public class SqlManagerSqlServer extends SqlManager {
 	/**

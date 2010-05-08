@@ -11,6 +11,8 @@ import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
+import com.tippingpoint.sql.SqlBuilderException;
+import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.SqlExecution;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlManagerException;
@@ -97,11 +99,11 @@ public abstract class TestDbCase extends TestCommonCase {
 				nPreviousTableCount = listTables.size();
 				for (int nIndex = listTables.size() - 1; nIndex >= 0; --nIndex) {
 					final Table table = listTables.get(nIndex);
-					final SqlDrop sqlDrop = manager.getSqlBuilder().getDrop(table);
 
 					SqlExecution sqlExecution = null;
 
 					try {
+						final SqlDrop sqlDrop = new SqlDrop(table);
 						sqlExecution = sqlDrop.getExecution();
 						sqlExecution.executeUpdate(conn);
 
@@ -109,6 +111,9 @@ public abstract class TestDbCase extends TestCommonCase {
 						listTables.remove(nIndex);
 					}
 					catch (final SqlExecutionException e) {
+						// ignore the cannot drop messages
+					}
+					catch (SqlBuilderException e) {
 						// ignore the cannot drop messages
 					}
 					finally {

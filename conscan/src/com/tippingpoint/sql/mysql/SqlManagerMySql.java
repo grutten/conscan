@@ -1,7 +1,7 @@
 package com.tippingpoint.sql.mysql;
 
 import com.tippingpoint.database.ColumnTypeId;
-import com.tippingpoint.sql.SqlManager;
+import com.tippingpoint.sql.base.SqlManager;
 
 public class SqlManagerMySql extends SqlManager {
 	/**
