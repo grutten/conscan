@@ -147,12 +147,9 @@ public final class TestSqlBuilder extends TestCommonCase {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
 			
-			com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCreate);
-			assertNotNull(execution);
-	
-			assertEquals("CREATE TABLE activity(activityid INTEGER AUTO_INCREMENT NOT NULL, title VARCHAR(200) NULL, "
+			check("CREATE TABLE activity(activityid INTEGER AUTO_INCREMENT NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
-					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", execution.getSql());
+					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
 	
 			// test creating a table
 			final Table tableDemographic = m_schema.getTable("demographic");
@@ -161,46 +158,40 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
 			
-			execution = sqlManager.getExecution(sqlCreate);
-			assertNotNull(execution);
-			
-			assertEquals("CREATE TABLE demographic(userid INTEGER AUTO_INCREMENT NOT NULL, " +
+			check("CREATE TABLE demographic(userid INTEGER AUTO_INCREMENT NOT NULL, " +
 					"firstName VARCHAR(100) NULL, lastName VARCHAR(100) NULL, creation DATETIME NULL, " +
-					"CONSTRAINT pk_demographic PRIMARY KEY (userid))", execution.getSql());
+					"CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
 			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
 			assertNotNull(columnDescription);
 
-/*
-			final SqlAlter sqlAlter = sqlManager.getAlter(tableDemographic);
+			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
 			assertNotNull(sqlAlter);
 	
 			sqlAlter.add(columnDescription);
+			
+			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
 	
-			assertEquals("ALTER TABLE demographic ADD description TEXT NULL", sqlAlter.toString());
-	
-			// use and existing column in the table to emulate modifying a table.
+			// use an existing column in the table to emulate modifying a table.
 			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
 	
 			sqlAlter.add(columnCreation);
 	
-			assertEquals("ALTER TABLE demographic ADD description TEXT NULL, MODIFY creation DATETIME NULL", sqlAlter
-					.toString());
+			check("ALTER TABLE demographic ADD description TEXT NULL, MODIFY creation DATETIME NULL", sqlManager, sqlAlter);
 
 			// try a table with foreign keys
 			final Table tableUserActivity = m_schema.getTable("useractivity");
 			assertNotNull(tableUserActivity);
 	
-			sqlCreate = sqlManager.getCreate(tableUserActivity);
+			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
-	
-			assertEquals("CREATE TABLE useractivity(userid INTEGER NOT NULL, activityid INTEGER NOT NULL, "
+
+			check("CREATE TABLE useractivity(userid INTEGER NOT NULL, activityid INTEGER NOT NULL, "
 					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
-					execution.getSql());
-*/
+					sqlManager, sqlCreate);
 		}
 		catch (SqlBuilderException e) {
 			e.printStackTrace();
@@ -210,6 +201,18 @@ public final class TestSqlBuilder extends TestCommonCase {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
+	}
+	
+	/**
+	 * This method checks the execution of a command.
+	 * @throws SqlManagerException 
+	 * @throws SqlBuilderException 
+	 */
+	private void check(String strSql, SqlManager sqlManager, Command sqlCommand) throws SqlManagerException, SqlBuilderException {
+		com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
+		assertNotNull(execution);
+
+		assertEquals(strSql, execution.getSql());
 	}
 
 	/**
@@ -227,12 +230,9 @@ public final class TestSqlBuilder extends TestCommonCase {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
 			
-			com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCreate);
-			assertNotNull(execution);
-	
-			assertEquals("CREATE TABLE activity(activityid INTEGER IDENTITY NOT NULL, title VARCHAR(200) NULL, "
+			check("CREATE TABLE activity(activityid INTEGER IDENTITY NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
-					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", execution.getSql());
+					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
 
 			// test creating a table
 			final Table tableDemographic = m_schema.getTable("demographic");
@@ -241,46 +241,40 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
 
-			execution = sqlManager.getExecution(sqlCreate);
-			assertNotNull(execution);
-			
-			assertEquals("CREATE TABLE demographic(userid INTEGER IDENTITY NOT NULL, firstName VARCHAR(100) NULL, " +
+			check("CREATE TABLE demographic(userid INTEGER IDENTITY NOT NULL, firstName VARCHAR(100) NULL, " +
 					"lastName VARCHAR(100) NULL, creation DATETIME NULL, CONSTRAINT pk_demographic " +
-					"PRIMARY KEY (userid))", execution.getSql());
+					"PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
 			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
 			assertNotNull(columnDescription);
 
-/*		
-			final SqlAlter sqlAlter = sqlManager.getAlter(tableDemographic);
+			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
 			assertNotNull(sqlAlter);
 	
 			sqlAlter.add(columnDescription);
 	
-			assertEquals("ALTER TABLE demographic ADD description TEXT NULL", sqlAlter.toString());
+			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
 	
-			// use and existing column in the table to emulate modifying a table.
+			// use an existing column in the table to emulate modifying a table.
 			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
 	
 			sqlAlter.add(columnCreation);
 	
-			assertEquals("ALTER TABLE demographic ADD description TEXT NULL, ALTER COLUMN creation DATETIME NULL", sqlAlter
-					.toString());
-	
+			check("ALTER TABLE demographic ADD description TEXT NULL, ALTER COLUMN creation DATETIME NULL", sqlManager, sqlAlter);
+
 			// try a table with foreign keys
 			final Table tableUserActivity = m_schema.getTable("useractivity");
 			assertNotNull(tableUserActivity);
 	
-			sqlCreate = sqlManager.getCreate(tableUserActivity);
+			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
 	
-			assertEquals("CREATE TABLE useractivity(userid INTEGER NOT NULL, activityid INTEGER NOT NULL, "
+			check("CREATE TABLE useractivity(userid INTEGER NOT NULL, activityid INTEGER NOT NULL, "
 					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
-					execution.getSql());
-*/
+					sqlManager, sqlCreate);
 		}
 		catch (SqlBuilderException e) {
 			e.printStackTrace();

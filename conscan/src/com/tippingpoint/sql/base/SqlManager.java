@@ -15,6 +15,7 @@ import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.DataConversion;
 import com.tippingpoint.sql.Command;
+import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlCreate;
 import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.base.SqlExecution;
@@ -31,12 +32,12 @@ public abstract class SqlManager {
 	/** This member holds a map of keywords. */
 	private final Map<String, String> m_mapKeywords = new HashMap<String, String>();
 
+	/** This member holds the factories used to execution SQL commands. */
+	private Map<Class<? extends Command>, SqlExecutionFactory> m_mapSqlExecutionFactories = new HashMap<Class<? extends Command>, SqlExecutionFactory>();
+	
 	/** This member holds the conversion of the types. */
 	private final Map<Class<? extends ColumnType>, ColumnTypeConverter> m_mapTypeConverters =
 		new HashMap<Class<? extends ColumnType>, ColumnTypeConverter>();
-	
-	/** This member holds the factories used to execution SQL commands. */
-	private Map<Class<? extends Command>, SqlExecutionFactory> m_mapSqlExecutionFactories = new HashMap<Class<? extends Command>, SqlExecutionFactory>();
 
 	/**
 	 * This method constructs a new builder, registering the types handled by the base class.
@@ -55,15 +56,7 @@ public abstract class SqlManager {
 		
 		register(new SqlCreateExecutionFactory(), SqlCreate.class);
 		register(new SqlDropExecutionFactory(), SqlDrop.class);
-	}
-
-	/**
-	 * This method registers a SQL Execution factory for this manager.
-	 * @param sqlExecutionCreateFactory SqlExecutionFactory used to generate the execution classes.
-	 * @param clsCommand Class of command for which the factory is registered.
-	 */
-	private void register(SqlExecutionFactory sqlExecutionFactory, Class<? extends Command> clsCommand) {
-		m_mapSqlExecutionFactories.put(clsCommand, sqlExecutionFactory);
+		register(new SqlAlterExecutionFactory(), SqlAlter.class);
 	}
 
 	/**
@@ -78,6 +71,26 @@ public abstract class SqlManager {
 	 */
 	public DataConversion getConverter() {
 		return m_converter;
+	}
+
+	/**
+	 * This method is used to generate an execution instance for the given SQL statement.
+	 * @param sqlCreate 
+	 * @throws SqlManagerException 
+	 */
+	public SqlExecution getExecution(Command sqlCommand) throws SqlManagerException {
+		SqlExecution execution = null;
+
+		SqlExecutionFactory factory = m_mapSqlExecutionFactories.get(sqlCommand.getClass());
+		if (factory != null) {
+			execution = factory.getExecution(this, sqlCommand);
+		}
+		
+		if (execution == null) {
+			throw new SqlManagerException("No factory found for SQL type of '" + sqlCommand.getClass() + "'");
+		}
+		
+		return execution;
 	}
 
 	/**
@@ -211,6 +224,15 @@ public abstract class SqlManager {
 	}
 
 	/**
+	 * This method registers a SQL Execution factory for this manager.
+	 * @param sqlExecutionCreateFactory SqlExecutionFactory used to generate the execution classes.
+	 * @param clsCommand Class of command for which the factory is registered.
+	 */
+	protected void register(SqlExecutionFactory sqlExecutionFactory, Class<? extends Command> clsCommand) {
+		m_mapSqlExecutionFactories.put(clsCommand, sqlExecutionFactory);
+	}
+
+	/**
 	 * This member registers a keyword.
 	 */
 	protected void register(final String strKeyword, final String strValue) {
@@ -287,25 +309,5 @@ public abstract class SqlManager {
 		public String get(final ColumnDefinition column) {
 			return new StringBuilder().append("VARCHAR(").append(column.getLength()).append(')').toString();
 		}
-	}
-
-	/**
-	 * This method is used to generate an execution instance for the given SQL statement.
-	 * @param sqlCreate 
-	 * @throws SqlManagerException 
-	 */
-	public SqlExecution getExecution(Command sqlCommand) throws SqlManagerException {
-		SqlExecution execution = null;
-
-		SqlExecutionFactory factory = m_mapSqlExecutionFactories.get(sqlCommand.getClass());
-		if (factory != null) {
-			execution = factory.getExecution(this, sqlCommand);
-		}
-		
-		if (execution == null) {
-			throw new SqlManagerException("No factory found for SQL type of '" + sqlCommand.getClass() + "'");
-		}
-		
-		return execution;
 	}
 }

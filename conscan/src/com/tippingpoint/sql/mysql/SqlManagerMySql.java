@@ -1,6 +1,7 @@
 package com.tippingpoint.sql.mysql;
 
 import com.tippingpoint.database.ColumnTypeId;
+import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.base.SqlManager;
 
 public class SqlManagerMySql extends SqlManager {
@@ -9,6 +10,8 @@ public class SqlManagerMySql extends SqlManager {
 	 */
 	public SqlManagerMySql() {
 		register(new StaticColumnTypeConverter(ColumnTypeId.class, "INTEGER AUTO_INCREMENT"));
+		
+		register(new SqlAlterExecutionFactory(), SqlAlter.class);
 	}
 
 	/**
