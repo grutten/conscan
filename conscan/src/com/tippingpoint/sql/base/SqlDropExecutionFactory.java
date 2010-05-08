@@ -1,22 +1,21 @@
 package com.tippingpoint.sql.base;
 
 import com.tippingpoint.sql.Command;
-import com.tippingpoint.sql.SqlCreate;
-import com.tippingpoint.sql.base.SqlExecution;
+import com.tippingpoint.sql.SqlDrop;
 
 /**
- * This class generates SQL execution instances for SQL create statements.
+ * This class generates SQL execution instances for SQL drop statements.
  */
-public class SqlExecutionCreateFactory extends SqlExecutionFactory {
+public class SqlDropExecutionFactory extends SqlExecutionFactory {
 	/**
 	 * This method returns an execution instance for the given command.
 	 * @param sqlCommand Command to be executed.
 	 */
 	public SqlExecution getExecution(SqlManager sqlManager, Command sqlCommand) {
-		if (!(sqlCommand instanceof SqlCreate)) {
+		if (!(sqlCommand instanceof SqlDrop)) {
 			throw new IllegalArgumentException(getClass().getSimpleName() + " does not handle commands of type " + sqlCommand.getClass());
 		}
 		
-		return new SqlCreateExecution(sqlManager, (SqlCreate)sqlCommand);
+		return new SqlDropExecution(sqlManager, (SqlDrop)sqlCommand);
 	}
 }

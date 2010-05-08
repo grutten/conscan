@@ -16,6 +16,7 @@ import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.DataConversion;
 import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.SqlCreate;
+import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.SqlManagerException;
 
@@ -52,7 +53,8 @@ public abstract class SqlManager {
 		register(KEYWORD_MODIFY_CONSTRAINT, "MODIFY");
 		register(KEYWORD_COLUMN_DEFAULT, "DEFAULT");
 		
-		register(new SqlExecutionCreateFactory(), SqlCreate.class);
+		register(new SqlCreateExecutionFactory(), SqlCreate.class);
+		register(new SqlDropExecutionFactory(), SqlDrop.class);
 	}
 
 	/**
