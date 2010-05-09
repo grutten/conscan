@@ -5,31 +5,30 @@ import com.tippingpoint.database.Column;
 /**
  * This class represents a condition binding a column to a value.
  */
-public final class ValueCondition extends Condition {
+public final class ColumnCondition extends Condition {
 	/** This member holds the column for which this condition exists. */
-	private final Column m_column;
-
-	/** This member holds the value for which this column is bound. */
-	private final Object m_objValue;
+	private Column m_column;
 
 	/** This member holds the operation used for the condition. */
-	private final Operation m_operation;
+	private Column m_column2;
+
+	/** This member holds the operation used for the condition. */
+	private Operation m_operation;
 
 	/**
-	 * This method constructs a new condition for the named column and value.
+	 * This method constructs a new condition for 2 named columns.
 	 */
-	public ValueCondition(final Column column, final Operation operation, final Object objValue) {
+	public ColumnCondition(Column column, Operation operation, Column column2) {
 		m_column = column;
+		m_column2 = column2;
 		m_operation = operation;
-		m_objValue = objValue;
 	}
 
 	/**
-	 * This returns the value associated with the condition.
+	 * This method returns the value associated with the condition.
 	 */
-	@Override
 	public ParameterizedValue getParameterValue() {
-		return new ParameterizedValue(m_column, m_objValue);
+		return new ParameterizedValue(m_column, m_column2);
 	}
 
 	/**
@@ -37,7 +36,7 @@ public final class ValueCondition extends Condition {
 	 */
 	@Override
 	public boolean hasParameter() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -45,6 +44,6 @@ public final class ValueCondition extends Condition {
 	 */
 	@Override
 	protected String createStatement() {
-		return m_operation.toString(m_column, "?");
+		return m_operation.toString(m_column, m_column2);
 	}
 }

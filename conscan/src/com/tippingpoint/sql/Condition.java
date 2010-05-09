@@ -5,9 +5,12 @@ package com.tippingpoint.sql;
  */
 public abstract class Condition {
 	/**
-	 * This method adds the column to the execution instance.
+	 * This method returns the value associated with the condition.
 	 */
-	public abstract void getExecution(SqlParameterizedExecution sql);
+	public ParameterizedValue getParameterValue() {
+		// default action is to return nothing
+		return null;
+	}
 
 	/**
 	 * This method returns if the condition includes a parameterized value.

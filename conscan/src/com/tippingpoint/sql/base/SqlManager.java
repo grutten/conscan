@@ -18,6 +18,9 @@ import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlCreate;
 import com.tippingpoint.sql.SqlDrop;
+import com.tippingpoint.sql.SqlInsert;
+import com.tippingpoint.sql.SqlQuery;
+import com.tippingpoint.sql.SqlUpdate;
 import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.SqlManagerException;
 
@@ -57,6 +60,9 @@ public abstract class SqlManager {
 		register(new SqlCreateExecutionFactory(), SqlCreate.class);
 		register(new SqlDropExecutionFactory(), SqlDrop.class);
 		register(new SqlAlterExecutionFactory(), SqlAlter.class);
+		register(new SqlQueryExecutionFactory(), SqlQuery.class);
+		register(new SqlInsertExecutionFactory(), SqlInsert.class);
+		register(new SqlUpdateExecutionFactory(), SqlUpdate.class);
 	}
 
 	/**

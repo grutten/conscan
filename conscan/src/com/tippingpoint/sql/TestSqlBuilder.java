@@ -36,7 +36,6 @@ public final class TestSqlBuilder extends TestCommonCase {
 	/**
 	 * This method tests the basics.
 	 */
-/*	
 	public void testBasics() {
 		SqlManager sqlManager = new SqlManagerSqlServer();
 		assertNotNull(sqlManager);
@@ -44,93 +43,97 @@ public final class TestSqlBuilder extends TestCommonCase {
 		final Table tableDemographic = m_schema.getTable("demographic");
 		assertNotNull(tableDemographic);
 
-		final SqlQuery sqlQuery = sqlManager.getQuery();
-		assertNotNull(sqlQuery);
+		try {
+			final SqlQuery sqlQuery = new SqlQuery();
+			assertNotNull(sqlQuery);
 
-		sqlQuery.add(tableDemographic, true);
+			sqlQuery.add(tableDemographic, true);
 
-		assertEquals(
-				"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation FROM demographic",
-				sqlQuery.toString());
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation " +
+					"FROM demographic", sqlManager, sqlQuery);
 
-		sqlQuery.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "newuser"));
+			sqlQuery.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "newuser"));
+	
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation " +
+					"FROM demographic WHERE demographic.userid = ?", sqlManager, sqlQuery);
+	
+			SqlInsert sqlInsert = new SqlInsert(tableDemographic);
+			assertNotNull(sqlInsert);
+	
+			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), null));
+			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), null));
+			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("creation"), null));
+	
+			check("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlManager, sqlInsert);
+	
+			sqlInsert = new SqlInsert(tableDemographic);
+			assertNotNull(sqlInsert);
+	
+			sqlInsert.addColumnsForTable();
+	
+			check("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlManager, sqlInsert);
 
-		assertEquals(
-				"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation FROM demographic "
-						+ "WHERE demographic.userid = ?", sqlQuery.toString());
+			final SqlUpdate sqlUpdate = new SqlUpdate(tableDemographic);
+			assertNotNull(sqlUpdate);
+	
+			sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), "Joe"));
+			sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), "Doe"));
+			sqlUpdate.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "bbb"));
+	
+			check("UPDATE demographic SET firstName = ?, lastName = ? WHERE demographic.userid = ?", sqlManager, sqlUpdate);
+	
+			// test joined tables
+			final SqlQuery sqlQuery2 = new SqlQuery();
+			assertNotNull(sqlQuery2);
+	
+			final Table tableUserActivity = m_schema.getTable("useractivity");
+			assertNotNull(tableUserActivity);
+	
+			sqlQuery2.add(tableDemographic, true);
+			sqlQuery2.add(tableUserActivity);
+	
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation "
+					+ "FROM demographic, useractivity WHERE demographic.userid = useractivity.userid", sqlManager, sqlQuery2);
+	
+			// test many to many joined tables
+			final SqlQuery sqlQuery3 = new SqlQuery();
+			assertNotNull(sqlQuery3);
+	
+			final Table tableActivity = m_schema.getTable("activity");
+			assertNotNull(tableActivity);
+	
+			sqlQuery3.add(tableDemographic, true);
+			sqlQuery3.add(tableUserActivity);
+			sqlQuery3.add(tableActivity, true);
+	
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
+					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager,
+					sqlQuery3);
+	
+			// test many to many with non-specified tables
+			final SqlQuery sqlQuery4 = new SqlQuery();
+			assertNotNull(sqlQuery4);
+	
+			sqlQuery4.setAssociativeJoins(true);
+	
+			sqlQuery4.add(tableDemographic, true);
+			sqlQuery4.add(tableActivity, true);
 
-		SqlInsert sqlInsert = sqlManager.getInsert(tableDemographic);
-		assertNotNull(sqlInsert);
-
-		sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), null));
-		sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), null));
-		sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("creation"), null));
-
-		assertEquals("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlInsert.toString());
-
-		sqlInsert = sqlManager.getInsert(tableDemographic);
-		assertNotNull(sqlInsert);
-
-		sqlInsert.addColumnsForTable();
-
-		assertEquals("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlInsert.toString());
-
-		final SqlUpdate sqlUpdate = sqlManager.getUpdate(tableDemographic);
-		assertNotNull(sqlUpdate);
-
-		sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), "Joe"));
-		sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), "Doe"));
-		sqlUpdate.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "bbb"));
-
-		assertEquals("UPDATE demographic SET firstName = ?, lastName = ? WHERE demographic.userid = ?", sqlUpdate
-				.toString());
-
-		// test joined tables
-		final SqlQuery sqlQuery2 = sqlManager.getQuery();
-		assertNotNull(sqlQuery2);
-
-		final Table tableUserActivity = m_schema.getTable("useractivity");
-		assertNotNull(tableUserActivity);
-
-		sqlQuery2.add(tableUser, true);
-		sqlQuery2.add(tableUserActivity);
-
-		assertEquals("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation "
-				+ "FROM demographic, useractivity WHERE demographic.userid = useractivity.userid", sqlQuery2.toString());
-
-		// test many to many joined tables
-		final SqlQuery sqlQuery3 = sqlManager.getQuery();
-		assertNotNull(sqlQuery3);
-
-		final Table tableActivity = m_schema.getTable("activity");
-		assertNotNull(tableActivity);
-
-		sqlQuery3.add(tableDemographic, true);
-		sqlQuery3.add(tableUserActivity);
-		sqlQuery3.add(tableActivity, true);
-
-		assertEquals(
-				"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-						+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
-						+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
-				sqlQuery3.toString());
-
-		// test many to many with non-specified tables
-		final SqlQuery sqlQuery4 = sqlManager.getQuery();
-		assertNotNull(sqlQuery4);
-
-		sqlQuery4.setAssociativeJoins(true);
-
-		sqlQuery4.add(tableDemographic, true);
-		sqlQuery4.add(tableActivity, true);
-
-		assertEquals(
-				"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-						+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
-						+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
-				sqlQuery4.toString());
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
+					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager,
+					sqlQuery4);
+		}
+		catch (SqlManagerException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
+		catch (SqlBuilderException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
 	}
-*/
 
 	/**
 	 * This method tests MySQL Server specific SQL statements.
@@ -203,18 +206,6 @@ public final class TestSqlBuilder extends TestCommonCase {
 		}
 	}
 	
-	/**
-	 * This method checks the execution of a command.
-	 * @throws SqlManagerException 
-	 * @throws SqlBuilderException 
-	 */
-	private void check(String strSql, SqlManager sqlManager, Command sqlCommand) throws SqlManagerException, SqlBuilderException {
-		com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
-		assertNotNull(execution);
-
-		assertEquals(strSql, execution.getSql());
-	}
-
 	/**
 	 * This method tests SQL Server specific SQL statements.
 	 */
@@ -296,5 +287,17 @@ public final class TestSqlBuilder extends TestCommonCase {
 		super.setUp();
 
 		m_schema = Parser.parse(new StringReader(DB));
+	}
+
+	/**
+	 * This method checks the execution of a command.
+	 * @throws SqlManagerException 
+	 * @throws SqlBuilderException 
+	 */
+	private void check(String strSql, SqlManager sqlManager, Command sqlCommand) throws SqlManagerException, SqlBuilderException {
+		com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
+		assertNotNull(execution);
+
+		assertEquals(strSql, execution.getSql());
 	}
 }

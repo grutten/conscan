@@ -19,7 +19,7 @@ import com.tippingpoint.database.Table;
  */
 public abstract class TableBuilderCommand extends BuilderCommand {
 	/** This member holds the columns and their values to be inserted. */
-	protected List<ParameterizedValue> m_listColumns = new ArrayList<ParameterizedValue>();
+	private List<ParameterizedValue> m_listColumns = new ArrayList<ParameterizedValue>();
 
 	/** This member holds the table to be created. */
 	protected Table m_table;
@@ -147,5 +147,13 @@ public abstract class TableBuilderCommand extends BuilderCommand {
 		}
 
 		return strSql.toString();
+	}
+
+	public void setColumns(List<ParameterizedValue> m_listColumns) {
+		this.m_listColumns = m_listColumns;
+	}
+
+	public List<ParameterizedValue> getColumns() {
+		return m_listColumns;
 	}
 }
