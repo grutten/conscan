@@ -1,6 +1,6 @@
 package com.tippingpoint.sql;
 
-public class SqlManagerException extends Exception {
+public class SqlManagerException extends SqlBaseException {
 	private static final long serialVersionUID = -7492457566079788886L;
 
 	/**

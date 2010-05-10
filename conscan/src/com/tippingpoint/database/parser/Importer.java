@@ -22,9 +22,13 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.Operation;
 import com.tippingpoint.sql.ParameterizedValue;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlExecution;
 import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.sql.SqlQuery;
+import com.tippingpoint.sql.SqlUpdate;
 import com.tippingpoint.sql.ValueCondition;
 
 /**
@@ -83,7 +87,7 @@ public final class Importer {
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 		final Table table = tableValue.getTable();
-		final SqlQuery sqlQuery = manager.getSqlManager().getQuery();
+		final SqlQuery sqlQuery = new SqlQuery();
 
 		sqlQuery.add(table);
 
@@ -112,9 +116,9 @@ public final class Importer {
 
 		try {
 			conn = manager.getConnection();
-			sqlExecution = sqlQuery.getExecution();
+			com.tippingpoint.sql.base.SqlExecution execution = manager.getSqlManager().getExecution(sqlQuery);
 
-			rs = sqlExecution.executeQuery(conn);
+			rs = execution.executeQuery(conn);
 			if (rs != null && rs.next()) {
 				objValue = sqlExecution.getObject(column, rs);
 			}
@@ -165,7 +169,7 @@ public final class Importer {
 					// if we check all unique constraints and we still need to continue, then just insert the row
 					if (bContinue) {
 						final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-						final SqlInsert sqlInsert = manager.getSqlBuilder().getInsert(m_activeTable);
+						final SqlInsert sqlInsert = new SqlInsert(m_activeTable);
 
 						// only add the columns that we have values for
 						final Iterator<Column> iterColumns = m_mapValues.keySet().iterator();
@@ -178,15 +182,13 @@ public final class Importer {
 						}
 
 						Connection conn = null;
-						SqlExecution sqlExecution = null;
 
 						try {
 							conn = manager.getConnection();
-							sqlExecution = sqlInsert.getExecution();
+
+							manager.getSqlManager().executeUpdate(sqlInsert, conn);
 
 							m_log.debug("Inserting row into '" + m_activeTable + "'");
-
-							sqlExecution.executeUpdate(conn);
 						}
 						catch (final SqlManagerException e) {
 							addMessage("SQL Builder Exception inserting row.", e);
@@ -197,8 +199,11 @@ public final class Importer {
 						catch (final SQLException e) {
 							addMessage("SQL Exception inserting row.", e);
 						}
+						catch (SqlBaseException e) {
+							addMessage("SQL Base Exception inserting row.", e);
+						}
 						finally {
-							ConnectionManager.close(conn, sqlExecution, null);
+							ConnectionManager.close(conn, null, null);
 						}
 					}
 				}
@@ -267,7 +272,7 @@ public final class Importer {
 			final List<Condition> listConditions = getConditions(constraint);
 
 			final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-			final SqlQuery sqlQuery = manager.getSqlBuilder().getQuery();
+			final SqlQuery sqlQuery = new SqlQuery();
 
 			// create a statement of the form:
 			// SELECT <extra columns> FROM <table> WHERE <constraint columns are specified>
@@ -313,7 +318,7 @@ public final class Importer {
 					}
 
 					if (!bMatch) {
-						final SqlUpdate sqlUpdate = manager.getSqlBuilder().getUpdate(m_activeTable);
+						final SqlUpdate sqlUpdate = new SqlUpdate(m_activeTable);
 
 						// add the extra columns as select columns
 						for (int nIndex = 0; nIndex < listExtraColumns.size(); ++nIndex) {

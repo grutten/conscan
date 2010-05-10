@@ -11,11 +11,8 @@ public abstract class Command {
 
 	/**
 	 * This method returns a class used to execute the statement.
-	 * 
-	 * @throws SqlManagerException
-	 * @throws SqlBuilderException 
 	 */
-	public SqlExecution getExecution() throws SqlManagerException, SqlBuilderException {
+	private final SqlExecution getExecution() throws SqlManagerException, SqlBuilderException {
 		if (m_sql == null) {
 			m_sql = createExecution();
 		}

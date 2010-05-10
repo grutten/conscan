@@ -15,6 +15,7 @@ import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.test.TestDbCase;
@@ -24,104 +25,104 @@ import com.tippingpoint.test.TestDbCase;
  */
 public class TestParser extends TestDbCase {
 	private static final String[] DB =
-			{"<?xml version=\"1.0\" encoding=\"UTF-8\"?> ",
-				"<Schema name=\"testparserschema\">                                              ",
-				"  <Table name=\"contributor\">                                         ",
-				"    <Column name=\"contributorid\" type=\"id\"/>                       ",
-				"    <Column name=\"firstName\" type=\"string\" length=\"100\"/>        ",
-				"    <Column name=\"lastName\" type=\"string\" length=\"100\"/>         ",
-				"    <Column name=\"creation\" type=\"date\"/>                          ",
-				"    <Constraint name=\"pk_contributor\" type=\"primary\">              ",
-				"      <Column name=\"contributorid\"/>                                 ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"  <Table name=\"role\">                                                ",
-				"    <Column name=\"roleid\" type=\"id\"/>                              ",
-				"    <Column name=\"name\" type=\"string\" length=\"200\"/>             ",
-				"    <Constraint name=\"pk_role\" type=\"primary\">                     ",
-				"      <Column name=\"roleid\"/>                                        ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"  <Table name=\"tagtype\">                                             ",
-				"    <Column name=\"tagtypeid\" type=\"id\"/>                           ",
-				"    <Column name=\"text\" type=\"string\" length=\"200\"/>             ",
-				"    <Constraint name=\"pk_tagtype\" type=\"primary\">                  ",
-				"      <Column name=\"tagtypeid\"/>                                     ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"  <Table name=\"tag\">                                                 ",
-				"    <Column name=\"tagid\" type=\"id\"/>                               ",
-				"    <Column name=\"tagtypeid\" type=\"idref\"/>                        ",
-				"    <Column name=\"text\" type=\"string\" length=\"200\"/>             ",
-				"    <Constraint name=\"pk_tag\" type=\"primary\">                      ",
-				"      <Column name=\"tagid\"/>                                         ",
-				"    </Constraint>                                                      ",
-				"    <Constraint name=\"fk_tag_tagtype\" type=\"foreign\">              ",
-				"      <Column name=\"tagtypeid\"/>                                     ",
-				"      <Table name=\"tagtype\">                                         ",
-				"        <Column name=\"tagtypeid\"/>                                   ",
-				"      </Table>                                                         ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"  <Table name=\"roletag\">                                             ",
-				"    <Column name=\"roleid\" type=\"idref\" required=\"true\"/>         ",
-				"    <Column name=\"tagid\" type=\"idref\" required=\"true\"/>          ",
-				"    <Constraint name=\"fk_roletag_role\" type=\"foreign\">             ",
-				"      <Column name=\"roleid\"/>                                        ",
-				"      <Table name=\"role\">                                            ",
-				"        <Column name=\"roleid\"/>                                      ",
-				"      </Table>                                                         ",
-				"    </Constraint>                                                      ",
-				"    <Constraint name=\"fk_roletag_tag\" type=\"foreign\">              ",
-				"      <Column name=\"tagid\"/>                                         ",
-				"      <Table name=\"tag\">                                             ",
-				"        <Column name=\"tagid\"/>                                       ",
-				"      </Table>                                                         ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"  <Table name=\"idea\">                                                ",
-				"    <Column name=\"ideaid\" type=\"id\"/>                              ",
-				"    <Column name=\"title\" type=\"string\" length=\"200\"/>            ",
-				"    <Column name=\"description\" type=\"text\"/>                       ",
-				"    <Column name=\"creation\" type=\"date\"/>                          ",
-				"    <Column name=\"lastmodified\" type=\"date\"/>                      ",
-				"    <Constraint name=\"pk_idea\" type=\"primary\">                     ",
-				"      <Column name=\"ideaid\"/>                                        ",
-				"    </Constraint>                                                      ",
-				"  </Table>                                                             ",
-				"</Schema>                                                              "};
+		{"<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+				"<Schema name=\"testparserschema\">",
+				"  <Table name=\"demographic\">",
+				"    <Column name=\"demographicid\" type=\"id\"/>",
+				"    <Column name=\"firstName\" type=\"string\" length=\"100\"/>",
+				"    <Column name=\"lastName\" type=\"string\" length=\"100\"/>",
+				"    <Column name=\"creation\" type=\"date\"/>",
+				"    <Constraint name=\"pk_demographic\" type=\"primary\">",
+				"      <Column name=\"demographicid\"/>",
+				"    </Constraint>",
+				"  </Table>",
+				"  <Table name=\"role\">",
+				"    <Column name=\"roleid\" type=\"id\"/>",
+				"    <Column name=\"name\" type=\"string\" length=\"200\"/>",
+				"    <Constraint name=\"pk_role\" type=\"primary\">",
+				"      <Column name=\"roleid\"/>",
+				"    </Constraint>",
+				"  </Table>",
+				"  <Table name=\"tagtype\">",
+				"    <Column name=\"tagtypeid\" type=\"id\"/>",
+				"    <Column name=\"text\" type=\"string\" length=\"200\"/>",
+				"    <Constraint name=\"pk_tagtype\" type=\"primary\">",
+				"      <Column name=\"tagtypeid\"/>",
+				"    </Constraint>",
+				"  </Table>",
+				"  <Table name=\"tag\">",
+				"    <Column name=\"tagid\" type=\"id\"/>",
+				"    <Column name=\"tagtypeid\" type=\"idref\"/>",
+				"    <Column name=\"text\" type=\"string\" length=\"200\"/>",
+				"    <Constraint name=\"pk_tag\" type=\"primary\">",
+				"      <Column name=\"tagid\"/>",
+				"    </Constraint>",
+				"    <Constraint name=\"fk_tag_tagtype\" type=\"foreign\">",
+				"      <Column name=\"tagtypeid\"/>",
+				"      <Table name=\"tagtype\">",
+				"        <Column name=\"tagtypeid\"/>",
+				"      </Table>",
+				"    </Constraint>",
+				"  </Table>",
+				"  <Table name=\"roletag\">",
+				"    <Column name=\"roleid\" type=\"idref\" required=\"true\"/>",
+				"    <Column name=\"tagid\" type=\"idref\" required=\"true\"/>",
+				"    <Constraint name=\"fk_roletag_role\" type=\"foreign\">",
+				"      <Column name=\"roleid\"/>",
+				"      <Table name=\"role\">",
+				"        <Column name=\"roleid\"/>",
+				"      </Table>",
+				"    </Constraint>",
+				"    <Constraint name=\"fk_roletag_tag\" type=\"foreign\">",
+				"      <Column name=\"tagid\"/>",
+				"      <Table name=\"tag\">",
+				"        <Column name=\"tagid\"/>",
+				"      </Table>",
+				"    </Constraint>",
+				"  </Table>",
+				"  <Table name=\"activity\">",
+				"    <Column name=\"activityid\" type=\"id\"/>",
+				"    <Column name=\"title\" type=\"string\" length=\"200\"/>",
+				"    <Column name=\"description\" type=\"text\"/>",
+				"    <Column name=\"creation\" type=\"date\"/>",
+				"    <Column name=\"lastmodified\" type=\"date\"/>",
+				"    <Constraint name=\"pk_activity\" type=\"primary\">",
+				"      <Column name=\"activityid\"/>",
+				"    </Constraint>",
+				"  </Table>",
+				"</Schema>"};
 
 	private static final String[] DB_DATA =
-		{"<data>                    ", "  <Table name=\"contributor\">                             ",
-				"    <item>                                                 ",
-				"      <Column name=\"username\">tester</Column>            ",
-				"      <Column name=\"password\">password</Column>          ",
-				"      <Column name=\"email\">test@system.com</Column>      ",
-				"      <Column name=\"firstName\">Test</Column>             ",
-				"      <Column name=\"lastName\">Administration</Column>    ",
-				"    </item>                                                ",
-				"  </Table>                                                 ",
-				"  <Table name=\"tagtype\">                                 ",
-				"    <item>                                                 ",
-				"      <Column name=\"text\">Security</Column>              ",
-				"    </item>                                                ",
-				"  </Table>                                                 ",
-				"  <Table name=\"tag\">                                     ",
-				"    <item>                                                 ",
-				"      <Column name=\"text\">Public</Column>                ",
-				"      <Column name=\"tagtypeid\" value=\"referenced\">     ",
-				"        <Table name=\"tagtype\">                           ",
-				"          <Column name=\"text\">Security</Column>          ",
-				"        </Table>                                           ",
-				"      </Column>                                            ",
-				"    </item>                                                ",
-				"  </Table>                                                 ",
-				"  <Table name=\"role\">                                    ",
-				"    <item>                                                 ",
-				"      <Column name=\"name\">Administrator</Column>         ",
-				"    </item>                                                ",
-				"  </Table>                                                 ",
-				"</data>                                                    "};
+		{"<data>", "  <Table name=\"demographic\">",
+				"    <item>",
+				"      <Column name=\"username\">tester</Column>",
+				"      <Column name=\"password\">password</Column>",
+				"      <Column name=\"email\">test@system.com</Column>",
+				"      <Column name=\"firstName\">Test</Column>",
+				"      <Column name=\"lastName\">Administration</Column>",
+				"    </item>",
+				"  </Table>",
+				"  <Table name=\"tagtype\">",
+				"    <item>",
+				"      <Column name=\"text\">Security</Column>",
+				"    </item>",
+				"  </Table>",
+				"  <Table name=\"tag\">",
+				"    <item>",
+				"      <Column name=\"text\">Public</Column>",
+				"      <Column name=\"tagtypeid\" value=\"referenced\">",
+				"        <Table name=\"tagtype\">",
+				"          <Column name=\"text\">Security</Column>",
+				"        </Table>",
+				"      </Column>",
+				"    </item>",
+				"  </Table>",
+				"  <Table name=\"role\">",
+				"    <item>",
+				"      <Column name=\"name\">Administrator</Column>",
+				"    </item>",
+				"  </Table>",
+				"</data>"};
 
 	/**
 	 * This method tests the basics.
@@ -134,59 +135,59 @@ public class TestParser extends TestDbCase {
 
 			assertEquals("testparserschema", schema.getName());
 
-			final Table tableContributor = schema.getTable("contributor");
-			assertNotNull(tableContributor);
+			final Table tableDemographic = schema.getTable("demographic");
+			assertNotNull(tableDemographic);
 
-			Column column = tableContributor.getColumn("contributorid");
+			Column column = tableDemographic.getColumn("demographicid");
 			assertNotNull(column);
 			assertEquals(ColumnTypeId.class, column.getType().getClass());
 
-			column = tableContributor.getColumn("firstName");
+			column = tableDemographic.getColumn("firstName");
 			assertNotNull(column);
 			assertEquals(ColumnTypeString.class, column.getType().getClass());
 
-			column = tableContributor.getColumn("lastName");
+			column = tableDemographic.getColumn("lastName");
 			assertNotNull(column);
 			assertEquals(ColumnTypeString.class, column.getType().getClass());
 
-			column = tableContributor.getColumn("creation");
+			column = tableDemographic.getColumn("creation");
 			assertNotNull(column);
 			assertEquals(ColumnTypeDate.class, column.getType().getClass());
 
-			PrimaryKeyConstraint primaryKey = tableContributor.getPrimaryKey();
+			PrimaryKeyConstraint primaryKey = tableDemographic.getPrimaryKey();
 			assertNotNull(primaryKey);
-			assertEquals("pk_contributor", primaryKey.getName());
-			assertEquals(tableContributor, primaryKey.getTable());
-			assertEquals(tableContributor.getColumn("contributorid"), primaryKey.getColumns().next());
+			assertEquals("pk_demographic", primaryKey.getName());
+			assertEquals(tableDemographic, primaryKey.getTable());
+			assertEquals(tableDemographic.getColumn("demographicid"), primaryKey.getColumns().next());
 
-			final Table tableIdea = schema.getTable("idea");
-			assertNotNull(tableIdea);
+			final Table tableActivity = schema.getTable("activity");
+			assertNotNull(tableActivity);
 
-			column = tableIdea.getColumn("ideaid");
+			column = tableActivity.getColumn("activityid");
 			assertNotNull(column);
 			assertEquals(ColumnTypeId.class, column.getType().getClass());
 
-			column = tableIdea.getColumn("title");
+			column = tableActivity.getColumn("title");
 			assertNotNull(column);
 			assertEquals(ColumnTypeString.class, column.getType().getClass());
 
-			column = tableIdea.getColumn("description");
+			column = tableActivity.getColumn("description");
 			assertNotNull(column);
 			assertEquals(ColumnTypeText.class, column.getType().getClass());
 
-			column = tableIdea.getColumn("creation");
+			column = tableActivity.getColumn("creation");
 			assertNotNull(column);
 			assertEquals(ColumnTypeDate.class, column.getType().getClass());
 
-			column = tableIdea.getColumn("lastmodified");
+			column = tableActivity.getColumn("lastmodified");
 			assertNotNull(column);
 			assertEquals(ColumnTypeDate.class, column.getType().getClass());
 
-			primaryKey = tableIdea.getPrimaryKey();
+			primaryKey = tableActivity.getPrimaryKey();
 			assertNotNull(primaryKey);
-			assertEquals("pk_idea", primaryKey.getName());
-			assertEquals(tableIdea, primaryKey.getTable());
-			assertEquals(tableIdea.getColumn("ideaid"), primaryKey.getColumns().next());
+			assertEquals("pk_activity", primaryKey.getName());
+			assertEquals(tableActivity, primaryKey.getTable());
+			assertEquals(tableActivity.getColumn("activityid"), primaryKey.getColumns().next());
 		}
 		catch (final IOException e) {
 			e.printStackTrace();
@@ -236,6 +237,10 @@ public class TestParser extends TestDbCase {
 		catch (final SqlExecutionException e) {
 			e.printStackTrace();
 			fail("SQL Execution Exception: " + e.getMessage());
+		}
+		catch (final SqlBaseException e) {
+			e.printStackTrace();
+			fail("SQL Base Exception: " + e.getMessage());
 		}
 	}
 

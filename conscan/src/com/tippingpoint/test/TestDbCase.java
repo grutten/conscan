@@ -11,11 +11,10 @@ import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
-import com.tippingpoint.sql.SqlBuilderException;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.SqlExecution;
-import com.tippingpoint.sql.SqlExecutionException;
-import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.sql.base.SqlManager;
 
 /**
  * This class is a common base class for unit test that relies on having a connection to a database. Unit test
@@ -29,14 +28,20 @@ public abstract class TestDbCase extends TestCommonCase {
 	 * 
 	 * @throws SQLException
 	 * @throws DatabaseElementException
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException 
 	 */
 	protected void refreshDb(final Schema schemaNew) throws DatabaseElementException, SQLException,
-			SqlManagerException, SqlExecutionException {
+			SqlBaseException {
 		// get the schema based on what is in the database
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-		final Schema schemaCurrent = manager.getSchema(UNIT_TEST_SCHEMA_NAME);
+		Schema schemaCurrent = null;
+		try {
+			schemaCurrent = manager.getSchema(UNIT_TEST_SCHEMA_NAME);
+		}
+		catch (final SQLException e) {
+			// assume it is because the schema does not exist
+			schemaCurrent = new Schema(UNIT_TEST_SCHEMA_NAME);
+		}
 
 		if (schemaCurrent.getTableCount() > 0) {
 			dropSchema(schemaCurrent);
@@ -88,6 +93,7 @@ public abstract class TestDbCase extends TestCommonCase {
 		}
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+		SqlManager sqlManager = manager.getSqlManager();
 
 		Connection conn = null;
 
@@ -104,16 +110,13 @@ public abstract class TestDbCase extends TestCommonCase {
 
 					try {
 						final SqlDrop sqlDrop = new SqlDrop(table);
-						sqlExecution = sqlDrop.getExecution();
-						sqlExecution.executeUpdate(conn);
+						
+						sqlManager.executeUpdate(sqlDrop, conn);
 
 						// successfully dropped the table, so remove it from the list
 						listTables.remove(nIndex);
 					}
-					catch (final SqlExecutionException e) {
-						// ignore the cannot drop messages
-					}
-					catch (SqlBuilderException e) {
+					catch (final SqlBaseException e) {
 						// ignore the cannot drop messages
 					}
 					finally {
@@ -125,10 +128,6 @@ public abstract class TestDbCase extends TestCommonCase {
 			if (listTables.size() > 0) {
 				fail("Cannot drop the following tables: " + listTables);
 			}
-		}
-		catch (final SqlManagerException e) {
-			e.printStackTrace();
-			fail("SQL Builder Exception: " + e.getMessage());
 		}
 		finally {
 			ConnectionManager.close(conn, null, null);

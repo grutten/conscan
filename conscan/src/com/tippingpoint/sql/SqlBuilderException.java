@@ -5,7 +5,7 @@ package com.tippingpoint.sql;
  *
  * This class is a generic SQL Builder exception.
  */
-public final class SqlBuilderException extends Exception {
+public final class SqlBuilderException extends SqlBaseException {
 	private static final long serialVersionUID = 4961386323076181515L;
 
 	/**

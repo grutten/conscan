@@ -14,6 +14,7 @@ import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.base.SqlManager;
 
 /**
  * This class is used to compare schemas and attempts to make the schemas similar.
@@ -43,13 +44,11 @@ public final class SchemaComparison {
 	 * 
 	 * @param connectionManager ConnectionManager used to modify the database.
 	 * @throws SQLException
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	public void process(final ConnectionManager connectionManager) throws SQLException, SqlManagerException,
-			SqlExecutionException {
+	public void process(final ConnectionManager connectionManager) throws SQLException, SqlBaseException {
 		Connection conn = null;
-		final SqlBuilder sqlBuilder = connectionManager.getSqlBuilder();
+		final SqlManager sqlManager = connectionManager.getSqlManager();
 
 		try {
 			conn = connectionManager.getConnection();
@@ -60,16 +59,14 @@ public final class SchemaComparison {
 
 				final Table tableCurrent = m_schemaCurrent.getTable(table.getName());
 				if (tableCurrent != null) {
-					compare(conn, sqlBuilder, tableCurrent, table);
+					compare(conn, sqlManager, tableCurrent, table);
 				}
 				else {
-					final SqlCreate sqlCreate = sqlBuilder.getCreate(table);
+					final SqlCreate sqlCreate = new SqlCreate(table);
 
 					m_log.info("Adding table: " + sqlCreate.toString());
 
-					final SqlExecution sqlExecution = sqlCreate.getExecution();
-
-					sqlExecution.executeUpdate(conn);
+					sqlManager.executeUpdate(sqlCreate, conn);
 				}
 			}
 		}
@@ -82,14 +79,13 @@ public final class SchemaComparison {
 	 * This method is used to alter a table to add/modify the specified column.
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param tableCurrent Table definition for the currently defined table
 	 * @param column Column definition of the new column.
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	private void alter(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent,
-			final ColumnDefinition column) throws SqlExecutionException, SqlManagerException {
+	private void alter(final Connection conn, final SqlManager sqlManager, final Table tableCurrent,
+			final ColumnDefinition column) throws SqlBaseException {
 		// if this is not a new column, then check for containing constraints
 		final Column columnCurrent = tableCurrent.getColumn(column.getName());
 		if (columnCurrent != null) {
@@ -104,41 +100,38 @@ public final class SchemaComparison {
 				// problem;
 				// therefore, avoid dropping the primary key
 				if (!(constraint instanceof PrimaryKeyConstraint)) {
-					dropContainingConstraint(conn, sqlBuilder, tableCurrent, listConstraints.get(nIndex), columnCurrent);
+					dropContainingConstraint(conn, sqlManager, tableCurrent, listConstraints.get(nIndex), columnCurrent);
 				}
 			}
 		}
 
-		final SqlAlter sqlAlter = sqlBuilder.getAlter(tableCurrent);
+		final SqlAlter sqlAlter = new SqlAlter(tableCurrent);
 
 		sqlAlter.add(column);
 
 		m_log.info("Changing database with: " + sqlAlter.toString());
 
-		final SqlExecution sqlExecution = sqlAlter.getExecution();
-		sqlExecution.executeUpdate(conn);
+		sqlManager.executeUpdate(sqlAlter, conn);
 	}
 
 	/**
 	 * This method is used to alter a table to add/modify the specified constraint.
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param table Table definition for the currently defined table
 	 * @param constraint Constraint definition of the new constraint.
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	private void alter(final Connection conn, final SqlBuilder sqlBuilder, final Table table,
-			final Constraint constraint) throws SqlExecutionException, SqlManagerException {
-		final SqlAlter sqlAlter = sqlBuilder.getAlter(table);
+	private void alter(final Connection conn, final SqlManager sqlManager, final Table table,
+			final Constraint constraint) throws SqlBaseException {
+		final SqlAlter sqlAlter = new SqlAlter(table);
 
 		sqlAlter.add(constraint);
 
 		m_log.info("Changing database with: " + sqlAlter.toString());
 
-		final SqlExecution sqlExecution = sqlAlter.getExecution();
-		sqlExecution.executeUpdate(conn);
+		sqlManager.executeUpdate(sqlAlter, conn);
 	}
 
 	/**
@@ -146,25 +139,24 @@ public final class SchemaComparison {
 	 * expected as it is done by name since we are not completely able to determine types of keys (i.e. logical key).
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param tableCurrent Table definition of the current table.
 	 * @param constraint Constraint definition of the desired constraint.
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	private void compare(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent,
-			final Constraint constraint) throws SqlManagerException, SqlExecutionException {
+	private void compare(final Connection conn, final SqlManager sqlManager, final Table tableCurrent,
+			final Constraint constraint) throws SqlBaseException {
 		if (constraint != null) {
 			Constraint constraintCurrent = null;
 
 			constraintCurrent = tableCurrent.getConstraint(constraint.getName());
 			if (constraintCurrent != null) {
 				if (!constraint.equals(constraintCurrent)) {
-					alter(conn, sqlBuilder, tableCurrent, constraint);
+					alter(conn, sqlManager, tableCurrent, constraint);
 				}
 			}
 			else {
-				alter(conn, sqlBuilder, tableCurrent, constraint);
+				alter(conn, sqlManager, tableCurrent, constraint);
 			}
 		}
 	}
@@ -173,14 +165,13 @@ public final class SchemaComparison {
 	 * This method compares the current table with the desired table.
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param tableCurrent Table definition of the current table.
 	 * @param table Table definition of the desired table.
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	private void compare(final Connection conn, final SqlBuilder sqlBuilder, final Table tableCurrent, final Table table)
-			throws SqlManagerException, SqlExecutionException {
+	private void compare(final Connection conn, final SqlManager sqlManager, final Table tableCurrent, final Table table)
+			throws SqlBaseException {
 		final List<Column> listChangedColumns = getChangedColumns(tableCurrent, table);
 		if (!listChangedColumns.isEmpty()) {
 			// drop all references to the column to avoid conflicts in the changing column--any existing keys will be
@@ -192,7 +183,7 @@ public final class SchemaComparison {
 			for (int nConstraintIndex = listCurrentConstraints.size() - 1; nConstraintIndex >= 0; --nConstraintIndex) {
 				final Constraint constraintCurrent = listCurrentConstraints.get(nConstraintIndex);
 				if (constraintCurrent instanceof ForeignKeyConstraint) {
-					if (dropContainingConstraint(conn, sqlBuilder, tableCurrent, listChangedColumns, constraintCurrent)) {
+					if (dropContainingConstraint(conn, sqlManager, tableCurrent, listChangedColumns, constraintCurrent)) {
 						listCurrentConstraints.remove(nConstraintIndex);
 					}
 				}
@@ -204,7 +195,7 @@ public final class SchemaComparison {
 				// don't check primary keys (again, MySQL) or foreign keys
 				if (!(constraintCurrent instanceof ForeignKeyConstraint) &&
 						!(constraintCurrent instanceof PrimaryKeyConstraint)) {
-					if (dropContainingConstraint(conn, sqlBuilder, tableCurrent, listChangedColumns, constraintCurrent)) {
+					if (dropContainingConstraint(conn, sqlManager, tableCurrent, listChangedColumns, constraintCurrent)) {
 						listCurrentConstraints.remove(nConstraintIndex);
 					}
 				}
@@ -212,16 +203,16 @@ public final class SchemaComparison {
 
 			// now go through and change the columns
 			for (int nIndex = 0; nIndex < listChangedColumns.size(); ++nIndex) {
-				alter(conn, sqlBuilder, tableCurrent, (ColumnDefinition)listChangedColumns.get(nIndex));
+				alter(conn, sqlManager, tableCurrent, (ColumnDefinition)listChangedColumns.get(nIndex));
 			}
 		}
 
 		// since MySQL does not tell us the appropriate name of the primary key, avoid comparing the primary keys
-		compare(conn, sqlBuilder, tableCurrent, table.getLogicalKey());
+		compare(conn, sqlManager, tableCurrent, table.getLogicalKey());
 
 		final Iterator<Constraint> iterConstraints = table.getConstraints();
 		while (iterConstraints.hasNext()) {
-			compare(conn, sqlBuilder, tableCurrent, iterConstraints.next());
+			compare(conn, sqlManager, tableCurrent, iterConstraints.next());
 		}
 	}
 
@@ -245,26 +236,23 @@ public final class SchemaComparison {
 	 * This method drops the constraint on the table if it contains the specified column.
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param tableCurrent Table definition for the currently defined table
 	 * @param constraintCurrent Constraint containing the current definition of the constraint to check
 	 * @param column Column from the current table of the column to check
-	 * @throws SqlManagerException
-	 * @throws SqlExecutionException
+	 * @throws SqlBaseException
 	 */
-	private boolean dropContainingConstraint(final Connection conn, final SqlBuilder sqlBuilder,
-			final Table tableCurrent, final Constraint constraintCurrent, final Column column)
-			throws SqlManagerException, SqlExecutionException {
+	private boolean dropContainingConstraint(final Connection conn, final SqlManager sqlManager,
+			final Table tableCurrent, final Constraint constraintCurrent, final Column column) throws SqlBaseException {
 		boolean bDropped = false;
 		if (constraintContainsColumn(constraintCurrent, column)) {
-			final SqlAlter sqlAlter = sqlBuilder.getAlter(tableCurrent);
+			final SqlAlter sqlAlter = new SqlAlter(tableCurrent);
 
 			sqlAlter.drop(constraintCurrent);
 
 			m_log.info("Changing database with: " + sqlAlter.toString());
 
-			final SqlExecution sqlExecution = sqlAlter.getExecution();
-			sqlExecution.executeUpdate(conn);
+			sqlManager.executeUpdate(sqlAlter, conn);
 
 			// make sure the current definition reflects the changes in the database
 			tableCurrent.drop(constraintCurrent);
@@ -280,16 +268,15 @@ public final class SchemaComparison {
 	 * a part.
 	 * 
 	 * @param conn Connection used for all database transactions
-	 * @param sqlBuilder SqlBuilder used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
 	 * @param tableCurrent Table definition for the currently defined table
 	 * @param listChangedColumns List containing the columns that have changed
 	 * @param constraintCurrent Constraint containing the current definition of the constraint to check
-	 * @throws SqlExecutionException
-	 * @throws SqlManagerException
+	 * @throws SqlBaseException
 	 */
-	private boolean dropContainingConstraint(final Connection conn, final SqlBuilder sqlBuilder,
+	private boolean dropContainingConstraint(final Connection conn, final SqlManager sqlManager,
 			final Table tableCurrent, final List<Column> listChangedColumns, final Constraint constraintCurrent)
-			throws SqlManagerException, SqlExecutionException {
+			throws SqlBaseException {
 		boolean bDropped = false;
 
 		// check to see if any changing columns are in the key
@@ -299,7 +286,7 @@ public final class SchemaComparison {
 
 			// only need to check if the column currently exists
 			if (columnCurrent != null) {
-				bDropped = dropContainingConstraint(conn, sqlBuilder, tableCurrent, constraintCurrent, columnCurrent);
+				bDropped = dropContainingConstraint(conn, sqlManager, tableCurrent, constraintCurrent, columnCurrent);
 			}
 		}
 
