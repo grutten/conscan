@@ -14,7 +14,6 @@ public class SqlAlterExecution extends com.tippingpoint.sql.base.SqlAlterExecuti
 	 */
 	public SqlAlterExecution(SqlManager sqlManager, SqlAlter sqlAlter) {
 		super(sqlManager, sqlAlter);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**

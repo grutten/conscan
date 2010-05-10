@@ -37,7 +37,7 @@ public class SqlQuery extends BuilderCommand {
 		if (column == null) {
 			throw new IllegalArgumentException("Column must be specified.");
 		}
-		reset();
+
 		m_listQueryColumns.add(column);
 	}
 
@@ -53,8 +53,6 @@ public class SqlQuery extends BuilderCommand {
 	 * the list of columns for the select.
 	 */
 	public final void add(final Table table, final boolean bAddColumns) {
-		reset();
-
 		m_setTables.add(table);
 
 		if (bAddColumns) {
@@ -75,7 +73,7 @@ public class SqlQuery extends BuilderCommand {
 		if (column == null) {
 			throw new IllegalArgumentException("Column must be specified.");
 		}
-		reset();
+
 		m_listOrderByColumns.add(column);
 	}
 

@@ -22,7 +22,6 @@ public abstract class BuilderCommand extends Command {
 	 */
 	public void add(final Condition condition) {
 		m_listWheres.add(condition);
-		reset();
 	}
 
 	public List<Condition> getWheres() {

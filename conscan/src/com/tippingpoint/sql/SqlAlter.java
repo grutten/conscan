@@ -41,7 +41,6 @@ public class SqlAlter extends TableBuilderCommand {
 		} else {
 			m_listNewColumns.add(column);
 		}
-		reset();
 	}
 
 	/**
@@ -53,7 +52,6 @@ public class SqlAlter extends TableBuilderCommand {
 		} else {
 			m_listNewConstraints.add(constraint);
 		}
-		reset();
 	}
 
 	/**
@@ -64,7 +62,6 @@ public class SqlAlter extends TableBuilderCommand {
 		if (m_table.getConstraint(constraint.getName()) != null) {
 			m_listDroppedConstraints.add(constraint);
 		}
-		reset();
 	}
 
 	public List<ColumnDefinition> getNewColumns() {
