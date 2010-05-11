@@ -1,13 +1,17 @@
 package com.tippingpoint.sql.base;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.Constraint;
@@ -17,16 +21,23 @@ import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.Index;
 import com.tippingpoint.database.LogicalKeyConstraint;
 import com.tippingpoint.database.PrimaryKeyConstraint;
+import com.tippingpoint.database.parser.ColumnValue;
 import com.tippingpoint.sql.Condition;
 import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlBuilderException;
+import com.tippingpoint.sql.SqlExecutionException;
 
 /**
  * This class is a base class used to generate and execute SQL statements.
  */
 public abstract class SqlExecution {
+	private static Log m_log = LogFactory.getLog(ColumnValue.class);
+
 	/** This member holds the manager used to create the execution. */
 	protected SqlManager m_sqlManager;
+
+	/** This member holds the statement. */
+	protected Statement m_stmt;
 
 	/** This member holds the map of the columns and their values. */
 	private final List<ParameterizedValue> m_listParameters = new ArrayList<ParameterizedValue>();
@@ -46,6 +57,64 @@ public abstract class SqlExecution {
 	 */
 	public void add(final ParameterizedValue value) {
 		m_listParameters.add(value);
+	}
+
+	/**
+	 * This method closes the SQL statement if opened.
+	 */
+	public void close() {
+		if (m_stmt != null) {
+			try {
+				m_stmt.close();
+			}
+			catch (final SQLException e) {
+				m_log.error("Error closing statement", e);
+			}
+			m_stmt = null;
+		}
+	}
+
+	/**
+	 * This method executes the statement.
+	 * 
+	 * @throws SqlBuilderException
+	 * @throws SqlExecutionException
+	 */
+	public ResultSet executeQuery(final Connection conn) throws SqlBuilderException, SqlExecutionException {
+		ResultSet rs = null;
+		final String strSql = getSql();
+
+		try {
+			final Statement stmt = getStatement(conn);
+			rs = stmt.executeQuery(strSql);
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException(strSql, e);
+		}
+
+		return rs;
+	}
+
+	/**
+	 * This method executes the statement.
+	 * 
+	 * @throws SqlExecutionException
+	 * @throws SqlBuilderException
+	 */
+	public int executeUpdate(final Connection conn) throws SqlExecutionException, SqlBuilderException {
+		int nRowsUpdated = 0;
+		final String strSql = getSql();
+
+		try {
+			final Statement stmt = getStatement(conn);
+
+			nRowsUpdated = stmt.executeUpdate(strSql);
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException(strSql, e);
+		}
+
+		return nRowsUpdated;
 	}
 
 	/**
@@ -97,16 +166,17 @@ public abstract class SqlExecution {
 
 	/**
 	 * This method is used to add the where clauses to the SQL statement.
+	 * 
 	 * @param listWheres List of conditions to add to the SQL statement.
 	 * @param strSql StringBuilder containing the SQL statement to modify.
 	 */
-	protected void addWheres(List<Condition> listWheres, StringBuilder strSql) {
+	protected void addWheres(final List<Condition> listWheres, final StringBuilder strSql) {
 		if (listWheres != null && !listWheres.isEmpty()) {
 			strSql.append(" WHERE ");
 
-			Iterator<Condition> iterWheres = listWheres.iterator();
+			final Iterator<Condition> iterWheres = listWheres.iterator();
 			while (iterWheres.hasNext()) {
-				Condition condition = iterWheres.next();
+				final Condition condition = iterWheres.next();
 
 				strSql.append(condition);
 
@@ -223,5 +293,18 @@ public abstract class SqlExecution {
 		}
 
 		return strSql.toString();
+	}
+
+	/**
+	 * This method returns a statement. If the statement has not been generated, it will be and be returned.
+	 * 
+	 * @throws SQLException
+	 */
+	protected Statement getStatement(final Connection conn) throws SQLException {
+		if (m_stmt == null) {
+			m_stmt = conn.createStatement();
+		}
+
+		return m_stmt;
 	}
 }

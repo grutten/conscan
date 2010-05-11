@@ -38,7 +38,8 @@ public class SqlAlter extends TableBuilderCommand {
 	public void add(final ColumnDefinition column) {
 		if (m_table.getColumn(column.getName()) != null) {
 			m_listModifyColumns.add(column);
-		} else {
+		}
+		else {
 			m_listNewColumns.add(column);
 		}
 	}
@@ -49,7 +50,8 @@ public class SqlAlter extends TableBuilderCommand {
 	public void add(final Constraint constraint) {
 		if (m_table.getConstraint(constraint.getName()) != null) {
 			m_listModifyConstraints.add(constraint);
-		} else {
+		}
+		else {
 			m_listNewConstraints.add(constraint);
 		}
 	}
@@ -64,12 +66,8 @@ public class SqlAlter extends TableBuilderCommand {
 		}
 	}
 
-	public List<ColumnDefinition> getNewColumns() {
-		return m_listNewColumns;
-	}
-
-	public List<Constraint> getNewConstraints() {
-		return m_listNewConstraints;
+	public List<Constraint> getDroppedConstraints() {
+		return m_listDroppedConstraints;
 	}
 
 	public List<ColumnDefinition> getModifyColumns() {
@@ -80,8 +78,12 @@ public class SqlAlter extends TableBuilderCommand {
 		return m_listModifyConstraints;
 	}
 
-	public List<Constraint> getDroppedConstraints() {
-		return m_listDroppedConstraints;
+	public List<ColumnDefinition> getNewColumns() {
+		return m_listNewColumns;
+	}
+
+	public List<Constraint> getNewConstraints() {
+		return m_listNewConstraints;
 	}
 
 }

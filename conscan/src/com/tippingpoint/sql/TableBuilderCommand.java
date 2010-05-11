@@ -12,7 +12,7 @@ public abstract class TableBuilderCommand extends BuilderCommand {
 	protected Table m_table;
 
 	/** This member holds the columns and their values to be inserted. */
-	private List<ParameterizedValue> m_listColumns = new ArrayList<ParameterizedValue>();
+	private final List<ParameterizedValue> m_listColumns = new ArrayList<ParameterizedValue>();
 
 	/**
 	 * This method constructs a new statement for the given table.

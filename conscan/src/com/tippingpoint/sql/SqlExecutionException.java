@@ -1,7 +1,7 @@
 package com.tippingpoint.sql;
 
 /**
- * SqlExecutionException This class is used to flag SQL related exceptions when executing SQL.
+ * This class is used to flag SQL related exceptions when executing SQL.
  */
 public class SqlExecutionException extends SqlBaseException {
 	private static final long serialVersionUID = 2563138703712325326L;

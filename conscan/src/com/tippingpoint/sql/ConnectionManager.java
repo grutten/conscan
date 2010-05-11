@@ -30,6 +30,7 @@ import com.tippingpoint.database.Index;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.sql.mysql.SqlManagerMySql;
 import com.tippingpoint.sql.sqlserver.SqlManagerSqlServer;
@@ -564,7 +565,7 @@ public final class ConnectionManager {
 			if (strUrl == null || strUrl.length() == 0) {
 				throw new IllegalArgumentException("Could not establish a driver connection with no URL.");
 			}
-			
+
 			if (strUser == null || strUser.length() == 0) {
 				throw new IllegalArgumentException("Could not establish a driver connection with no user.");
 			}

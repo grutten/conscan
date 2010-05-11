@@ -13,12 +13,12 @@ import com.tippingpoint.sql.SqlCreate;
  */
 public class SqlCreateExecution extends SqlExecution {
 	/** This member holds the source of the command. */
-	private SqlCreate m_sqlCreate;
-	
+	private final SqlCreate m_sqlCreate;
+
 	/**
 	 * This method constructs a new execution for the given manager.
 	 */
-	public SqlCreateExecution(SqlManager sqlManager, SqlCreate sqlCreate) {
+	public SqlCreateExecution(final SqlManager sqlManager, final SqlCreate sqlCreate) {
 		super(sqlManager);
 
 		m_sqlCreate = sqlCreate;
@@ -26,12 +26,14 @@ public class SqlCreateExecution extends SqlExecution {
 
 	/**
 	 * This method is used to generated the SQL statement.
-	 * @throws SqlBuilderException 
+	 * 
+	 * @throws SqlBuilderException
 	 */
+	@Override
 	public String getSql() throws SqlBuilderException {
-		Table table = m_sqlCreate.getTable();
+		final Table table = m_sqlCreate.getTable();
 
-		StringBuilder strSql = new StringBuilder();
+		final StringBuilder strSql = new StringBuilder();
 
 		// the statement starts with the create statement
 		strSql.append("CREATE TABLE ");
@@ -39,9 +41,9 @@ public class SqlCreateExecution extends SqlExecution {
 		strSql.append('(');
 
 		// add in the column statements next
-		Iterator<Column> iterTableColumns = table.getColumns();
+		final Iterator<Column> iterTableColumns = table.getColumns();
 		while (iterTableColumns.hasNext()) {
-			ColumnDefinition column = (ColumnDefinition)iterTableColumns.next();
+			final ColumnDefinition column = (ColumnDefinition)iterTableColumns.next();
 			strSql.append(getPhrase(column));
 
 			if (iterTableColumns.hasNext()) {
@@ -62,11 +64,11 @@ public class SqlCreateExecution extends SqlExecution {
 			strSql.append(getPhrase(constraint));
 		}
 
-		Iterator<Constraint> iterConstraints = table.getConstraints();
+		final Iterator<Constraint> iterConstraints = table.getConstraints();
 		if (iterConstraints != null) {
 			while (iterConstraints.hasNext()) {
 				strSql.append(", ");
-				strSql.append(getPhrase((Constraint)iterConstraints.next()));
+				strSql.append(getPhrase(iterConstraints.next()));
 			}
 		}
 

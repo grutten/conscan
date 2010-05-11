@@ -49,8 +49,8 @@ public class SqlQuery extends BuilderCommand {
 	}
 
 	/**
-	 * This method adds a table to the list of tables for the select. It also optionally adds all the columns of the given table to
-	 * the list of columns for the select.
+	 * This method adds a table to the list of tables for the select. It also optionally adds all the columns of the
+	 * given table to the list of columns for the select.
 	 */
 	public final void add(final Table table, final boolean bAddColumns) {
 		m_setTables.add(table);
@@ -65,8 +65,21 @@ public class SqlQuery extends BuilderCommand {
 		}
 	}
 
+	public List<Column> getOrderByColumns() {
+		return m_listOrderByColumns;
+	}
+
+	public List<Column> getQueryColumns() {
+		return m_listQueryColumns;
+	}
+
+	public Set<Table> getTables() {
+		return m_setTables;
+	}
+
 	/**
 	 * This method adds an order by column entry to the query.
+	 * 
 	 * @param column Column to be added to the order by
 	 */
 	public void orderBy(final Column column) {
@@ -84,19 +97,7 @@ public class SqlQuery extends BuilderCommand {
 		m_bAssociativeJoins = bAssociativeJoins;
 	}
 
-	public List<Column> getQueryColumns() {
-		return m_listQueryColumns;
-	}
-
-	public Set<Table> getTables() {
-		return m_setTables;
-	}
-
 	public boolean useAssociativeJoins() {
 		return m_bAssociativeJoins;
-	}
-
-	public List<Column> getOrderByColumns() {
-		return m_listOrderByColumns;
 	}
 }

@@ -1,8 +1,6 @@
 package com.tippingpoint.sql;
 
 /**
- * SqlBuilderException
- *
  * This class is a generic SQL Builder exception.
  */
 public final class SqlBuilderException extends SqlBaseException {
@@ -11,7 +9,7 @@ public final class SqlBuilderException extends SqlBaseException {
 	/**
 	 * This method constructs an exception with the given message.
 	 */
-	public SqlBuilderException(String strMessage) {
+	public SqlBuilderException(final String strMessage) {
 		super(strMessage);
 	}
 }

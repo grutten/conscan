@@ -34,11 +34,13 @@ public class SqlAlterExecution extends SqlExecution {
 		strSql.append(table.getName());
 
 		int nCount = append("ADD", m_sqlAlter.getNewColumns(), strSql, false);
-		nCount += append(m_sqlManager.getKeyword(SqlManager.KEYWORD_MODIFY_COLUMN), m_sqlAlter.getModifyColumns(),
-				strSql, nCount > 0);
+		nCount +=
+			append(m_sqlManager.getKeyword(SqlManager.KEYWORD_MODIFY_COLUMN), m_sqlAlter.getModifyColumns(), strSql,
+					nCount > 0);
 		nCount += appendConstraint("ADD", m_sqlAlter.getNewConstraints(), strSql, nCount > 0);
-		nCount += appendConstraint(m_sqlManager.getKeyword(SqlManager.KEYWORD_MODIFY_CONSTRAINT),
-				m_sqlAlter.getModifyConstraints(), strSql, nCount > 0);
+		nCount +=
+			appendConstraint(m_sqlManager.getKeyword(SqlManager.KEYWORD_MODIFY_CONSTRAINT), m_sqlAlter
+					.getModifyConstraints(), strSql, nCount > 0);
 		nCount += appendDroppedConstraint(strSql, nCount > 0);
 
 		return strSql.toString();

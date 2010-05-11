@@ -10,7 +10,7 @@ public class SqlManagerMySql extends SqlManager {
 	 */
 	public SqlManagerMySql() {
 		register(new StaticColumnTypeConverter(ColumnTypeId.class, "INTEGER AUTO_INCREMENT"));
-		
+
 		register(new SqlAlterExecutionFactory(), SqlAlter.class);
 	}
 

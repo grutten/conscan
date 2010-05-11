@@ -24,6 +24,9 @@ public abstract class BuilderCommand extends Command {
 		m_listWheres.add(condition);
 	}
 
+	/**
+	 * This method returns the list of where conditions.
+	 */
 	public List<Condition> getWheres() {
 		return m_listWheres;
 	}

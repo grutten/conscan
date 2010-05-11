@@ -13,7 +13,6 @@ import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlDrop;
-import com.tippingpoint.sql.SqlExecution;
 import com.tippingpoint.sql.base.SqlManager;
 
 /**
@@ -28,10 +27,9 @@ public abstract class TestDbCase extends TestCommonCase {
 	 * 
 	 * @throws SQLException
 	 * @throws DatabaseElementException
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
-	protected void refreshDb(final Schema schemaNew) throws DatabaseElementException, SQLException,
-			SqlBaseException {
+	protected void refreshDb(final Schema schemaNew) throws DatabaseElementException, SQLException, SqlBaseException {
 		// get the schema based on what is in the database
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 		Schema schemaCurrent = null;
@@ -93,7 +91,7 @@ public abstract class TestDbCase extends TestCommonCase {
 		}
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-		SqlManager sqlManager = manager.getSqlManager();
+		final SqlManager sqlManager = manager.getSqlManager();
 
 		Connection conn = null;
 
@@ -106,11 +104,9 @@ public abstract class TestDbCase extends TestCommonCase {
 				for (int nIndex = listTables.size() - 1; nIndex >= 0; --nIndex) {
 					final Table table = listTables.get(nIndex);
 
-					SqlExecution sqlExecution = null;
-
 					try {
 						final SqlDrop sqlDrop = new SqlDrop(table);
-						
+
 						sqlManager.executeUpdate(sqlDrop, conn);
 
 						// successfully dropped the table, so remove it from the list
@@ -118,9 +114,6 @@ public abstract class TestDbCase extends TestCommonCase {
 					}
 					catch (final SqlBaseException e) {
 						// ignore the cannot drop messages
-					}
-					finally {
-						ConnectionManager.close(null, sqlExecution, null);
 					}
 				}
 			}

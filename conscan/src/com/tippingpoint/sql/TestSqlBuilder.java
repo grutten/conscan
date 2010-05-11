@@ -37,9 +37,9 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests the basics.
 	 */
 	public void testBasics() {
-		SqlManager sqlManager = new SqlManagerSqlServer();
+		final SqlManager sqlManager = new SqlManagerSqlServer();
 		assertNotNull(sqlManager);
-		
+
 		final Table tableDemographic = m_schema.getTable("demographic");
 		assertNotNull(tableDemographic);
 
@@ -49,87 +49,91 @@ public final class TestSqlBuilder extends TestCommonCase {
 
 			sqlQuery.add(tableDemographic, true);
 
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation " +
-					"FROM demographic", sqlManager, sqlQuery);
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation "
+					+ "FROM demographic", sqlManager, sqlQuery);
 
 			sqlQuery.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "newuser"));
-	
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation " +
-					"FROM demographic WHERE demographic.userid = ?", sqlManager, sqlQuery);
-	
+
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation "
+					+ "FROM demographic WHERE demographic.userid = ?", sqlManager, sqlQuery);
+
 			SqlInsert sqlInsert = new SqlInsert(tableDemographic);
 			assertNotNull(sqlInsert);
-	
+
 			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), null));
 			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), null));
 			sqlInsert.add(new ParameterizedValue(tableDemographic.getColumn("creation"), null));
-	
+
 			check("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlManager, sqlInsert);
-	
+
 			sqlInsert = new SqlInsert(tableDemographic);
 			assertNotNull(sqlInsert);
-	
+
 			sqlInsert.addColumnsForTable();
-	
+
 			check("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlManager, sqlInsert);
 
 			final SqlUpdate sqlUpdate = new SqlUpdate(tableDemographic);
 			assertNotNull(sqlUpdate);
-	
+
 			sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("firstName"), "Joe"));
 			sqlUpdate.add(new ParameterizedValue(tableDemographic.getColumn("lastName"), "Doe"));
 			sqlUpdate.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "bbb"));
-	
-			check("UPDATE demographic SET firstName = ?, lastName = ? WHERE demographic.userid = ?", sqlManager, sqlUpdate);
-	
+
+			check("UPDATE demographic SET firstName = ?, lastName = ? WHERE demographic.userid = ?", sqlManager,
+					sqlUpdate);
+
 			// test joined tables
 			final SqlQuery sqlQuery2 = new SqlQuery();
 			assertNotNull(sqlQuery2);
-	
+
 			final Table tableUserActivity = m_schema.getTable("useractivity");
 			assertNotNull(tableUserActivity);
-	
+
 			sqlQuery2.add(tableDemographic, true);
 			sqlQuery2.add(tableUserActivity);
-	
+
 			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation "
-					+ "FROM demographic, useractivity WHERE demographic.userid = useractivity.userid", sqlManager, sqlQuery2);
-	
+					+ "FROM demographic, useractivity WHERE demographic.userid = useractivity.userid", sqlManager,
+					sqlQuery2);
+
 			// test many to many joined tables
 			final SqlQuery sqlQuery3 = new SqlQuery();
 			assertNotNull(sqlQuery3);
-	
+
 			final Table tableActivity = m_schema.getTable("activity");
 			assertNotNull(tableActivity);
-	
+
 			sqlQuery3.add(tableDemographic, true);
 			sqlQuery3.add(tableUserActivity);
 			sqlQuery3.add(tableActivity, true);
-	
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
-					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager,
-					sqlQuery3);
-	
+
+			check(
+					"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+							+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
+							+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
+					sqlManager, sqlQuery3);
+
 			// test many to many with non-specified tables
 			final SqlQuery sqlQuery4 = new SqlQuery();
 			assertNotNull(sqlQuery4);
-	
+
 			sqlQuery4.setAssociativeJoins(true);
-	
+
 			sqlQuery4.add(tableDemographic, true);
 			sqlQuery4.add(tableActivity, true);
 
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
-					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager,
-					sqlQuery4);
+			check(
+					"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+							+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
+							+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
+					sqlManager, sqlQuery4);
 		}
-		catch (SqlManagerException e) {
+		catch (final SqlManagerException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
-		catch (SqlBuilderException e) {
+		catch (final SqlBuilderException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
@@ -139,7 +143,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests MySQL Server specific SQL statements.
 	 */
 	public void testMySqlServer() {
-		SqlManager sqlManager = new SqlManagerMySql();
+		final SqlManager sqlManager = new SqlManagerMySql();
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -149,21 +153,21 @@ public final class TestSqlBuilder extends TestCommonCase {
 		try {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
-			
+
 			check("CREATE TABLE activity(activityid INTEGER AUTO_INCREMENT NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
 					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
-	
+
 			// test creating a table
 			final Table tableDemographic = m_schema.getTable("demographic");
 			assertNotNull(tableDemographic);
 
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
-			
-			check("CREATE TABLE demographic(userid INTEGER AUTO_INCREMENT NOT NULL, " +
-					"firstName VARCHAR(100) NULL, lastName VARCHAR(100) NULL, creation DATETIME NULL, " +
-					"CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
+
+			check("CREATE TABLE demographic(userid INTEGER AUTO_INCREMENT NOT NULL, "
+					+ "firstName VARCHAR(100) NULL, lastName VARCHAR(100) NULL, creation DATETIME NULL, "
+					+ "CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
 			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
@@ -171,23 +175,24 @@ public final class TestSqlBuilder extends TestCommonCase {
 
 			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
 			assertNotNull(sqlAlter);
-	
+
 			sqlAlter.add(columnDescription);
-			
+
 			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
-	
+
 			// use an existing column in the table to emulate modifying a table.
 			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
-	
+
 			sqlAlter.add(columnCreation);
-	
-			check("ALTER TABLE demographic ADD description TEXT NULL, MODIFY creation DATETIME NULL", sqlManager, sqlAlter);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL, MODIFY creation DATETIME NULL", sqlManager,
+					sqlAlter);
 
 			// try a table with foreign keys
 			final Table tableUserActivity = m_schema.getTable("useractivity");
 			assertNotNull(tableUserActivity);
-	
+
 			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
 
@@ -196,16 +201,16 @@ public final class TestSqlBuilder extends TestCommonCase {
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
 					sqlManager, sqlCreate);
 		}
-		catch (SqlBuilderException e) {
+		catch (final SqlBuilderException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
-		catch (SqlManagerException e) {
+		catch (final SqlManagerException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
 	}
-	
+
 	/**
 	 * This method tests SQL Server specific SQL statements.
 	 */
@@ -220,7 +225,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 		try {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
-			
+
 			check("CREATE TABLE activity(activityid INTEGER IDENTITY NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
 					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
@@ -228,13 +233,13 @@ public final class TestSqlBuilder extends TestCommonCase {
 			// test creating a table
 			final Table tableDemographic = m_schema.getTable("demographic");
 			assertNotNull(tableDemographic);
-	
+
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE demographic(userid INTEGER IDENTITY NOT NULL, firstName VARCHAR(100) NULL, " +
-					"lastName VARCHAR(100) NULL, creation DATETIME NULL, CONSTRAINT pk_demographic " +
-					"PRIMARY KEY (userid))", sqlManager, sqlCreate);
+			check("CREATE TABLE demographic(userid INTEGER IDENTITY NOT NULL, firstName VARCHAR(100) NULL, "
+					+ "lastName VARCHAR(100) NULL, creation DATETIME NULL, CONSTRAINT pk_demographic "
+					+ "PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
 			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
@@ -242,36 +247,37 @@ public final class TestSqlBuilder extends TestCommonCase {
 
 			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
 			assertNotNull(sqlAlter);
-	
+
 			sqlAlter.add(columnDescription);
-	
+
 			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
-	
+
 			// use an existing column in the table to emulate modifying a table.
 			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
-	
+
 			sqlAlter.add(columnCreation);
-	
-			check("ALTER TABLE demographic ADD description TEXT NULL, ALTER COLUMN creation DATETIME NULL", sqlManager, sqlAlter);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL, ALTER COLUMN creation DATETIME NULL", sqlManager,
+					sqlAlter);
 
 			// try a table with foreign keys
 			final Table tableUserActivity = m_schema.getTable("useractivity");
 			assertNotNull(tableUserActivity);
-	
+
 			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
-	
+
 			check("CREATE TABLE useractivity(userid INTEGER NOT NULL, activityid INTEGER NOT NULL, "
 					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
 					sqlManager, sqlCreate);
 		}
-		catch (SqlBuilderException e) {
+		catch (final SqlBuilderException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
-		catch (SqlManagerException e) {
+		catch (final SqlManagerException e) {
 			e.printStackTrace();
 			assertFalse(e.toString(), true);
 		}
@@ -291,11 +297,13 @@ public final class TestSqlBuilder extends TestCommonCase {
 
 	/**
 	 * This method checks the execution of a command.
-	 * @throws SqlManagerException 
-	 * @throws SqlBuilderException 
+	 * 
+	 * @throws SqlManagerException
+	 * @throws SqlBuilderException
 	 */
-	private void check(String strSql, SqlManager sqlManager, Command sqlCommand) throws SqlManagerException, SqlBuilderException {
-		com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
+	private void check(final String strSql, final SqlManager sqlManager, final Command sqlCommand)
+			throws SqlManagerException, SqlBuilderException {
+		final com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
 		assertNotNull(execution);
 
 		assertEquals(strSql, execution.getSql());

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,18 +17,20 @@ import com.tippingpoint.database.DataConversion;
 import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.Condition;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.Operation;
 import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.sql.SqlExecution;
+import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.SqlUpdate;
 import com.tippingpoint.sql.ValueCondition;
+import com.tippingpoint.sql.base.SqlExecution;
 
 /**
  * This class is used for importing data into a schema.
@@ -116,9 +117,8 @@ public final class Importer {
 
 		try {
 			conn = manager.getConnection();
-			com.tippingpoint.sql.base.SqlExecution execution = manager.getSqlManager().getExecution(sqlQuery);
-
-			rs = execution.executeQuery(conn);
+			sqlExecution = manager.getSqlManager().getExecution(sqlQuery);
+			rs = sqlExecution.executeQuery(conn);
 			if (rs != null && rs.next()) {
 				objValue = sqlExecution.getObject(column, rs);
 			}
@@ -131,6 +131,12 @@ public final class Importer {
 		}
 		catch (final SQLException e) {
 			addMessage("SQL Exception getting value", e);
+		}
+		catch (final SqlBuilderException e) {
+			addMessage("SQL Builder Exception getting value", e);
+		}
+		catch (final SqlExecutionException e) {
+			addMessage("SQL Execution Exception getting value", e);
 		}
 		finally {
 			ConnectionManager.close(conn, sqlExecution, rs);
@@ -185,7 +191,6 @@ public final class Importer {
 
 						try {
 							conn = manager.getConnection();
-
 							manager.getSqlManager().executeUpdate(sqlInsert, conn);
 
 							m_log.debug("Inserting row into '" + m_activeTable + "'");
@@ -199,7 +204,7 @@ public final class Importer {
 						catch (final SQLException e) {
 							addMessage("SQL Exception inserting row.", e);
 						}
-						catch (SqlBaseException e) {
+						catch (final SqlBaseException e) {
 							addMessage("SQL Base Exception inserting row.", e);
 						}
 						finally {
@@ -294,10 +299,10 @@ public final class Importer {
 
 			try {
 				conn = manager.getConnection();
-				sqlExecution = sqlQuery.getExecution();
+				sqlExecution = manager.getSqlManager().getExecution(sqlQuery);
 				rs = sqlExecution.executeQuery(conn);
 				if (rs != null && rs.next()) {
-					// found a row in the db for this row in the data--check to see if all the values match
+					// found a row in the DB for this row in the data--check to see if all the values match
 					boolean bMatch = true;
 					for (int nIndex = 0; nIndex < listExtraColumns.size() && bMatch; ++nIndex) {
 						final Column column = listExtraColumns.get(nIndex);
@@ -309,7 +314,7 @@ public final class Importer {
 							bMatch = ObjectUtils.equals(objExstingValue, objNewValue);
 						}
 						else {
-							final DataConversion conversion = sqlExecution.getConversion();
+							final DataConversion conversion = manager.getSqlManager().getConverter();
 
 							bMatch =
 								ObjectUtils.equals(conversion.convertToSqlObject(column.getType(), objExstingValue),
@@ -334,11 +339,9 @@ public final class Importer {
 						sqlExecution.close();
 						sqlExecution = null;
 
-						sqlExecution = sqlUpdate.getExecution();
+						manager.getSqlManager().executeUpdate(sqlUpdate, conn);
 
 						m_log.debug("Updating row in '" + m_activeTable + "'");
-
-						sqlExecution.executeUpdate(conn);
 					}
 
 					bContinue = false; // found the record and did what we could
@@ -354,6 +357,12 @@ public final class Importer {
 				addMessage("SQL Execution Exception updating row.", e);
 			}
 			catch (final SQLException e) {
+				addMessage("SQL Exception checking on row.", e);
+			}
+			catch (final SqlBuilderException e) {
+				addMessage("SQL Builder Exception checking on row.", e);
+			}
+			catch (final SqlBaseException e) {
 				addMessage("SQL Exception checking on row.", e);
 			}
 			finally {

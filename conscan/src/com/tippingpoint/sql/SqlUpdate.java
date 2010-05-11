@@ -9,7 +9,7 @@ public final class SqlUpdate extends TableBuilderCommand {
 	/**
 	 * This method constructs a new update statement for the given table.
 	 */
-	public SqlUpdate(Table table) {
+	public SqlUpdate(final Table table) {
 		super(table);
 	}
 }

@@ -4,8 +4,6 @@ import java.util.Iterator;
 import com.tippingpoint.test.TestCommonCase;
 
 /**
- * TestTable
- * 
  * This class is used to exercise the table and related classes.
  */
 public final class TestTable extends TestCommonCase {
@@ -68,7 +66,8 @@ public final class TestTable extends TestCommonCase {
 			assertEquals(table.getColumn("LastName"), iterConstraints.next());
 
 			assertFalse(iterConstraints.hasNext());
-		} catch (final DatabaseElementException e) {
+		}
+		catch (final DatabaseElementException e) {
 			e.printStackTrace(System.out);
 		}
 	}

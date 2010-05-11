@@ -1,4 +1,3 @@
-
 package com.tippingpoint.sql;
 
 import com.tippingpoint.database.Table;
@@ -9,11 +8,12 @@ import com.tippingpoint.database.Table;
 public final class SqlDrop extends TableBuilderCommand {
 	/**
 	 * This method builds a drop table instance for the given table.
-	 * @throws SqlBuilderException 
+	 * 
+	 * @throws SqlBuilderException
 	 */
 	public SqlDrop(final Table table) throws SqlBuilderException {
 		super(table);
-		
+
 		// make sure there is a table specified
 		if (m_table == null) {
 			throw new SqlBuilderException("Table needs to be specified when droping tables.");

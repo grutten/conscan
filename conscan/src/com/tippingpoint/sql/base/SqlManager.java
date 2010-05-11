@@ -1,12 +1,9 @@
 package com.tippingpoint.sql.base;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.dbutils.DbUtils;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnType;
 import com.tippingpoint.database.ColumnTypeDate;
@@ -19,11 +16,11 @@ import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.DataConversion;
 import com.tippingpoint.sql.Command;
+import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlCreate;
 import com.tippingpoint.sql.SqlDrop;
-import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
@@ -72,34 +69,20 @@ public abstract class SqlManager {
 	}
 
 	/**
-	 * This method is used to execute the statement.
-	 */
-	public void execute(final SqlCreate sqlCreate) {
-
-	}
-
-	/**
 	 * This method executes the command.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	public int executeUpdate(final Command sqlCommand, final Connection conn) throws SqlBaseException {
 		int nRowsUpdated = 0;
-
-		String strSql = null;
-		Statement stmt = null;
+		SqlExecution sqlExecution = null;
 
 		try {
-			final SqlExecution execution = getExecution(sqlCommand);
-			strSql = execution.getSql();
-
-			stmt = conn.createStatement();
-			nRowsUpdated = stmt.executeUpdate(strSql);
-		}
-		catch (final SQLException e) {
-			throw new SqlExecutionException(strSql, e);
+			sqlExecution = getExecution(sqlCommand);
+			nRowsUpdated = sqlExecution.executeUpdate(conn);
 		}
 		finally {
-			DbUtils.closeQuietly(null, stmt, null);
+			ConnectionManager.close(null, sqlExecution, null);
 		}
 
 		return nRowsUpdated;

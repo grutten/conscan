@@ -7,18 +7,18 @@ import com.tippingpoint.database.Column;
  */
 public final class ColumnCondition extends Condition {
 	/** This member holds the column for which this condition exists. */
-	private Column m_column;
+	private final Column m_column;
 
 	/** This member holds the operation used for the condition. */
-	private Column m_column2;
+	private final Column m_column2;
 
 	/** This member holds the operation used for the condition. */
-	private Operation m_operation;
+	private final Operation m_operation;
 
 	/**
 	 * This method constructs a new condition for 2 named columns.
 	 */
-	public ColumnCondition(Column column, Operation operation, Column column2) {
+	public ColumnCondition(final Column column, final Operation operation, final Column column2) {
 		m_column = column;
 		m_column2 = column2;
 		m_operation = operation;
@@ -27,6 +27,7 @@ public final class ColumnCondition extends Condition {
 	/**
 	 * This method returns the value associated with the condition.
 	 */
+	@Override
 	public ParameterizedValue getParameterValue() {
 		return new ParameterizedValue(m_column, m_column2);
 	}

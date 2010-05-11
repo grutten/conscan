@@ -11,12 +11,12 @@ import com.tippingpoint.sql.SqlUpdate;
  */
 public class SqlUpdateExecution extends SqlExecution {
 	/** This member holds the source of the command. */
-	private SqlUpdate m_sqlUpdate;
-	
+	private final SqlUpdate m_sqlUpdate;
+
 	/**
 	 * This method constructs a new execution for the given manager.
 	 */
-	public SqlUpdateExecution(SqlManager sqlManager, SqlUpdate sqlUpdate) {
+	public SqlUpdateExecution(final SqlManager sqlManager, final SqlUpdate sqlUpdate) {
 		super(sqlManager);
 
 		m_sqlUpdate = sqlUpdate;
@@ -24,17 +24,17 @@ public class SqlUpdateExecution extends SqlExecution {
 
 	@Override
 	public String getSql() throws SqlBuilderException {
-		Table table = m_sqlUpdate.getTable();
+		final Table table = m_sqlUpdate.getTable();
 
-		StringBuilder strSql = new StringBuilder();
+		final StringBuilder strSql = new StringBuilder();
 
 		strSql.append("UPDATE ");
 		strSql.append(table);
 		strSql.append(" SET ");
 
-		Iterator<ParameterizedValue> iterColumns = m_sqlUpdate.getColumns().iterator();
+		final Iterator<ParameterizedValue> iterColumns = m_sqlUpdate.getColumns().iterator();
 		while (iterColumns.hasNext()) {
-			ParameterizedValue value = iterColumns.next();
+			final ParameterizedValue value = iterColumns.next();
 
 			strSql.append(value.getColumn().getName());
 			strSql.append(" = ?");

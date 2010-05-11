@@ -16,12 +16,12 @@ import com.tippingpoint.sql.SqlQuery;
 
 public class SqlQueryExecution extends SqlExecution {
 	/** This member holds the source of the command. */
-	private SqlQuery m_sqlQuery;
-	
+	private final SqlQuery m_sqlQuery;
+
 	/**
 	 * This method constructs a new execution for the given manager.
 	 */
-	public SqlQueryExecution(SqlManager sqlManager, SqlQuery sqlQuery) {
+	public SqlQueryExecution(final SqlManager sqlManager, final SqlQuery sqlQuery) {
 		super(sqlManager);
 
 		m_sqlQuery = sqlQuery;
@@ -29,14 +29,16 @@ public class SqlQueryExecution extends SqlExecution {
 
 	/**
 	 * This method is used to generated the SQL statement.
-	 * @throws SqlBuilderException 
+	 * 
+	 * @throws SqlBuilderException
 	 */
+	@Override
 	public String getSql() throws SqlBuilderException {
 		final StringBuilder strSql = new StringBuilder();
 
 		strSql.append("SELECT ");
 
-		List<Column> listQueryColumns = m_sqlQuery.getQueryColumns();
+		final List<Column> listQueryColumns = m_sqlQuery.getQueryColumns();
 		if (!listQueryColumns.isEmpty()) {
 			int nIndex = 1;
 			final Iterator<Column> iterColumns = listQueryColumns.iterator();
@@ -44,7 +46,7 @@ public class SqlQueryExecution extends SqlExecution {
 				final Column column = iterColumns.next();
 
 				strSql.append(column);
-				addColumnMap(column, new Integer(nIndex++));
+				addColumnMap(column, new Integer(nIndex++ ));
 
 				if (iterColumns.hasNext()) {
 					strSql.append(", ");
@@ -52,7 +54,7 @@ public class SqlQueryExecution extends SqlExecution {
 			}
 		}
 
-		Set<Table> tables = m_sqlQuery.getTables();
+		final Set<Table> tables = m_sqlQuery.getTables();
 		if (!tables.isEmpty()) {
 			strSql.append(" FROM ");
 
@@ -81,11 +83,12 @@ public class SqlQueryExecution extends SqlExecution {
 	}
 
 	/**
-	 * This method adds tables that appear to associative tables. This is determined by adding tables that are referenced by foreign
-	 * keys in more than 1 existing table.
-	 * @param tables 
+	 * This method adds tables that appear to associative tables. This is determined by adding tables that are
+	 * referenced by foreign keys in more than 1 existing table.
+	 * 
+	 * @param tables
 	 */
-	private void addAssociativeJoins(Set<Table> tables) {
+	private void addAssociativeJoins(final Set<Table> tables) {
 		final Map<Table, Integer> mapReferencedTables = new HashMap<Table, Integer>();
 
 		Iterator<Table> iterTables = tables.iterator();
@@ -103,7 +106,8 @@ public class SqlQueryExecution extends SqlExecution {
 
 						if (intCount != null) {
 							intCount = new Integer(intCount.intValue() + 1);
-						} else {
+						}
+						else {
 							intCount = new Integer(1);
 						}
 
@@ -127,10 +131,11 @@ public class SqlQueryExecution extends SqlExecution {
 
 	/**
 	 * This method adds the condition statements used to join tables.
+	 * 
 	 * @param tables Set containing all the tables in the query
 	 * @param table Table that is currently in the query.
 	 */
-	private void addJoins(Set<Table> tables, final Table table) {
+	private void addJoins(final Set<Table> tables, final Table table) {
 		if (tables.size() > 1) {
 			final List<ForeignKeyConstraint> listReferences = table.getReferences();
 			if (listReferences != null && !listReferences.isEmpty()) {
@@ -143,7 +148,8 @@ public class SqlQueryExecution extends SqlExecution {
 							while (iterColumns.hasNext()) {
 								final ForeignKey key = (ForeignKey)iterColumns.next();
 
-								m_sqlQuery.add(new ColumnCondition(key.getParentColumn(), Operation.EQUALS, key.getChildColumn()));
+								m_sqlQuery.add(new ColumnCondition(key.getParentColumn(), Operation.EQUALS, key
+										.getChildColumn()));
 							}
 						}
 					}
@@ -154,10 +160,11 @@ public class SqlQueryExecution extends SqlExecution {
 
 	/**
 	 * This method adds the order by clauses to the statement.
+	 * 
 	 * @param listOrderByColumns List containing the columns to add.
 	 * @param strSql StringBuilder containing the current SQL statement.
 	 */
-	private void addOrderBys(List<Column> listOrderByColumns, final StringBuilder strSql) {
+	private void addOrderBys(final List<Column> listOrderByColumns, final StringBuilder strSql) {
 		if (listOrderByColumns != null && !listOrderByColumns.isEmpty()) {
 			strSql.append(" ORDER BY ");
 
