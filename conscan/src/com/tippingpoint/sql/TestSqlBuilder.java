@@ -15,20 +15,20 @@ import com.tippingpoint.test.TestCommonCase;
  */
 public final class TestSqlBuilder extends TestCommonCase {
 	private static final String DB =
-		"<?xml version=\"1.0\" encoding=\"UTF-8\"?><Schema name=\"myschema\"><Table name=\"demographic\">"
-				+ "<Column name=\"userid\" type=\"id\"/><Column name=\"firstName\" type=\"string\" length=\"100\"/>"
-				+ "<Column name=\"lastName\" type=\"string\" length=\"100\"/><Column name=\"creation\" type=\"date\"/>"
-				+ "<Constraint name=\"pk_demographic\" type=\"primary\"><Column name=\"userid\"/></Constraint></Table>"
-				+ "<Table name=\"activity\"><Column name=\"activityid\" type=\"id\"/>"
-				+ "<Column name=\"title\" type=\"string\" length=\"200\"/><Column name=\"description\" type=\"text\"/>"
-				+ "<Column name=\"creation\" type=\"date\"/><Column name=\"lastmodified\" type=\"date\"/>"
-				+ "<Constraint name=\"pk_activity\" type=\"primary\"><Column name=\"activityid\"/></Constraint></Table>"
-				+ "<Table name=\"useractivity\"><Column name=\"userid\" type=\"idref\" required=\"true\"/>"
-				+ "<Column name=\"activityid\" type=\"idref\" required=\"true\"/>"
-				+ "<Constraint name=\"fk_useractivity_demographic\" type=\"foreign\"><Column name=\"userid\"/>"
-				+ "<Table name=\"demographic\"><Column name=\"userid\"/></Table></Constraint>"
-				+ "<Constraint name=\"fk_useractivity_activity\" type=\"foreign\"><Column name=\"activityid\"/>"
-				+ "<Table name=\"activity\"><Column name=\"activityid\"/></Table></Constraint></Table></Schema>";
+		"<?xml version=\"1.0\" encoding=\"UTF-8\"?><schema name=\"mytable\"><table name=\"demographic\">"
+				+ "<column name=\"userid\" type=\"id\"/><column name=\"firstName\" type=\"string\" length=\"100\"/>"
+				+ "<column name=\"lastName\" type=\"string\" length=\"100\"/><column name=\"creation\" type=\"date\"/>"
+				+ "<constraint name=\"pk_demographic\" type=\"primary\"><column name=\"userid\"/></constraint></table>"
+				+ "<table name=\"activity\"><column name=\"activityid\" type=\"id\"/>"
+				+ "<column name=\"title\" type=\"string\" length=\"200\"/><column name=\"description\" type=\"text\"/>"
+				+ "<column name=\"creation\" type=\"date\"/><column name=\"lastmodified\" type=\"date\"/>"
+				+ "<constraint name=\"pk_activity\" type=\"primary\"><column name=\"activityid\"/></constraint></table>"
+				+ "<table name=\"useractivity\"><column name=\"userid\" type=\"idref\" required=\"true\"/>"
+				+ "<column name=\"activityid\" type=\"idref\" required=\"true\"/>"
+				+ "<constraint name=\"fk_useractivity_demographic\" type=\"foreign\"><column name=\"userid\"/>"
+				+ "<table name=\"demographic\"><column name=\"userid\"/></table></constraint>"
+				+ "<constraint name=\"fk_useractivity_activity\" type=\"foreign\"><column name=\"activityid\"/>"
+				+ "<table name=\"activity\"><column name=\"activityid\"/></table></constraint></table></schema>";
 
 	/** This member contains the schema used to test the various SQL generation statements. */
 	private Schema m_schema;

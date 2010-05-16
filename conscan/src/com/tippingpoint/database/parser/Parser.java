@@ -32,15 +32,15 @@ public final class Parser {
 		digester.addObjectCreate("schema/table", "com.tippingpoint.database.Table");
 		digester.addSetProperties("schema/table");
 		digester.addSetNext("schema/table", "addTable", "com.tippingpoint.database.Table");
-		digester.addObjectCreate("schema/table/Column", "com.tippingpoint.database.ColumnDefinition");
-		digester.addSetProperties("schema/table/Column");
-		digester.addSetNext("schema/table/Column", "add", "com.tippingpoint.database.ColumnDefinition");
-		digester.addRule("schema/table/Constraint", new ConstraintRule());
-		digester.addSetProperties("schema/table/Constraint");
-		digester.addSetNext("schema/table/Constraint", "add", "com.tippingpoint.database.Constraint");
-		digester.addRule("schema/table/Constraint/Column", new ConstraintColumnRule());
-		digester.addRule("schema/table/Constraint/table", new ForeignTableRule());
-		digester.addRule("schema/table/Constraint/table/Column", new ForeignColumnRule());
+		digester.addObjectCreate("schema/table/column", "com.tippingpoint.database.ColumnDefinition");
+		digester.addSetProperties("schema/table/column");
+		digester.addSetNext("schema/table/column", "add", "com.tippingpoint.database.ColumnDefinition");
+		digester.addRule("schema/table/constraint", new ConstraintRule());
+		digester.addSetProperties("schema/table/constraint");
+		digester.addSetNext("schema/table/constraint", "add", "com.tippingpoint.database.Constraint");
+		digester.addRule("schema/table/constraint/column", new ConstraintColumnRule());
+		digester.addRule("schema/table/constraint/table", new ForeignTableRule());
+		digester.addRule("schema/table/constraint/table/column", new ForeignColumnRule());
 
 		return (Schema)digester.parse(reader);
 	}
@@ -62,8 +62,8 @@ public final class Parser {
 
 		digester.addRule("data/table", new TableSelectRule());
 		digester.addRule("data/table/item", new RowRule());
-		digester.addRule("*/Column", new ColumnValueRule());
-		digester.addRule("*/Column/table", new ReferenceTableRule());
+		digester.addRule("*/column", new ColumnValueRule());
+		digester.addRule("*/column/table", new ReferenceTableRule());
 
 		digester.parse(reader);
 	}
