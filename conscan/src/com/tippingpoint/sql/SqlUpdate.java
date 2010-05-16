@@ -12,4 +12,11 @@ public final class SqlUpdate extends TableBuilderCommand {
 	public SqlUpdate(final Table table) {
 		super(table);
 	}
+
+	/**
+	 * This method returns the string representation of the SQL command.
+	 */
+	public String toString() {
+		return "Update " + m_table;
+	}
 }

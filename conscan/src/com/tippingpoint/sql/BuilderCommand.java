@@ -9,7 +9,7 @@ import java.util.List;
  */
 public abstract class BuilderCommand extends Command {
 	/** This member holds the list of conditions for the query. */
-	private final List<Condition> m_listWheres = new ArrayList<Condition>();
+	protected final List<Condition> m_listWheres = new ArrayList<Condition>();
 
 	/**
 	 * This method constructs a new command for the given builder.

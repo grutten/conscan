@@ -19,4 +19,11 @@ public final class SqlDrop extends TableBuilderCommand {
 			throw new SqlBuilderException("Table needs to be specified when droping tables.");
 		}
 	}
+
+	/**
+	 * This method returns the string representation of the SQL command.
+	 */
+	public String toString() {
+		return "DROP " + m_table;
+	}
 }

@@ -27,20 +27,20 @@ public final class Parser {
 	public static Schema parse(final Reader reader) throws IOException, SAXException {
 		final Digester digester = new Digester();
 		digester.setValidating(false);
-		digester.addObjectCreate("Schema", "com.tippingpoint.database.Schema");
-		digester.addSetProperties("Schema");
-		digester.addObjectCreate("Schema/Table", "com.tippingpoint.database.Table");
-		digester.addSetProperties("Schema/Table");
-		digester.addSetNext("Schema/Table", "addTable", "com.tippingpoint.database.Table");
-		digester.addObjectCreate("Schema/Table/Column", "com.tippingpoint.database.ColumnDefinition");
-		digester.addSetProperties("Schema/Table/Column");
-		digester.addSetNext("Schema/Table/Column", "add", "com.tippingpoint.database.ColumnDefinition");
-		digester.addRule("Schema/Table/Constraint", new ConstraintRule());
-		digester.addSetProperties("Schema/Table/Constraint");
-		digester.addSetNext("Schema/Table/Constraint", "add", "com.tippingpoint.database.Constraint");
-		digester.addRule("Schema/Table/Constraint/Column", new ConstraintColumnRule());
-		digester.addRule("Schema/Table/Constraint/Table", new ForeignTableRule());
-		digester.addRule("Schema/Table/Constraint/Table/Column", new ForeignColumnRule());
+		digester.addObjectCreate("schema", "com.tippingpoint.database.Schema");
+		digester.addSetProperties("schema");
+		digester.addObjectCreate("schema/table", "com.tippingpoint.database.Table");
+		digester.addSetProperties("schema/table");
+		digester.addSetNext("schema/table", "addTable", "com.tippingpoint.database.Table");
+		digester.addObjectCreate("schema/table/Column", "com.tippingpoint.database.ColumnDefinition");
+		digester.addSetProperties("schema/table/Column");
+		digester.addSetNext("schema/table/Column", "add", "com.tippingpoint.database.ColumnDefinition");
+		digester.addRule("schema/table/Constraint", new ConstraintRule());
+		digester.addSetProperties("schema/table/Constraint");
+		digester.addSetNext("schema/table/Constraint", "add", "com.tippingpoint.database.Constraint");
+		digester.addRule("schema/table/Constraint/Column", new ConstraintColumnRule());
+		digester.addRule("schema/table/Constraint/table", new ForeignTableRule());
+		digester.addRule("schema/table/Constraint/table/Column", new ForeignColumnRule());
 
 		return (Schema)digester.parse(reader);
 	}
@@ -60,10 +60,10 @@ public final class Parser {
 		// place the schema in the root of the digester stack
 		digester.push(importer);
 
-		digester.addRule("data/Table", new TableSelectRule());
-		digester.addRule("data/Table/item", new RowRule());
+		digester.addRule("data/table", new TableSelectRule());
+		digester.addRule("data/table/item", new RowRule());
 		digester.addRule("*/Column", new ColumnValueRule());
-		digester.addRule("*/Column/Table", new ReferenceTableRule());
+		digester.addRule("*/Column/table", new ReferenceTableRule());
 
 		digester.parse(reader);
 	}

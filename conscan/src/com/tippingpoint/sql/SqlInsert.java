@@ -29,4 +29,11 @@ public class SqlInsert extends TableBuilderCommand {
 			}
 		}
 	}
+
+	/**
+	 * This method returns the string representation of the SQL command.
+	 */
+	public String toString() {
+		return "Insert " + m_table;
+	}
 }

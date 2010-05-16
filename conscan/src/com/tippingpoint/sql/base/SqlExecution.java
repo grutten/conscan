@@ -1,6 +1,7 @@
 package com.tippingpoint.sql.base;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -85,8 +86,14 @@ public abstract class SqlExecution {
 		final String strSql = getSql();
 
 		try {
-			final Statement stmt = getStatement(conn);
-			rs = stmt.executeQuery(strSql);
+			if (m_listParameters != null && !m_listParameters.isEmpty()) {
+				final PreparedStatement pstmt = getPreparedStatement(conn, strSql);
+
+				rs = pstmt.executeQuery();
+			} else {
+				final Statement stmt = getStatement(conn);
+				rs = stmt.executeQuery(strSql);
+			}
 		}
 		catch (final SQLException e) {
 			throw new SqlExecutionException(strSql, e);
@@ -104,11 +111,17 @@ public abstract class SqlExecution {
 	public int executeUpdate(final Connection conn) throws SqlExecutionException, SqlBuilderException {
 		int nRowsUpdated = 0;
 		final String strSql = getSql();
-
+		
 		try {
-			final Statement stmt = getStatement(conn);
-
-			nRowsUpdated = stmt.executeUpdate(strSql);
+			if (m_listParameters != null && !m_listParameters.isEmpty()) {
+					final PreparedStatement pstmt = getPreparedStatement(conn, strSql);
+	
+					nRowsUpdated = pstmt.executeUpdate();
+			} else {
+					final Statement stmt = getStatement(conn);
+		
+					nRowsUpdated = stmt.executeUpdate(strSql);
+			}
 		}
 		catch (final SQLException e) {
 			throw new SqlExecutionException(strSql, e);
@@ -306,5 +319,28 @@ public abstract class SqlExecution {
 		}
 
 		return m_stmt;
+	}
+
+	/**
+	 * This method returns a prepared statement. If the statement has not been generated, it will be and be returned.
+	 * 
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getPreparedStatement(final Connection conn, String strSql) throws SQLException {
+		if (m_stmt == null) {
+			m_stmt = conn.prepareStatement(strSql);
+		}
+		
+		for (int nIndex = 0; nIndex < m_listParameters.size(); ++nIndex) {
+			ParameterizedValue value = m_listParameters.get(nIndex);
+			final Object objValue = this.m_sqlManager.getConverter().convertToSqlObject(value.getColumn().getType(), value.getValue());
+			if (objValue != null) {
+				((PreparedStatement)m_stmt).setObject(nIndex + 1, objValue);
+			} else {
+				((PreparedStatement)m_stmt).setNull(nIndex + 1, value.getColumn().getType().getJdbcType());
+			}
+		}
+
+		return (PreparedStatement)m_stmt;
 	}
 }

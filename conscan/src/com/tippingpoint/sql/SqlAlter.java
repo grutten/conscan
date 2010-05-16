@@ -86,4 +86,10 @@ public class SqlAlter extends TableBuilderCommand {
 		return m_listNewConstraints;
 	}
 
+	/**
+	 * This method returns the string representation of the SQL command.
+	 */
+	public String toString() {
+		return "Alter " + m_table;
+	}
 }
