@@ -18,7 +18,7 @@ public class Table extends Element {
 	private Column m_columnPrimaryKey;
 
 	/** This member holds all the columns in the table. */
-	private final Map<String, Column> m_columns = new LinkedHashMap<String, Column>();
+	private final Map<String, ColumnDefinition> m_columns = new LinkedHashMap<String, ColumnDefinition>();
 
 	/** This member holds the logical key of the table, if specified. */
 	private LogicalKeyConstraint m_constraintLogicalKey;
@@ -103,7 +103,7 @@ public class Table extends Element {
 	/**
 	 * This method returns a named column in the table.
 	 */
-	public Column getColumn(final String strName) {
+	public ColumnDefinition getColumn(final String strName) {
 		return m_columns.get(strName);
 	}
 
@@ -117,7 +117,7 @@ public class Table extends Element {
 	/**
 	 * @return Returns the columns.
 	 */
-	public Iterator<Column> getColumns() {
+	public Iterator<ColumnDefinition> getColumns() {
 		return m_columns.values().iterator();
 	}
 

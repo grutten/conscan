@@ -304,7 +304,7 @@ public final class SchemaComparison {
 		final List<Column> listChangedColumns = new ArrayList<Column>();
 
 		// collect a list of new or modified columns
-		final Iterator<Column> iterColumns = table.getColumns();
+		final Iterator<ColumnDefinition> iterColumns = table.getColumns();
 		while (iterColumns.hasNext()) {
 			final Column column = iterColumns.next();
 			final Column columnCurrent = tableCurrent.getColumn(column.getName());

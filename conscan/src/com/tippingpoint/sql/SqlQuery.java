@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import com.tippingpoint.database.Column;
+import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.Table;
 
 /**
@@ -56,7 +57,7 @@ public class SqlQuery extends BuilderCommand {
 		m_setTables.add(table);
 
 		if (bAddColumns) {
-			final Iterator<Column> iterColumns = table.getColumns();
+			final Iterator<ColumnDefinition> iterColumns = table.getColumns();
 			if (iterColumns != null) {
 				while (iterColumns.hasNext()) {
 					add(iterColumns.next());

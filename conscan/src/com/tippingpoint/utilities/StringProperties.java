@@ -14,6 +14,21 @@ public class StringProperties {
 	private final Map<String, String[]> m_mapParameters = new HashMap<String, String[]>();
 
 	/**
+	 * This method constructs a new instance with no properties.
+	 */
+	public StringProperties() {
+	}
+
+	/**
+	 * This method constructs a new instance with properties found in the instance passed in.
+	 * 
+	 * @param properties Properties containing the valeus to load
+	 */
+	public StringProperties(final Properties properties) {
+		load(properties);
+	}
+
+	/**
 	 * This method clears all the values for the named parameter.
 	 * 
 	 * @param strName String containing the name of the parameter being set.
@@ -53,6 +68,8 @@ public class StringProperties {
 
 	/**
 	 * This method loads this instance with the properties found in the properties instance.
+	 * 
+	 * @param properties Properties containing the valeus to load
 	 */
 	public void load(final Properties properties) {
 		if (properties != null && !properties.isEmpty()) {

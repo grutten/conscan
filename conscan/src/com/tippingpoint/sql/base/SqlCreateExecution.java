@@ -1,7 +1,6 @@
 package com.tippingpoint.sql.base;
 
 import java.util.Iterator;
-import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.Table;
@@ -41,7 +40,7 @@ public class SqlCreateExecution extends SqlExecution {
 		strSql.append('(');
 
 		// add in the column statements next
-		final Iterator<Column> iterTableColumns = table.getColumns();
+		final Iterator<ColumnDefinition> iterTableColumns = table.getColumns();
 		while (iterTableColumns.hasNext()) {
 			final ColumnDefinition column = (ColumnDefinition)iterTableColumns.next();
 			strSql.append(getPhrase(column));
