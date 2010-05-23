@@ -1,6 +1,8 @@
 package com.tippingpoint.sql.base;
 
+import java.lang.ref.WeakReference;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +36,16 @@ public abstract class SqlManager {
 	/** This member holds a conversion mechanism used to convert a value. */
 	protected DataConversion m_converter = new DataConversion();
 
+	/** This member holds the weak reference to the associated connection manager. */
+	private WeakReference<ConnectionManager> m_connectionManager;
+
 	/** This member holds a map of keywords. */
 	private final Map<String, String> m_mapKeywords = new HashMap<String, String>();
 
 	/** This member holds the factories used to execution SQL commands. */
 	private final Map<Class<? extends Command>, SqlExecutionFactory> m_mapSqlExecutionFactories =
 		new HashMap<Class<? extends Command>, SqlExecutionFactory>();
-
+	
 	/** This member holds the conversion of the types. */
 	private final Map<Class<? extends ColumnType>, ColumnTypeConverter> m_mapTypeConverters =
 		new HashMap<Class<? extends ColumnType>, ColumnTypeConverter>();
@@ -72,6 +77,29 @@ public abstract class SqlManager {
 	 * This method executes the command.
 	 * 
 	 * @throws SqlBaseException
+	 * @throws SQLException 
+	 */
+	public int executeUpdate(final Command sqlCommand) throws SqlBaseException, SQLException {
+		int nRowsUpdated = 0;
+
+		Connection conn = null;
+
+		try {
+			conn = getConnectionManager().getConnection();
+			
+			nRowsUpdated = executeUpdate(sqlCommand, conn);
+		}
+		finally {
+			ConnectionManager.close(conn, null, null);
+		}
+
+		return nRowsUpdated;
+	}
+
+	/**
+	 * This method executes the command.
+	 * 
+	 * @throws SqlBaseException
 	 */
 	public int executeUpdate(final Command sqlCommand, final Connection conn) throws SqlBaseException {
 		int nRowsUpdated = 0;
@@ -86,6 +114,23 @@ public abstract class SqlManager {
 		}
 
 		return nRowsUpdated;
+	}
+
+	/**
+	 * This method returns the connection manager associated with this SQL manager.
+	 */
+	public ConnectionManager getConnectionManager() {
+		ConnectionManager manager = null;
+		
+		if (m_connectionManager != null) {
+			manager = m_connectionManager.get();
+		}
+		
+		if (manager == null) {
+			throw new IllegalStateException("Returning a null connection manager.");
+		}
+		
+		return manager;
 	}
 
 	/**
@@ -238,6 +283,14 @@ public abstract class SqlManager {
 	}
 
 	/**
+	 * This method sets the connection manager associated with this SQL manager.
+	 * @param connectionManager ConnectionManager instance associated with this SQL manager.
+	 */
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		m_connectionManager = new WeakReference<ConnectionManager>(connectionManager);
+	}
+
+	/**
 	 * This method registers a type conversion.
 	 */
 	protected void register(final ColumnTypeConverter converter) {
@@ -314,7 +367,7 @@ public abstract class SqlManager {
 			return m_strType;
 		}
 	}
-
+	
 	/**
 	 * This class returns the string version of the type for variable strings
 	 */

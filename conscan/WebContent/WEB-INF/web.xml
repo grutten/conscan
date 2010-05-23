@@ -15,4 +15,14 @@
     <servlet-class>com.tippingpoint.conscan.servlet.Startup</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+
+  <servlet>
+    <servlet-name>Database</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Database</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Database</servlet-name>
+    <url-pattern>/database/*</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -79,6 +79,13 @@ public final class ConnectionManager {
 	}
 
 	/**
+	 * This method returns the connection source for the manager.
+	 */
+	public ConnectionSource getConnectionSource() {
+		return m_connections;
+	}
+
+	/**
 	 * This method returns the schema associated with the connections associated with this manager.
 	 */
 	public Schema getSchema() {
@@ -387,12 +394,16 @@ public final class ConnectionManager {
 	}
 
 	/**
-	 * This method sets the manager to used for SQL exeuctions.
+	 * This method sets the manager to used for SQL executions.
 	 * 
 	 * @param sqlManager SqlManager instance for this connection.
 	 */
 	private void setManager(final SqlManager sqlManager) {
 		m_sqlManager = sqlManager;
+		
+		if (m_sqlManager != null) {
+			m_sqlManager.setConnectionManager(this);
+		}
 	}
 
 	/**
@@ -446,6 +457,13 @@ public final class ConnectionManager {
 		 */
 		public Connection getConnection() throws SQLException {
 			throw new SQLException("Connection source was not found.");
+		}
+
+		/**
+		 * This method returns the name of the schema.
+		 */
+		public String getSchema() {
+			return null;
 		}
 
 		/**
@@ -517,6 +535,14 @@ public final class ConnectionManager {
 		@Override
 		public Connection getConnection() throws SQLException {
 			return m_ds.getConnection();
+		}
+
+		/**
+		 * This method returns the name of the schema.
+		 */
+		@Override
+		public String getSchema() {
+			return m_strName; // FUTURE: not sure if this is the correct name
 		}
 
 		/**
@@ -600,6 +626,14 @@ public final class ConnectionManager {
 		@Override
 		public Connection getConnection() throws SQLException {
 			return DriverManager.getConnection(m_strUrl, m_strUser, m_strPassword);
+		}
+
+		/**
+		 * This method returns the name of the schema.
+		 */
+		@Override
+		public String getSchema() {
+			return m_strDatabase;
 		}
 
 		/**
