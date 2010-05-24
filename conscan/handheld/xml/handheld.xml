@@ -5,43 +5,35 @@
 		<locations>
 			<location>
 				<name>T162-A-012L</name>
+				<barcode>0070718001170</barcode>
 				<offenders>
 					<offender>
 						<name>Iverson</name>
 						<bookingnumber>345345345</bookingnumber>
-						<barcode>345345345</barcode>
+						<barcode>0812122010450</barcode>
 					</offender>
 					<offender>
 						<name>Page</name>
 						<bookingnumber>123456789</bookingnumber>
-						<barcode>123456789</barcode>
+						<barcode>0812122010160</barcode>
 					</offender>
 				</offenders>
 			</location>
 			<location>
 				<name>T162-A-011L</name>
+				<barcode>L987654111</barcode>
 				<offenders>
 					<offender>
 						<name>Irving</name>
 						<bookingnumber>234567890</bookingnumber>
-						<barcode>234567890</barcode>
+						<barcode>0832924005201</barcode>
 					</offender>
 				</offenders>
 			</location>
-			<location><name>T162-A-010L</name></location>
-			<location><name>T162-A-009L</name></location>
-			<location><name>T162-A-008L</name></location>
-			<location><name>T162-A-007L</name></location>
-			<location><name>T162-A-006L</name></location>
-			<location><name>T162-A-005L</name></location>
-			<location><name>T162-A-004L</name></location>
-			<location><name>T162-A-003L</name></location>
-			<location><name>T162-A-002L</name></location>
-			<location><name>T162-A-001L</name></location>
 		</locations>
 	</tier>
 	<complianceconfigurations>
-		<complianceconfiguration>
+		<complianceconfiguration id="1">
 			<name>default</name>
 			<compliancevalues>
 				<value default="true">comply</value>
@@ -50,7 +42,7 @@
 				<value>sick</value>
 			</compliancevalues>
 		</complianceconfiguration>
-		<complianceconfiguration>
+		<complianceconfiguration id="2">
 			<name>notapplicable</name>
 			<compliancevalues>
 				<value default="true">not applicable</value>
@@ -60,63 +52,117 @@
 				<value>sick</value>
 			</compliancevalues>
 		</complianceconfiguration>
+		<complianceconfiguration id="3">
+			<name>cellsearch</name>
+			<compliancevalues>
+				<value default="true">nothing found</value>
+				<value>drugs</value>
+				<value>weapon</value>
+				<value>other</value>
+			</compliancevalues>
+		</complianceconfiguration>
 	</complianceconfigurations>
 	<activities>
+		<!-- SCANTYPE: 1 - cell, 2 - offender -->
+		<activity>
+			<name>security check</name>
+			<complianceconfiguration id="1"/>
+			<scantype>1</scantype>
+		</activity>
+		<activity>
+			<name>cell search</name>
+			<complianceconfiguration id="3"/>
+			<scantype>1</scantype>
+		</activity>
 		<activity>
 			<name>bedding exchange</name>
-			<complianceconfiguration>
-				<name>default</name>
-			</complianceconfiguration>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>blanket exchange</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>outerwear exchange</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>underwear exchange</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>towel exchange</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>showers</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>recreation</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>library</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>mail call</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>meals</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>dayroom/indoor recreation</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>religious services</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>school</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>stores/canteen</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>video orientation</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>telephones</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
 		<activity>
 			<name>legal mail</name>
-			<complianceconfiguration>notapplicable</complianceconfiguration>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
 		</activity>
-		
+		<activity>
+			<name>repair order</name>
+			<complianceconfiguration id="1"/>
+			<scantype>1</scantype>
+		</activity>
 	</activities>
 </configuration>
