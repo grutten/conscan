@@ -2,13 +2,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
-<%@page import="com.tippingpoint.database.Schema"%>
-<%@page import="com.tippingpoint.sql.ConnectionManager"%>
-<%@page import="com.tippingpoint.sql.ConnectionManagerFactory"%>
-<%@page import="com.tippingpoint.database.Table"%>
 <%@page import="com.tippingpoint.database.ColumnDefinition"%>
 <%@page import="com.tippingpoint.database.Column"%>
 <%@page import="com.tippingpoint.database.Constraint"%>
+<%@page import="com.tippingpoint.database.ForeignKeyConstraint"%>
+<%@page import="com.tippingpoint.database.Schema"%>
+<%@page import="com.tippingpoint.database.Table"%>
+<%@page import="com.tippingpoint.sql.ConnectionManager"%>
+<%@page import="com.tippingpoint.sql.ConnectionManagerFactory"%>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -36,10 +37,12 @@
 					<table>
 						<thead>
 							<tr>
-								<td colspan="3"><%=table.getName()%></td>
 								<td>
-									<a class="dro" href="javascript: drop('<%=table.getName()%>');">drop</a>
+									<a href="javascript: drop('<%=table.getName()%>');">
+										<img src="images/delete-icon.png"/>
+									</a>
 								</td>
+								<td colspan="3"><%=table.getName()%></td>
 							</tr>
 						</thead>
 						<tbody>
@@ -50,6 +53,7 @@
 									ColumnDefinition column = iterColumns.next();
 									%>
 									<tr>
+										<td>&nbsp;</td>
 										<td><%=column.getName()%></td>
 										<td><%=column.getType()%></td>
 										<td><%=(column.isRequired() ? "NOT " : "") + "NULL"%></td>
@@ -62,6 +66,22 @@
 								for (Constraint constraint : listConstraints) {
 									%>
 									<tr>
+										<td>
+											<%
+											if (ForeignKeyConstraint.TYPE.equals(constraint.getType())) {
+												%>
+												<a href="javascript: drop('<%=table.getName()%>', '<%=constraint.getName()%>');">
+													<img src="images/delete-icon.png"/>
+												</a>
+												<%
+											}
+											else {
+												%>
+												&nbsp;
+												<%
+											}
+											%>
+										</td>
 										<td><%=constraint.getName()%></td>
 										<td><%=constraint.getType()%></td>
 										<td>
@@ -104,16 +124,22 @@
 			</div>
 		</div> 	
 		<script type="text/javascript">
-			function drop(object) {
+			function drop(table, object) {
+				var url = 'database/' + table;
+				if (typeof object != 'undefined') {
+					url += '/' + object;
+				}
+
 				jQuery.blockUI();
 				jQuery.ajax({
 					type: "DELETE",
-					url: 'database/' + object,
-					success: function(data) {
+					url: url,
+					success: function() {
 						window.location.href = "admin.jsp";
 					},
 					error: function(xhr, status, error) {
 						jQuery('#errortitle').html(xhr.statusText);
+						jQuery('#errormessage').html('');
 						jQuery(xhr.responseXML).find('error').each(function(){
 							var message = jQuery(this).find('message').text();
 							jQuery('#errormessage').append('<div class="erroritem">' + message + '</div>');

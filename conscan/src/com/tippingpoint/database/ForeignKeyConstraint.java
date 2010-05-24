@@ -5,7 +5,7 @@ package com.tippingpoint.database;
  * foreign keys).
  */
 public final class ForeignKeyConstraint extends Constraint {
-	static final String TYPE = "foreign";
+	public static final String TYPE = "foreign";
 
 	/** This member holds a flag indicating if the foreign maps an id to and idref relationship. */
 	private Boolean m_bMapsId;
