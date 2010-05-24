@@ -1,18 +1,22 @@
 package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.DatabaseElementException;
+import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Element;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
@@ -27,8 +31,11 @@ public final class Database extends HttpServlet {
 
 	/**
 	 * This method executes the delete command.
+	 * 
+	 * @throws ServletException
+	 * @throws IOException
 	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String strObjects = request.getPathInfo();
 		
 		m_log.debug("Delete: " + strObjects);
@@ -52,17 +59,17 @@ public final class Database extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, strObjects);
 			}
 		}
-		catch (DatabaseElementException e) {
+		catch (DatabaseException e) {
 			m_log.error("Database error deleting table.", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			processException(response, e);
 		}
 		catch (SqlBaseException e) {
 			m_log.error("Error deleting table.", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			processException(response, e);
 		}
 		catch (SQLException e) {
 			m_log.error("SQL error deleting table.", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			processException(response, e);
 		}
 	}
 
@@ -107,5 +114,31 @@ public final class Database extends HttpServlet {
 		}
 
 		return listElements;
+	}
+	
+	/**
+	 * This method returns and XML string representing the exception.
+	 * @throws IOException 
+	 */
+	private void processException(HttpServletResponse response, Throwable t) throws IOException {
+		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		response.setContentType("xml/application");
+		
+		PrintWriter writer = response.getWriter();
+		
+		writer.append("<errors>");
+		
+		while (t != null) {
+			writer.append("<error>");
+			writer.append("<class>").append(StringEscapeUtils.escapeXml(t.getClass().toString())).append("</class>");
+			writer.append("<message>").append(StringEscapeUtils.escapeXml(t.getMessage())).append("</message>");
+			writer.append("<trace>");
+			t.printStackTrace(writer);
+			writer.append("</trace>");
+			writer.append("</error>");
+			
+			t = t.getCause();
+		}
+		writer.append("</errors>");
 	}
 }

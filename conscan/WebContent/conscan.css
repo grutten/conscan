@@ -18,3 +18,20 @@ td {
 	border-style: solid;
 	border-color: lightgray;
 }
+
+#errordialog {
+	cursor: default;
+	text-align: center;
+}
+
+#errormessage {
+	text-align: left;
+}
+
+div.hidden {
+	display: none;
+}
+
+div.erroritem {
+	width: 100%;
+}

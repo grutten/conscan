@@ -15,6 +15,7 @@
 		<title>ConScan Administration</title>
 		<link type="text/css" rel="stylesheet" href="conscan.css">
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
 	</head>
 	<body>
 		<h1>ConScan Administration.</h1>
@@ -69,7 +70,7 @@
 											if (iterConstraintColumns != null && iterConstraintColumns.hasNext()) {
 												while (iterConstraintColumns.hasNext()) {
 													%>
-													iterConstraintColumns.next();<%=iterConstraintColumns.hasNext() ? "<br/>" : ""%>
+													<%=iterConstraintColumns.next()%><%=iterConstraintColumns.hasNext() ? "<br/>" : ""%>
 													<%
 												}
 											}
@@ -93,20 +94,42 @@
 			<%
 		}
 		%>
-	<script type="text/javascript">
-		function drop(object) {
-			jQuery.ajax({
-				type: "DELETE",
-				url: 'database/' + object,
-				success: function(data) {
-					alert('Drop of ' + object + ' was successful.');
-					window.location.href = "admin.jsp";
-				},
-				error: function(xhr, status, error) {
-					alert('Uh oh, drop of ' + object + ' failed: ' + xhr.statusText);
-				} 
-			});
-		}
-	</script>
+		<div id="errordialog" class="hidden">
+			<div id="errortitle" class="erroritem"></div>
+			<div id="errormessage" class="erroritem"></div>
+			<div id="errortrace" class="hidden erroritem"></div>
+			<br/>
+			<div class="erroritem">
+				<input type="button" id="errorcontinue" value="Continue"/>
+			</div>
+		</div> 	
+		<script type="text/javascript">
+			function drop(object) {
+				jQuery.blockUI();
+				jQuery.ajax({
+					type: "DELETE",
+					url: 'database/' + object,
+					success: function(data) {
+						window.location.href = "admin.jsp";
+					},
+					error: function(xhr, status, error) {
+						jQuery('#errortitle').html(xhr.statusText);
+						jQuery(xhr.responseXML).find('error').each(function(){
+							var message = jQuery(this).find('message').text();
+							jQuery('#errormessage').append('<div class="erroritem">' + message + '</div>');
+							var trace = jQuery(this).find('trace').text();
+							jQuery('#errortrace').append(trace);
+						});
+			            jQuery.blockUI({ message: jQuery('#errordialog')}); 
+					} 
+				});
+			}
+
+			jQuery(document).ready(function() {
+				jQuery('#errorcontinue').click(function() { 
+		            jQuery.unblockUI(); 
+		        }); 
+		    }); 	        
+		</script>
 	</body>
 </html>
