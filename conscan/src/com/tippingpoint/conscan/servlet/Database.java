@@ -27,7 +27,7 @@ import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlDrop;
 
-public final class Database extends HttpServlet {
+public final class Database extends Services {
 	private static Log m_log = LogFactory.getLog(Database.class);
 	private static final long serialVersionUID = 1389375741587926242L;
 

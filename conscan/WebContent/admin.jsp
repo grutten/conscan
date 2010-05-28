@@ -28,85 +28,89 @@
 		if (schema != null) {
 			%>
 			<h3><%=schema.getName()%></h3>
-			<%
-			Iterator<Table> iterTables = schema.getTables();
-			if (iterTables != null && iterTables.hasNext()) {
-				while (iterTables.hasNext()) {
-					Table table = iterTables.next();
-					%>
-					<table>
-						<thead>
-							<tr>
-								<td>
-									<a href="javascript: drop('<%=table.getName()%>');">
-										<img src="images/delete-icon.png"/>
-									</a>
-								</td>
-								<td colspan="3"><%=table.getName()%></td>
-							</tr>
-						</thead>
-						<tbody>
-							<%
-							Iterator<ColumnDefinition> iterColumns = table.getColumns();
-							if (iterColumns != null && iterColumns.hasNext()) {
-								while (iterColumns.hasNext()) {
-									ColumnDefinition column = iterColumns.next();
-									%>
-									<tr>
-										<td>&nbsp;</td>
-										<td><%=column.getName()%></td>
-										<td><%=column.getType()%></td>
-										<td><%=(column.isRequired() ? "NOT " : "") + "NULL"%></td>
-									</tr>
-									<%
+			<div>
+				<%
+				Iterator<Table> iterTables = schema.getTables();
+				if (iterTables != null && iterTables.hasNext()) {
+					while (iterTables.hasNext()) {
+						Table table = iterTables.next();
+						%>
+						<table>
+							<thead>
+								<tr>
+									<td>
+										<a href="javascript: drop('<%=table.getName()%>');">
+											<img src="images/delete-icon.png"/>
+										</a>
+									</td>
+									<td colspan="3"><%=table.getName()%></td>
+								</tr>
+							</thead>
+							<tbody>
+								<%
+								Iterator<ColumnDefinition> iterColumns = table.getColumns();
+								if (iterColumns != null && iterColumns.hasNext()) {
+									while (iterColumns.hasNext()) {
+										ColumnDefinition column = iterColumns.next();
+										%>
+										<tr>
+											<td>&nbsp;</td>
+											<td><%=column.getName()%></td>
+											<td><%=column.getType()%></td>
+											<td><%=(column.isRequired() ? "NOT " : "") + "NULL"%></td>
+										</tr>
+										<%
+									}
 								}
-							}
-							List<Constraint> listConstraints = table.getConstraintList();
-							if (listConstraints != null && !listConstraints.isEmpty()) {
-								for (Constraint constraint : listConstraints) {
-									%>
-									<tr>
-										<td>
-											<%
-											if (ForeignKeyConstraint.TYPE.equals(constraint.getType())) {
-												%>
-												<a href="javascript: drop('<%=table.getName()%>', '<%=constraint.getName()%>');">
-													<img src="images/delete-icon.png"/>
-												</a>
+								List<Constraint> listConstraints = table.getConstraintList();
+								if (listConstraints != null && !listConstraints.isEmpty()) {
+									for (Constraint constraint : listConstraints) {
+										%>
+										<tr>
+											<td>
 												<%
-											}
-											else {
-												%>
-												&nbsp;
-												<%
-											}
-											%>
-										</td>
-										<td><%=constraint.getName()%></td>
-										<td><%=constraint.getType()%></td>
-										<td>
-											<%
-											Iterator<Column> iterConstraintColumns = constraint.getColumns();
-											if (iterConstraintColumns != null && iterConstraintColumns.hasNext()) {
-												while (iterConstraintColumns.hasNext()) {
+												if (ForeignKeyConstraint.TYPE.equals(constraint.getType())) {
 													%>
-													<%=iterConstraintColumns.next()%><%=iterConstraintColumns.hasNext() ? "<br/>" : ""%>
+													<a href="javascript: drop('<%=table.getName()%>', '<%=constraint.getName()%>');">
+														<img src="images/delete-icon.png"/>
+													</a>
 													<%
 												}
-											}
-											%>
-										</td>
-									</tr>
-									<%
+												else {
+													%>
+													&nbsp;
+													<%
+												}
+												%>
+											</td>
+											<td><%=constraint.getName()%></td>
+											<td><%=constraint.getType()%></td>
+											<td>
+												<%
+												Iterator<Column> iterConstraintColumns = constraint.getColumns();
+												if (iterConstraintColumns != null && iterConstraintColumns.hasNext()) {
+													while (iterConstraintColumns.hasNext()) {
+														%>
+														<%=iterConstraintColumns.next()%><%=iterConstraintColumns.hasNext() ? "<br/>" : ""%>
+														<%
+													}
+												}
+												%>
+											</td>
+										</tr>
+										<%
+									}
 								}
-							}
-							%>
-						</tbody>
-					</table>
-					<br/>
-					<%
+								%>
+							</tbody>
+						</table>
+						<br/>
+						<%
+					}
 				}
-			}
+				%>
+			</div>
+			<%
 		}
 		else {
 			%>

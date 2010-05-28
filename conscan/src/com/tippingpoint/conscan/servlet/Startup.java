@@ -57,16 +57,8 @@ public final class Startup extends HttpServlet {
 
 				InputStream isSchema = getClass().getClassLoader().getResourceAsStream(APPLICATION_NAME + "Db.xml");
 				
-//				System.out.println("InputStream is: " + isSchema); 
-//				
-//				char c;
-//				while ((c = (char)isSchema.read()) != -1) {
-//					System.out.print(c);
-//				}
-				
 				final Schema schema = Parser.parse(isSchema);
 				
-				// compare against an empty schema to generate all new tables
 				final SchemaComparison comparison = new SchemaComparison(schemaExisting, schema);
 
 				comparison.process(manager);
@@ -75,18 +67,23 @@ public final class Startup extends HttpServlet {
 			}
 			catch (SQLException e) {
 				m_log.error("SQL Error configuring default connection.", e);
+				throw new ServletException(e);
 			}
 			catch (DatabaseException e) {
 				m_log.error("Database error configuring default connection.", e);
+				throw new ServletException(e);
 			}
 			catch (IOException e) {
 				m_log.error("I/O error configuring default connection.", e);
+				throw new ServletException(e);
 			}
 			catch (SAXException e) {
 				m_log.error("SAX error configuring default connection.", e);
+				throw new ServletException(e);
 			}
 			catch (SqlBaseException e) {
 				m_log.error("SQL error configuring default connection.", e);
+				throw new ServletException(e);
 			}
 		}
 	}

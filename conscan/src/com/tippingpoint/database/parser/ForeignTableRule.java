@@ -1,6 +1,5 @@
 package com.tippingpoint.database.parser;
 
-import org.apache.commons.digester.Digester;
 import org.xml.sax.Attributes;
 import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.Schema;
@@ -15,17 +14,22 @@ public final class ForeignTableRule extends BaseRule {
 	 */
 	@Override
 	public void begin(final String namespace, final String name, final Attributes attributes) throws Exception {
-		final Digester digester = getDigester();
-		final Object objConstraint = digester.peek();
+		final Object objConstraint = getDigester().peek();
 		if (objConstraint instanceof ForeignKeyConstraint) {
 			final ForeignKeyConstraint constraint = (ForeignKeyConstraint)objConstraint;
 
 			// get the schema to look up the parent table
-			final Schema schema = (Schema)digester.peek(digester.getCount() - 1);
+			final Schema schema = (Schema)getDigester().peek(getDigester().getCount() - 1);
 
 			final String strName = attributes.getValue(ATTRIBUTE_NAME);
 
-			final Table tableParent = schema.getTable(strName);
+			Table tableParent = schema.getTable(strName);
+			if (tableParent == null) {
+				Table tableCurrent = (Table)getDigester().peek(1);
+				if (strName.equals(tableCurrent.getName())) {
+					tableParent = tableCurrent;
+				}
+			}
 
 			constraint.setForeignTable(tableParent);
 

@@ -1,6 +1,5 @@
 package com.tippingpoint.database.parser;
 
-import org.apache.commons.digester.Digester;
 import org.xml.sax.Attributes;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.DatabaseElementException;
@@ -19,14 +18,13 @@ public final class ForeignColumnRule extends BaseRule {
 	@Override
 	public void begin(final String namespace, final String name, final Attributes attributes)
 			throws DatabaseElementException {
-		final Digester digester = getDigester();
-		final Object objTable = digester.peek();
+		final Object objTable = getDigester().peek();
 		if (objTable instanceof Table) {
 			final Table tableParent = (Table)objTable;
 			final String strName = attributes.getValue(ATTRIBUTE_NAME);
 			final Column column = tableParent.getColumn(strName);
 			if (column != null) {
-				final ForeignKey foreignKey = (ForeignKey)digester.pop(ConstraintColumnRule.FOREIGN_KEY_STACK);
+				final ForeignKey foreignKey = (ForeignKey)getDigester().pop(ConstraintColumnRule.FOREIGN_KEY_STACK);
 				if (foreignKey != null) {
 					foreignKey.setParentColumn(column);
 				}
