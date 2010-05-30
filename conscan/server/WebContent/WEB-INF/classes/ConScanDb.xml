@@ -115,10 +115,11 @@
 		</constraint>
 	</table>
 	<table name="offenderlocation">
-		<column name="offenderid" type="idref"/>
-		<column name="locationid" type="idref"/>
-		<constraint name="pk_offender" type="primary">
+		<column name="offenderid" type="idref" required="true"/>
+		<column name="locationid" type="idref" required="true"/>
+		<constraint name="pk_offenderlocation" type="primary">
 			<column name="offenderid"/>
+			<column name="locationid"/>
 		</constraint>
 		<constraint name="fk_offenderlocation_offender" type="foreign">
 			<column name="offenderid"/>
