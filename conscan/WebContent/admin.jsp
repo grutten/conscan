@@ -17,6 +17,7 @@
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/ajaxupload.js"></script>
 	</head>
 	<body>
 		<h1>ConScan Administration.</h1>
@@ -118,6 +119,7 @@
 			<%
 		}
 		%>
+		<div id="importupload" class="button">Import</div>
 		<div id="errordialog" class="hidden">
 			<div id="errortitle" class="erroritem"></div>
 			<div id="errormessage" class="erroritem"></div>
@@ -157,8 +159,27 @@
 
 			jQuery(document).ready(function() {
 				jQuery('#errorcontinue').click(function() { 
-		            jQuery.unblockUI(); 
-		        }); 
+		            jQuery.unblockUI();
+		        });
+
+				new AjaxUpload('importupload', {
+					action: 'database',
+					// Fired before the file is uploaded 
+					// You can return false to cancel upload
+					// @param file basename of uploaded file
+					// @param extension of that file
+					onSubmit: function(file, extension) {
+			            jQuery.blockUI({ message: 'Uploading ' + file}); 
+					},
+					// Fired when file upload is completed
+					// WARNING! DO NOT USE "FALSE" STRING AS A RESPONSE!
+					// @param file basename of uploaded file
+					// @param response server response
+					onComplete: function(file, response) {
+						//alert('complete');
+			            jQuery.unblockUI();
+					}
+				});
 		    }); 	        
 		</script>
 	</body>

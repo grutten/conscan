@@ -6,11 +6,15 @@ table {
 	border-color: lightgray;
 	padding: 0px;
 	margin: 0px;
-	width: 100%;
+/*	width: 100%;*/
 }
 
 table thead tr {
 	background-color: lightgray;
+}
+
+thead td {
+	vertical-align: middle;
 }
 
 td {
@@ -39,4 +43,12 @@ div.erroritem {
 
 img {
 	border: none;
+}
+
+div.button {
+	cursor: pointer;
+}
+
+div.hover {
+	font-style: italic;
 }
