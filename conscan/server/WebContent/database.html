@@ -47,7 +47,8 @@
 					table += '  </thead>';
 					table += '  <tbody>';
 
-					jQuery(this).find('column').each(function() {
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
 						table += '    <tr>';
 						table += '      <td>&nbsp;</td>';
 						table += '      <td>' + jQuery(this).attr('name') + '</td>';
@@ -61,6 +62,22 @@
 						else {
 							table += '&nbsp;';
 						}
+						table += '</td>';
+						table += '    </tr>';
+					});
+
+					// add the constraints to the string
+					jQuery(this).children('constraint').each(function() {
+						table += '    <tr>';
+						table += '      <td>';
+						table += '        <a href="javascript: drop(\'' + tablename + '\', \'' + jQuery(this).attr('name') + '\');">';
+						table += '          <img src="images/delete-icon.png"/>';
+						table += '        </a>';
+						table += '      </td>';
+						table += '      <td>' + jQuery(this).attr('name') + '</td>';
+						table += '      <td>' + jQuery(this).attr('type') + '</td>';
+						table += '      <td>';
+						table += '&nbsp;';
 						table += '</td>';
 						table += '    </tr>';
 					});
@@ -102,7 +119,7 @@
 			}
 
 			function showerror(xhr) {
-				alert('Showing error.');
+				// alert('Showing error.');
 				jQuery('#errortitle').html(xhr.statusText);
 				jQuery('#errormessage').html('');
 				jQuery(xhr.responseXML).find('error').each(function(){
@@ -123,6 +140,24 @@
 				});
 			}
 
+			function drop(table, object) {
+				var url = 'database/' + table;
+				if (typeof object != 'undefined') {
+					url += '/' + object;
+				}
+
+				jQuery.blockUI();
+				jQuery.ajax({
+					type: "DELETE",
+					url: url,
+					success: function() {
+						retrieveTableDescription(table);					
+						jQuery.unblockUI();
+					},
+					error: showerror 
+				});
+			}
+			
 			jQuery(document).ready(function() {
 				jQuery('#errorcontinue').click(function() {
 					jQuery.unblockUI();
@@ -130,10 +165,6 @@
 				loadtables();
 			});
 
-//			jQuery(function() {
-//				$('button.tabledesc').button();
-//				$('button.tabledesc').bind('click', function(event, ui) { alert('hi'); });
-//			});
 		</script>
 	</body>
 </html>

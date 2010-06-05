@@ -89,16 +89,15 @@ public final class SchemaComparison {
 		// if this is not a new column, then check for containing constraints
 		final Column columnCurrent = tableCurrent.getColumn(column.getName());
 		if (columnCurrent != null) {
-			// the definition of the column is changing, which may be blocked any constraints on that column; therefore,
-			// remove the
-			// constraints prior to altering the column and they will be added back when the constraints are checked
+			// the definition of the column is changing, which may block any constraints on that column; therefore, 
+			// remove the constraints prior to altering the column and they will be added back when the constraints are
+			// checked
 			final List<Constraint> listConstraints = tableCurrent.getConstraintList();
 			for (int nIndex = 0; nIndex < listConstraints.size(); ++nIndex) {
 				final Constraint constraint = listConstraints.get(nIndex);
 
 				// because we currently can not identify MySQL auto increment columns, dropping the primary key causes a
-				// problem;
-				// therefore, avoid dropping the primary key
+				// problem; therefore, avoid dropping the primary key
 				if (!(constraint instanceof PrimaryKeyConstraint)) {
 					dropContainingConstraint(conn, sqlManager, tableCurrent, listConstraints.get(nIndex), columnCurrent);
 				}
@@ -207,7 +206,7 @@ public final class SchemaComparison {
 			}
 		}
 
-		// since MySQL does not tell us the appropriate name of the primary key, avoid comparing the primary keys
+		compare(conn, sqlManager, tableCurrent, table.getPrimaryKey());
 		compare(conn, sqlManager, tableCurrent, table.getLogicalKey());
 
 		final Iterator<Constraint> iterConstraints = table.getConstraints();
