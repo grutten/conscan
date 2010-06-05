@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.servlet.ServletException;
@@ -36,6 +37,8 @@ import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlDrop;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 public final class Database extends Services {
 	private static Log m_log = LogFactory.getLog(Database.class);
@@ -66,16 +69,16 @@ public final class Database extends Services {
 				break;
 
 				case 2:
-					SqlAlter sqlAlter = new SqlAlter((Table)listElements.get(0));
-					
-					Element element = listElements.get(1);
+					final SqlAlter sqlAlter = new SqlAlter((Table)listElements.get(0));
+
+					final Element element = listElements.get(1);
 					if (element instanceof Constraint) {
 						sqlAlter.drop((Constraint)element);
 					}
 
 					manager.getSqlManager().executeUpdate(sqlAlter);
 				break;
-				
+
 				default:
 					// FUTURE: possibly alter to drop columns
 				break;
@@ -100,43 +103,88 @@ public final class Database extends Services {
 	}
 
 	/**
-	 * This method performs the post action.
+	 * This method executes the options command; which is used to returns the definitions from the database.
+	 * 
 	 * @throws IOException
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doOptions(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final String strObjects = request.getPathInfo();
+
+		m_log.debug("Options: " + strObjects);
+
+		try {
+			final List<Element> listElements = getObjects(strObjects);
+			switch (listElements.size()) {
+			case 0:
+				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+				processSchema(manager.getSchema(), response);
+			break;
+
+			case 1:
+				final Element element = listElements.get(0);
+				if (element instanceof Table) {
+					processTable((Table)element, response);
+				}
+
+			default:
+				// FUTURE: possibly alter to drop columns
+			break;
+			}
+		}
+		catch (final DatabaseException e) {
+			m_log.error("Database error retrieving table definition.", e);
+			processException(response, e);
+		}
+		catch (final SQLException e) {
+			m_log.error("SQL error deleting table.", e);
+			processException(response, e);
+		}
+	}
+
+	/**
+	 * This method performs the post action.
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		// check that we have a file upload request
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart) {
 			// create a new file upload handler
-			ServletFileUpload upload = new ServletFileUpload();
+			final ServletFileUpload upload = new ServletFileUpload();
 
 			// parse the request
 			try {
-				FileItemIterator iter = upload.getItemIterator(request);
+				final FileItemIterator iter = upload.getItemIterator(request);
 				while (iter.hasNext()) {
-				    FileItemStream fileItemStream = iter.next();
-				    String strName = fileItemStream.getFieldName();
-				    InputStream stream = fileItemStream.openStream();
-				    if (fileItemStream.isFormField()) {
-				        System.out.println("Form field " + strName + " with value " + Streams.asString(stream) + " detected.");
-				    } else {
-				        System.out.println("File field " + strName + " with file name " + fileItemStream.getName() + " detected.");
+					final FileItemStream fileItemStream = iter.next();
+					final String strName = fileItemStream.getFieldName();
+					final InputStream stream = fileItemStream.openStream();
+					if (fileItemStream.isFormField()) {
+						System.out.println("Form field " + strName + " with value " + Streams.asString(stream) +
+								" detected.");
+					}
+					else {
+						System.out.println("File field " + strName + " with file name " + fileItemStream.getName() +
+								" detected.");
 
-				        Reader readerData = new InputStreamReader(stream);
-						Parser.parseImport(readerData, new Importer(ConnectionManagerFactory.getFactory().getDefaultManager().getSchema()));
-				    }
+						final Reader readerData = new InputStreamReader(stream);
+						Parser.parseImport(readerData, new Importer(ConnectionManagerFactory.getFactory()
+								.getDefaultManager().getSchema()));
+					}
 				}
 			}
-			catch (FileUploadException e) {
+			catch (final FileUploadException e) {
 				m_log.error("File upload error importing data.", e);
 				processException(response, e);
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				m_log.error("I/O error importing data.", e);
 				processException(response, e);
 			}
-			catch (SAXException e) {
+			catch (final SAXException e) {
 				m_log.error("SAX error importing data.", e);
 				processException(response, e);
 			}
@@ -178,8 +226,9 @@ public final class Database extends Services {
 						final ColumnDefinition column = table.getColumn(listObjects.get(1));
 						if (column != null) {
 							listElements.add(column);
-						} else {
-							Constraint constraint = table.getConstraint(listObjects.get(1));
+						}
+						else {
+							final Constraint constraint = table.getConstraint(listObjects.get(1));
 							if (constraint != null) {
 								listElements.add(constraint);
 							}
@@ -217,5 +266,44 @@ public final class Database extends Services {
 			t = t.getCause();
 		}
 		writer.append("</errors>");
+	}
+
+	/**
+	 * This method processes returning all the tables in the schema.
+	 * 
+	 * @param response HttpServletResponse where the results are to be returned.
+	 * @throws IOException
+	 */
+	private void processSchema(final Schema schema, final HttpServletResponse response) throws IOException {
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("xml/application");
+
+		final PrintWriter writer = response.getWriter();
+
+		writer.append(XmlUtilities.open(Schema.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, schema.getName())));
+
+		final Iterator<Table> iterTables = schema.getTables();
+		if (iterTables != null && iterTables.hasNext()) {
+			while (iterTables.hasNext()) {
+				iterTables.next().writeXml(writer, false);
+			}
+		}
+
+		writer.append(XmlUtilities.close(Schema.TAG_NAME));
+	}
+
+	/**
+	 * This method processes returning all the tables in the schema.
+	 * 
+	 * @param response HttpServletResponse where the results are to be returned.
+	 * @throws IOException
+	 */
+	private void processTable(final Table table, final HttpServletResponse response) throws IOException {
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("xml/application");
+
+		final PrintWriter writer = response.getWriter();
+
+		table.writeXml(writer);
 	}
 }

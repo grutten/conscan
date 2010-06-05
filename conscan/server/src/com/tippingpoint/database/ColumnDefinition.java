@@ -1,12 +1,23 @@
 package com.tippingpoint.database;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class holds the information that defines a column.
  */
 public class ColumnDefinition extends Element implements Column {
+	public static final String ATTRIBUTE_LENGTH = "length";
+	public static final String ATTRIBUTE_REQUIRED = "required";
+	public static final String ATTRIBUTE_TYPE = "type";
+	public static final String TAG_NAME = "column";
+
 	/** This member holds the requirement indicator. */
 	private boolean m_bRequired;
 
@@ -158,5 +169,29 @@ public class ColumnDefinition extends Element implements Column {
 	@Override
 	public String toString() {
 		return getFQName();
+	}
+
+	/**
+	 * This method dumps the element in XML to the writer.
+	 * 
+	 * @param writer Writer where the table XML is to be written.
+	 * @throws IOException
+	 */
+	public void writeXml(final Writer writer) throws IOException {
+		// <column name="firstname" type="string" length="100"/>
+		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+		listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, getName()));
+		listAttributes.add(new NameValuePair(ATTRIBUTE_TYPE, getType().getType()));
+
+		if (getType().hasLength()) {
+			listAttributes.add(new NameValuePair(ATTRIBUTE_LENGTH, Integer.toOctalString(getLength())));
+		}
+
+		if (isRequired()) {
+			listAttributes.add(new NameValuePair(ATTRIBUTE_REQUIRED, Boolean.TRUE.toString()));
+		}
+
+		writer.append(XmlUtilities.tag(TAG_NAME, listAttributes));
 	}
 }

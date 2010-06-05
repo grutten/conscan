@@ -4,6 +4,8 @@ package com.tippingpoint.database;
  * This class is used as a base class for other database elements.
  */
 public class Element {
+	public static final String ATTRIBUTE_NAME = "name";
+
 	/** This member holds the description of the element. */
 	private String m_strDescription;
 

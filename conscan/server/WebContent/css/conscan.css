@@ -1,12 +1,17 @@
 @CHARSET "ISO-8859-1";
 
+h1 {
+	background-color: #1BB1E6;
+	color: #FFFFFF;
+	font-family: sans-serif;
+}
+
 table {
 	border-width: 1px;
 	border-style: solid;
 	border-color: lightgray;
 	padding: 0px;
 	margin: 0px;
-/*	width: 100%;*/
 }
 
 table thead tr {
@@ -51,4 +56,32 @@ div.button {
 
 div.hover {
 	font-style: italic;
+}
+
+div.leftmenu {
+	float: left;
+	margin-right: 20px;
+}
+	
+div.leftmenu h1 {
+	font-size: small;
+}
+
+div.content h1 {
+	font-size: small;
+}	
+
+ul.tablemenu {
+	width: 100%;
+	list-style: none;
+	padding: 5px;
+	margin: 5px;
+}
+
+ul.tablemenu li {
+	text-align: right;
+}
+
+span.ui-icon {
+	float: right;
 }

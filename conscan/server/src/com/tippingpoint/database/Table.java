@@ -1,16 +1,22 @@
 package com.tippingpoint.database;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is used to hold the table representation.
  */
 public class Table extends Element {
+	public static final String TAG_NAME = "table";
+
 	/** This member holds a flag indicating if the primary is simply an id. */
 	private boolean m_bIdOnly;
 
@@ -218,6 +224,47 @@ public class Table extends Element {
 	 */
 	public boolean hasPrimaryKey() {
 		return m_constraintPrimaryKey != null;
+	}
+
+	/**
+	 * This method dumps the element in XML to the writer.
+	 * 
+	 * @param writer Writer where the table XML is to be written.
+	 * @throws IOException
+	 */
+	public void writeXml(final Writer writer) throws IOException {
+		writeXml(writer, true);
+	}
+
+	/**
+	 * This method dumps the element in XML to the writer.
+	 * 
+	 * @param writer Writer where the table XML is to be written.
+	 * @throws IOException
+	 */
+	public void writeXml(final Writer writer, final boolean bIncludeChildren) throws IOException {
+		if (bIncludeChildren) {
+			writer.append(XmlUtilities.open(TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, getName())));
+
+			final Iterator<ColumnDefinition> iterColumns = getColumns();
+			if (iterColumns != null && iterColumns.hasNext()) {
+				while (iterColumns.hasNext()) {
+					iterColumns.next().writeXml(writer);
+				}
+			}
+
+			final Iterator<Constraint> iterConstraints = getConstraints();
+			if (iterConstraints != null && iterConstraints.hasNext()) {
+				while (iterConstraints.hasNext()) {
+					iterConstraints.next().writeXml(writer);
+				}
+			}
+
+			writer.append(XmlUtilities.close(TAG_NAME));
+		}
+		else {
+			writer.append(XmlUtilities.tag(TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, getName())));
+		}
 	}
 
 	/**

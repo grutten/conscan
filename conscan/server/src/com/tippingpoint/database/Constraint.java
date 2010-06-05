@@ -1,14 +1,21 @@
 package com.tippingpoint.database;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is used to hold generic constraint information.
  */
 public class Constraint extends Element {
+	public static final String ATTRIBUTE_TYPE = "type";
+	public static final String TAG_NAME = "constraint";
+
 	/** This member holds the columns involved in the constraint. */
 	protected List<Column> m_columns = new ArrayList<Column>();
 
@@ -99,6 +106,28 @@ public class Constraint extends Element {
 	@Override
 	public String toString() {
 		return m_strType + ": " + getName() + " - " + m_columns;
+	}
+
+	/**
+	 * This method dumps the element in XML to the writer.
+	 * 
+	 * @param writer Writer where the table XML is to be written.
+	 * @throws IOException 
+	 */
+	public void writeXml(final Writer writer) throws IOException {
+		List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+		
+		listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, getName()));
+		listAttributes.add(new NameValuePair(ATTRIBUTE_TYPE, getType()));
+
+		writer.append(XmlUtilities.open(TAG_NAME, listAttributes));
+
+		for (Column column : m_columns) {
+			writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME,
+					column.getName())));
+		}
+
+		writer.append(XmlUtilities.close(TAG_NAME));
 	}
 
 	/**

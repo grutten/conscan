@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
  * This class represents the collection of tables for a given schema.
  */
 public final class Schema extends Element {
+	public static final String TAG_NAME = "schema";
 	private static Log m_log = LogFactory.getLog(Schema.class);
 
 	/** This member holds all the tables in the schema. */

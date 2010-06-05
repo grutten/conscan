@@ -6,9 +6,12 @@ import java.io.Reader;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
+import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnType;
 import com.tippingpoint.database.ColumnTypeConverter;
+import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.Schema;
+import com.tippingpoint.database.Table;
 
 /**
  * This class is used to parse the database XML which defines the configuration of the database.
@@ -55,10 +58,10 @@ public final class Parser {
 		// place the schema in the root of the digester stack
 		digester.push(importer);
 
-		digester.addRule("data/table", new TableSelectRule());
-		digester.addRule("data/table/item", new RowRule());
-		digester.addRule("*/column", new ColumnValueRule());
-		digester.addRule("*/column/table", new ReferenceTableRule());
+		digester.addRule("data/" + Table.TAG_NAME, new TableSelectRule());
+		digester.addRule("data/" + Table.TAG_NAME + "/item", new RowRule());
+		digester.addRule("*/" + ColumnDefinition.TAG_NAME, new ColumnValueRule());
+		digester.addRule("*/" + ColumnDefinition.TAG_NAME + "/" + Table.TAG_NAME, new ReferenceTableRule());
 
 		digester.parse(reader);
 	}
@@ -69,20 +72,26 @@ public final class Parser {
 	private static Digester getDigester() {
 		final Digester digester = new Digester();
 		digester.setValidating(false);
-		digester.addObjectCreate("schema", "com.tippingpoint.database.Schema");
-		digester.addSetProperties("schema");
-		digester.addObjectCreate("schema/table", "com.tippingpoint.database.Table");
-		digester.addSetProperties("schema/table");
-		digester.addSetNext("schema/table", "addTable", "com.tippingpoint.database.Table");
-		digester.addObjectCreate("schema/table/column", "com.tippingpoint.database.ColumnDefinition");
-		digester.addSetProperties("schema/table/column");
-		digester.addSetNext("schema/table/column", "add", "com.tippingpoint.database.ColumnDefinition");
-		digester.addRule("schema/table/constraint", new ConstraintRule());
-		digester.addSetProperties("schema/table/constraint");
-		digester.addSetNext("schema/table/constraint", "add", "com.tippingpoint.database.Constraint");
-		digester.addRule("schema/table/constraint/column", new ConstraintColumnRule());
-		digester.addRule("schema/table/constraint/table", new ForeignTableRule());
-		digester.addRule("schema/table/constraint/table/column", new ForeignColumnRule());
+		digester.addObjectCreate(Schema.TAG_NAME, "com.tippingpoint.database.Schema");
+		digester.addSetProperties(Schema.TAG_NAME);
+		digester.addObjectCreate(Schema.TAG_NAME + "/" + Table.TAG_NAME, "com.tippingpoint.database.Table");
+		digester.addSetProperties(Schema.TAG_NAME + "/" + Table.TAG_NAME);
+		digester.addSetNext(Schema.TAG_NAME + "/" + Table.TAG_NAME, "addTable", "com.tippingpoint.database.Table");
+		digester.addObjectCreate(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + ColumnDefinition.TAG_NAME,
+				"com.tippingpoint.database.ColumnDefinition");
+		digester.addSetProperties(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + ColumnDefinition.TAG_NAME);
+		digester.addSetNext(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + ColumnDefinition.TAG_NAME, "add",
+				"com.tippingpoint.database.ColumnDefinition");
+		digester.addRule(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME, new ConstraintRule());
+		digester.addSetProperties(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME);
+		digester.addSetNext(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME, "add",
+				"com.tippingpoint.database.Constraint");
+		digester.addRule(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME + "/" +
+				ColumnDefinition.TAG_NAME, new ConstraintColumnRule());
+		digester.addRule(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME + "/" + Table.TAG_NAME,
+				new ForeignTableRule());
+		digester.addRule(Schema.TAG_NAME + "/" + Table.TAG_NAME + "/" + Constraint.TAG_NAME + "/" + Table.TAG_NAME +
+				"/" + ColumnDefinition.TAG_NAME, new ForeignColumnRule());
 
 		return digester;
 	}

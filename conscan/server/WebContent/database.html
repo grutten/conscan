@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Database</title>
+		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
+	</head>
+	<body>
+		<h1>Database</h1>
+		<div class="leftmenu">
+			<span>Tables</span>
+			<ul class="tablemenu"></ul>
+		</div>
+		<div class="content">
+			<span>Table</span>
+			<div class="contentdata"></div>
+		</div>
+		<div id="errordialog" class="hidden">
+			<div id="errortitle" class="erroritem"></div>
+			<div id="errormessage" class="erroritem"></div>
+			<div id="errortrace" class="hidden erroritem"></div>
+			<br/>
+			<div class="erroritem">
+				<input type="button" id="errorcontinue" value="Continue"/>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function showTableDescription(data) {
+				jQuery(data).find('table').each(function() {
+					tablename = jQuery(this).attr('name');
+
+					table = "";
+					table += '<table>';
+					table += '  <thead>';
+					table += '    <tr>';
+					table += '      <td>';
+					table += '        <a href="javascript: drop(\'' + tablename + '\');">';
+					table += '          <img src="images/delete-icon.png"/>';
+					table += '        </a>';
+					table += '      </td>';
+					table += '      <td colspan="3">' + tablename + '</td>';
+					table += '    </tr>';
+					table += '  </thead>';
+					table += '  <tbody>';
+
+					jQuery(this).find('column').each(function() {
+						table += '    <tr>';
+						table += '      <td>&nbsp;</td>';
+						table += '      <td>' + jQuery(this).attr('name') + '</td>';
+						table += '      <td>' + jQuery(this).attr('type') + '</td>';
+						table += '      <td>';
+
+						required = jQuery(this).attr('required');
+						if (typeof(required) != 'undefined') {
+							table += required;
+						}
+						else {
+							table += '&nbsp;';
+						}
+						table += '</td>';
+						table += '    </tr>';
+					});
+
+					table += '  </tbody>';
+					table += '</table>';
+
+					jQuery('div.contentdata').html(table);
+				});
+			}
+
+			function retrieveTableData(table) {
+				alert('Table data for ' + table);
+			}
+
+			function retrieveTableDescription(table) {
+				//alert('Table description for ' + table);
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'database/' + table,
+					success: showTableDescription,
+					error: showerror
+				});
+			}
+
+			function showtables(data) {
+				// alert('Returned: ' + data);
+				tables = '';
+				jQuery(data).find('table').each(function() {
+					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;<span class="ui-icon ui-icon-zoomin"></span>&nbsp;<span class="ui-icon ui-icon-info"></span></li>';
+				});
+				jQuery('ul.tablemenu').append(tables);
+				jQuery('span.ui-icon-zoomin').click(function() {
+					retrieveTableData(jQuery(this).parent().text().trim());
+				});
+				jQuery('span.ui-icon-info').click(function() {
+					retrieveTableDescription(jQuery(this).parent().text().trim());
+				});
+			}
+
+			function showerror(xhr) {
+				alert('Showing error.');
+				jQuery('#errortitle').html(xhr.statusText);
+				jQuery('#errormessage').html('');
+				jQuery(xhr.responseXML).find('error').each(function(){
+					var message = jQuery(this).find('message').text();
+					jQuery('#errormessage').append('<div class="erroritem">' + message + '</div>');
+					var trace = jQuery(this).find('trace').text();
+					jQuery('#errortrace').append(trace);
+				});
+				jQuery.blockUI({message: jQuery('#errordialog')});
+			}
+
+			function loadtables() {
+				jQuery.ajax({
+					type: "OPTIONS",
+					url: "database",
+					success: showtables,
+					error: showerror
+				});
+			}
+
+			jQuery(document).ready(function() {
+				jQuery('#errorcontinue').click(function() {
+					jQuery.unblockUI();
+				});
+				loadtables();
+			});
+
+//			jQuery(function() {
+//				$('button.tabledesc').button();
+//				$('button.tabledesc').bind('click', function(event, ui) { alert('hi'); });
+//			});
+		</script>
+	</body>
+</html>
