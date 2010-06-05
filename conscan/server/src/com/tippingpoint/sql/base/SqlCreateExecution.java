@@ -42,7 +42,7 @@ public class SqlCreateExecution extends SqlExecution {
 		// add in the column statements next
 		final Iterator<ColumnDefinition> iterTableColumns = table.getColumns();
 		while (iterTableColumns.hasNext()) {
-			final ColumnDefinition column = (ColumnDefinition)iterTableColumns.next();
+			final ColumnDefinition column = iterTableColumns.next();
 			strSql.append(getPhrase(column));
 
 			if (iterTableColumns.hasNext()) {

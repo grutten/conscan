@@ -23,6 +23,7 @@ public final class SqlDrop extends TableBuilderCommand {
 	/**
 	 * This method returns the string representation of the SQL command.
 	 */
+	@Override
 	public String toString() {
 		return "DROP " + m_table;
 	}

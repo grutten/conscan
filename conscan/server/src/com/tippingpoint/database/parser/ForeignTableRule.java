@@ -25,7 +25,7 @@ public final class ForeignTableRule extends BaseRule {
 
 			Table tableParent = schema.getTable(strName);
 			if (tableParent == null) {
-				Table tableCurrent = (Table)getDigester().peek(1);
+				final Table tableCurrent = (Table)getDigester().peek(1);
 				if (strName.equals(tableCurrent.getName())) {
 					tableParent = tableCurrent;
 				}

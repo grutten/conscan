@@ -89,6 +89,7 @@ public class SqlAlter extends TableBuilderCommand {
 	/**
 	 * This method returns the string representation of the SQL command.
 	 */
+	@Override
 	public String toString() {
 		return "Alter " + m_table;
 	}

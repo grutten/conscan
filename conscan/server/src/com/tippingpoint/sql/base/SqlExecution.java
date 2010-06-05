@@ -90,7 +90,8 @@ public abstract class SqlExecution {
 				final PreparedStatement pstmt = getPreparedStatement(conn, strSql);
 
 				rs = pstmt.executeQuery();
-			} else {
+			}
+			else {
 				final Statement stmt = getStatement(conn);
 				rs = stmt.executeQuery(strSql);
 			}
@@ -111,16 +112,17 @@ public abstract class SqlExecution {
 	public int executeUpdate(final Connection conn) throws SqlExecutionException, SqlBuilderException {
 		int nRowsUpdated = 0;
 		final String strSql = getSql();
-		
+
 		try {
 			if (m_listParameters != null && !m_listParameters.isEmpty()) {
-					final PreparedStatement pstmt = getPreparedStatement(conn, strSql);
-	
-					nRowsUpdated = pstmt.executeUpdate();
-			} else {
-					final Statement stmt = getStatement(conn);
-		
-					nRowsUpdated = stmt.executeUpdate(strSql);
+				final PreparedStatement pstmt = getPreparedStatement(conn, strSql);
+
+				nRowsUpdated = pstmt.executeUpdate();
+			}
+			else {
+				final Statement stmt = getStatement(conn);
+
+				nRowsUpdated = stmt.executeUpdate(strSql);
 			}
 		}
 		catch (final SQLException e) {
@@ -309,6 +311,31 @@ public abstract class SqlExecution {
 	}
 
 	/**
+	 * This method returns a prepared statement. If the statement has not been generated, it will be and be returned.
+	 * 
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getPreparedStatement(final Connection conn, final String strSql) throws SQLException {
+		if (m_stmt == null) {
+			m_stmt = conn.prepareStatement(strSql);
+		}
+
+		for (int nIndex = 0; nIndex < m_listParameters.size(); ++nIndex) {
+			final ParameterizedValue value = m_listParameters.get(nIndex);
+			final Object objValue =
+				this.m_sqlManager.getConverter().convertToSqlObject(value.getColumn().getType(), value.getValue());
+			if (objValue != null) {
+				((PreparedStatement)m_stmt).setObject(nIndex + 1, objValue);
+			}
+			else {
+				((PreparedStatement)m_stmt).setNull(nIndex + 1, value.getColumn().getType().getJdbcType());
+			}
+		}
+
+		return (PreparedStatement)m_stmt;
+	}
+
+	/**
 	 * This method returns a statement. If the statement has not been generated, it will be and be returned.
 	 * 
 	 * @throws SQLException
@@ -319,28 +346,5 @@ public abstract class SqlExecution {
 		}
 
 		return m_stmt;
-	}
-
-	/**
-	 * This method returns a prepared statement. If the statement has not been generated, it will be and be returned.
-	 * 
-	 * @throws SQLException
-	 */
-	protected PreparedStatement getPreparedStatement(final Connection conn, String strSql) throws SQLException {
-		if (m_stmt == null) {
-			m_stmt = conn.prepareStatement(strSql);
-		}
-		
-		for (int nIndex = 0; nIndex < m_listParameters.size(); ++nIndex) {
-			ParameterizedValue value = m_listParameters.get(nIndex);
-			final Object objValue = this.m_sqlManager.getConverter().convertToSqlObject(value.getColumn().getType(), value.getValue());
-			if (objValue != null) {
-				((PreparedStatement)m_stmt).setObject(nIndex + 1, objValue);
-			} else {
-				((PreparedStatement)m_stmt).setNull(nIndex + 1, value.getColumn().getType().getJdbcType());
-			}
-		}
-
-		return (PreparedStatement)m_stmt;
 	}
 }

@@ -98,43 +98,44 @@ public class SqlQuery extends BuilderCommand {
 		m_bAssociativeJoins = bAssociativeJoins;
 	}
 
-	public boolean useAssociativeJoins() {
-		return m_bAssociativeJoins;
-	}
-
 	/**
 	 * This method returns the string representation of the SQL command.
 	 */
+	@Override
 	public String toString() {
-		StringBuilder strBuffer = new StringBuilder();
-		
+		final StringBuilder strBuffer = new StringBuilder();
+
 		strBuffer.append("SELECT");
-		
-		for (Column column : m_listQueryColumns) {
+
+		for (final Column column : m_listQueryColumns) {
 			strBuffer.append(" ").append(column);
 		}
 
 		if (!m_setTables.isEmpty()) {
 			strBuffer.append(" FROM");
-			for (Table table : m_setTables) {
+			for (final Table table : m_setTables) {
 				strBuffer.append(" ").append(table);
 			}
 		}
 
 		if (!m_listWheres.isEmpty()) {
 			strBuffer.append(" WHERE");
-			for (Condition condition : m_listWheres) {
+			for (final Condition condition : m_listWheres) {
 				strBuffer.append(" ").append(condition);
 			}
 		}
 
 		if (!m_listOrderByColumns.isEmpty()) {
 			strBuffer.append(" ORDER BY");
-			for (Column column : m_listOrderByColumns) {
+			for (final Column column : m_listOrderByColumns) {
 				strBuffer.append(" ").append(column);
 			}
 		}
 
 		return strBuffer.toString();
+	}
+
+	public boolean useAssociativeJoins() {
+		return m_bAssociativeJoins;
 	}
 }

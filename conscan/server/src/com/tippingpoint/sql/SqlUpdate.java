@@ -16,6 +16,7 @@ public final class SqlUpdate extends TableBuilderCommand {
 	/**
 	 * This method returns the string representation of the SQL command.
 	 */
+	@Override
 	public String toString() {
 		return "Update " + m_table;
 	}

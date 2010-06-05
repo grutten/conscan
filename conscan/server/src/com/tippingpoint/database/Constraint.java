@@ -112,19 +112,19 @@ public class Constraint extends Element {
 	 * This method dumps the element in XML to the writer.
 	 * 
 	 * @param writer Writer where the table XML is to be written.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void writeXml(final Writer writer) throws IOException {
-		List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
-		
+		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
 		listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, getName()));
 		listAttributes.add(new NameValuePair(ATTRIBUTE_TYPE, getType()));
 
 		writer.append(XmlUtilities.open(TAG_NAME, listAttributes));
 
-		for (Column column : m_columns) {
-			writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME,
-					column.getName())));
+		for (final Column column : m_columns) {
+			writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, column
+					.getName())));
 		}
 
 		writer.append(XmlUtilities.close(TAG_NAME));

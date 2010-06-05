@@ -170,7 +170,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 					+ "CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
-			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
+			final ColumnDefinition columnDescription = tableActivity.getColumn("description");
 			assertNotNull(columnDescription);
 
 			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
@@ -181,7 +181,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
 
 			// use an existing column in the table to emulate modifying a table.
-			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
+			final ColumnDefinition columnCreation = tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
 
 			sqlAlter.add(columnCreation);
@@ -242,7 +242,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 					+ "PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
 			// use a second table to add a column to the above table
-			final ColumnDefinition columnDescription = (ColumnDefinition)tableActivity.getColumn("description");
+			final ColumnDefinition columnDescription = tableActivity.getColumn("description");
 			assertNotNull(columnDescription);
 
 			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
@@ -253,7 +253,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
 
 			// use an existing column in the table to emulate modifying a table.
-			final ColumnDefinition columnCreation = (ColumnDefinition)tableDemographic.getColumn("creation");
+			final ColumnDefinition columnCreation = tableDemographic.getColumn("creation");
 			assertNotNull(columnCreation);
 
 			sqlAlter.add(columnCreation);

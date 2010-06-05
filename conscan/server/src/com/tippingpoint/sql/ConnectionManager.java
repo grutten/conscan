@@ -400,7 +400,7 @@ public final class ConnectionManager {
 	 */
 	private void setManager(final SqlManager sqlManager) {
 		m_sqlManager = sqlManager;
-		
+
 		if (m_sqlManager != null) {
 			m_sqlManager.setConnectionManager(this);
 		}

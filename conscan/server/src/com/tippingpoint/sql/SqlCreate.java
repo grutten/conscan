@@ -18,10 +18,11 @@ public class SqlCreate extends TableBuilderCommand {
 			throw new SqlBuilderException("Table instances needs to be specified when creating tables.");
 		}
 	}
-	
+
 	/**
 	 * This method returns the string representation of the SQL command.
 	 */
+	@Override
 	public String toString() {
 		return "Create " + m_table;
 	}
