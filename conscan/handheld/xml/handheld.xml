@@ -37,132 +37,208 @@
 			<name>default</name>
 			<compliancevalues>
 				<value default="true">comply</value>
-				<value>out to court</value>
 				<value>refuse</value>
-				<value>sick</value>
 			</compliancevalues>
 		</complianceconfiguration>
 		<complianceconfiguration id="2">
-			<name>notapplicable</name>
+			<name>workorder</name>
 			<compliancevalues>
-				<value default="true">not applicable</value>
-				<value>comply</value>
-				<value>out to court</value>
-				<value>refuse</value>
-				<value>sick</value>
+				<value default="true">comply</value>
+				<value>cleanliness</value>
+				<value>paint</value>
+				<value>lights</value>
+				<value>sinks/toilets/showers</value>
+				<value>clean/office supplies</value>
+				<value>hot water</value>
+				<value>heat/air cond</value>
+				<value>doors/locks/gates</value>
+				<value>phones/tv/vending</value>
 			</compliancevalues>
 		</complianceconfiguration>
 		<complianceconfiguration id="3">
 			<name>cellsearch</name>
 			<compliancevalues>
 				<value default="true">nothing found</value>
+				<value>cell phone</value>
 				<value>drugs</value>
+				<value>excessive property</value>
+				<value>i/m alcohol</value>
+				<value>smoking materials</value>
 				<value>weapon</value>
 				<value>other</value>
+			</compliancevalues>
+		</complianceconfiguration>
+		<complianceconfiguration id="4">
+			<name>pillcallx</name>
+			<compliancevalues>
+				<value default="true">administered</value>
 			</compliancevalues>
 		</complianceconfiguration>
 	</complianceconfigurations>
 	<activities>
 		<!-- SCANTYPE: 1 - cell, 2 - offender -->
+		<!-- COMPLIANCETYPE: 1 - cell, 2 - offender -->
 		<activity>
 			<name>security check</name>
 			<complianceconfiguration id="1"/>
 			<scantype>1</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>cell search</name>
 			<complianceconfiguration id="3"/>
 			<scantype>1</scantype>
+			<compliancetype>1</compliancetype>
 		</activity>
 		<activity>
 			<name>bedding exchange</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>blanket exchange</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>outerwear exchange</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>underwear exchange</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>towel exchange</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>showers</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>recreation</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>library</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>mail call</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>meals</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>dayroom/indoor recreation</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>religious services</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>school</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>stores/canteen</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
-			<name>video orientation</name>
+			<name>video orient</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>telephones</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
 		</activity>
 		<activity>
 			<name>legal mail</name>
 			<complianceconfiguration id="1"/>
 			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>sick call</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>medical/dental</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>psych</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>visits</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>attorney visit</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>out to court</name>
+			<complianceconfiguration id="1"/>
+			<scantype>2</scantype>
+			<compliancetype>2</compliancetype>
+		</activity>
+		<activity>
+			<name>pill call</name>
+			<complianceconfiguration id="2"/>
+			<scantype>1</scantype>
+			<compliancetype>1</compliancetype>
 		</activity>
 		<activity>
 			<name>repair order</name>
-			<complianceconfiguration id="1"/>
+			<complianceconfiguration id="2"/>
 			<scantype>1</scantype>
+			<compliancetype>1</compliancetype>
 		</activity>
 	</activities>
 </configuration>
