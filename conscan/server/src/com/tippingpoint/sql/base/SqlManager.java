@@ -1,7 +1,9 @@
 package com.tippingpoint.sql.base;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
@@ -21,8 +23,10 @@ import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlCreate;
 import com.tippingpoint.sql.SqlDrop;
+import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
@@ -71,6 +75,74 @@ public abstract class SqlManager {
 		register(new SqlQueryExecutionFactory(), SqlQuery.class);
 		register(new SqlInsertExecutionFactory(), SqlInsert.class);
 		register(new SqlUpdateExecutionFactory(), SqlUpdate.class);
+	}
+
+	/**
+	 * This method executes the command.
+	 * 
+	 * @throws SqlManagerException
+	 * @throws SqlExecutionException
+	 * @throws SqlBuilderException
+	 * @throws SqlBaseException
+	 */
+	@SuppressWarnings("null")
+	public void execute(final Command sqlCommand, final Connection conn, final SqlResultAction action)
+			throws SqlManagerException, SqlBuilderException, SqlExecutionException {
+		SqlExecution sqlExecution = null;
+		ResultSet rs = null;
+
+		try {
+			sqlExecution = getExecution(sqlCommand);
+
+			rs = sqlExecution.executeQuery(conn);
+
+			action.execution(sqlExecution);
+
+			boolean bProcessed = false;
+			if (rs != null) {
+				while (rs.next()) {
+					action.process(rs);
+					bProcessed = true;
+				}
+			}
+
+			if (!bProcessed) {
+				action.noResults();
+			}
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException(sqlExecution.getSql(), e);
+		}
+		catch (final IOException e) {
+			throw new SqlExecutionException(sqlExecution.getSql(), e);
+		}
+		finally {
+			ConnectionManager.close(null, sqlExecution, null);
+		}
+	}
+
+	/**
+	 * This method executes the command.
+	 * 
+	 * @throws SQLException
+	 * @throws SqlBaseException
+	 * @throws SQLException
+	 * @throws SqlExecutionException
+	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
+	 */
+	public void execute(final Command sqlCommand, final SqlResultAction action) throws SQLException,
+			SqlManagerException, SqlBuilderException, SqlExecutionException {
+		Connection conn = null;
+
+		try {
+			conn = getConnectionManager().getConnection();
+
+			execute(sqlCommand, conn, action);
+		}
+		finally {
+			ConnectionManager.close(conn, null, null);
+		}
 	}
 
 	/**
@@ -315,6 +387,35 @@ public abstract class SqlManager {
 	 */
 	protected void register(final String strKeyword, final String strValue) {
 		m_mapKeywords.put(strKeyword, strValue);
+	}
+
+	/**
+	 * This class is used to process result set lines.
+	 */
+	public static abstract class SqlResultAction {
+		/**
+		 * This method is called prior to the results set being generated.
+		 * 
+		 * @param sqlExecution SqlExecution used to retrieve the result set.
+		 * @throws IOException
+		 */
+		public void execution(final SqlExecution sqlExecution) throws IOException {
+			// default actions is to do nothing
+		}
+
+		/**
+		 * This method is only called if there are no search results returned.
+		 */
+		public void noResults() {
+			// default actions is to do nothing
+		}
+
+		/**
+		 * This method is called for each row returned in the result set.
+		 * 
+		 * @param rs ResultSet being processed.
+		 */
+		public abstract void process(ResultSet rs);
 	}
 
 	/**

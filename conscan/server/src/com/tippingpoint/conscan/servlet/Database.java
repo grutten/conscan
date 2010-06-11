@@ -5,11 +5,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Writer;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
+import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.DatabaseElementException;
@@ -36,7 +41,13 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlDrop;
+import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.sql.SqlQuery;
+import com.tippingpoint.sql.base.SqlExecution;
+import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
 
@@ -103,7 +114,57 @@ public final class Database extends Services {
 	}
 
 	/**
-	 * This method executes the options command; which is used to returns the definitions from the database.
+	 * This method executes the get command; which is used to return the contents from the database.
+	 * 
+	 * database/activity - return the contents of the activity table
+	 * database/activity?column=value - return the contents of the activity table for the value in the specified column
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final String strObjects = request.getPathInfo();
+
+		m_log.debug("Get: " + strObjects);
+		
+		try {
+			final List<Element> listElements = getObjects(strObjects);
+			switch (listElements.size()) {
+			case 1:
+				final Element element = listElements.get(0);
+				if (element instanceof Table) {
+					retrieveTable((Table)element, response);
+				}
+
+			default:
+				// FUTURE: ???
+			break;
+			}
+		}
+		catch (final DatabaseException e) {
+			m_log.error("Database error retrieving table information.", e);
+			processException(response, e);
+		}
+		catch (final SQLException e) {
+			m_log.error("SQL error retrieving table information.", e);
+			processException(response, e);
+		}
+		catch (SqlManagerException e) {
+			m_log.error("SQL manager error retrieving table information.", e);
+			processException(response, e);
+		}
+		catch (SqlBuilderException e) {
+			m_log.error("SQL builder error retrieving table information.", e);
+			processException(response, e);
+		}
+		catch (SqlExecutionException e) {
+			m_log.error("SQL execution error retrieving table information.", e);
+			processException(response, e);
+		}
+	}
+
+	/**
+	 * This method executes the options command; which is used to return the definitions from the database.
 	 * 
 	 * @throws IOException
 	 */
@@ -305,5 +366,75 @@ public final class Database extends Services {
 		final PrintWriter writer = response.getWriter();
 
 		table.writeXml(writer);
+	}
+
+	/**
+	 * This method returns the contents of the tables.
+	 * @param element
+	 * @param response
+	 * @throws IOException 
+	 * @throws SQLException 
+	 * @throws SqlExecutionException 
+	 * @throws SqlBuilderException 
+	 * @throws SqlManagerException 
+	 */
+	private void retrieveTable(Table table, HttpServletResponse response) throws SqlManagerException, SqlBuilderException, SqlExecutionException, SQLException, IOException {
+		SqlQuery sqlQuery = new SqlQuery();
+		
+		sqlQuery.add(table, true);
+
+		ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+		
+		manager.getSqlManager().execute(sqlQuery, new QueryResults(response.getWriter()));
+	}
+	
+	/**
+	 * This class is used to process the results from a table query. 
+	 */
+	private static class QueryResults extends SqlManager.SqlResultAction {
+		/** This member holds the writer used when dumping the results. */
+		private Writer m_writer;
+
+		/**
+		 * This method constructs a new query processor.
+		 */
+		public QueryResults(Writer writer) {
+			m_writer = writer;
+		}
+		
+		/**
+		 * This method is called for each row returned in the result set.
+		 * @param rs ResultSet being processed.
+		 */
+		@Override
+		public void process(ResultSet rs) {
+		}
+
+		/**
+		 * This method is called prior to the results set being generated.
+		 * @param sqlExecution SqlExecution used to retrieve the result set.
+		 * @throws IOException 
+		 */
+		@Override
+		public void execution(SqlExecution sqlExecution) throws IOException {
+			m_writer.append(XmlUtilities.open("columns"));
+			
+			Iterator<Entry<Column, Integer>> iterColumnMap = sqlExecution.getColumnMap();
+			if (iterColumnMap != null && iterColumnMap.hasNext()) {
+				while (iterColumnMap.hasNext()) {
+					Map.Entry<Column, Integer> entry = (Map.Entry<Column, Integer>)iterColumnMap.next();
+					
+					List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+					
+					listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, entry.getKey().getName()));
+					listAttributes.add(new NameValuePair("fullname", entry.getKey().getFQName()));
+					listAttributes.add(new NameValuePair(ColumnDefinition.ATTRIBUTE_TYPE, entry.getKey().getType().getType()));
+					
+					m_writer.append(XmlUtilities.tag("column", listAttributes));
+				}
+			}
+			
+			m_writer.append(XmlUtilities.close("columns"));
+		}
 	}
 }

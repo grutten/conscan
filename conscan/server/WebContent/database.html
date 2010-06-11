@@ -29,6 +29,10 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			function showTableData(data) {
+				alert('showTableData');
+			}
+
 			function showTableDescription(data) {
 				jQuery(data).find('table').each(function() {
 					tablename = jQuery(this).attr('name');
@@ -90,7 +94,12 @@
 			}
 
 			function retrieveTableData(table) {
-				alert('Table data for ' + table);
+				jQuery.ajax({
+					type: 'GET',
+					url: 'database/' + table,
+					success: showTableData,
+					error: showerror
+				});
 			}
 
 			function retrieveTableDescription(table) {
@@ -151,13 +160,13 @@
 					type: "DELETE",
 					url: url,
 					success: function() {
-						retrieveTableDescription(table);					
+						retrieveTableDescription(table);
 						jQuery.unblockUI();
 					},
-					error: showerror 
+					error: showerror
 				});
 			}
-			
+
 			jQuery(document).ready(function() {
 				jQuery('#errorcontinue').click(function() {
 					jQuery.unblockUI();
