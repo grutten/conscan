@@ -91,33 +91,33 @@ public class SqlAlter extends TableBuilderCommand {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder strBuffer = new StringBuilder();
-		
+		final StringBuilder strBuffer = new StringBuilder();
+
 		strBuffer.append("ALTER ");
 		strBuffer.append(m_table);
 		strBuffer.append(' ');
 
-		for (ColumnDefinition column : m_listNewColumns) {
+		for (final ColumnDefinition column : m_listNewColumns) {
 			strBuffer.append(column);
 			strBuffer.append("(new) ");
 		}
-		
-		for (ColumnDefinition column : m_listModifyColumns) {
+
+		for (final ColumnDefinition column : m_listModifyColumns) {
 			strBuffer.append(column);
 			strBuffer.append("(modified) ");
 		}
-		
-		for (Constraint constraint : m_listNewConstraints) {
+
+		for (final Constraint constraint : m_listNewConstraints) {
 			strBuffer.append(constraint);
 			strBuffer.append("(new) ");
 		}
 
-		for (Constraint constraint : m_listModifyConstraints) {
+		for (final Constraint constraint : m_listModifyConstraints) {
 			strBuffer.append(constraint);
 			strBuffer.append("(modified) ");
 		}
 
-		for (Constraint constraint : m_listDroppedConstraints) {
+		for (final Constraint constraint : m_listDroppedConstraints) {
 			strBuffer.append(constraint);
 			strBuffer.append("(dropped) ");
 		}

@@ -30,7 +30,25 @@
 		</div>
 		<script type="text/javascript">
 			function showTableData(data) {
-				alert('showTableData');
+				table = "";
+				table += '<table>';
+				table += '  <tbody>';
+				jQuery(data).find('item').each(function() {
+					table += '    <tr>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						table += '<td>';
+						table += jQuery(this).text();
+						table += '</td>';
+					});
+
+					table += '    </tr>';
+				});
+				table += '  </tbody>';
+				table += '</table>';
+
+				jQuery('div.contentdata').html(table);
 			}
 
 			function showTableDescription(data) {
@@ -173,7 +191,6 @@
 				});
 				loadtables();
 			});
-
 		</script>
 	</body>
 </html>

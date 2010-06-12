@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +42,7 @@ public abstract class SqlExecution {
 	private final List<ParameterizedValue> m_listParameters = new ArrayList<ParameterizedValue>();
 
 	/** This member holds the mapping of the columns to the index of the column in the SQL statement. */
-	private final Map<Column, Integer> m_mapColumns = new HashMap<Column, Integer>();
+	private final List<Column> m_mapColumns = new ArrayList<Column>();
 
 	/**
 	 * This method constructs a new execution for the given manager.
@@ -136,14 +134,14 @@ public abstract class SqlExecution {
 	 * This method returns the index of the column from the statement.
 	 */
 	public Integer getColumnIndex(final Column column) {
-		return m_mapColumns.get(column);
+		return m_mapColumns.indexOf(column) + 1;
 	}
 
 	/**
 	 * This method returns an iterator for the column map
 	 */
-	public Iterator<Map.Entry<Column, Integer>> getColumnMap() {
-		return m_mapColumns.entrySet().iterator();
+	public Iterator<Column> getColumnMap() {
+		return m_mapColumns.iterator();
 	}
 
 	/**
@@ -157,7 +155,7 @@ public abstract class SqlExecution {
 	public Object getObject(final Column column, final ResultSet rs) throws SQLException, DatabaseException {
 		Object objValue = null;
 
-		final Integer intIndex = m_mapColumns.get(column);
+		final Integer intIndex = getColumnIndex(column);
 		if (intIndex != null) {
 			objValue = m_sqlManager.getConverter().getObject(column.getType(), rs, intIndex);
 		}
@@ -175,8 +173,8 @@ public abstract class SqlExecution {
 	/**
 	 * This method adds a column to the column map. It is assumed that the SQL exists that corresponds to this mapping.
 	 */
-	protected void addColumnMap(final Column column, final Integer intIndex) {
-		m_mapColumns.put(column, intIndex);
+	protected void addColumnMap(final Column column) {
+		m_mapColumns.add(column);
 	}
 
 	/**

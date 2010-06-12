@@ -11,9 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -126,7 +124,7 @@ public final class Database extends Services {
 		final String strObjects = request.getPathInfo();
 
 		m_log.debug("Get: " + strObjects);
-		
+
 		try {
 			final List<Element> listElements = getObjects(strObjects);
 			switch (listElements.size()) {
@@ -149,15 +147,15 @@ public final class Database extends Services {
 			m_log.error("SQL error retrieving table information.", e);
 			processException(response, e);
 		}
-		catch (SqlManagerException e) {
+		catch (final SqlManagerException e) {
 			m_log.error("SQL manager error retrieving table information.", e);
 			processException(response, e);
 		}
-		catch (SqlBuilderException e) {
+		catch (final SqlBuilderException e) {
 			m_log.error("SQL builder error retrieving table information.", e);
 			processException(response, e);
 		}
-		catch (SqlExecutionException e) {
+		catch (final SqlExecutionException e) {
 			m_log.error("SQL execution error retrieving table information.", e);
 			processException(response, e);
 		}
@@ -370,71 +368,126 @@ public final class Database extends Services {
 
 	/**
 	 * This method returns the contents of the tables.
+	 * 
 	 * @param element
 	 * @param response
-	 * @throws IOException 
-	 * @throws SQLException 
-	 * @throws SqlExecutionException 
-	 * @throws SqlBuilderException 
-	 * @throws SqlManagerException 
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws SqlExecutionException
+	 * @throws SqlBuilderException
+	 * @throws SqlManagerException
+	 * @throws DatabaseException 
 	 */
-	private void retrieveTable(Table table, HttpServletResponse response) throws SqlManagerException, SqlBuilderException, SqlExecutionException, SQLException, IOException {
-		SqlQuery sqlQuery = new SqlQuery();
-		
+	private void retrieveTable(final Table table, final HttpServletResponse response) throws SqlManagerException,
+			SqlBuilderException, SqlExecutionException, SQLException, IOException, DatabaseException {
+		final SqlQuery sqlQuery = new SqlQuery();
+
 		sqlQuery.add(table, true);
 
-		ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-		
+		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
 		manager.getSqlManager().execute(sqlQuery, new QueryResults(response.getWriter()));
 	}
-	
+
 	/**
-	 * This class is used to process the results from a table query. 
+	 * This class is used to process the results from a table query.
 	 */
 	private static class QueryResults extends SqlManager.SqlResultAction {
+		private static final String COLUMNS = "columns";
+		private static final String ITEMS = "items";
+		private static final String ITEM = "item";
+
 		/** This member holds the writer used when dumping the results. */
-		private Writer m_writer;
+		private final Writer m_writer;
 
 		/**
 		 * This method constructs a new query processor.
 		 */
-		public QueryResults(Writer writer) {
+		public QueryResults(final Writer writer) {
 			m_writer = writer;
 		}
-		
+
 		/**
-		 * This method is called for each row returned in the result set.
-		 * @param rs ResultSet being processed.
+		 * This method is called after the last row is processed. This method is only called if there are rows to be
+		 * processed.
+		 * 
+		 * @throws IOException
 		 */
 		@Override
-		public void process(ResultSet rs) {
+		public void afterRows() throws IOException {
+			m_writer.append(XmlUtilities.close(ITEMS));
+		}
+
+		/**
+		 * This method is called prior to the first row being processed. This method is only called if there are rows to
+		 * be processed.
+		 * 
+		 * @throws IOException
+		 */
+		@Override
+		public void beforeRows() throws IOException {
+			m_writer.append(XmlUtilities.open(ITEMS));
 		}
 
 		/**
 		 * This method is called prior to the results set being generated.
+		 * 
 		 * @param sqlExecution SqlExecution used to retrieve the result set.
-		 * @throws IOException 
+		 * @throws IOException
 		 */
 		@Override
-		public void execution(SqlExecution sqlExecution) throws IOException {
-			m_writer.append(XmlUtilities.open("columns"));
-			
-			Iterator<Entry<Column, Integer>> iterColumnMap = sqlExecution.getColumnMap();
+		public void execution(final SqlExecution sqlExecution) throws IOException {
+			m_writer.append(XmlUtilities.open(COLUMNS));
+
+			final Iterator<Column> iterColumnMap = sqlExecution.getColumnMap();
 			if (iterColumnMap != null && iterColumnMap.hasNext()) {
 				while (iterColumnMap.hasNext()) {
-					Map.Entry<Column, Integer> entry = (Map.Entry<Column, Integer>)iterColumnMap.next();
-					
-					List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
-					
-					listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, entry.getKey().getName()));
-					listAttributes.add(new NameValuePair("fullname", entry.getKey().getFQName()));
-					listAttributes.add(new NameValuePair(ColumnDefinition.ATTRIBUTE_TYPE, entry.getKey().getType().getType()));
-					
-					m_writer.append(XmlUtilities.tag("column", listAttributes));
+					final Column column = iterColumnMap.next();
+					final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+					listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, column.getName()));
+					listAttributes.add(new NameValuePair("fullname", column.getFQName()));
+					listAttributes.add(new NameValuePair(ColumnDefinition.ATTRIBUTE_TYPE, column.getType().getType()));
+
+					m_writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, listAttributes));
 				}
 			}
+
+			m_writer.append(XmlUtilities.close(COLUMNS));
+		}
+
+		/**
+		 * This method is called for each row returned in the result set.
+		 * 
+		 * @param sqlExecution SqlExecution instance used to execute the query.
+		 * @param rs ResultSet being processed.
+		 * @throws IOException 
+		 * @throws DatabaseException 
+		 * @throws SQLException 
+		 */
+		@Override
+		public void process(SqlExecution sqlExecution, final ResultSet rs) throws IOException, SQLException, DatabaseException {
+			m_writer.append(XmlUtilities.open(ITEM));
 			
-			m_writer.append(XmlUtilities.close("columns"));
+			try {
+				final Iterator<Column> iterColumnMap = sqlExecution.getColumnMap();
+				if (iterColumnMap != null && iterColumnMap.hasNext()) {
+					while (iterColumnMap.hasNext()) {
+						final Column column = iterColumnMap.next();
+						
+						Object objValue = sqlExecution.getObject(column, rs);
+						
+						final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+						listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, column.getName()));
+
+						m_writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, listAttributes, objValue));
+					}
+				}
+			} finally {
+				m_writer.append(XmlUtilities.close(ITEM));
+			}
+			
 		}
 	}
 }

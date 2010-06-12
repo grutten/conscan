@@ -19,6 +19,7 @@ import com.tippingpoint.database.ColumnTypeSmallInteger;
 import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.DataConversion;
+import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.SqlAlter;
@@ -83,11 +84,12 @@ public abstract class SqlManager {
 	 * @throws SqlManagerException
 	 * @throws SqlExecutionException
 	 * @throws SqlBuilderException
+	 * @throws DatabaseException 
 	 * @throws SqlBaseException
 	 */
 	@SuppressWarnings("null")
 	public void execute(final Command sqlCommand, final Connection conn, final SqlResultAction action)
-			throws SqlManagerException, SqlBuilderException, SqlExecutionException {
+			throws SqlManagerException, SqlBuilderException, SqlExecutionException, DatabaseException {
 		SqlExecution sqlExecution = null;
 		ResultSet rs = null;
 
@@ -100,13 +102,17 @@ public abstract class SqlManager {
 
 			boolean bProcessed = false;
 			if (rs != null) {
+				action.beforeRows();
 				while (rs.next()) {
-					action.process(rs);
+					action.process(sqlExecution, rs);
 					bProcessed = true;
 				}
 			}
 
-			if (!bProcessed) {
+			if (bProcessed) {
+				action.afterRows();
+			}
+			else {
 				action.noResults();
 			}
 		}
@@ -130,9 +136,10 @@ public abstract class SqlManager {
 	 * @throws SqlExecutionException
 	 * @throws SqlBuilderException
 	 * @throws SqlManagerException
+	 * @throws DatabaseException 
 	 */
 	public void execute(final Command sqlCommand, final SqlResultAction action) throws SQLException,
-			SqlManagerException, SqlBuilderException, SqlExecutionException {
+			SqlManagerException, SqlBuilderException, SqlExecutionException, DatabaseException {
 		Connection conn = null;
 
 		try {
@@ -394,6 +401,26 @@ public abstract class SqlManager {
 	 */
 	public static abstract class SqlResultAction {
 		/**
+		 * This method is called after the last row is processed. This method is only called if there are rows to be
+		 * processed.
+		 * 
+		 * @throws IOException
+		 */
+		public void afterRows() throws IOException {
+			// default actions is to do nothing
+		}
+
+		/**
+		 * This method is called prior to the first row being processed. This method is only called if there are rows to
+		 * be processed.
+		 * 
+		 * @throws IOException
+		 */
+		public void beforeRows() throws IOException {
+			// default actions is to do nothing
+		}
+
+		/**
 		 * This method is called prior to the results set being generated.
 		 * 
 		 * @param sqlExecution SqlExecution used to retrieve the result set.
@@ -413,9 +440,13 @@ public abstract class SqlManager {
 		/**
 		 * This method is called for each row returned in the result set.
 		 * 
+		 * @param sqlExecution SqlExecution instance used to execute the query.
 		 * @param rs ResultSet being processed.
+		 * @throws IOException
+		 * @throws DatabaseException 
+		 * @throws SQLException 
 		 */
-		public abstract void process(ResultSet rs);
+		public abstract void process(SqlExecution sqlExecution, ResultSet rs) throws IOException, SQLException, DatabaseException;
 	}
 
 	/**

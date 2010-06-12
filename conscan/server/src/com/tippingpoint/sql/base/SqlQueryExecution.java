@@ -40,13 +40,12 @@ public class SqlQueryExecution extends SqlExecution {
 
 		final List<Column> listQueryColumns = m_sqlQuery.getQueryColumns();
 		if (!listQueryColumns.isEmpty()) {
-			int nIndex = 1;
 			final Iterator<Column> iterColumns = listQueryColumns.iterator();
 			while (iterColumns.hasNext()) {
 				final Column column = iterColumns.next();
 
 				strSql.append(column);
-				addColumnMap(column, new Integer(nIndex++ ));
+				addColumnMap(column);
 
 				if (iterColumns.hasNext()) {
 					strSql.append(", ");

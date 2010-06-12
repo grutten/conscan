@@ -256,11 +256,11 @@ public class Table extends Element {
 			if (m_constraintPrimaryKey != null) {
 				m_constraintPrimaryKey.writeXml(writer);
 			}
-			
+
 			if (m_constraintLogicalKey != null) {
 				m_constraintLogicalKey.writeXml(writer);
 			}
-			
+
 			final Iterator<Constraint> iterConstraints = getConstraints();
 			if (iterConstraints != null && iterConstraints.hasNext()) {
 				while (iterConstraints.hasNext()) {

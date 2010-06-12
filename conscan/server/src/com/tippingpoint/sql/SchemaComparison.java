@@ -89,7 +89,7 @@ public final class SchemaComparison {
 		// if this is not a new column, then check for containing constraints
 		final Column columnCurrent = tableCurrent.getColumn(column.getName());
 		if (columnCurrent != null) {
-			// the definition of the column is changing, which may block any constraints on that column; therefore, 
+			// the definition of the column is changing, which may block any constraints on that column; therefore,
 			// remove the constraints prior to altering the column and they will be added back when the constraints are
 			// checked
 			final List<Constraint> listConstraints = tableCurrent.getConstraintList();

@@ -102,7 +102,7 @@ public final class SqlParameterizedExecution extends SqlExecution {
 		}
 
 		// add all the parameters to the prepared statement
-		for (int nIndex = 0; nIndex < m_listParameters.size(); nIndex++ ) {
+		for (int nIndex = 0; nIndex < m_listParameters.size(); nIndex++) {
 			final ParameterizedValue value = m_listParameters.get(nIndex);
 			final Object objValue = m_conversion.convertToSqlObject(value.getColumn().getType(), value.getValue());
 

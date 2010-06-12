@@ -68,7 +68,7 @@ public class XmlUtilities {
 	/**
 	 * This method returns a tag for the given named element.
 	 */
-	public static CharSequence tag(final String strTagName, final List<NameValuePair> listAttributes) {
+	public static String tag(final String strTagName, final List<NameValuePair> listAttributes) {
 		final StringBuilder strBuffer = new StringBuilder();
 
 		start(strBuffer, strTagName, listAttributes);
@@ -81,7 +81,27 @@ public class XmlUtilities {
 	/**
 	 * This method returns a tag for the given named element.
 	 */
-	public static CharSequence tag(final String strTagName, final NameValuePair pair) {
+	public static String tag(final String strTagName, final List<NameValuePair> listAttributes, final Object objValue) {
+		final StringBuilder strBuffer = new StringBuilder();
+
+		start(strBuffer, strTagName, listAttributes);
+
+		if (objValue != null) {
+			strBuffer.append('>');
+			strBuffer.append(objValue);
+			strBuffer.append(close(strTagName));
+		}
+		else {
+			strBuffer.append("/>");
+		}
+
+		return strBuffer.toString();
+	}
+
+	/**
+	 * This method returns a tag for the given named element.
+	 */
+	public static String tag(final String strTagName, final NameValuePair pair) {
 		final StringBuilder strBuffer = new StringBuilder();
 
 		start(strBuffer, strTagName, pair);
