@@ -17,6 +17,10 @@ import com.tippingpoint.database.Table;
  * This class is used to parse the database XML which defines the configuration of the database.
  */
 public final class Parser {
+	public static final String TAG_DATA = "data";
+	public static final String TAG_ITEM = "item";
+	public static final String TAG_ITEMS = "items";
+
 	static {
 		ConvertUtils.register(new ColumnTypeConverter(), ColumnType.class);
 	}
@@ -58,8 +62,8 @@ public final class Parser {
 		// place the schema in the root of the digester stack
 		digester.push(importer);
 
-		digester.addRule("data/" + Table.TAG_NAME, new TableSelectRule());
-		digester.addRule("data/" + Table.TAG_NAME + "/item", new RowRule());
+		digester.addRule(TAG_DATA + "/" + Table.TAG_NAME, new TableSelectRule());
+		digester.addRule(TAG_DATA + "/" + Table.TAG_NAME + "/" + TAG_ITEM, new RowRule());
 		digester.addRule("*/" + ColumnDefinition.TAG_NAME, new ColumnValueRule());
 		digester.addRule("*/" + ColumnDefinition.TAG_NAME + "/" + Table.TAG_NAME, new ReferenceTableRule());
 

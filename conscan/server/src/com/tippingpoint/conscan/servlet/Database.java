@@ -307,9 +307,11 @@ public final class Database extends Services {
 	 */
 	private void processException(final HttpServletResponse response, Throwable t) throws IOException {
 		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		response.setContentType("xml/application");
+		response.setContentType("text/xml");
 
 		final PrintWriter writer = response.getWriter();
+
+		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
 		writer.append("<errors>");
 
@@ -335,9 +337,11 @@ public final class Database extends Services {
 	 */
 	private void processSchema(final Schema schema, final HttpServletResponse response) throws IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("xml/application");
+		response.setContentType("text/xml");
 
 		final PrintWriter writer = response.getWriter();
+
+		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
 		writer.append(XmlUtilities.open(Schema.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, schema.getName())));
 
@@ -359,9 +363,11 @@ public final class Database extends Services {
 	 */
 	private void processTable(final Table table, final HttpServletResponse response) throws IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("xml/application");
+		response.setContentType("text/xml");
 
 		final PrintWriter writer = response.getWriter();
+
+		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
 		table.writeXml(writer);
 	}
@@ -376,17 +382,27 @@ public final class Database extends Services {
 	 * @throws SqlExecutionException
 	 * @throws SqlBuilderException
 	 * @throws SqlManagerException
-	 * @throws DatabaseException 
+	 * @throws DatabaseException
 	 */
 	private void retrieveTable(final Table table, final HttpServletResponse response) throws SqlManagerException,
 			SqlBuilderException, SqlExecutionException, SQLException, IOException, DatabaseException {
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("text/xml");
+		final PrintWriter writer = response.getWriter();
+
 		final SqlQuery sqlQuery = new SqlQuery();
 
 		sqlQuery.add(table, true);
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 
-		manager.getSqlManager().execute(sqlQuery, new QueryResults(response.getWriter()));
+		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+		writer.append(XmlUtilities.open(Parser.TAG_DATA));
+
+		manager.getSqlManager().execute(sqlQuery, new QueryResults(writer));
+
+		writer.append(XmlUtilities.close(Parser.TAG_DATA));
 	}
 
 	/**
@@ -394,8 +410,6 @@ public final class Database extends Services {
 	 */
 	private static class QueryResults extends SqlManager.SqlResultAction {
 		private static final String COLUMNS = "columns";
-		private static final String ITEMS = "items";
-		private static final String ITEM = "item";
 
 		/** This member holds the writer used when dumping the results. */
 		private final Writer m_writer;
@@ -414,8 +428,8 @@ public final class Database extends Services {
 		 * @throws IOException
 		 */
 		@Override
-		public void afterRows() throws IOException {
-			m_writer.append(XmlUtilities.close(ITEMS));
+		public void afterRows(final SqlExecution sqlExecution) throws IOException {
+			m_writer.append(XmlUtilities.close(Parser.TAG_ITEMS));
 		}
 
 		/**
@@ -425,18 +439,7 @@ public final class Database extends Services {
 		 * @throws IOException
 		 */
 		@Override
-		public void beforeRows() throws IOException {
-			m_writer.append(XmlUtilities.open(ITEMS));
-		}
-
-		/**
-		 * This method is called prior to the results set being generated.
-		 * 
-		 * @param sqlExecution SqlExecution used to retrieve the result set.
-		 * @throws IOException
-		 */
-		@Override
-		public void execution(final SqlExecution sqlExecution) throws IOException {
+		public void beforeRows(final SqlExecution sqlExecution) throws IOException {
 			m_writer.append(XmlUtilities.open(COLUMNS));
 
 			final Iterator<Column> iterColumnMap = sqlExecution.getColumnMap();
@@ -454,6 +457,7 @@ public final class Database extends Services {
 			}
 
 			m_writer.append(XmlUtilities.close(COLUMNS));
+			m_writer.append(XmlUtilities.open(Parser.TAG_ITEMS));
 		}
 
 		/**
@@ -461,22 +465,23 @@ public final class Database extends Services {
 		 * 
 		 * @param sqlExecution SqlExecution instance used to execute the query.
 		 * @param rs ResultSet being processed.
-		 * @throws IOException 
-		 * @throws DatabaseException 
-		 * @throws SQLException 
+		 * @throws IOException
+		 * @throws DatabaseException
+		 * @throws SQLException
 		 */
 		@Override
-		public void process(SqlExecution sqlExecution, final ResultSet rs) throws IOException, SQLException, DatabaseException {
-			m_writer.append(XmlUtilities.open(ITEM));
-			
+		public void process(final SqlExecution sqlExecution, final ResultSet rs) throws IOException, SQLException,
+				DatabaseException {
+			m_writer.append(XmlUtilities.open(Parser.TAG_ITEM));
+
 			try {
 				final Iterator<Column> iterColumnMap = sqlExecution.getColumnMap();
 				if (iterColumnMap != null && iterColumnMap.hasNext()) {
 					while (iterColumnMap.hasNext()) {
 						final Column column = iterColumnMap.next();
-						
-						Object objValue = sqlExecution.getObject(column, rs);
-						
+
+						final Object objValue = sqlExecution.getObject(column, rs);
+
 						final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
 						listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, column.getName()));
@@ -484,10 +489,10 @@ public final class Database extends Services {
 						m_writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, listAttributes, objValue));
 					}
 				}
-			} finally {
-				m_writer.append(XmlUtilities.close(ITEM));
 			}
-			
+			finally {
+				m_writer.append(XmlUtilities.close(Parser.TAG_ITEM));
+			}
 		}
 	}
 }

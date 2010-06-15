@@ -5,8 +5,13 @@
 		<title>Database</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<!-- 
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		 -->
+		<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
 	</head>
 	<body>
@@ -145,7 +150,7 @@
 				});
 			}
 
-			function showerror(xhr) {
+			function showerror(xhr, status, error) {
 				// alert('Showing error.');
 				jQuery('#errortitle').html(xhr.statusText);
 				jQuery('#errormessage').html('');
@@ -162,6 +167,7 @@
 				jQuery.ajax({
 					type: "OPTIONS",
 					url: "database",
+					dataType: "xml",
 					success: showtables,
 					error: showerror
 				});

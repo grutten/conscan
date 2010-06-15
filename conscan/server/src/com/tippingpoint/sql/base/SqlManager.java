@@ -84,7 +84,7 @@ public abstract class SqlManager {
 	 * @throws SqlManagerException
 	 * @throws SqlExecutionException
 	 * @throws SqlBuilderException
-	 * @throws DatabaseException 
+	 * @throws DatabaseException
 	 * @throws SqlBaseException
 	 */
 	@SuppressWarnings("null")
@@ -97,23 +97,12 @@ public abstract class SqlManager {
 			sqlExecution = getExecution(sqlCommand);
 
 			rs = sqlExecution.executeQuery(conn);
-
-			action.execution(sqlExecution);
-
-			boolean bProcessed = false;
 			if (rs != null) {
-				action.beforeRows();
+				action.beforeRows(sqlExecution);
 				while (rs.next()) {
 					action.process(sqlExecution, rs);
-					bProcessed = true;
 				}
-			}
-
-			if (bProcessed) {
-				action.afterRows();
-			}
-			else {
-				action.noResults();
+				action.afterRows(sqlExecution);
 			}
 		}
 		catch (final SQLException e) {
@@ -136,7 +125,7 @@ public abstract class SqlManager {
 	 * @throws SqlExecutionException
 	 * @throws SqlBuilderException
 	 * @throws SqlManagerException
-	 * @throws DatabaseException 
+	 * @throws DatabaseException
 	 */
 	public void execute(final Command sqlCommand, final SqlResultAction action) throws SQLException,
 			SqlManagerException, SqlBuilderException, SqlExecutionException, DatabaseException {
@@ -404,9 +393,10 @@ public abstract class SqlManager {
 		 * This method is called after the last row is processed. This method is only called if there are rows to be
 		 * processed.
 		 * 
+		 * @param sqlExecution
 		 * @throws IOException
 		 */
-		public void afterRows() throws IOException {
+		public void afterRows(final SqlExecution sqlExecution) throws IOException {
 			// default actions is to do nothing
 		}
 
@@ -414,26 +404,10 @@ public abstract class SqlManager {
 		 * This method is called prior to the first row being processed. This method is only called if there are rows to
 		 * be processed.
 		 * 
+		 * @param sqlExecution
 		 * @throws IOException
 		 */
-		public void beforeRows() throws IOException {
-			// default actions is to do nothing
-		}
-
-		/**
-		 * This method is called prior to the results set being generated.
-		 * 
-		 * @param sqlExecution SqlExecution used to retrieve the result set.
-		 * @throws IOException
-		 */
-		public void execution(final SqlExecution sqlExecution) throws IOException {
-			// default actions is to do nothing
-		}
-
-		/**
-		 * This method is only called if there are no search results returned.
-		 */
-		public void noResults() {
+		public void beforeRows(final SqlExecution sqlExecution) throws IOException {
 			// default actions is to do nothing
 		}
 
@@ -443,10 +417,11 @@ public abstract class SqlManager {
 		 * @param sqlExecution SqlExecution instance used to execute the query.
 		 * @param rs ResultSet being processed.
 		 * @throws IOException
-		 * @throws DatabaseException 
-		 * @throws SQLException 
+		 * @throws DatabaseException
+		 * @throws SQLException
 		 */
-		public abstract void process(SqlExecution sqlExecution, ResultSet rs) throws IOException, SQLException, DatabaseException;
+		public abstract void process(SqlExecution sqlExecution, ResultSet rs) throws IOException, SQLException,
+				DatabaseException;
 	}
 
 	/**
