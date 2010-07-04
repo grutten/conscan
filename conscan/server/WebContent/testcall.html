@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Test Call</title>
+		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<!--
+		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		 -->
+		<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
+	</head>
+	<body>
+		<h1>Test AJAX Call</h1>
+		<div>
+			<table>
+				<tr>
+					<td>URL:</td>
+					<td><input type="text" name="url" value="http://localhost:8080/conscan/database/staff"/></td>
+				</tr>
+				<tr>
+					<td>Action:</td>
+					<td>
+						<select name="action">
+							<option>GET</option>
+							<option>PUT</option>
+							<option>POST</option>
+							<option>OPTIONS</option>
+							<option>HEAD</option>
+							<option>DELETE</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><span class="ui-icon ui-icon-circle-arrow-e"></span></td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<div id="message"></div>
+			<div id="results"></div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		jQuery('.ui-icon-circle-arrow-e').live('click', testcall);
+
+		function testcall() {
+			jQuery('#message').html('');
+			jQuery('#results').html('');
+			
+			var url = jQuery('input[name=url]').val();
+			if (url.length > 0) {
+				var method = jQuery('select[name=action]').val();
+
+				jQuery('#message').html('Calling ' + url + ' (' + method + ')');
+
+				jQuery.blockUI();
+				jQuery.ajax({
+					type: method,
+					url: url,
+					success: function(data, textStatus, XMLHttpRequest) {
+						showresults(data, textStatus, XMLHttpRequest);
+						jQuery.unblockUI();
+					},
+					error: showerror
+				});
+				
+			}
+			else {
+				alert('Please specify a URL.');
+			}
+		}
+
+		function showresults(data, textStatus, XMLHttpRequest) {
+			// alert('Showing ' + data.contentType); 
+			if ("text/xml" == data.contentType) {
+				var results = "";
+				
+				results += "<pre>";
+
+				jQuery(data).children(':first-child').each(function() {
+					results += shownode(this, results);
+				});
+
+				results += "</pre>";
+
+				jQuery('#results').html(results);
+			}
+		}
+
+		function shownode(node) {
+			results = '&lt;' + node.tagName;
+
+			if (node.attributes.length > 0) {
+				for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
+					results += ' ' + node.attributes.item(nIndex).nodeName + '="' + node.attributes.item(nIndex).value + '"';
+				}
+			}
+
+			if (node.childElementCount > 0) {
+				results +=  '&gt;\n';
+
+				for (var nIndex = 0; nIndex < node.childElementCount; ++nIndex) {
+					results += shownode(node.children.item(nIndex));
+				}
+				results += '&lt;/' + node.tagName + '&gt;\n';
+			}
+			else {
+				if (node.textContent.length > 0) {
+					results +=  '&gt;';
+					results += node.textContent;
+					results += '&lt;/' + node.tagName + '&gt;\n';
+				}
+				else {
+					results += '/&gt;\n';
+				}
+			}
+
+			return results;
+		}
+	</script>
+	<script type="text/javascript" src="js/conscan.js"></script>
+</html>

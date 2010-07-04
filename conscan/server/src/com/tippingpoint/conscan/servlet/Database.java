@@ -114,8 +114,8 @@ public final class Database extends Services {
 	/**
 	 * This method executes the get command; which is used to return the contents from the database.
 	 * 
-	 * database/activity - return the contents of the activity table
-	 * database/activity?column=value - return the contents of the activity table for the value in the specified column
+	 * database/<table> - return the contents of the named table
+	 * database/<table>?<column>=<value> - return the contents of the named table for the value in the specified column
 	 * 
 	 * @throws IOException
 	 */
