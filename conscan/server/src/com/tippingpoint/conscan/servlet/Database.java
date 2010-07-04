@@ -306,10 +306,7 @@ public final class Database extends Services {
 	 * @throws IOException
 	 */
 	private void processException(final HttpServletResponse response, Throwable t) throws IOException {
-		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		response.setContentType("text/xml");
-
-		final PrintWriter writer = response.getWriter();
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
 		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
@@ -336,10 +333,7 @@ public final class Database extends Services {
 	 * @throws IOException
 	 */
 	private void processSchema(final Schema schema, final HttpServletResponse response) throws IOException {
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("text/xml");
-
-		final PrintWriter writer = response.getWriter();
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
 
 		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
@@ -362,10 +356,7 @@ public final class Database extends Services {
 	 * @throws IOException
 	 */
 	private void processTable(final Table table, final HttpServletResponse response) throws IOException {
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("text/xml");
-
-		final PrintWriter writer = response.getWriter();
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
 
 		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
@@ -386,9 +377,7 @@ public final class Database extends Services {
 	 */
 	private void retrieveTable(final Table table, final HttpServletResponse response) throws SqlManagerException,
 			SqlBuilderException, SqlExecutionException, SQLException, IOException, DatabaseException {
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("text/xml");
-		final PrintWriter writer = response.getWriter();
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
 
 		final SqlQuery sqlQuery = new SqlQuery();
 

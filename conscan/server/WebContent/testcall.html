@@ -20,7 +20,7 @@
 			<table>
 				<tr>
 					<td>URL:</td>
-					<td><input type="text" name="url" value="http://localhost:8080/conscan/database/staff"/></td>
+					<td><input type="text" name="url" size="80" value="http://localhost:8080/conscan/activity"/></td>
 				</tr>
 				<tr>
 					<td>Action:</td>
@@ -83,7 +83,7 @@
 				results += "<pre>";
 
 				jQuery(data).children(':first-child').each(function() {
-					results += shownode(this, results);
+					results += shownode(this, 1);
 				});
 
 				results += "</pre>";
@@ -92,8 +92,8 @@
 			}
 		}
 
-		function shownode(node) {
-			results = '&lt;' + node.tagName;
+		function shownode(node, nLevel) {
+			results = prefix(nLevel) + '&lt;' + node.tagName;
 
 			if (node.attributes.length > 0) {
 				for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
@@ -105,9 +105,9 @@
 				results +=  '&gt;\n';
 
 				for (var nIndex = 0; nIndex < node.childElementCount; ++nIndex) {
-					results += shownode(node.children.item(nIndex));
+					results += shownode(node.children.item(nIndex), nLevel + 1);
 				}
-				results += '&lt;/' + node.tagName + '&gt;\n';
+				results += prefix(nLevel) + '&lt;/' + node.tagName + '&gt;\n';
 			}
 			else {
 				if (node.textContent.length > 0) {
@@ -121,6 +121,23 @@
 			}
 
 			return results;
+		}
+
+		var PREFIX_BUFFER = '                                                  ';
+		function prefix(nLevel) {
+			var prefix = '';
+			--nLevel;
+
+			if (nLevel < PREFIX_BUFFER.length) {
+				prefix = PREFIX_BUFFER.substring(0, nLevel);
+			}
+			else {
+				for (;nLevel > 0; --nLevel) {
+					prefix += ' ';
+				}
+			}
+
+			return prefix;				
 		}
 	</script>
 	<script type="text/javascript" src="js/conscan.js"></script>
