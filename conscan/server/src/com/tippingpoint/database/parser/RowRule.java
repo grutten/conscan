@@ -12,7 +12,10 @@ public final class RowRule extends ImporterRule {
 	@Override
 	public void begin(final String strNamespace, final String strName, final Attributes attributes) {
 		final Importer importer = getImporter();
+		
+		final String strTableName = attributes.getValue(ATTRIBUTE_NAME);
 
+		importer.setTable(strTableName);
 		importer.clearRow();
 	}
 

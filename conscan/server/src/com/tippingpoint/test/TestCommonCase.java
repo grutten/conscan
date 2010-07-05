@@ -43,7 +43,7 @@ public class TestCommonCase extends TestCase {
 			properties.load(new FileReader(fileProperties));
 		}
 		catch (final FileNotFoundException e) {
-			System.out.println("Could not find properties file '" + fileProperties + "'");
+			System.out.println("Could not find properties file '" + fileProperties.getAbsolutePath() + "'");
 		}
 
 		m_unitTestProperties.load(properties);

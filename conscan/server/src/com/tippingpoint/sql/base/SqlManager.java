@@ -249,10 +249,11 @@ public abstract class SqlManager {
 	 * <li>DATA_TYPE - String containing the type of column</li>
 	 * <li>CHARACTER_MAXIMUM_LENGTH - int containing the length of the text fields</li>
 	 * </ul>
-	 * The string should contain {0}, which is replaced with the database name and {1}, which is replaced with the table
-	 * name.
+	 * 
+	 * @param strDatabaseName String containing the name of the database.
+	 * @param strTableName String containing the name of the table.
 	 */
-	public abstract String getTableDefinitionSql();
+	public abstract String getTableDefinitionSql(String strDatabaseName, String strTableName);
 
 	/**
 	 * This method returns the database specific type for the column.

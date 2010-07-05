@@ -25,13 +25,14 @@ public class SqlManagerMySql extends SqlManager {
 	 * <li>DATA_TYPE - String containing the type of column</li>
 	 * <li>CHARACTER_MAXIMUM_LENGTH - int containing the length of the text fields</li>
 	 * </ul>
-	 * The string should contain {0}, which is replaced with the database name and {1}, which is replaced with the table
-	 * name.
+	 * 
+	 * @param strDatabaseName String containing the name of the database.
+	 * @param strTableName String containing the name of the table.
 	 */
 	@Override
-	public String getTableDefinitionSql() {
-		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, IF(EXTRA = ''auto_increment'', 1, 0) ID_COLUMN, DATA_TYPE, "
-				+ "CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ''{0}'' AND TABLE_NAME = ''{1}'' "
-				+ "ORDER BY ORDINAL_POSITION";
+	public String getTableDefinitionSql(final String strDatabaseName, final String strTableName) {
+		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, IF(EXTRA = 'auto_increment', 1, 0) ID_COLUMN, " +
+				"DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" +
+				strDatabaseName + "' AND TABLE_NAME = '" + strTableName + "' " + "ORDER BY ORDINAL_POSITION";
 	}
 }

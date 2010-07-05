@@ -27,15 +27,17 @@ public class SqlManagerSqlServer extends SqlManager {
 	 * <li>DATA_TYPE - String containing the type of column</li>
 	 * <li>CHARACTER_MAXIMUM_LENGTH - int containing the length of the text fields</li>
 	 * </ul>
-	 * The string should contain {0}, which is replaced with the database name and {1}, which is replaced with the table
-	 * name.
+	 * 
+	 * @param strDatabaseName String containing the name of the database.
+	 * @param strTableName String containing the name of the table.
 	 */
 	@Override
-	public String getTableDefinitionSql() {
-		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + ''.'' + TABLE_NAME), "
-				+ "COLUMN_NAME, ''IsIdentity'') ID_COLUMN, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS "
-				+ "WHERE TABLE_CATALOG = ''{0}'' AND TABLE_NAME = ''{1}'' "
-				+ "ORDER BY COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + ''.'' + TABLE_NAME), COLUMN_NAME, ''ColumnID'')";
+	public String getTableDefinitionSql(final String strDatabaseName, final String strTableName) {
+		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + '.' + " +
+				"TABLE_NAME), COLUMN_NAME, 'IsIdentity') ID_COLUMN, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM " +
+				"INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '" + strDatabaseName + "' AND TABLE_NAME = '" +
+				strTableName + "' ORDER BY COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + '.' + TABLE_NAME), " +
+				"COLUMN_NAME, 'ColumnID')";
 	}
 
 	/**

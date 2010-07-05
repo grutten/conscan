@@ -63,7 +63,7 @@ public final class Parser {
 		digester.push(importer);
 
 		digester.addRule(TAG_DATA + "/" + Table.TAG_NAME, new TableSelectRule());
-		digester.addRule(TAG_DATA + "/" + Table.TAG_NAME + "/" + TAG_ITEM, new RowRule());
+		digester.addRule(TAG_DATA + "/" + TAG_ITEM, new RowRule());
 		digester.addRule("*/" + ColumnDefinition.TAG_NAME, new ColumnValueRule());
 		digester.addRule("*/" + ColumnDefinition.TAG_NAME + "/" + Table.TAG_NAME, new ReferenceTableRule());
 

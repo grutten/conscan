@@ -187,8 +187,7 @@ public final class ConnectionManager {
 	 * @throws SQLException
 	 */
 	private void readTable(final Schema schema, final Table table) throws SQLException {
-		final String strSql =
-			MessageFormat.format(m_sqlManager.getTableDefinitionSql(), schema.getName(), table.getName());
+		final String strSql = m_sqlManager.getTableDefinitionSql(schema.getName(), table.getName());
 
 		Connection conn = null;
 		Statement stmt = null;

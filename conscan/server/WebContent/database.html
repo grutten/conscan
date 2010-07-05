@@ -13,12 +13,14 @@
 		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
+		<script type="text/javascript" src="js/ajaxupload.js"></script>
 	</head>
 	<body>
 		<h1>Database</h1>
 		<div class="leftmenu">
 			<span>Tables</span>
 			<ul class="tablemenu"></ul>
+			<span id="importupload" class="ui-icon ui-icon-circle-arrow-n"></span>
 		</div>
 		<div class="content">
 			<span>Table</span>
@@ -184,6 +186,26 @@
 					jQuery.unblockUI();
 				});
 				loadtables();
+
+				new AjaxUpload('importupload', {
+					action: 'database',
+					// Fired before the file is uploaded 
+					// You can return false to cancel upload
+					// @param file basename of uploaded file
+					// @param extension of that file
+					onSubmit: function(file, extension) {
+			            jQuery.blockUI({ message: 'Uploading ' + file}); 
+					},
+					// Fired when file upload is completed
+					// WARNING! DO NOT USE "FALSE" STRING AS A RESPONSE!
+					// @param file basename of uploaded file
+					// @param response server response
+					onComplete: function(file, response) {
+						//alert('complete');
+			            jQuery.unblockUI();
+					}
+				});
+				
 			});
 		</script>
 		<script type="text/javascript" src="js/conscan.js"></script>

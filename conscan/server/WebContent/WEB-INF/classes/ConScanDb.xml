@@ -16,7 +16,7 @@
 	</table>
 	<table name="compliance">
 		<column name="complianceid" type="id"/>
-		<column name="name" type="string" length="100"/>
+		<column name="name" type="string" length="100" />
 		<constraint name="pk_compliance" type="primary">
 			<column name="complianceid"/>
 		</constraint>
@@ -37,7 +37,8 @@
 	</table>
 	<table name="activity">
 		<column name="activityid" type="id"/>
-		<column name="complianceid" type="idref"/>
+		<column name="name" type="string" length="100" required="true"/>
+		<column name="complianceid" type="idref" required="false"/>
 		<constraint name="pk_activity" type="primary">
 			<column name="activityid"/>
 		</constraint>
