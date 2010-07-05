@@ -3,27 +3,27 @@
 	<tier>
 		<name>tier1</name>
 		<locations>
-			<location>
+			<location locationid="1">
 				<name>T162-A-012L</name>
 				<barcode>0070718001170</barcode>
 				<offenders>
-					<offender>
+					<offender offenderid="1">
 						<name>Iverson</name>
 						<bookingnumber>345345345</bookingnumber>
 						<barcode>0812122010450</barcode>
 					</offender>
-					<offender>
+					<offender offenderid="2">
 						<name>Page</name>
 						<bookingnumber>123456789</bookingnumber>
 						<barcode>0812122010160</barcode>
 					</offender>
 				</offenders>
 			</location>
-			<location>
+			<location locationid="2">
 				<name>T162-A-011L</name>
-				<barcode>L987654111</barcode>
+				<barcode>0052100746043</barcode>
 				<offenders>
-					<offender>
+					<offender offenderid="3">
 						<name>Irving</name>
 						<bookingnumber>234567890</bookingnumber>
 						<barcode>0832924005201</barcode>
@@ -33,210 +33,125 @@
 		</locations>
 	</tier>
 	<complianceconfigurations>
-		<complianceconfiguration id="1">
+		<compliance complianceid="1">
 			<name>default</name>
 			<compliancevalues>
-				<value default="true">comply</value>
-				<value>refuse</value>
+				<compliancevalue compliancevalueid="1" default="true">comply</compliancevalue>
+				<compliancevalue compliancevalueid="2">refuse</compliancevalue>
 			</compliancevalues>
-		</complianceconfiguration>
-		<complianceconfiguration id="2">
+		</compliance>
+		<compliance complianceid="2">
 			<name>workorder</name>
 			<compliancevalues>
-				<value default="true">comply</value>
-				<value>cleanliness</value>
-				<value>paint</value>
-				<value>lights</value>
-				<value>sinks/toilets/showers</value>
-				<value>clean/office supplies</value>
-				<value>hot water</value>
-				<value>heat/air cond</value>
-				<value>doors/locks/gates</value>
-				<value>phones/tv/vending</value>
+				<compliancevalue compliancevalueid="3" default="true">comply</compliancevalue>
+				<compliancevalue compliancevalueid="4">cleanliness</compliancevalue>
+				<compliancevalue compliancevalueid="5">paint</compliancevalue>
+				<compliancevalue compliancevalueid="6">lights</compliancevalue>
+				<compliancevalue compliancevalueid="7">sinks/toilets/showers</compliancevalue>
+				<compliancevalue compliancevalueid="8">clean/office supplies</compliancevalue>
+				<compliancevalue compliancevalueid="9">hot water</compliancevalue>
+				<compliancevalue compliancevalueid="10">heat/air cond</compliancevalue>
+				<compliancevalue compliancevalueid="11">doors/locks/gates</compliancevalue>
+				<compliancevalue compliancevalueid="12">phones/tv/vending</compliancevalue>
 			</compliancevalues>
-		</complianceconfiguration>
-		<complianceconfiguration id="3">
+		</compliance>
+		<compliance complianceid="3">
 			<name>cellsearch</name>
 			<compliancevalues>
-				<value default="true">nothing found</value>
-				<value>cell phone</value>
-				<value>drugs</value>
-				<value>excessive property</value>
-				<value>i/m alcohol</value>
-				<value>smoking materials</value>
-				<value>weapon</value>
-				<value>other</value>
+				<compliancevalue compliancevalueid="13" default="true">nothing found</compliancevalue>
+				<compliancevalue compliancevalueid="14">cell phone</compliancevalue>
+				<compliancevalue compliancevalueid="15">drugs</compliancevalue>
+				<compliancevalue compliancevalueid="16">excessive property</compliancevalue>
+				<compliancevalue compliancevalueid="17">i/m alcohol</compliancevalue>
+				<compliancevalue compliancevalueid="18">smoking materials</compliancevalue>
+				<compliancevalue compliancevalueid="19">weapon</compliancevalue>
+				<compliancevalue compliancevalueid="20">other</compliancevalue>
 			</compliancevalues>
-		</complianceconfiguration>
-		<complianceconfiguration id="4">
+		</compliance>
+		<compliance complianceid="4">
 			<name>pillcallx</name>
 			<compliancevalues>
-				<value default="true">administered</value>
+				<compliancevalue compliancevalueid="21" default="true">administered</compliancevalue>
 			</compliancevalues>
-		</complianceconfiguration>
+		</compliance>
 	</complianceconfigurations>
 	<activities>
 		<!-- SCANTYPE: 1 - cell, 2 - offender -->
 		<!-- COMPLIANCETYPE: 1 - cell, 2 - offender -->
-		<activity>
+		<activity activityid="1">
+			<id>1</id>
 			<name>security check</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>1</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
+		<activity activityid="2">
+			<id>2</id>
 			<name>cell search</name>
-			<complianceconfiguration id="3"/>
+			<compliance complianceid="3"/>
 			<scantype>1</scantype>
 			<compliancetype>1</compliancetype>
 		</activity>
-		<activity>
+		<activity activityid="3">
+			<id>3</id>
 			<name>bedding exchange</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>blanket exchange</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>outerwear exchange</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>underwear exchange</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>towel exchange</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="8">
+			<id>8</id>
 			<name>showers</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
+		<activity activityid="9">
+			<id>9</id>
 			<name>recreation</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>library</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>mail call</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="12">
+			<id>12</id>
 			<name>meals</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
+		<activity activityid="13">
+			<id>13</id>
 			<name>dayroom/indoor recreation</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>religious services</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="15">
+			<id>15</id>
 			<name>school</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>stores/canteen</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>video orient</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>telephones</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>legal mail</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>sick call</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="21">
+			<id>21</id>
 			<name>medical/dental</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>psych</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="23">
+			<id>23</id>
 			<name>visits</name>
-			<complianceconfiguration id="1"/>
+			<compliance complianceid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
-		<activity>
-			<name>attorney visit</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>out to court</name>
-			<complianceconfiguration id="1"/>
-			<scantype>2</scantype>
-			<compliancetype>2</compliancetype>
-		</activity>
-		<activity>
-			<name>pill call</name>
-			<complianceconfiguration id="2"/>
-			<scantype>1</scantype>
-			<compliancetype>1</compliancetype>
-		</activity>
-		<activity>
+		<activity activityid="27">
+			<id>27</id>
 			<name>repair order</name>
-			<complianceconfiguration id="2"/>
+			<compliance complianceid="2"/>
 			<scantype>1</scantype>
 			<compliancetype>1</compliancetype>
 		</activity>
