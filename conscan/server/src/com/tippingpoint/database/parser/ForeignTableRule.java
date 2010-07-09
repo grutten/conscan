@@ -23,12 +23,17 @@ public final class ForeignTableRule extends BaseRule {
 
 			final String strName = attributes.getValue(ATTRIBUTE_NAME);
 
-			Table tableParent = schema.getTable(strName);
+			Table tableParent = null;
+			
+			// check if the parent table is the current table
+			final Table tableCurrent = (Table)getDigester().peek(1);
+			if (strName.equals(tableCurrent.getName())) {
+				tableParent = tableCurrent;
+			}
+			
+			// if not found, then check the schema
 			if (tableParent == null) {
-				final Table tableCurrent = (Table)getDigester().peek(1);
-				if (strName.equals(tableCurrent.getName())) {
-					tableParent = tableCurrent;
-				}
+				tableParent = schema.getTable(strName);
 			}
 
 			constraint.setForeignTable(tableParent);

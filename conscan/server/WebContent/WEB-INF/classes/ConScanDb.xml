@@ -20,6 +20,9 @@
 		<constraint name="pk_compliance" type="primary">
 			<column name="complianceid"/>
 		</constraint>
+		<constraint name="lk_compliance" type="logical">
+			<column name="name"/>
+		</constraint>
 	</table>
 	<table name="compliancevalue">
 		<column name="compliancevalueid" type="id"/>
