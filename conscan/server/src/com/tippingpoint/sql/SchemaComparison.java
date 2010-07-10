@@ -238,23 +238,24 @@ public final class SchemaComparison {
 
 	/**
 	 * This method drops the named constraint from the table.
+	 * 
 	 * @param conn Connection used for all database transactions
 	 * @param sqlManager SqlManager used for all database transactions
 	 * @param table Table definition for the currently defined table
 	 * @param constraint Constraint definition of the constraint to drop.
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
-	private void drop(final Connection conn, final SqlManager sqlManager, final Table table,
-			final Constraint constraint) throws SqlBaseException {
+	private void drop(final Connection conn, final SqlManager sqlManager, final Table table, final Constraint constraint)
+			throws SqlBaseException {
 		// foreign keys can't be updated, so drop and recreate it
-		SqlAlter sqlAlter = new SqlAlter(table);
-		
+		final SqlAlter sqlAlter = new SqlAlter(table);
+
 		sqlAlter.drop(constraint);
-		
+
 		m_log.info("Changing database with: " + sqlAlter.toString());
-		
+
 		sqlManager.executeUpdate(sqlAlter, conn);
-		
+
 		// make sure the definition reflects the changes in the database
 		table.drop(constraint);
 	}
@@ -310,7 +311,7 @@ public final class SchemaComparison {
 
 		return bDropped;
 	}
-	
+
 	/**
 	 * This method returns the list of modified columns. This includes column that are new or those that have a new
 	 * definition.
