@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+	<item name="compliance">
+		<column name="name">default</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">comply</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">refused</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">bedding exchange</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">blanket exchange</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">outerwear exchange</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">underwear exchange</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">towel exchange</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">showers</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">recreation</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">library</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">mail call</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">meals</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">dayroom/indoor recreation</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">religious services</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">school</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">stores/canteen</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">video orientation</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">telephones</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+	<item name="activity">
+		<column name="name">legal mail</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+	</item>
+</data>

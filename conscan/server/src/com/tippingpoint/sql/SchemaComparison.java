@@ -151,6 +151,11 @@ public final class SchemaComparison {
 			constraintCurrent = tableCurrent.getConstraint(constraint.getName());
 			if (constraintCurrent != null) {
 				if (!constraint.equals(constraintCurrent)) {
+					if (constraint instanceof ForeignKeyConstraint) {
+						// foreign keys can't be altered, so drop the old key and let the alter recreate it
+						drop(conn, sqlManager, tableCurrent, constraintCurrent);
+					}
+
 					alter(conn, sqlManager, tableCurrent, constraint);
 				}
 			}
@@ -232,6 +237,29 @@ public final class SchemaComparison {
 	}
 
 	/**
+	 * This method drops the named constraint from the table.
+	 * @param conn Connection used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
+	 * @param table Table definition for the currently defined table
+	 * @param constraint Constraint definition of the constraint to drop.
+	 * @throws SqlBaseException 
+	 */
+	private void drop(final Connection conn, final SqlManager sqlManager, final Table table,
+			final Constraint constraint) throws SqlBaseException {
+		// foreign keys can't be updated, so drop and recreate it
+		SqlAlter sqlAlter = new SqlAlter(table);
+		
+		sqlAlter.drop(constraint);
+		
+		m_log.info("Changing database with: " + sqlAlter.toString());
+		
+		sqlManager.executeUpdate(sqlAlter, conn);
+		
+		// make sure the definition reflects the changes in the database
+		table.drop(constraint);
+	}
+
+	/**
 	 * This method drops the constraint on the table if it contains the specified column.
 	 * 
 	 * @param conn Connection used for all database transactions
@@ -245,16 +273,7 @@ public final class SchemaComparison {
 			final Table tableCurrent, final Constraint constraintCurrent, final Column column) throws SqlBaseException {
 		boolean bDropped = false;
 		if (constraintContainsColumn(constraintCurrent, column)) {
-			final SqlAlter sqlAlter = new SqlAlter(tableCurrent);
-
-			sqlAlter.drop(constraintCurrent);
-
-			m_log.info("Changing database with: " + sqlAlter.toString());
-
-			sqlManager.executeUpdate(sqlAlter, conn);
-
-			// make sure the current definition reflects the changes in the database
-			tableCurrent.drop(constraintCurrent);
+			drop(conn, sqlManager, tableCurrent, constraintCurrent);
 
 			bDropped = true;
 		}
@@ -291,7 +310,7 @@ public final class SchemaComparison {
 
 		return bDropped;
 	}
-
+	
 	/**
 	 * This method returns the list of modified columns. This includes column that are new or those that have a new
 	 * definition.

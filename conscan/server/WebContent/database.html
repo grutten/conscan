@@ -23,7 +23,7 @@
 			<span id="importupload" class="ui-icon ui-icon-circle-arrow-n"></span>
 		</div>
 		<div class="content">
-			<span>Table</span>
+			<span id="contenttitle">&nbsp;</span>
 			<div class="contentdata"></div>
 		</div>
 		<div id="errordialog" class="hidden">
@@ -39,9 +39,23 @@
 			function showTableData(data) {
 				table = "";
 				table += '<table>';
+
+				jQuery(data).find('columns').each(function() {
+					table += '<thead>';
+					table += '<tr>';
+					table += '<td>&nbsp;</td>';
+					jQuery(this).children('column').each(function() {
+						table += '<td>';
+						table += jQuery(this).attr('name');
+						table += '</td>';
+					});
+					table += '</tr>';
+					table += '</thead>';
+				});
 				table += '  <tbody>';
 				jQuery(data).find('item').each(function() {
 					table += '    <tr>';
+					table += '<td><span class="ui-icon ui-icon-trash"></span></td>';
 
 					// add the columns to the string
 					jQuery(this).children('column').each(function() {
@@ -55,6 +69,7 @@
 				table += '  </tbody>';
 				table += '</table>';
 
+				jQuery('span#contenttitle').html('Data');
 				jQuery('div.contentdata').html(table);
 			}
 
@@ -114,6 +129,7 @@
 					table += '  </tbody>';
 					table += '</table>';
 
+					jQuery('span#contenttitle').html('Definition');
 					jQuery('div.contentdata').html(table);
 				});
 			}
@@ -181,6 +197,10 @@
 				});
 			}
 
+			function droprow(event) {
+				alert('droprow - not implemented');
+			}
+
 			jQuery(document).ready(function() {
 				jQuery('#errorcontinue').click(function() {
 					jQuery.unblockUI();
@@ -205,8 +225,8 @@
 			            jQuery.unblockUI();
 					}
 				});
-				
 			});
+			jQuery('.ui-icon-trash').live('click', droprow);
 		</script>
 		<script type="text/javascript" src="js/conscan.js"></script>
 	</body>

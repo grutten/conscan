@@ -31,6 +31,10 @@
 		<constraint name="pk_compliancevalue" type="primary">
 			<column name="compliancevalueid"/>
 		</constraint>
+		<constraint name="lk_compliancevalue" type="logical">
+			<column name="complianceid"/>
+			<column name="value"/>
+		</constraint>
 		<constraint name="fk_compliancevalue_compliance" type="foreign">
 			<column name="complianceid"/>
 			<table name="compliance">
@@ -41,12 +45,15 @@
 	<table name="activity">
 		<column name="activityid" type="id"/>
 		<column name="name" type="string" length="100" required="true"/>
-		<column name="complianceid" type="idref" required="false"/>
+		<column name="complianceid" type="idref"/>
 		<constraint name="pk_activity" type="primary">
 			<column name="activityid"/>
 		</constraint>
+		<constraint name="lk_activity" type="logical">
+			<column name="name"/>
+		</constraint>
 		<constraint name="fk_activity_compliance" type="foreign">
-			<column name="activityid"/>
+			<column name="complianceid"/>
 			<table name="compliance">
 				<column name="complianceid"/>
 			</table>
