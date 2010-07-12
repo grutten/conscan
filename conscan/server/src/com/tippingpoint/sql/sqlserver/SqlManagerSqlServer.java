@@ -14,6 +14,8 @@ public class SqlManagerSqlServer extends SqlManager {
 
 		register(KEYWORD_MODIFY_COLUMN, "ALTER COLUMN");
 		register(KEYWORD_MODIFY_CONSTRAINT, "ALTER");
+		
+		setSqlSchema(new SqlSchemaSqlServer(this));
 	}
 
 	/**

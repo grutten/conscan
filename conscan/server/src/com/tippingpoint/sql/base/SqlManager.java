@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnType;
+import com.tippingpoint.database.ColumnTypeBoolean;
 import com.tippingpoint.database.ColumnTypeDate;
 import com.tippingpoint.database.ColumnTypeFactory;
 import com.tippingpoint.database.ColumnTypeId;
@@ -37,6 +38,7 @@ public abstract class SqlManager {
 	protected static final String KEYWORD_MODIFY_COLUMN = "modify.column";
 	protected static final String KEYWORD_MODIFY_CONSTRAINT = "modify.constraint";
 	static final String KEYWORD_COLUMN_DEFAULT = "column.default";
+	public static final String BOOLEAN_CHECK_PREFIX = "CK_BOOL_";
 
 	/** This member holds a conversion mechanism used to convert a value. */
 	protected DataConversion m_converter = new DataConversion();
@@ -55,6 +57,9 @@ public abstract class SqlManager {
 	private final Map<Class<? extends ColumnType>, ColumnTypeConverter> m_mapTypeConverters =
 		new HashMap<Class<? extends ColumnType>, ColumnTypeConverter>();
 
+	/** This member holds the schema for the manager. */
+	private SqlSchema m_sqlSchema;
+
 	/**
 	 * This method constructs a new builder, registering the types handled by the base class.
 	 */
@@ -65,6 +70,7 @@ public abstract class SqlManager {
 		register(new StringColumnTypeConverter(ColumnTypeString.class));
 		register(new StaticColumnTypeConverter(ColumnTypeIdReference.class, "INTEGER"));
 		register(new StaticColumnTypeConverter(ColumnTypeDate.class, "DATETIME"));
+		register(new BooleanColumnTypeConverter());
 
 		register(KEYWORD_MODIFY_COLUMN, "MODIFY");
 		register(KEYWORD_MODIFY_CONSTRAINT, "MODIFY");
@@ -76,6 +82,9 @@ public abstract class SqlManager {
 		register(new SqlQueryExecutionFactory(), SqlQuery.class);
 		register(new SqlInsertExecutionFactory(), SqlInsert.class);
 		register(new SqlUpdateExecutionFactory(), SqlUpdate.class);
+	
+		// set a default SQL schema
+		setSqlSchema(new SqlSchema(this));
 	}
 
 	/**
@@ -239,6 +248,13 @@ public abstract class SqlManager {
 	}
 
 	/**
+	 * This method returns the schema for this manager. The schema is used to read the schema from the database.
+	 */
+	public SqlSchema getSqlSchema() {
+		return m_sqlSchema;
+	}
+
+	/**
 	 * This method returns the SQL used to query the database for the definitions of columns of the named table. The
 	 * columns returned should be:
 	 * <ul>
@@ -268,9 +284,9 @@ public abstract class SqlManager {
 		ColumnTypeConverter converter = m_mapTypeConverters.get(clsType);
 
 		// search up the hierarchy until a converter is found or the base class is found
-		while (converter == null && !type.getClass().equals(ColumnType.class)) {
+		while (converter == null && !clsType.equals(ColumnType.class)) {
 			// look at the super type
-			clsType = clsType.getEnclosingClass();
+			clsType = clsType.getSuperclass();
 
 			// see if there is a converter for the current column's type
 			converter = m_mapTypeConverters.get(clsType);
@@ -361,6 +377,13 @@ public abstract class SqlManager {
 	}
 
 	/**
+	 * This method sets the SQL schema.
+	 */
+	public void setSqlSchema(final SqlSchema sqlSchema) {
+		m_sqlSchema = sqlSchema;
+	}
+
+	/**
 	 * This method registers a type conversion.
 	 */
 	protected void register(final ColumnTypeConverter converter) {
@@ -423,6 +446,39 @@ public abstract class SqlManager {
 		 */
 		public abstract void process(SqlExecution sqlExecution, ResultSet rs) throws IOException, SQLException,
 				DatabaseException;
+	}
+
+	/**
+	 * This class returns the string version of the type for booleans.
+	 */
+	protected static class BooleanColumnTypeConverter extends ColumnTypeConverter {
+		/**
+		 * This method creates a new type converter.
+		 */
+		public BooleanColumnTypeConverter() {
+			super(ColumnTypeBoolean.class);
+		}
+
+		/**
+		 * This method returns the string version of the type.
+		 */
+		@Override
+		public String get(final ColumnDefinition column) {
+			final StringBuilder strBuffer = new StringBuilder();
+
+			strBuffer.append("int CONSTRAINT ");
+			strBuffer.append(BOOLEAN_CHECK_PREFIX);
+			strBuffer.append(column.getTable().getName().toUpperCase());
+			strBuffer.append("_");
+			strBuffer.append(column.getName().toUpperCase());
+			strBuffer.append(" CHECK (");
+			strBuffer.append(column.getName());
+			strBuffer.append(" = 1 OR ");
+			strBuffer.append(column.getName());
+			strBuffer.append(" = 0)");
+
+			return strBuffer.toString();
+		}
 	}
 
 	/**

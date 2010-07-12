@@ -4,7 +4,7 @@ package com.tippingpoint.database;
  * PrimaryKeyConstraint
  */
 public class PrimaryKeyConstraint extends UniqueKeyConstraint {
-	static final String TYPE = "primary";
+	public static final String TYPE = "primary";
 
 	/**
 	 * This method constructs a new foreign key constraint.

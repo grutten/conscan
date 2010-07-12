@@ -34,7 +34,7 @@ public final class ConstraintFactory {
 	public Constraint get(final String strType) {
 		Constraint constraint = null;
 
-		final Constraint.ConstraintFactory factory = m_mapTypes.get(strType);
+		final Constraint.ConstraintFactory factory = m_mapTypes.get(strType.toUpperCase());
 		if (factory != null) {
 			constraint = factory.get();
 		}
@@ -50,7 +50,7 @@ public final class ConstraintFactory {
 	 */
 	public void registerType(final Constraint.ConstraintFactory factory) {
 		if (factory != null) {
-			final String strType = factory.getType();
+			final String strType = factory.getType().toUpperCase();
 
 			if (!m_mapTypes.containsKey(strType)) {
 				m_mapTypes.put(strType, factory);

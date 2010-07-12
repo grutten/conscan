@@ -25,7 +25,7 @@ public class ColumnTypeFactory {
 		registerType(new ColumnTypeSmallInteger());
 		registerType(new ColumnTypeDate());
 		registerType(new ColumnTypeText());
-		// registerType(new ColumnTypeBoolean());
+		registerType(new ColumnTypeBoolean());
 		// registerType(new ColumnTypeSequence());
 		// registerType(new ColumnTypeInt());
 		// registerType(new ColumnTypeCurrency());

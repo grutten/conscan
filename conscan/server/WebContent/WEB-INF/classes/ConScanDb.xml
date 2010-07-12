@@ -28,6 +28,8 @@
 		<column name="compliancevalueid" type="id"/>
 		<column name="complianceid" type="idref"/>
 		<column name="value" type="string" length="100"/>
+		<column name="isdefault" type="boolean"/>
+		<column name="displayorder" type="integer"/>
 		<constraint name="pk_compliancevalue" type="primary">
 			<column name="compliancevalueid"/>
 		</constraint>

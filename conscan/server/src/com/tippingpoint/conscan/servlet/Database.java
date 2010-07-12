@@ -195,6 +195,10 @@ public final class Database extends Services {
 			m_log.error("Database error retrieving table definition.", e);
 			processException(response, e);
 		}
+		catch (SqlExecutionException e) {
+			m_log.error("Database error retrieving table definition.", e);
+			processException(response, e);
+		}
 		catch (final SQLException e) {
 			m_log.error("SQL error deleting table.", e);
 			processException(response, e);
@@ -256,8 +260,9 @@ public final class Database extends Services {
 	 * @param strObjects String containing the path information.
 	 * @throws SQLException
 	 * @throws DatabaseElementException
+	 * @throws SqlExecutionException 
 	 */
-	private List<Element> getObjects(final String strObjects) throws DatabaseElementException, SQLException {
+	private List<Element> getObjects(final String strObjects) throws DatabaseElementException, SQLException, SqlExecutionException {
 		final List<Element> listElements = new ArrayList<Element>();
 
 		// convert the path string of type 'table/column' to an array of strings

@@ -4,7 +4,7 @@ package com.tippingpoint.database;
  * This class is used to represent an index that is placed on a table.
  */
 public class Index extends Constraint {
-	static final String TYPE = "index";
+	public static final String TYPE = "index";
 
 	/** This member indicates if the index contains unique keys. */
 	private boolean m_bUnique;
