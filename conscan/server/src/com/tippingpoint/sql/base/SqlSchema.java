@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.commons.dbutils.DbUtils;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
-import com.tippingpoint.database.ColumnTypeBoolean;
 import com.tippingpoint.database.ColumnTypeFactory;
 import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.ColumnTypeIdReference;
@@ -22,6 +21,7 @@ import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.ForeignKey;
 import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.Index;
+import com.tippingpoint.database.LogicalKeyConstraint;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
@@ -33,10 +33,7 @@ import com.tippingpoint.sql.SqlExecutionException;
 public class SqlSchema {
 	/** This map holds the mapping of database constraint types. */
 	private static Map<String, String> m_mapConstraintName = new HashMap<String, String>();
-	private static final String SQL_CHECK =
-		"SELECT cc.CONSTRAINT_NAME, CHECK_CLAUSE, COLUMN_NAME FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc, "
-				+ "INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu WHERE cc.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME AND "
-				+ "ccu.TABLE_CATALOG = ? AND ccu.TABLE_NAME = ?";
+
 	private static final String SQL_COLUMN =
 		"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, NULL ID_COLUMN, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, "
 				+ "ORDINAL_POSITION FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = ? AND TABLE_NAME = ? "
@@ -52,7 +49,7 @@ public class SqlSchema {
 				+ "AND kcu1.CONSTRAINT_NAME = rc.CONSTRAINT_NAME AND kcu2.CONSTRAINT_CATALOG = "
 				+ "rc.UNIQUE_CONSTRAINT_CATALOG AND kcu2.CONSTRAINT_SCHEMA = rc.UNIQUE_CONSTRAINT_SCHEMA AND "
 				+ "kcu2.CONSTRAINT_NAME = rc.UNIQUE_CONSTRAINT_NAME AND kcu2.ORDINAL_POSITION = kcu1.ORDINAL_POSITION";
-	private static final String SQL_PRIMARY_KEY =
+	private static final String SQL_KEYS =
 		"SELECT kcu.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, kcu.COLUMN_NAME, kcu.ORDINAL_POSITION FROM "
 				+ "INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc, INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu WHERE "
 				+ "tc.CONSTRAINT_TYPE != 'FOREIGN KEY' AND tc.TABLE_CATALOG = ? AND tc.TABLE_NAME = ? AND "
@@ -87,6 +84,46 @@ public class SqlSchema {
 	}
 
 	/**
+	 * This method returns the SQL used to return the foreign key column information.
+	 * 
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getForeignKeyStatement(final Connection conn, final Schema schema, final Table table)
+			throws SQLException {
+		final PreparedStatement pstmt = conn.prepareStatement(SQL_FOREIGN_KEYS);
+		pstmt.setString(1, schema.getName());
+		pstmt.setString(2, table.getName());
+
+		return pstmt;
+	}
+
+	/**
+	 * This method returns the SQL used to return the key information.
+	 * 
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getKeyStatement(final Connection conn, final Schema schema, final Table table)
+			throws SQLException {
+		final PreparedStatement pstmt = conn.prepareStatement(SQL_KEYS);
+		pstmt.setString(1, schema.getName());
+		pstmt.setString(2, table.getName());
+
+		return pstmt;
+	}
+
+	/**
+	 * This method returns the SQL used to return the table information.
+	 * 
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getSchemaStatement(final Connection conn, final Schema schema) throws SQLException {
+		final PreparedStatement pstmt = conn.prepareStatement(SQL_TABLE);
+		pstmt.setString(1, schema.getName());
+
+		return pstmt;
+	}
+
+	/**
 	 * This method returns the SQL used to return the column information.
 	 * 
 	 * @throws SQLException
@@ -101,53 +138,13 @@ public class SqlSchema {
 	}
 
 	/**
-	 * This method reads in the information about the schema from the database.
-	 * 
-	 * @throws SqlExecutionException
-	 * @throws DatabaseElementException
-	 */
-	private void readSchema(final Connection conn, final Schema schema) throws SqlExecutionException,
-			DatabaseElementException {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			pstmt = conn.prepareStatement(SQL_TABLE);
-			pstmt.setString(1, schema.getName());
-
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				final String strTableName = rs.getString("TABLE_NAME");
-
-				new Table(schema, strTableName);
-			}
-		}
-		catch (final SQLException e) {
-			throw new SqlExecutionException(SQL_TABLE, e);
-		}
-		finally {
-			DbUtils.closeQuietly(null, pstmt, rs);
-		}
-
-		final Iterator<Table> iterTables = schema.getTables();
-		if (iterTables != null && iterTables.hasNext()) {
-			while (iterTables.hasNext()) {
-				final Table table = iterTables.next();
-
-				readTable(conn, schema, table);
-				readTableKeys(conn, schema, table);
-				readTableForeignKeys(conn, schema, table);
-			}
-		}
-	}
-
-	/**
 	 * This method reads in the information about the named table.
 	 * 
 	 * @param table Table definition which contains the name of the Table.
 	 * @throws SqlExecutionException
 	 */
-	private void readTable(final Connection conn, final Schema schema, final Table table) throws SqlExecutionException {
+	protected void readTable(final Connection conn, final Schema schema, final Table table)
+			throws SqlExecutionException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
@@ -178,33 +175,55 @@ public class SqlSchema {
 		}
 		finally {
 			DbUtils.closeQuietly(null, pstmt, rs);
-			pstmt = null;
-			rs = null;
 		}
+	}
 
-		// determine if there are any check constraints indicating boolean fields
+	/**
+	 * This method reads in the information about the schema from the database.
+	 * 
+	 * @throws SqlExecutionException
+	 * @throws DatabaseElementException
+	 */
+	private void readSchema(final Connection conn, final Schema schema) throws SqlExecutionException,
+			DatabaseElementException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
 		try {
-			pstmt = conn.prepareStatement(SQL_CHECK);
-			pstmt.setString(1, schema.getName());
-			pstmt.setString(2, table.getName());
+			pstmt = getSchemaStatement(conn, schema);
+
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				final String strConstraintName = rs.getString("CONSTRAINT_NAME");
-				final String strColumnName = rs.getString("COLUMN_NAME");
+				final String strTableName = rs.getString("TABLE_NAME");
 
-				if (strConstraintName.startsWith(SqlManager.BOOLEAN_CHECK_PREFIX)) {
-					final ColumnDefinition column = table.getColumn(strColumnName);
-					column.setType(ColumnTypeFactory.getFactory().get(ColumnTypeBoolean.TYPE));
-				}
+				new Table(schema, strTableName);
 			}
 		}
 		catch (final SQLException e) {
-			throw new SqlExecutionException(SQL_CHECK, e);
+			throw new SqlExecutionException(SQL_TABLE, e);
 		}
 		finally {
 			DbUtils.closeQuietly(null, pstmt, rs);
-			pstmt = null;
-			rs = null;
+		}
+
+		Iterator<Table> iterTables = schema.getTables();
+		if (iterTables != null && iterTables.hasNext()) {
+			while (iterTables.hasNext()) {
+				final Table table = iterTables.next();
+
+				readTable(conn, schema, table);
+				readTableKeys(conn, schema, table);
+			}
+		}
+
+		// iterate again to read in the foreign keys since the table columns are needed
+		iterTables = schema.getTables();
+		if (iterTables != null && iterTables.hasNext()) {
+			while (iterTables.hasNext()) {
+				final Table table = iterTables.next();
+
+				readTableForeignKeys(conn, schema, table);
+			}
 		}
 	}
 
@@ -220,12 +239,8 @@ public class SqlSchema {
 		ResultSet rs = null;
 
 		try {
-			pstmt = conn.prepareStatement(SQL_FOREIGN_KEYS);
-			pstmt.setString(1, schema.getName());
-			pstmt.setString(2, table.getName());
-
+			pstmt = getForeignKeyStatement(conn, schema, table);
 			rs = pstmt.executeQuery();
-
 			while (rs.next()) {
 				final String strConstraintName = rs.getString("FK_CONSTRAINT_NAME");
 				final String strChildColumnName = rs.getString("FK_COLUMN_NAME");
@@ -282,10 +297,7 @@ public class SqlSchema {
 		ResultSet rs = null;
 
 		try {
-			pstmt = conn.prepareStatement(SQL_PRIMARY_KEY);
-			pstmt.setString(1, schema.getName());
-			pstmt.setString(2, table.getName());
-
+			pstmt = getKeyStatement(conn, schema, table);
 			rs = pstmt.executeQuery();
 
 			Constraint constraint = null;
@@ -302,6 +314,9 @@ public class SqlSchema {
 					}
 
 					constraint = ConstraintFactory.getFactory().get(m_mapConstraintName.get(strConstraintType));
+					if (constraint instanceof Index && strKeyName.startsWith("lk_")) {
+						constraint = ConstraintFactory.getFactory().get(LogicalKeyConstraint.TYPE);
+					}
 
 					constraint.setName(strKeyName);
 				}
@@ -315,7 +330,7 @@ public class SqlSchema {
 			}
 		}
 		catch (final SQLException e) {
-			throw new SqlExecutionException(SQL_PRIMARY_KEY, e);
+			throw new SqlExecutionException(SQL_KEYS, e);
 		}
 		finally {
 			DbUtils.closeQuietly(null, pstmt, rs);

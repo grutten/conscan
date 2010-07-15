@@ -154,6 +154,9 @@
 		<column name="comment" type="text"/>
 		<column name="created" type="date"/>
 		<column name="modified" type="date"/>
+		<constraint name="pk_logcomment" type="primary">
+			<column name="logcommentid"/>
+		</constraint>
 		<constraint name="fk_logcomment_log" type="foreign">
 			<column name="logid"/>
 			<table name="log">

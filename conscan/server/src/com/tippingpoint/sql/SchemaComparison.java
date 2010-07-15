@@ -57,9 +57,8 @@ public final class SchemaComparison {
 			while (iterTables.hasNext()) {
 				final Table table = iterTables.next();
 
-				final Table tableCurrent = m_schemaCurrent.getTable(table.getName());
-				if (tableCurrent != null) {
-					compare(conn, sqlManager, tableCurrent, table);
+				if (m_schemaCurrent.hasTable(table.getName())) {
+					compare(conn, sqlManager, m_schemaCurrent.getTable(table.getName()), table);
 				}
 				else {
 					final SqlCreate sqlCreate = new SqlCreate(table);
@@ -161,6 +160,32 @@ public final class SchemaComparison {
 			}
 			else {
 				alter(conn, sqlManager, tableCurrent, constraint);
+			}
+		}
+	}
+
+	/**
+	 * This method compares primary key constraints of the desired table versus the current table.
+	 * 
+	 * @param conn Connection used for all database transactions
+	 * @param sqlManager SqlManager used for all database transactions
+	 * @param tableCurrent Table definition of the current table.
+	 * @param primaryKeyConstraint PrimaryKeyConstraint definition of the desired constraint.
+	 * @throws SqlBaseException
+	 */
+	private void compare(final Connection conn, final SqlManager sqlManager, final Table tableCurrent,
+			final PrimaryKeyConstraint primaryKeyConstraint) throws SqlBaseException {
+		if (primaryKeyConstraint != null) {
+			PrimaryKeyConstraint primaryKeyConstraintCurrent = null;
+
+			primaryKeyConstraintCurrent = tableCurrent.getPrimaryKey();
+			if (primaryKeyConstraintCurrent != null) {
+				if (!primaryKeyConstraint.equals(primaryKeyConstraintCurrent)) {
+					alter(conn, sqlManager, tableCurrent, primaryKeyConstraint);
+				}
+			}
+			else {
+				alter(conn, sqlManager, tableCurrent, primaryKeyConstraint);
 			}
 		}
 	}

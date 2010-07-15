@@ -5,7 +5,7 @@ package com.tippingpoint.database;
  * but an id is used instead for simplicity. Note that this does not represent any entity in the database.
  */
 public class LogicalKeyConstraint extends UniqueKeyConstraint {
-	static final String TYPE = "logical";
+	public static final String TYPE = "logical";
 
 	/**
 	 * This method constructs a new logical key constraint.

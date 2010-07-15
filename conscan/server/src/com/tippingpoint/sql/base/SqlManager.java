@@ -35,16 +35,19 @@ import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.SqlUpdate;
 
 public abstract class SqlManager {
+	public static final String BOOLEAN_CHECK_PREFIX = "CK_BOOL_";
 	protected static final String KEYWORD_MODIFY_COLUMN = "modify.column";
 	protected static final String KEYWORD_MODIFY_CONSTRAINT = "modify.constraint";
 	static final String KEYWORD_COLUMN_DEFAULT = "column.default";
-	public static final String BOOLEAN_CHECK_PREFIX = "CK_BOOL_";
 
 	/** This member holds a conversion mechanism used to convert a value. */
 	protected DataConversion m_converter = new DataConversion();
 
 	/** This member holds the weak reference to the associated connection manager. */
 	private WeakReference<ConnectionManager> m_connectionManager;
+
+	/** This member holds the mapping of database column types to column types. */
+	private final Map<String, String> m_mapColumnTypes = new HashMap<String, String>();
 
 	/** This member holds a map of keywords. */
 	private final Map<String, String> m_mapKeywords = new HashMap<String, String>();
@@ -82,7 +85,15 @@ public abstract class SqlManager {
 		register(new SqlQueryExecutionFactory(), SqlQuery.class);
 		register(new SqlInsertExecutionFactory(), SqlInsert.class);
 		register(new SqlUpdateExecutionFactory(), SqlUpdate.class);
-	
+
+		registerType("varchar", ColumnTypeString.TYPE);
+		registerType("nvarchar", ColumnTypeString.TYPE);
+		registerType("datetime", ColumnTypeDate.TYPE);
+		registerType("int", ColumnTypeInteger.TYPE);
+		registerType("smallint", ColumnTypeSmallInteger.TYPE);
+		registerType("text", ColumnTypeText.TYPE);
+		registerType("tinyint", ColumnTypeBoolean.TYPE);
+
 		// set a default SQL schema
 		setSqlSchema(new SqlSchema(this));
 	}
@@ -344,23 +355,12 @@ public abstract class SqlManager {
 			type = ColumnTypeFactory.getFactory().get(ColumnTypeId.TYPE);
 		}
 		else {
-			if ("varchar".equals(strDataType) || "nvarchar".equals(strDataType)) {
-				type = ColumnTypeFactory.getFactory().get(ColumnTypeString.TYPE);
-			}
-			else if ("datetime".equals(strDataType)) {
-				type = ColumnTypeFactory.getFactory().get(ColumnTypeDate.TYPE);
-			}
-			else if ("int".equals(strDataType)) {
-				type = ColumnTypeFactory.getFactory().get(ColumnTypeInteger.TYPE);
-			}
-			else if ("smallint".equals(strDataType)) {
-				type = ColumnTypeFactory.getFactory().get(ColumnTypeSmallInteger.TYPE);
-			}
-			else if ("text".equals(strDataType) || "varbinary".equals(strDataType)) {
-				type = ColumnTypeFactory.getFactory().get(ColumnTypeText.TYPE);
+			final String strType = m_mapColumnTypes.get(strDataType);
+			if (strType != null) {
+				type = ColumnTypeFactory.getFactory().get(strType);
 			}
 			else {
-				throw new RuntimeException("Unknown database type: " + strDataType);
+				type = ColumnTypeFactory.getFactory().get(strDataType);
 			}
 		}
 
@@ -407,6 +407,13 @@ public abstract class SqlManager {
 	 */
 	protected void register(final String strKeyword, final String strValue) {
 		m_mapKeywords.put(strKeyword, strValue);
+	}
+
+	/**
+	 * This method registers a database type.
+	 */
+	protected void registerType(final String strDatabaseType, final String strColumnType) {
+		m_mapColumnTypes.put(strDatabaseType, strColumnType);
 	}
 
 	/**
@@ -466,7 +473,7 @@ public abstract class SqlManager {
 		public String get(final ColumnDefinition column) {
 			final StringBuilder strBuffer = new StringBuilder();
 
-			strBuffer.append("int CONSTRAINT ");
+			strBuffer.append("tinyint CONSTRAINT ");
 			strBuffer.append(BOOLEAN_CHECK_PREFIX);
 			strBuffer.append(column.getTable().getName().toUpperCase());
 			strBuffer.append("_");

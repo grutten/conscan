@@ -1,5 +1,7 @@
 package com.tippingpoint.sql.mysql;
 
+import com.tippingpoint.database.ColumnDefinition;
+import com.tippingpoint.database.ColumnTypeBoolean;
 import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.base.SqlManager;
@@ -10,8 +12,11 @@ public class SqlManagerMySql extends SqlManager {
 	 */
 	public SqlManagerMySql() {
 		register(new StaticColumnTypeConverter(ColumnTypeId.class, "INTEGER AUTO_INCREMENT"));
+		register(new BooleanColumnTypeConverter());
 
 		register(new SqlAlterExecutionFactory(), SqlAlter.class);
+
+		setSqlSchema(new SqlSchemaMySql(this));
 	}
 
 	/**
@@ -34,5 +39,39 @@ public class SqlManagerMySql extends SqlManager {
 		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, IF(EXTRA = 'auto_increment', 1, 0) ID_COLUMN, " +
 				"DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" +
 				strDatabaseName + "' AND TABLE_NAME = '" + strTableName + "' " + "ORDER BY ORDINAL_POSITION";
+	}
+
+	/**
+	 * This class returns the string version of the type for booleans.
+	 */
+	protected static class BooleanColumnTypeConverter extends ColumnTypeConverter {
+		/**
+		 * This method creates a new type converter.
+		 */
+		public BooleanColumnTypeConverter() {
+			super(ColumnTypeBoolean.class);
+		}
+
+		/**
+		 * This method returns the string version of the type.
+		 */
+		@Override
+		public String get(final ColumnDefinition column) {
+			final StringBuilder strBuffer = new StringBuilder();
+
+			strBuffer.append("tinyint ");
+			strBuffer.append(BOOLEAN_CHECK_PREFIX);
+			strBuffer.append(column.getTable().getName().toUpperCase());
+			strBuffer.append("_");
+			strBuffer.append(column.getName().toUpperCase());
+			strBuffer.append(" CHECK (");
+			strBuffer.append(column.getName());
+			strBuffer.append(" = 1 OR ");
+			strBuffer.append(column.getName());
+			strBuffer.append(" = 0)");
+
+			// return strBuffer.toString();
+			return "BOOLEAN";
+		}
 	}
 }

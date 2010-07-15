@@ -41,7 +41,6 @@ public final class Schema extends Element {
 	 */
 	public Table getTable(final String strName) {
 		final Table table = m_tables.get(strName);
-
 		if (table == null) {
 			m_log.error("Error retreiving table '" + strName + "'");
 		}
@@ -63,5 +62,12 @@ public final class Schema extends Element {
 	 */
 	public Iterator<Table> getTables() {
 		return m_tables.values().iterator();
+	}
+
+	/**
+	 * This method returns if the named table exists.
+	 */
+	public boolean hasTable(final String strName) {
+		return m_tables.containsKey(strName);
 	}
 }

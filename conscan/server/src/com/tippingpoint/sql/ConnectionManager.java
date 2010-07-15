@@ -80,23 +80,24 @@ public final class ConnectionManager {
 	/**
 	 * This method will return a schema based on the details found in the database.
 	 * 
-	 * @throws SqlExecutionException 
+	 * @throws SqlExecutionException
 	 * @throws DatabaseElementException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public Schema getSchema(final String strSchemaName) throws SqlExecutionException, DatabaseElementException, SQLException {
+	public Schema getSchema(final String strSchemaName) throws SqlExecutionException, DatabaseElementException,
+			SQLException {
 		Schema schema = null;
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-//			final DatabaseMetaData metaData = conn.getMetaData();
+			// final DatabaseMetaData metaData = conn.getMetaData();
 
-//			schema = new Schema(strSchemaName);
+			// schema = new Schema(strSchemaName);
 
-//			readSchema(metaData, schema);
-			
+			// readSchema(metaData, schema);
+
 			schema = m_sqlManager.getSqlSchema().getSchema(conn, strSchemaName);
 		}
 		finally {
