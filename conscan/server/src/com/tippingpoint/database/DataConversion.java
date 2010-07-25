@@ -82,7 +82,7 @@ public final class DataConversion {
 		ColumnTypeConversion conversion = m_conversions.get(clsType);
 
 		// search up the hierarchy until a converter is found or the base class is found
-		while (conversion == null && !type.getClass().equals(ColumnType.class)) {
+		while (conversion == null && !clsType.equals(ColumnType.class)) {
 			// look at the super type
 			clsType = clsType.getSuperclass();
 
@@ -98,6 +98,7 @@ public final class DataConversion {
 		m_conversions.put(ColumnTypeIdBase.class, new ColumnTypeIdConversion());
 		m_conversions.put(ColumnTypeDate.class, new ColumnTypeDateConversion());
 		m_conversions.put(ColumnTypeInteger.class, new ColumnTypeIntegerConversion());
+		m_conversions.put(ColumnTypeBoolean.class, new ColumnTypeBooleanConversion());
 	}
 
 	/**
@@ -128,6 +129,60 @@ public final class DataConversion {
 		 * are performed if necessary. Additionally, glitches are added, if necessary. This method should be used
 		 * conservatively, since parameterized SQL statements are preferable.
 		 */
+		public String convertToSqlString(final Object objValue) {
+			String strValue = Command.SQL_NULL;
+
+			if (objValue != null) {
+				strValue = objValue.toString();
+			}
+
+			return strValue;
+		}
+	}
+
+	/**
+	 * This class is used to convert boolean type conversions.
+	 */
+	private static class ColumnTypeBooleanConversion extends ColumnTypeConversion {
+		/**
+		 * This method reads the entry in the result set and returns it as a type native to the column type.
+		 * 
+		 * @param rs Result set containing the results.
+		 * @param intIndex Integer corresponding to the index of the column in the result set.
+		 * @throws SQLException
+		 */
+		@Override
+		public Object convertToObject(final ResultSet rs, final Integer intIndex) throws SQLException {
+			Boolean result = Boolean.FALSE;
+			final int nValue = rs.getInt(intIndex);
+
+			if (!rs.wasNull() && nValue != 0) {
+				result = Boolean.TRUE;
+			}
+
+			return result;
+		}
+
+		/**
+		 * This method converts the object to an object acceptable to be placed as a parameter in a SQL statement.
+		 */
+		@Override
+		public Object convertToSqlObject(final Object objValue) {
+			Object objReturnValue = objValue;
+
+			if (objValue instanceof Boolean) {
+				objReturnValue = new Integer(Boolean.TRUE.equals(objValue) ? 1 : 0);
+			}
+
+			return objReturnValue;
+		}
+
+		/**
+		 * This method converts the object to a string acceptable to be placed in a SQL statement. Default conversions
+		 * are performed if necessary. Additionally, glitches are added, if necessary. This method should be used
+		 * conservatively, since parameterized SQL statements are preferable.
+		 */
+		@Override
 		public String convertToSqlString(final Object objValue) {
 			String strValue = Command.SQL_NULL;
 
