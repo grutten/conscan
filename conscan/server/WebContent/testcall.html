@@ -44,9 +44,22 @@
 			<div id="message"></div>
 			<div id="results"></div>
 		</div>
+		<div id="errordialog" class="hidden">
+			<div id="errortitle" class="erroritem"></div>
+			<div id="errormessage" class="erroritem"></div>
+			<div id="errortrace" class="hidden erroritem"></div>
+			<br/>
+			<div class="erroritem">
+				<input type="button" id="errorcontinue" value="Continue"/>
+			</div>
+		</div>
 	</body>
 	<script type="text/javascript">
 		jQuery('.ui-icon-circle-arrow-e').live('click', testcall);
+		jQuery('#errorcontinue').live('click', function() {
+			jQuery.unblockUI();
+		});
+
 
 		function testcall() {
 			jQuery('#message').html('');

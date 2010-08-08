@@ -20,7 +20,6 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -304,32 +303,6 @@ public final class Database extends Services {
 		}
 
 		return listElements;
-	}
-
-	/**
-	 * This method returns and XML string representing the exception.
-	 * 
-	 * @throws IOException
-	 */
-	private void processException(final HttpServletResponse response, Throwable t) throws IOException {
-		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-		writer.append("<errors>");
-
-		while (t != null) {
-			writer.append("<error>");
-			writer.append("<class>").append(StringEscapeUtils.escapeXml(t.getClass().toString())).append("</class>");
-			writer.append("<message>").append(StringEscapeUtils.escapeXml(t.getMessage())).append("</message>");
-			writer.append("<trace>");
-			t.printStackTrace(writer);
-			writer.append("</trace>");
-			writer.append("</error>");
-
-			t = t.getCause();
-		}
-		writer.append("</errors>");
 	}
 
 	/**

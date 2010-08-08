@@ -35,4 +35,14 @@
     <servlet-name>Database</servlet-name>
     <url-pattern>/database/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Scanner</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Scanner</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Scanner</servlet-name>
+    <url-pattern>/scanner/*</url-pattern>
+  </servlet-mapping>
 </web-app>

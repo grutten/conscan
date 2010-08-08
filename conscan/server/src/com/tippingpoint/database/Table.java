@@ -178,6 +178,37 @@ public class Table extends Element {
 	}
 
 	/**
+	 * This method returns the foreign key associated with the passed on parent column.
+	 * 
+	 * @param columnParentId Column referring to the parent table.
+	 */
+	public ForeignKey getForeignKey(final Column columnParentId) {
+		ForeignKey foundForeignKey = null;
+
+		final Iterator<Constraint> iterConstraints = getConstraints();
+		if (iterConstraints != null && iterConstraints.hasNext()) {
+			while (iterConstraints.hasNext() && foundForeignKey == null) {
+				final Constraint constraint = iterConstraints.next();
+				if (constraint instanceof ForeignKeyConstraint) {
+					final ForeignKeyConstraint foreignKeyConstraint = (ForeignKeyConstraint)constraint;
+					final Iterator<Column> iterForeignKeys = foreignKeyConstraint.getColumns();
+					if (iterForeignKeys != null && iterForeignKeys.hasNext()) {
+						while (iterForeignKeys.hasNext() && foundForeignKey == null) {
+							final ForeignKey foreignKey = (ForeignKey)iterForeignKeys.next();
+
+							if (columnParentId.equals(foreignKey.getParentColumn())) {
+								foundForeignKey = foreignKey;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return foundForeignKey;
+	}
+
+	/**
 	 * This member returns the logical key for the table.
 	 */
 	public LogicalKeyConstraint getLogicalKey() {

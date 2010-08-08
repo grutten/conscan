@@ -80,6 +80,10 @@ public abstract class SqlExecution {
 	 * @throws SqlExecutionException
 	 */
 	public ResultSet executeQuery(final Connection conn) throws SqlBuilderException, SqlExecutionException {
+		if (conn == null) {
+			throw new IllegalArgumentException("Connection must be specified.");
+		}
+
 		ResultSet rs = null;
 		final String strSql = getSql();
 

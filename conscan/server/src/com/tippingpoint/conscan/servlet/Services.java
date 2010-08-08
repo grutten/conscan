@@ -4,12 +4,39 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
 	private static final long serialVersionUID = -5482024580102875533L;
+
+	/**
+	 * This method returns and XML string representing the exception.
+	 * 
+	 * @throws IOException
+	 */
+	protected void processException(final HttpServletResponse response, Throwable t) throws IOException {
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+		writer.append("<errors>");
+
+		while (t != null) {
+			writer.append("<error>");
+			writer.append("<class>").append(StringEscapeUtils.escapeXml(t.getClass().toString())).append("</class>");
+			writer.append("<message>").append(StringEscapeUtils.escapeXml(t.getMessage())).append("</message>");
+			writer.append("<trace>");
+			t.printStackTrace(writer);
+			writer.append("</trace>");
+			writer.append("</error>");
+
+			t = t.getCause();
+		}
+		writer.append("</errors>");
+	}
 
 	/**
 	 * This method prepares the response for returning XML.
