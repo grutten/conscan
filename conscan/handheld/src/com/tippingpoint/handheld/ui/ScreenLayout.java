@@ -19,6 +19,7 @@ import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
+import com.tippingpoint.handheld.data.Scannable;
 
 public class ScreenLayout extends ScreenListeners {
 	/**
@@ -81,6 +82,9 @@ public class ScreenLayout extends ScreenListeners {
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity activity = findActivity(strSelection); 
 
+		// TODO: is this call sufficient to garbage collect all the compliance
+		// controls created and added in the hierarchy of panels each time an
+		// activity screen is rendered???
 		m_panelBodyActivity.removeAll();
 		addBodyPanel(m_panelBodyActivity, BorderLayout.NORTH);
 
@@ -102,12 +106,25 @@ public class ScreenLayout extends ScreenListeners {
         if (i.hasNext()) {
         	// Draw the FIRST scannable set of fields
         	Object o = i.next();
-        	nRow = drawDynamicFields(o, activity, nRow, m_choiceCompliance1);
+        	Scannable s = null;
+        	if (o instanceof Scannable)
+        		s = (Scannable)o;
+        	if (s != null)
+        		nRow = drawDynamicFields(s, activity, nRow, s.getComplianceControl());
+        	// TODO: detect a null scannable and add a message to the screen.
+        	// Determine how to handle elegantly.
         }
         if (i.hasNext()) {
         	// Draw the SECOND scannable set of fields
         	Object o = i.next();
-        	drawDynamicFields(o, activity, nRow, m_choiceCompliance2);
+        	Scannable s = null;
+        	if (o instanceof Scannable)
+        		s = (Scannable)o;
+        	
+        	if (s != null)
+        		drawDynamicFields(s, activity, nRow, s.getComplianceControl());
+        	// TODO: detect a null scannable and add a message to the screen.
+        	// Determine how to handle elegantly.
         }
         
         
@@ -215,7 +232,8 @@ public class ScreenLayout extends ScreenListeners {
 //        addField(p, m_panelBottom, 0, nRow, 1, 1, GridBagConstraints.SOUTHWEST);
     }
     
-    private int drawDynamicFields(Object o, Activity activity, int nRow, DataChoice cCompliance) {
+    private int drawDynamicFields(Scannable scannable, Activity activity, int nRow, DataChoice cCompliance) {
+    	Object o = scannable.getObject();
     	if (o instanceof Offender) {
     		Panel pCompliance = new Panel();
     		pCompliance.setLayout(new GridBagLayout());

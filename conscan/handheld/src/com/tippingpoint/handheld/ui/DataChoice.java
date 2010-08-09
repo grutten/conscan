@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class DataChoice extends Choice {
 	private HashMap m_hashItems = new HashMap();
 	
-	DataChoice() {
+	public DataChoice() {
 		super();
 	}
 	

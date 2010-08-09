@@ -58,8 +58,6 @@ public class Screen extends Frame {
     protected Button m_buttonReplace;
     protected Button m_buttonScanIndicator;
     protected Choice m_choiceActivity = new Choice();  // instantiate here so that selection will persist
-    protected DataChoice m_choiceCompliance1 = new DataChoice();
-    protected DataChoice m_choiceCompliance2 = new DataChoice();
     protected Label m_labelBarcode = new Label("<scan>");
     protected Label m_labelFeedback = new Label("");
 

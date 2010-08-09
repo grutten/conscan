@@ -21,7 +21,7 @@ public class Data {
 	private HashMap m_hashLocationByOffendersBarcode = new HashMap();
 	private HashMap m_hashOffenderByBarcode = new HashMap();
 	private ArrayList m_listActivities = new ArrayList();
-	private ArrayList m_listScannablesForLogging = new ArrayList();
+	private ArrayList m_listScannablesForLogging = new ArrayList();  // Array of type Scannable
 	private String m_strCurrentBarcode;
 	private String m_strFeedback;
 
@@ -125,15 +125,14 @@ public class Data {
 	 * @return
 	 */
 	public ArrayList populateScannables(String strBarcode, Activity activity) {
-		m_listScannablesForLogging.clear();
+		clearScannables();
 		setFeedback("");
 		
 		if (activity.isOffenderScan()) {
 			Offender o = getOffenderByBarcode(strBarcode);
 			if (o != null)
-				m_listScannablesForLogging.add(o);
+				addScannable(o);
 			else {
-//				System.out.println("OFFENDER: unexpected problem, no offender found");
 				setFeedback("EXPECTING: offender scan");
 			}
 		}
@@ -141,14 +140,14 @@ public class Data {
 	    	Location l = getLocationByBarcode(strBarcode);
 	    	
 			if (l == null) {
-//				System.out.println("LOCATION: unexpected problem, no location found");
 				setFeedback("EXPECTING: location scan");
 			}
 			else {
 				Iterator i = l.getOffenders().iterator();
 				while (i.hasNext()) {
 					Offender o = (Offender)i.next();
-					m_listScannablesForLogging.add(o);
+					addScannable(o);
+					System.out.println("added scannable offender: " + o.getName());
 				}
 			}
 		}
@@ -156,11 +155,10 @@ public class Data {
 	    	Location l = getLocationByBarcode(strBarcode);
 	    	
 			if (l == null) {
-//				System.out.println("LOCATION: unexpected problem, no location found");
 				setFeedback("EXPECTING: location scan");
 			}
 			else
-				m_listScannablesForLogging.add(l);
+				addScannable(l);
 		}
 		else
 			setFeedback("BUG: undetermined scan type");
@@ -168,7 +166,41 @@ public class Data {
 		
 		return m_listScannablesForLogging; 
 	}
-    
+
+	private void addScannable(Location l) {
+		Scannable s = new Scannable();
+		
+		s.setObject(l);
+		m_listScannablesForLogging.add(s);
+	}
+	
+	private void addScannable(Offender o) {
+		Scannable s = new Scannable();
+		
+		s.setObject(o);
+		m_listScannablesForLogging.add(s);
+	}
+	
+	/**
+	 * Destroys temporary data in the scannable list (e.g. compliance control)
+	 */
+	private void clearScannables() {
+		Iterator i = m_listScannablesForLogging.iterator();
+		while (i.hasNext()) {
+			Object o = i.next();
+			
+			if (o instanceof Scannable) {
+				Scannable s = (Scannable)o;
+				
+				s.clearComplianceControl();
+			}
+				
+		}
+		
+		m_listScannablesForLogging.clear();
+
+	}
+	
     /**
      * Traverse the collection of locations.  For each location, traverse its collection of offenders.
      * For each offender, insert an entry into a map so that the offenders location can be retrieved.
