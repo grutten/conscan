@@ -18,7 +18,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	protected static final String TAG_ACTIVITY = "activity";
 	protected static final String TAG_BARCODE = "barcode";
 	protected static final String TAG_BOOKINGNUMBER = "bookingnumber";
-	protected static final String TAG_COMPLIANCE = "compliance";
+	protected static final String TAG_COMPLIANCECONFIGURATION = "complianceconfiguration";
 	protected static final String TAG_COMPLIANCECONFIGURATIONS = "complianceconfigurations";
 	protected static final String TAG_COMPLIANCETYPE = "compliancetype";
 	protected static final String TAG_COMPLIANCEVALUE = "compliancevalue";

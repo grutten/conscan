@@ -6,7 +6,7 @@ import org.xml.sax.XMLReader;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
 public class HandheldXmlHandler extends SaxBaseHandler {
-	private boolean m_bLoggingEnabled = false;
+	private boolean m_bLoggingEnabled = true;
 	private Data m_data;
 	private String m_strTierName;
 	
@@ -99,7 +99,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 				
 			logStartElement("Activity", uri, name, qName);
 			
-			if (TAG_COMPLIANCE.equalsIgnoreCase(name)) {
+			if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
 				// the compliance id will be saved later
 				m_strComplianceConfiguration = attrs.getValue(ATTRIBUTE_COMPLIANCEID); 
 			    handheldLog("     -->" + m_strComplianceConfiguration + "<--");
@@ -130,7 +130,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 				m_compliance.addValue(complianceValue);			
 			    handheldLog("     -->" + m_strCurrentTagValue + "<--");
 			}
-			else if (TAG_COMPLIANCE.equalsIgnoreCase(name)) {
+			else if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
 				m_compliance.setComplianceId(m_strComplianceConfigurationId);
 				m_compliance.setName(m_strComplianceConfigurationName);
 				getData().saveCompliance(m_compliance);
@@ -138,13 +138,13 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			else if (TAG_COMPLIANCECONFIGURATIONS.equalsIgnoreCase(name))
 	    		popHandler();
 	    	
-			logEndElement("Compliance", uri, name, qName);
+			logEndElement("ComplianceConfiguration", uri, name, qName);
 	    }
 
 		public void startElement (String uri, String name, String qName, Attributes attrs) {
-			logStartElement("Compliance", uri, name, qName);
+			logStartElement("ComplianceConfiguration", uri, name, qName);
 			
-			if (TAG_COMPLIANCE.equalsIgnoreCase(name)) {
+			if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
 				m_compliance = new Compliance();
 				m_strComplianceConfigurationId = attrs.getValue(ATTRIBUTE_COMPLIANCEID);
 			    handheldLog("     -->" + m_strComplianceConfigurationId + "<--");
