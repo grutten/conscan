@@ -1,19 +1,30 @@
-<project default="buildjar">
+<project default="copyFiles">
+	<available filepath="C:/Documents and Settings/Jay" property="machine.jay" />
+
+	<target name="buildcompile">
+		<mkdir dir="classes"/>
+		<javac srcdir="." destdir="classes" source="1.2" target="1.2" classpath="cn3lib\DataCollection.jar">
+		</javac>
+	</target>
+
 	<target name="buildjar" depends="buildcompile">
 		<jar destfile="handheld.jar" basedir="classes">
 			<manifest>
 				<attribute name="Main-Class" value="com.tippingpoint.handheld.ui.Application" />
 			</manifest>
 		</jar>
+	</target>
+	
+	<target name="copyFiles" depends="copyJay, copyMark" />
+	
+	<target name="copyJay" unless="machine.jay" depends="buildjar">
 		<copy file="handheld.jar" todir="C:/Documents and Settings/Jay/My Documents/CN3A00700700729 My Documents"/>
 		<copy file="xml/handheld.xml" todir="C:/Documents and Settings/Jay/My Documents/CN3A00700700729 My Documents"/>
 	</target>
 	
-	<target name="buildcompile">
-		<mkdir dir="classes"/>
-		<javac srcdir="." destdir="classes" source="1.2" target="1.2" classpath="cn3lib\DataCollection.jar">
-		</javac>
+	<target name="copyMark" if="machine.jay" depends="buildjar">
+		<copy file="handheld.jar" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/>
+		<copy file="xml/handheld.xml" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/>
 	</target>
-	
 	
 </project>
