@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
+import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.DatabaseException;
@@ -36,11 +37,13 @@ import com.tippingpoint.database.parser.Importer;
 import com.tippingpoint.database.parser.Parser;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
+import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.SqlExecutionException;
+import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.base.SqlExecution;
@@ -251,6 +254,41 @@ public final class Database extends Services {
 				processException(response, e);
 			}
 		}
+		else {
+			// assume it is just an insert into a table
+			final String strObjects = request.getPathInfo();
+
+			m_log.debug("Post: " + strObjects);
+
+			try {
+				final List<Element> listElements = getObjects(strObjects);
+				switch (listElements.size()) {
+				case 1:
+					final Element element = listElements.get(0);
+					if (element instanceof Table) {
+						insertTable((Table)element, request, response);
+					}
+				default:
+				break;
+				}
+			}
+			catch (final DatabaseException e) {
+				m_log.error("Database error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SqlExecutionException e) {
+				m_log.error("Database error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SQLException e) {
+				m_log.error("SQL error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SqlBaseException e) {
+				m_log.error("SQL error inserting row into table.", e);
+				processException(response, e);
+			}
+		}
 	}
 
 	/**
@@ -303,6 +341,37 @@ public final class Database extends Services {
 		}
 
 		return listElements;
+	}
+
+	/**
+	 * This method inserts a single record into the table.
+	 * 
+	 * @param table Table which is the target of the insert.
+	 * @param request HttpServletRequest which is making the request.
+	 * @param response HttpServletResponse where the results are to be returned.
+	 * @throws SQLException
+	 * @throws SqlBaseException
+	 */
+	private void insertTable(final Table table, final HttpServletRequest request, final HttpServletResponse response)
+			throws SqlBaseException, SQLException {
+		final Iterator<ColumnDefinition> iterColumns = table.getColumns();
+		if (iterColumns != null && iterColumns.hasNext()) {
+			final SqlInsert sqlInsert = new SqlInsert(table);
+
+			while (iterColumns.hasNext()) {
+				final ColumnDefinition column = iterColumns.next();
+				if (!(column.getType() instanceof ColumnTypeId)) {
+					final String strValue = request.getParameter(column.getName());
+					sqlInsert.add(new ParameterizedValue(column, strValue));
+				}
+			}
+
+			final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
+			manager.getSqlManager().executeUpdate(sqlInsert);
+
+			response.setStatus(HttpServletResponse.SC_OK);
+		}
 	}
 
 	/**

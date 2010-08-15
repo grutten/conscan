@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
 		<script type="text/javascript" src="js/ajaxupload.js"></script>
+		<script type="text/javascript" src="js/jquery.form.js"></script>
 	</head>
 	<body>
 		<h1>Database</h1>
@@ -134,6 +135,55 @@
 				});
 			}
 
+			function showTableInsert(data) {
+				jQuery(data).find('table').each(function() {
+					tablename = jQuery(this).attr('name');
+
+					table = "";
+					table += '<form action="database/' + tablename + '" method="POST" id="insertform" name="insertform">';
+					table += '<table>';
+					table += '  <thead>';
+					table += '    <tr>';
+					table += '      <td colspan="2">' + tablename + '</td>';
+					table += '    </tr>';
+					table += '  </thead>';
+					table += '  <tbody>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						columntype = jQuery(this).attr('type');
+						
+						if ('id' != columntype) {
+							table += '    <tr>';
+							table += '      <td>' + jQuery(this).attr('name') + ' (' + jQuery(this).attr('type') + ')</td>';
+							table += '      <td><input type="text" name="' + jQuery(this).attr('name') + '"/></td>';
+							table += '    </tr>';
+						}
+					});
+
+					table += '  </tbody>';
+					table += '</table>';
+					table += '<input type="submit" value="Submit"/>';
+					table += '</form>';
+
+					jQuery('span#contenttitle').html('Insert');
+					jQuery('div.contentdata').html(table);
+
+					$(document).ready(function() { 
+						// prepare Options Object 
+						var options = { 
+						    success: function() {
+								retrieveTableData(tablename); 
+						    },
+							error: showerror
+						}; 
+
+						// pass options to ajaxForm 
+						$('#insertform').ajaxForm(options);
+					});
+				});
+			}
+
 			function retrieveTableData(table) {
 				jQuery.ajax({
 					type: 'GET',
@@ -153,11 +203,25 @@
 				});
 			}
 
+			function insertTableRow(table) {
+				//alert('Table description for ' + table);
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'database/' + table,
+					success: showTableInsert,
+					error: showerror
+				});
+			}
+
 			function showtables(data) {
 				// alert('Returned: ' + data);
 				tables = '';
 				jQuery(data).find('table').each(function() {
-					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;<span class="ui-icon ui-icon-zoomin"></span>&nbsp;<span class="ui-icon ui-icon-info"></span></li>';
+					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;' +
+							 '<span class="ui-icon ui-icon-circle-plus"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-zoomin"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-info"></span>&nbsp;' +
+							 '</li>';
 				});
 				jQuery('ul.tablemenu').append(tables);
 				jQuery('span.ui-icon-zoomin').click(function() {
@@ -166,8 +230,10 @@
 				jQuery('span.ui-icon-info').click(function() {
 					retrieveTableDescription(jQuery(this).parent().text().trim());
 				});
+				jQuery('span.ui-icon-circle-plus').click(function() {
+					insertTableRow(jQuery(this).parent().text().trim());
+				});
 			}
-
 
 			function loadtables() {
 				jQuery.ajax({
