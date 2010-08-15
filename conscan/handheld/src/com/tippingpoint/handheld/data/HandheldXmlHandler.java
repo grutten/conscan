@@ -111,7 +111,8 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 		private String m_strComplianceConfigurationId;
 		private String m_strComplianceConfigurationName;
 		private String m_strComplianceValueId;
-		private Compliance m_compliance;
+		private String m_strValue;  // the current <value>, not to be confused with <ComplianceValue>
+		private ComplianceConfiguration m_complianceConfiguration;
 
 		
 		ComplianceConfigurationHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
@@ -125,18 +126,21 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			}
 			else if (TAG_COMPLIANCEVALUE.equalsIgnoreCase(name)) {
 				ComplianceValue complianceValue = new ComplianceValue();
-				complianceValue.setValue(m_strCurrentTagValue);
+				complianceValue.setValue(m_strValue);
 				complianceValue.setComplianceValueId(m_strComplianceValueId);
-				m_compliance.addValue(complianceValue);			
-			    handheldLog("     -->" + m_strCurrentTagValue + "<--");
+				m_complianceConfiguration.addValue(complianceValue);			
+			    handheldLog("     -->" + m_strValue + "<--");
 			}
 			else if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
-				m_compliance.setComplianceId(m_strComplianceConfigurationId);
-				m_compliance.setName(m_strComplianceConfigurationName);
-				getData().saveCompliance(m_compliance);
+				m_complianceConfiguration.setComplianceId(m_strComplianceConfigurationId);
+				m_complianceConfiguration.setName(m_strComplianceConfigurationName);
+				getData().saveCompliance(m_complianceConfiguration);
 			}
 			else if (TAG_COMPLIANCECONFIGURATIONS.equalsIgnoreCase(name))
 	    		popHandler();
+			else if (TAG_VALUE.equalsIgnoreCase(name)) {
+				m_strValue = m_strCurrentTagValue;
+			}
 	    	
 			logEndElement("ComplianceConfiguration", uri, name, qName);
 	    }
@@ -145,7 +149,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			logStartElement("ComplianceConfiguration", uri, name, qName);
 			
 			if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
-				m_compliance = new Compliance();
+				m_complianceConfiguration = new ComplianceConfiguration();
 				m_strComplianceConfigurationId = attrs.getValue(ATTRIBUTE_COMPLIANCEID);
 			    handheldLog("     -->" + m_strComplianceConfigurationId + "<--");
 			}

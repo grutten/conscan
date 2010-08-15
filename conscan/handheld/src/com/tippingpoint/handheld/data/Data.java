@@ -53,7 +53,7 @@ public class Data {
 	public ArrayList getActivities() { return m_listActivities; }
 	public HashMap getAllOffenders() { return m_hashOffenderByBarcode; }
 	public String getBarcode() { return m_strCurrentBarcode; }
-	public Compliance getCompliance(String strId) { return (Compliance)m_hashCompliance.get(strId); }
+	public ComplianceConfiguration getComplianceConfiguration(String strId) { return (ComplianceConfiguration)m_hashCompliance.get(strId); }
 	public String getFeedback() { return m_strFeedback;	}
 	public Location getLocationByBarcode(String strBarcode) { return (Location)m_hashLocationByBarcode.get(strBarcode); }
 	public Location getLocationByOffendersBarcode(String strOffenderBarcode) { return (Location)m_hashLocationByOffendersBarcode.get(strOffenderBarcode); }
@@ -74,7 +74,7 @@ public class Data {
 	}
 	
 	public void saveActivity(Activity a) { m_listActivities.add(a); }
-	public void saveCompliance(Compliance compliance) { m_hashCompliance.put(compliance.getComplianceId(), compliance); }
+	public void saveCompliance(ComplianceConfiguration compliance) { m_hashCompliance.put(compliance.getComplianceId(), compliance); }
 	public void saveLocation(Location location) { 
 		m_hashLocationByBarcode.put(location.getBarcode(), location);
 	}
@@ -98,8 +98,8 @@ public class Data {
      * @param listActivities
      */
     public void populateCompliance(DataChoice choice, Activity a) {
-    	Compliance compliance = (Compliance)m_hashCompliance.get(a.getComplianceId());
-    	ArrayList listValues = compliance.getValues();
+    	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)m_hashCompliance.get(a.getComplianceId());
+    	ArrayList listValues = complianceConfiguration.getValues();
     	Iterator i = listValues.iterator();
     	choice.removeAll();
     	

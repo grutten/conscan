@@ -30,6 +30,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	protected static final String TAG_OFFENDERS = "offenders";
 	protected static final String TAG_SCANTYPE = "scantype";
 	protected static final String TAG_TIER = "tier";
+	protected static final String TAG_VALUE = "value";
 	
 	protected String m_strCurrentTagValue;
 	

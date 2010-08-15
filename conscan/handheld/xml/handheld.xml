@@ -36,42 +36,42 @@
 		<complianceconfiguration complianceid="1">
 			<name>default</name>
 			<compliancevalues>
-				<compliancevalue compliancevalueid="1" default="true">comply</compliancevalue>
-				<compliancevalue compliancevalueid="2">refuse</compliancevalue>
+				<compliancevalue compliancevalueid="1" default="true"><value>comply</value></compliancevalue>
+				<compliancevalue compliancevalueid="2"><value>refuse</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
 		<complianceconfiguration complianceid="2">
 			<name>workorder</name>
 			<compliancevalues>
-				<compliancevalue compliancevalueid="3" default="true">comply</compliancevalue>
-				<compliancevalue compliancevalueid="4">cleanliness</compliancevalue>
-				<compliancevalue compliancevalueid="5">paint</compliancevalue>
-				<compliancevalue compliancevalueid="6">lights</compliancevalue>
-				<compliancevalue compliancevalueid="7">sinks/toilets/showers</compliancevalue>
-				<compliancevalue compliancevalueid="8">clean/office supplies</compliancevalue>
-				<compliancevalue compliancevalueid="9">hot water</compliancevalue>
-				<compliancevalue compliancevalueid="10">heat/air cond</compliancevalue>
-				<compliancevalue compliancevalueid="11">doors/locks/gates</compliancevalue>
-				<compliancevalue compliancevalueid="12">phones/tv/vending</compliancevalue>
+				<compliancevalue compliancevalueid="3" default="true"><value>comply</value></compliancevalue>
+				<compliancevalue compliancevalueid="4"><value>cleanliness</value></compliancevalue>
+				<compliancevalue compliancevalueid="5"><value>paint</value></compliancevalue>
+				<compliancevalue compliancevalueid="6"><value>lights</value></compliancevalue>
+				<compliancevalue compliancevalueid="7"><value>sinks/toilets/showers</value></compliancevalue>
+				<compliancevalue compliancevalueid="8"><value>clean/office supplies</value></compliancevalue>
+				<compliancevalue compliancevalueid="9"><value>hot water</value></compliancevalue>
+				<compliancevalue compliancevalueid="10"><value>heat/air cond</value></compliancevalue>
+				<compliancevalue compliancevalueid="11"><value>doors/locks/gates</value></compliancevalue>
+				<compliancevalue compliancevalueid="12"><value>phones/tv/vending</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
 		<complianceconfiguration complianceid="3">
 			<name>cellsearch</name>
 			<compliancevalues>
-				<compliancevalue compliancevalueid="13" default="true">nothing found</compliancevalue>
-				<compliancevalue compliancevalueid="14">cell phone</compliancevalue>
-				<compliancevalue compliancevalueid="15">drugs</compliancevalue>
-				<compliancevalue compliancevalueid="16">excessive property</compliancevalue>
-				<compliancevalue compliancevalueid="17">i/m alcohol</compliancevalue>
-				<compliancevalue compliancevalueid="18">smoking materials</compliancevalue>
-				<compliancevalue compliancevalueid="19">weapon</compliancevalue>
-				<compliancevalue compliancevalueid="20">other</compliancevalue>
+				<compliancevalue compliancevalueid="13" default="true"><value>nothing found</value></compliancevalue>
+				<compliancevalue compliancevalueid="14"><value>cell phone</value></compliancevalue>
+				<compliancevalue compliancevalueid="15"><value>drugs</value></compliancevalue>
+				<compliancevalue compliancevalueid="16"><value>excessive property</value></compliancevalue>
+				<compliancevalue compliancevalueid="17"><value>i/m alcohol</value></compliancevalue>
+				<compliancevalue compliancevalueid="18"><value>smoking materials</value></compliancevalue>
+				<compliancevalue compliancevalueid="19"><value>weapon</value></compliancevalue>
+				<compliancevalue compliancevalueid="20"><value>other</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
 		<complianceconfiguration complianceid="4">
 			<name>pillcallx</name>
 			<compliancevalues>
-				<compliancevalue compliancevalueid="21" default="true">administered</compliancevalue>
+				<compliancevalue compliancevalueid="21" default="true"><value>administered</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
 	</complianceconfigurations>
