@@ -202,7 +202,7 @@ public final class Scanner extends Services {
 			while (rs.next()) {
 				final Id idActivity = (Id)sqlExecution.getObject(columnActivityId, rs);
 				if (idActivity != null) {
-					final NameValuePair pair = new NameValuePair("id", idActivity.toString());
+					final NameValuePair pair = new NameValuePair(columnActivityId.getName(), idActivity.toString());
 
 					writer.write(XmlUtilities.open("activity", pair));
 
@@ -443,7 +443,7 @@ public final class Scanner extends Services {
 						writer.write(XmlUtilities.close("complianceconfiguration"));
 					}
 
-					final NameValuePair pair = new NameValuePair("id", idCompliance.toString());
+					final NameValuePair pair = new NameValuePair(columnComplianceId.getName(), idCompliance.toString());
 
 					writer.write(XmlUtilities.open("complianceconfiguration", pair));
 
@@ -468,7 +468,8 @@ public final class Scanner extends Services {
 						bComplianceValue = true;
 					}
 
-					final NameValuePair pair = new NameValuePair("id", idComplianceValue.toString());
+					final NameValuePair pair =
+						new NameValuePair(columnComplianceValueId.getName(), idComplianceValue.toString());
 
 					writer.write(XmlUtilities.open("compliancevalue", pair));
 
