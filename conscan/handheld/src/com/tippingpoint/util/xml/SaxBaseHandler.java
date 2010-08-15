@@ -9,7 +9,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	private XMLReader m_xmlReader;
 	
 	protected static final String ATTRIBUTE_ACTIVITYID = "activityid";
-	protected static final String ATTRIBUTE_COMPLIANCEID = "complianceid";
+	protected static final String ATTRIBUTE_COMPLIANCECONFIGURATIONID = "complianceconfigurationid";
 	protected static final String ATTRIBUTE_COMPLIANCEVALUEID = "compliancevalueid";
 	protected static final String ATTRIBUTE_LOCATIONID = "locationid";
 	protected static final String ATTRIBUTE_OFFENDERID = "offenderid";

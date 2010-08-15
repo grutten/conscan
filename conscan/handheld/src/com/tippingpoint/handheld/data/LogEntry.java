@@ -70,7 +70,7 @@ public class LogEntry {
 		if (getOffender() != null) {
 			m_logOutputStream.write("<offender>\n");
 			writeTag("bookingnumber", getOffender().getBookingNumber());
-			writeTagWithId("compliance", getComplianceValue().getCompliancevalueId(), true);
+			writeTagWithId("complianceconfiguration", getComplianceValue().getCompliancevalueId(), true);
 			m_logOutputStream.write("</offender>\n");
 		}
 		if (getLocation() != null) {

@@ -101,7 +101,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			
 			if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
 				// the compliance id will be saved later
-				m_strComplianceConfiguration = attrs.getValue(ATTRIBUTE_COMPLIANCEID); 
+				m_strComplianceConfiguration = attrs.getValue(ATTRIBUTE_COMPLIANCECONFIGURATIONID); 
 			    handheldLog("     -->" + m_strComplianceConfiguration + "<--");
 			}
 	    }
@@ -150,7 +150,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			
 			if (TAG_COMPLIANCECONFIGURATION.equalsIgnoreCase(name)) {
 				m_complianceConfiguration = new ComplianceConfiguration();
-				m_strComplianceConfigurationId = attrs.getValue(ATTRIBUTE_COMPLIANCEID);
+				m_strComplianceConfigurationId = attrs.getValue(ATTRIBUTE_COMPLIANCECONFIGURATIONID);
 			    handheldLog("     -->" + m_strComplianceConfigurationId + "<--");
 			}
 			else if (TAG_COMPLIANCEVALUE.equalsIgnoreCase(name)) {

@@ -33,14 +33,14 @@
 		</locations>
 	</tier>
 	<complianceconfigurations>
-		<complianceconfiguration complianceid="1">
+		<complianceconfiguration complianceconfigurationid="1">
 			<name>default</name>
 			<compliancevalues>
 				<compliancevalue compliancevalueid="1" default="true"><value>comply</value></compliancevalue>
 				<compliancevalue compliancevalueid="2"><value>refuse</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
-		<complianceconfiguration complianceid="2">
+		<complianceconfiguration complianceconfigurationid="2">
 			<name>workorder</name>
 			<compliancevalues>
 				<compliancevalue compliancevalueid="3" default="true"><value>comply</value></compliancevalue>
@@ -55,7 +55,7 @@
 				<compliancevalue compliancevalueid="12"><value>phones/tv/vending</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
-		<complianceconfiguration complianceid="3">
+		<complianceconfiguration complianceconfigurationid="3">
 			<name>cellsearch</name>
 			<compliancevalues>
 				<compliancevalue compliancevalueid="13" default="true"><value>nothing found</value></compliancevalue>
@@ -68,7 +68,7 @@
 				<compliancevalue compliancevalueid="20"><value>other</value></compliancevalue>
 			</compliancevalues>
 		</complianceconfiguration>
-		<complianceconfiguration complianceid="4">
+		<complianceconfiguration complianceconfigurationid="4">
 			<name>pillcallx</name>
 			<compliancevalues>
 				<compliancevalue compliancevalueid="21" default="true"><value>administered</value></compliancevalue>
@@ -81,77 +81,77 @@
 		<activity activityid="1">
 			<id>1</id>
 			<name>security check</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>1</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="2">
 			<id>2</id>
 			<name>cell search</name>
-			<complianceconfiguration complianceid="3"/>
+			<complianceconfiguration complianceconfigurationid="3"/>
 			<scantype>1</scantype>
 			<compliancetype>1</compliancetype>
 		</activity>
 		<activity activityid="3">
 			<id>3</id>
 			<name>bedding exchange</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="8">
 			<id>8</id>
 			<name>showers</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="9">
 			<id>9</id>
 			<name>recreation</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="12">
 			<id>12</id>
 			<name>meals</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="13">
 			<id>13</id>
 			<name>dayroom/indoor recreation</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="15">
 			<id>15</id>
 			<name>school</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="21">
 			<id>21</id>
 			<name>medical/dental</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="23">
 			<id>23</id>
 			<name>visits</name>
-			<complianceconfiguration complianceid="1"/>
+			<complianceconfiguration complianceconfigurationid="1"/>
 			<scantype>2</scantype>
 			<compliancetype>2</compliancetype>
 		</activity>
 		<activity activityid="27">
 			<id>27</id>
 			<name>repair order</name>
-			<complianceconfiguration complianceid="2"/>
+			<complianceconfiguration complianceconfigurationid="2"/>
 			<scantype>1</scantype>
 			<compliancetype>1</compliancetype>
 		</activity>
