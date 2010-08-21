@@ -23,6 +23,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	protected static final String TAG_COMPLIANCETYPE = "compliancetype";
 	protected static final String TAG_COMPLIANCEVALUE = "compliancevalue";
 	protected static final String TAG_COMPLIANCEVALUES = "compliancevalues";
+	protected static final String TAG_DEFAULT = "isdefault";
 	protected static final String TAG_LOCATION = "location";
 	protected static final String TAG_LOCATIONS = "locations";
 	protected static final String TAG_NAME = "name";
@@ -31,6 +32,10 @@ public class SaxBaseHandler extends DefaultHandler {
 	protected static final String TAG_SCANTYPE = "scantype";
 	protected static final String TAG_TIER = "tier";
 	protected static final String TAG_VALUE = "value";
+	
+	protected static final String VALUE_DEFAULT_TRUE = "true";
+	protected static final String VALUE_DEFAULT_FALSE = "false";
+	
 	
 	protected String m_strCurrentTagValue;
 	

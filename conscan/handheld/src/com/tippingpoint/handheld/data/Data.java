@@ -103,10 +103,19 @@ public class Data {
     	Iterator i = listValues.iterator();
     	choice.removeAll();
     	
+    	String strDefault = null;
     	while(i.hasNext()) {
     		ComplianceValue complianceValue = (ComplianceValue)i.next();
+    		
+    		if (complianceValue.getDefault())
+    			strDefault = complianceValue.getValue();
     		choice.add(complianceValue.getValue(), complianceValue);
     	}
+    	
+    	if (strDefault == null)
+    		choice.select(0);
+    	else
+    		choice.select(strDefault);
     	
     }
     

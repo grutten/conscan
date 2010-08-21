@@ -6,7 +6,7 @@ import org.xml.sax.XMLReader;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
 public class HandheldXmlHandler extends SaxBaseHandler {
-	private boolean m_bLoggingEnabled = true;
+	private boolean m_bLoggingEnabled = false;
 	private Data m_data;
 	private String m_strTierName;
 	
@@ -111,6 +111,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 		private String m_strComplianceConfigurationId;
 		private String m_strComplianceConfigurationName;
 		private String m_strComplianceValueId;
+		private String m_strDefault;
 		private String m_strValue;  // the current <value>, not to be confused with <ComplianceValue>
 		private ComplianceConfiguration m_complianceConfiguration;
 
@@ -128,6 +129,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 				ComplianceValue complianceValue = new ComplianceValue();
 				complianceValue.setValue(m_strValue);
 				complianceValue.setComplianceValueId(m_strComplianceValueId);
+				complianceValue.setDefault(VALUE_DEFAULT_TRUE.equalsIgnoreCase(m_strDefault));
 				m_complianceConfiguration.addValue(complianceValue);			
 			    handheldLog("     -->" + m_strValue + "<--");
 			}
@@ -138,6 +140,9 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			}
 			else if (TAG_COMPLIANCECONFIGURATIONS.equalsIgnoreCase(name))
 	    		popHandler();
+			else if (TAG_DEFAULT.equalsIgnoreCase(name)) {
+				m_strDefault = m_strCurrentTagValue;
+			}
 			else if (TAG_VALUE.equalsIgnoreCase(name)) {
 				m_strValue = m_strCurrentTagValue;
 			}
