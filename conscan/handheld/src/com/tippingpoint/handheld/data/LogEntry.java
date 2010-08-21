@@ -63,36 +63,20 @@ public class LogEntry {
 	}
 	
 	public void write() throws IOException {
-		m_logOutputStream.write("<entry>\n");
-		writeTagWithId("officer", "999", true);
+		m_logOutputStream.write("<item name='log'>\n");
+		writeTag("staffid", "999");
 		writeTag("created", getDateCreated());
-		writeTagWithId("activity", m_activity.getActivityId(), true);
-		if (getOffender() != null) {
-			m_logOutputStream.write("<offender>\n");
-			writeTag("bookingnumber", getOffender().getBookingNumber());
-			writeTagWithId("complianceconfiguration", getComplianceValue().getCompliancevalueId(), true);
-			m_logOutputStream.write("</offender>\n");
-		}
-		if (getLocation() != null) {
-			m_logOutputStream.write("<location>\n");
+		writeTag("activityid", m_activity.getActivityId());
+		if (getOffender() != null)
+			writeTag("offenderid", getOffender().getBookingNumber());
+		if (getLocation() != null)
 			writeTag("locationid", getLocation().getLocationId());
-			writeTagWithId("compliance", getComplianceValue().getCompliancevalueId(), true);
-			m_logOutputStream.write("</location>\n");
-		}
-		m_logOutputStream.write("</entry>\n");
+		writeTag("compliancevalueid", getComplianceValue().getCompliancevalueId());
+		m_logOutputStream.write("</item>\n");
 		m_logOutputStream.flush(); 
 	}
 	
 	private  void writeTag(String strTagName, String strValue) throws IOException {
-		m_logOutputStream.write("<" + strTagName + ">" + strValue + "</" + strTagName + ">\n");
+		m_logOutputStream.write("\t<column name='" + strTagName + "'>" + strValue + "</column>\n");
 	}
-	
-	private  void writeTagWithId(String strTagName, String strValueForIdAttr, boolean bPrintClosingTag) throws IOException {
-		m_logOutputStream.write("<" + strTagName + " " + strTagName + "id='" + strValueForIdAttr + "'>");
-		if (bPrintClosingTag)
-			m_logOutputStream.write("</" + strTagName + ">");
-		m_logOutputStream.write("\n");
-		
-	}
-	
 }
