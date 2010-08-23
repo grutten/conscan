@@ -168,11 +168,34 @@ public abstract class SqlExecution {
 	}
 
 	/**
+	 * This method returns an iterator over the parameterized values.
+	 */
+	public Iterator<ParameterizedValue> getParameters() {
+		return m_listParameters.iterator();
+	}
+
+	/**
+	 * This method returns the SQL statement.
+	 * 
+	 * @throws SqlBuilderException
+	 */
+	public final String getSql() throws SqlBuilderException {
+		if (m_strSql == null) {
+			m_strSql = generateSql();
+		}
+		
+		return m_strSql;
+	}
+	
+	/** This member holds the string representing the SQL statement. */
+	private String m_strSql;
+
+	/**
 	 * This method is used to generated the SQL statement.
 	 * 
 	 * @throws SqlBuilderException
 	 */
-	public abstract String getSql() throws SqlBuilderException;
+	protected abstract String generateSql() throws SqlBuilderException;
 
 	/**
 	 * This method adds a column to the column map. It is assumed that the SQL exists that corresponds to this mapping.

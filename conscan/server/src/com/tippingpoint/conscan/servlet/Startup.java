@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
+import com.tippingpoint.conscan.objects.TablePersistence;
 import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.parser.Parser;
@@ -65,6 +66,8 @@ public final class Startup extends HttpServlet {
 				comparison.process(manager);
 
 				manager.setSchema(schema);
+
+				TablePersistence.registerTables(schema);
 			}
 			catch (final SQLException e) {
 				m_log.error("SQL Error configuring default connection.", e);

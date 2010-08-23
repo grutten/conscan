@@ -33,7 +33,7 @@ public class SqlQueryExecution extends SqlExecution {
 	 * @throws SqlBuilderException
 	 */
 	@Override
-	public String getSql() throws SqlBuilderException {
+	protected String generateSql() throws SqlBuilderException {
 		final StringBuilder strSql = new StringBuilder();
 
 		strSql.append("SELECT ");

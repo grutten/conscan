@@ -22,8 +22,13 @@ public class SqlUpdateExecution extends SqlExecution {
 		m_sqlUpdate = sqlUpdate;
 	}
 
+	/**
+	 * This method is used to generated the SQL statement.
+	 * 
+	 * @throws SqlBuilderException
+	 */
 	@Override
-	public String getSql() throws SqlBuilderException {
+	protected String generateSql() throws SqlBuilderException {
 		final Table table = m_sqlUpdate.getTable();
 
 		final StringBuilder strSql = new StringBuilder();

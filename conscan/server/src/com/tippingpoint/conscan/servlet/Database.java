@@ -24,9 +24,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
+import com.tippingpoint.conscan.objects.BusinessObject;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
-import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.DatabaseException;
@@ -37,13 +39,11 @@ import com.tippingpoint.database.parser.Importer;
 import com.tippingpoint.database.parser.Parser;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
-import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.SqlExecutionException;
-import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.base.SqlExecution;
@@ -354,24 +354,21 @@ public final class Database extends Services {
 	 */
 	private void insertTable(final Table table, final HttpServletRequest request, final HttpServletResponse response)
 			throws SqlBaseException, SQLException {
-		final Iterator<ColumnDefinition> iterColumns = table.getColumns();
-		if (iterColumns != null && iterColumns.hasNext()) {
-			final SqlInsert sqlInsert = new SqlInsert(table);
-
-			while (iterColumns.hasNext()) {
-				final ColumnDefinition column = iterColumns.next();
-				if (!(column.getType() instanceof ColumnTypeId)) {
-					final String strValue = request.getParameter(column.getName());
-					sqlInsert.add(new ParameterizedValue(column, strValue));
-				}
+		BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(table.getName());
+		
+		BusinessObject object = builder.get();
+		
+		Iterator<String> iterNames = object.getFields();
+		if (iterNames != null && iterNames.hasNext()) {
+			while (iterNames.hasNext()) {
+				String strName = iterNames.next();
+				object.setValue(strName, request.getParameter(strName));
 			}
-
-			final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-
-			manager.getSqlManager().executeUpdate(sqlInsert);
-
-			response.setStatus(HttpServletResponse.SC_OK);
+			
+			object.save();
 		}
+
+		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	/**

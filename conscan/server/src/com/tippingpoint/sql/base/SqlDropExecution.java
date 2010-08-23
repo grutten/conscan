@@ -26,7 +26,7 @@ public class SqlDropExecution extends SqlExecution {
 	 * @throws SqlBuilderException
 	 */
 	@Override
-	public String getSql() throws SqlBuilderException {
+	protected String generateSql() throws SqlBuilderException {
 		final Table table = m_sqlDrop.getTable();
 
 		final StringBuilder strSql = new StringBuilder();

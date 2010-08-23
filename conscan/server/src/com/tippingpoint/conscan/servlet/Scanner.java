@@ -68,8 +68,9 @@ public final class Scanner extends Services {
 	 * This method returns the execution to return the activities available.
 	 * 
 	 * @throws SqlManagerException
+	 * @throws SqlBuilderException
 	 */
-	private SqlExecution getActivityExecution() throws SqlManagerException {
+	private SqlExecution getActivityExecution() throws SqlManagerException, SqlBuilderException {
 		final Schema schema = getSchema();
 		final SqlQuery sqlQuery = new SqlQuery();
 
@@ -141,8 +142,9 @@ public final class Scanner extends Services {
 	 * This method returns the execution to return the compliance values available.
 	 * 
 	 * @throws SqlManagerException
+	 * @throws SqlBuilderException
 	 */
-	private SqlExecution getConfigurationExecution() throws SqlManagerException {
+	private SqlExecution getConfigurationExecution() throws SqlManagerException, SqlBuilderException {
 		final Schema schema = getSchema();
 		final SqlQuery sqlQuery = new SqlQuery();
 

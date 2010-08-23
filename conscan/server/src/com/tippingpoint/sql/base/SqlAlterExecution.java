@@ -23,8 +23,13 @@ public class SqlAlterExecution extends SqlExecution {
 		m_sqlAlter = sqlAlter;
 	}
 
+	/**
+	 * This method is used to generated the SQL statement.
+	 * 
+	 * @throws SqlBuilderException
+	 */
 	@Override
-	public String getSql() throws SqlBuilderException {
+	protected String generateSql() throws SqlBuilderException {
 		final Table table = m_sqlAlter.getTable();
 
 		final StringBuilder strSql = new StringBuilder();

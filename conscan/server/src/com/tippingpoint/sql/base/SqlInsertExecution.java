@@ -22,8 +22,13 @@ public class SqlInsertExecution extends SqlExecution {
 		m_sqlInsert = sqlInsert;
 	}
 
+	/**
+	 * This method is used to generated the SQL statement.
+	 * 
+	 * @throws SqlBuilderException
+	 */
 	@Override
-	public String getSql() throws SqlBuilderException {
+	protected String generateSql() throws SqlBuilderException {
 		final Table table = m_sqlInsert.getTable();
 
 		final StringBuilder strSql = new StringBuilder();
