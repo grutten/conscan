@@ -44,6 +44,9 @@ public abstract class SqlExecution {
 	/** This member holds the mapping of the columns to the index of the column in the SQL statement. */
 	private final List<Column> m_mapColumns = new ArrayList<Column>();
 
+	/** This member holds the string representing the SQL statement. */
+	private String m_strSql;
+
 	/**
 	 * This method constructs a new execution for the given manager.
 	 */
@@ -183,19 +186,9 @@ public abstract class SqlExecution {
 		if (m_strSql == null) {
 			m_strSql = generateSql();
 		}
-		
+
 		return m_strSql;
 	}
-	
-	/** This member holds the string representing the SQL statement. */
-	private String m_strSql;
-
-	/**
-	 * This method is used to generated the SQL statement.
-	 * 
-	 * @throws SqlBuilderException
-	 */
-	protected abstract String generateSql() throws SqlBuilderException;
 
 	/**
 	 * This method adds a column to the column map. It is assumed that the SQL exists that corresponds to this mapping.
@@ -230,6 +223,13 @@ public abstract class SqlExecution {
 			}
 		}
 	}
+
+	/**
+	 * This method is used to generated the SQL statement.
+	 * 
+	 * @throws SqlBuilderException
+	 */
+	protected abstract String generateSql() throws SqlBuilderException;
 
 	/**
 	 * This method returns the text for a single column for inclusion in a SQL statement.
