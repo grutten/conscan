@@ -30,7 +30,7 @@ import com.tippingpoint.sql.SqlExecutionException;
  * This class is a base class used to generate and execute SQL statements.
  */
 public abstract class SqlExecution {
-	private static Log m_log = LogFactory.getLog(ColumnValue.class);
+	private static Log m_log = LogFactory.getLog(SqlExecution.class);
 
 	/** This member holds the manager used to create the execution. */
 	protected SqlManager m_sqlManager;
