@@ -362,7 +362,7 @@ public final class Database extends Services {
 		if (iterNames != null && iterNames.hasNext()) {
 			while (iterNames.hasNext()) {
 				String strName = iterNames.next();
-				object.setValue(strName, request.getParameter(strName));
+				object.setValue(strName, StringUtils.trimToNull(request.getParameter(strName)));
 			}
 			
 			object.save();

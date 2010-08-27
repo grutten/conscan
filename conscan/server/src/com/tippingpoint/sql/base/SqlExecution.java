@@ -20,7 +20,6 @@ import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.Index;
 import com.tippingpoint.database.LogicalKeyConstraint;
 import com.tippingpoint.database.PrimaryKeyConstraint;
-import com.tippingpoint.database.parser.ColumnValue;
 import com.tippingpoint.sql.Condition;
 import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlBuilderException;

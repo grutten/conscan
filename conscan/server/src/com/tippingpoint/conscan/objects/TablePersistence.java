@@ -26,20 +26,23 @@ import com.tippingpoint.sql.base.SqlExecution;
  * This class is used to persist content to a table.
  */
 public class TablePersistence implements Persistence {
-	/** This member holds the SQL used to generate an insert statement. */
-	private SqlInsert m_insert;
-
 	/** This member holds the list of names of elements for this object. */
 	private final List<String> m_listFields;
+
+	/** This member holds the rules applied to the data. */
+	private final List<DataRule> m_listRules;
 
 	/** This member holds the id column for the table. */
 	private Column m_PrimaryKeyColumn;
 
-	/** This member holds the table associated with the object. */
-	private final Table m_table;
+	/** This member holds the SQL used to generate an insert statement. */
+	private SqlInsert m_sqlInsert;
 
 	/** This member holds the SQL used to generate an update statement, base on primary key. */
-	private SqlUpdate m_update;
+	private SqlUpdate m_sqlUpdate;
+
+	/** This member holds the table associated with the object. */
+	private final Table m_table;
 
 	/**
 	 * This method constructs a new table persistence instance for the given table.
@@ -48,12 +51,20 @@ public class TablePersistence implements Persistence {
 		m_table = table;
 
 		m_listFields = new ArrayList<String>();
+		m_listRules = new ArrayList<DataRule>();
 
 		final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
 		if (iterColumns != null) {
 			while (iterColumns.hasNext()) {
 				final Column column = iterColumns.next();
 				m_listFields.add(column.getName());
+
+				if ("created".equalsIgnoreCase(column.getName())) {
+					m_listRules.add(new NowDataRule(column.getName()));
+				}
+				else if ("modified".equalsIgnoreCase(column.getName())) {
+					m_listRules.add(new NowDataRule(column.getName()));
+				}
 			}
 		}
 
@@ -96,7 +107,7 @@ public class TablePersistence implements Persistence {
 
 		try {
 			conn = manager.getConnection();
-			sqlInsert = manager.getSqlManager().getExecution(m_insert);
+			sqlInsert = manager.getSqlManager().getExecution(m_sqlInsert);
 
 			// populate the insert statement with the parameters from the map
 			setValues(sqlInsert, mapValues);
@@ -152,7 +163,7 @@ public class TablePersistence implements Persistence {
 
 		try {
 			conn = manager.getConnection();
-			sqlUpdate = manager.getSqlManager().getExecution(m_update);
+			sqlUpdate = manager.getSqlManager().getExecution(m_sqlUpdate);
 
 			// populate the update statement with the parameters from the map
 			setValues(sqlUpdate, mapValues);
@@ -186,7 +197,7 @@ public class TablePersistence implements Persistence {
 				}
 			}
 
-			m_insert = sqlInsert;
+			m_sqlInsert = sqlInsert;
 		}
 	}
 
@@ -212,7 +223,7 @@ public class TablePersistence implements Persistence {
 				sqlUpdate.add(new ValueCondition(m_PrimaryKeyColumn, Operation.EQUALS, null));
 			}
 
-			m_update = sqlUpdate;
+			m_sqlUpdate = sqlUpdate;
 		}
 	}
 
@@ -220,6 +231,14 @@ public class TablePersistence implements Persistence {
 	 * This method sets the values in the passed in command.
 	 */
 	private void setValues(final SqlExecution sqlExecution, final Map<String, FieldValue> mapValues) {
+		// fire any rules to set data
+		if (m_listRules != null && !m_listRules.isEmpty()) {
+			for (final DataRule dataRule : m_listRules) {
+				dataRule.apply(mapValues);
+			}
+		}
+
+		// set the values into SQL statement
 		final Iterator<ParameterizedValue> iterParameters = sqlExecution.getParameters();
 		if (iterParameters != null && iterParameters.hasNext()) {
 			while (iterParameters.hasNext()) {
