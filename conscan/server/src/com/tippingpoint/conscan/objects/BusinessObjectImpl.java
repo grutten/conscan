@@ -8,9 +8,9 @@ import com.tippingpoint.sql.SqlBaseException;
 /**
  * This class is an implementation of a business object.
  */
-public class BusinessObjectImpl extends BusinessObject {
+public abstract class BusinessObjectImpl extends BusinessObject {
 	/** This member holds the field values of the object. */
-	private final Map<String, FieldValue> m_mapValues = new HashMap<String, FieldValue>();
+	private final Map<String, FieldValue> m_mapValues;
 
 	/** This member holds the persistence mechanism used for this business object. */
 	private final Persistence m_persistence;
@@ -18,10 +18,21 @@ public class BusinessObjectImpl extends BusinessObject {
 	/**
 	 * This method constructs a new business object with the given persistence.
 	 * 
-	 * @param persistence
+	 * @param persistence Persistence instance to use to write/read the object.
 	 */
 	public BusinessObjectImpl(final Persistence persistence) {
+		this(persistence, new HashMap<String, FieldValue>());
+	}
+
+	/**
+	 * This method constructs a new business object with the given persistence and initial values
+	 * 
+	 * @param persistence Persistence instance to use to write/read the object.
+	 * @param mapValues Map<String, FieldValue> containing the initial values of the business object.
+	 */
+	public BusinessObjectImpl(final Persistence persistence, final Map<String, FieldValue> mapValues) {
 		m_persistence = persistence;
+		m_mapValues = mapValues;
 	}
 
 	/**
@@ -30,6 +41,17 @@ public class BusinessObjectImpl extends BusinessObject {
 	@Override
 	public Iterator<String> getFields() {
 		return m_persistence.getFields();
+	}
+
+	/**
+	 * This method returns the value for the named field.
+	 * 
+	 * @param strName String containing the name.
+	 */
+	@Override
+	public Object getValue(final String strName) {
+		final FieldValue fieldValue = m_mapValues.get(strName);
+		return fieldValue != null ? fieldValue.getValue() : null;
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package com.tippingpoint.conscan.objects;
 
+import java.util.Map;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.sql.SqlBaseException;
 
 /**
  * This class returns business object associated with database table.
@@ -23,7 +25,20 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	 */
 	@Override
 	public BusinessObject get() {
-		return new BusinessObjectImpl(m_tablePersistence);
+		return new TableBusinessObject(m_tablePersistence);
+	}
+
+	/**
+	 * This method is used to return a business object based on the passed in value. The business object determines what
+	 * that value could be.
+	 * 
+	 * @param objId Object containing the identifying value.
+	 * @throws SqlBaseException
+	 */
+	@Override
+	public BusinessObject get(final Object objId) throws SqlBaseException {
+		final Map<String, FieldValue> mapValues = m_tablePersistence.get(objId);
+		return new TableBusinessObject(m_tablePersistence, mapValues);
 	}
 
 	/**
@@ -33,5 +48,4 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	public String getName() {
 		return m_tablePersistence.getTable().getName();
 	}
-
 }

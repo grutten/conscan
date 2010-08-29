@@ -13,6 +13,18 @@ public abstract class BusinessObject {
 	public abstract Iterator<String> getFields();
 
 	/**
+	 * This method returns the type of business object.
+	 */
+	public abstract String getType();
+
+	/**
+	 * This method returns the value for the named field.
+	 * 
+	 * @param strName String containing the name.
+	 */
+	public abstract Object getValue(String strName);
+
+	/**
 	 * This method persists the object.
 	 * 
 	 * @throws SqlBaseException

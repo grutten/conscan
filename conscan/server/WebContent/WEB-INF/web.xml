@@ -45,4 +45,14 @@
     <servlet-name>Scanner</servlet-name>
     <url-pattern>/scanner/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Staff</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Staff</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Staff</servlet-name>
+    <url-pattern>/staff/*</url-pattern>
+  </servlet-mapping>
 </web-app>

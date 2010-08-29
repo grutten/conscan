@@ -7,10 +7,10 @@ import org.apache.commons.lang.StringUtils;
  */
 public class NameValuePair {
 	/** This member holds the name of the pair. */
-	private String m_strName = null;
+	private String m_strName;
 
 	/** This member holds the value of the pair. */
-	private String m_strValue = null;
+	private String m_strValue;
 
 	/**
 	 * This method constructs an empty name/value pair.

@@ -116,7 +116,7 @@ public final class Database extends Services {
 	/**
 	 * This method executes the get command; which is used to return the contents from the database.
 	 * 
-	 * database/<table> - return the contents of the named table
+	 * database/<table> - return the contents of the named table 
 	 * database/<table>?<column>=<value> - return the contents of the named table for the value in the specified column
 	 * 
 	 * @throws IOException
@@ -354,17 +354,17 @@ public final class Database extends Services {
 	 */
 	private void insertTable(final Table table, final HttpServletRequest request, final HttpServletResponse response)
 			throws SqlBaseException, SQLException {
-		BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(table.getName());
-		
-		BusinessObject object = builder.get();
-		
-		Iterator<String> iterNames = object.getFields();
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(table.getName());
+
+		final BusinessObject object = builder.get();
+
+		final Iterator<String> iterNames = object.getFields();
 		if (iterNames != null && iterNames.hasNext()) {
 			while (iterNames.hasNext()) {
-				String strName = iterNames.next();
+				final String strName = iterNames.next();
 				object.setValue(strName, StringUtils.trimToNull(request.getParameter(strName)));
 			}
-			
+
 			object.save();
 		}
 

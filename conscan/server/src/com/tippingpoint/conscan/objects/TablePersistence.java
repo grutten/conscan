@@ -1,8 +1,10 @@
 package com.tippingpoint.conscan.objects;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +16,12 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.Operation;
 import com.tippingpoint.sql.ParameterizedValue;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
+import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.SqlUpdate;
 import com.tippingpoint.sql.ValueCondition;
 import com.tippingpoint.sql.base.SqlExecution;
@@ -38,7 +42,10 @@ public class TablePersistence implements Persistence {
 	/** This member holds the SQL used to generate an insert statement. */
 	private SqlInsert m_sqlInsert;
 
-	/** This member holds the SQL used to generate an update statement, base on primary key. */
+	/** This member holds the SQL used to generate read an object based on primary key. */
+	private SqlQuery m_sqlQueryById;
+
+	/** This member holds the SQL used to generate an update statement, based on primary key. */
 	private SqlUpdate m_sqlUpdate;
 
 	/** This member holds the table associated with the object. */
@@ -74,6 +81,54 @@ public class TablePersistence implements Persistence {
 
 		generateInsert();
 		generateUpdate();
+		generateQueryById();
+	}
+
+	/**
+	 * This method returns the data from the persistence layer for the given identifier.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
+		final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
+
+		mapValues.put(m_PrimaryKeyColumn.getName(), new FieldValue(objId));
+
+		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
+		Connection conn = null;
+		SqlExecution sqlQueryById = null;
+		ResultSet rs = null;
+
+		try {
+			conn = manager.getConnection();
+			sqlQueryById = manager.getSqlManager().getExecution(m_sqlQueryById);
+
+			// populate the insert statement with the parameters from the map
+			setValues(sqlQueryById, mapValues);
+
+			// execute the insert
+			rs = sqlQueryById.executeQuery(conn);
+			if (rs.next()) {
+				final Iterator<Column> iterColumns = sqlQueryById.getColumnMap();
+				if (iterColumns != null && iterColumns.hasNext()) {
+					int nIndex = 1;
+					while (iterColumns.hasNext()) {
+						final Column column = iterColumns.next();
+
+						mapValues.put(column.getName(), new FieldValue(column.getType().getResult(rs, nIndex++)));
+					}
+				}
+			}
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException("Error reading from table.", e);
+		}
+		finally {
+			ConnectionManager.close(conn, sqlQueryById, rs);
+		}
+
+		return mapValues;
 	}
 
 	/**
@@ -89,6 +144,13 @@ public class TablePersistence implements Persistence {
 	 */
 	public Table getTable() {
 		return m_table;
+	}
+
+	/**
+	 * This method returns the type of business object.
+	 */
+	public String getType() {
+		return m_table.getName();
 	}
 
 	/**
@@ -198,6 +260,21 @@ public class TablePersistence implements Persistence {
 			}
 
 			m_sqlInsert = sqlInsert;
+		}
+	}
+
+	/**
+	 * This method generates the statement to read an object of this table by primary key.
+	 */
+	private void generateQueryById() {
+		if (m_PrimaryKeyColumn != null) {
+			final SqlQuery sqlQuery = new SqlQuery();
+
+			sqlQuery.add(m_table, true);
+
+			sqlQuery.add(new ValueCondition(m_PrimaryKeyColumn, Operation.EQUALS, null));
+
+			m_sqlQueryById = sqlQuery;
 		}
 	}
 
