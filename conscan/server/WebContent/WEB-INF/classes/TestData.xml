@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+	<item name="staff">
+		<column name="firstname">Axel</column>
+		<column name="lastname">Foley</column>
+		<column name="badgenumber">12345</column>
+		<column name="email">afoley@jail.com</column>
+		<column name="password">1234</column>
+	</item>
+	<item name="offender">
+		<column name="firstname">Abe</column>
+		<column name="lastname">Iverson</column>
+		<column name="scan">0812122010450</column>
+	</item>
+	<item name="offender">
+		<column name="firstname">Bob</column>
+		<column name="lastname">Page</column>
+		<column name="scan">0812122010160</column>
+	</item>
+	<item name="offender">
+		<column name="firstname">Cory</column>
+		<column name="lastname">Irving</column>
+		<column name="scan">0832924005201</column>
+	</item>
+
+</data>
