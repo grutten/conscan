@@ -8,6 +8,25 @@
 		<column name="email">afoley@jail.com</column>
 		<column name="password">1234</column>
 	</item>
+	<item name="staff">
+		<column name="firstname">William</column>
+		<column name="lastname">Rosewood</column>
+		<column name="badgenumber">23456</column>
+		<column name="email">wrosewood@jail.com</column>
+		<column name="password">1234</column>
+	</item>
+	<item name="location">
+		<column name="name">jail</column>
+		<column name="scan">1234</column>
+	</item>
+	<item name="location">
+		<column name="name">T162-A-012L</column>
+		<column name="scan">0070718001170</column>
+	</item>
+	<item name="location">
+		<column name="name">T162-A-011L</column>
+		<column name="scan">0052100746043</column>
+	</item>
 	<item name="offender">
 		<column name="firstname">Abe</column>
 		<column name="lastname">Iverson</column>
@@ -22,6 +41,27 @@
 		<column name="firstname">Cory</column>
 		<column name="lastname">Irving</column>
 		<column name="scan">0832924005201</column>
+	</item>
+	<item name="log">
+		<column name="staffid">2</column>
+		<column name="activityid">1</column>
+		<column name="locationid">2</column>
+		<column name="offenderid">2</column>
+		<column name="compliancevalueid">1</column>
+	</item>
+	<item name="log">
+		<column name="staffid">2</column>
+		<column name="activityid">1</column>
+		<column name="locationid">2</column>
+		<column name="offenderid">3</column>
+		<column name="compliancevalueid">1</column>
+	</item>
+	<item name="log">
+		<column name="staffid">2</column>
+		<column name="activityid">1</column>
+		<column name="locationid">2</column>
+		<column name="offenderid">4</column>
+		<column name="compliancevalueid">1</column>
 	</item>
 
 </data>
