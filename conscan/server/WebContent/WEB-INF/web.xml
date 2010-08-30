@@ -37,6 +37,36 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ComplianceValue</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.ComplianceValue</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ComplianceValue</servlet-name>
+    <url-pattern>/compliancevalue/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Location</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Location</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Location</servlet-name>
+    <url-pattern>/location/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Offender</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Offender</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Offender</servlet-name>
+    <url-pattern>/offender/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>Scanner</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Scanner</servlet-class>
   </servlet>
