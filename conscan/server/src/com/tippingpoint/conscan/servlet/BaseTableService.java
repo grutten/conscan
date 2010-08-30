@@ -32,7 +32,7 @@ public class BaseTableService extends Services {
 	 * This constructor sets the name of the underlying table.
 	 * @param strTableName
 	 */
-	public BaseTableService(String strTableName) {
+	protected BaseTableService(String strTableName) {
 		m_strTableName = strTableName;
 	}
 	
