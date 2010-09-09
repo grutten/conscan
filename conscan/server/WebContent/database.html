@@ -225,13 +225,13 @@
 				});
 				jQuery('ul.tablemenu').append(tables);
 				jQuery('span.ui-icon-zoomin').click(function() {
-					retrieveTableData(jQuery(this).parent().text().trim());
+					retrieveTableData(jQuery.trim(jQuery(this).parent().text()));
 				});
 				jQuery('span.ui-icon-info').click(function() {
-					retrieveTableDescription(jQuery(this).parent().text().trim());
+					retrieveTableDescription(jQuery.trim(jQuery(this).parent().text()));
 				});
 				jQuery('span.ui-icon-circle-plus').click(function() {
-					insertTableRow(jQuery(this).parent().text().trim());
+					insertTableRow(jQuery.trim(jQuery(this).parent().text()));
 				});
 			}
 

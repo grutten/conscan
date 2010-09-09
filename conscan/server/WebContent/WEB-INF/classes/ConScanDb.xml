@@ -65,24 +65,25 @@
 		<column name="locationid" type="id"/>
 		<column name="name" type="string" length="100"/>
 		<column name="scan" type="string" length="100"/>
-		<column name="parentlocationid" type="idref"/>
+		<column name="lineage" type="string" length="100" required="true"/>
 		<constraint name="pk_location" type="primary">
 			<column name="locationid"/>
 		</constraint>
-		<constraint name="fk_location_location" type="foreign">
-			<column name="parentlocationid"/>
-			<table name="location">
-				<column name="locationid"/>
-			</table>
+		<constraint name="lk_location" type="logical">
+			<column name="lineage"/>
 		</constraint>
 	</table>
 	<table name="offender">
 		<column name="offenderid" type="id"/>
 		<column name="firstname" type="string" length="100"/>
 		<column name="lastname" type="string" length="100"/>
+		<column name="bookingnumber" type="string" length="100"/>
 		<column name="scan" type="string" length="100"/>
 		<constraint name="pk_offender" type="primary">
 			<column name="offenderid"/>
+		</constraint>
+		<constraint name="lk_offender" type="logical">
+			<column name="bookingnumber"/>
 		</constraint>
 	</table>
 	<table name="offenderlocation">

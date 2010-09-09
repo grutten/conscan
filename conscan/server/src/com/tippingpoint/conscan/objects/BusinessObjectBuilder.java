@@ -1,5 +1,6 @@
 package com.tippingpoint.conscan.objects;
 
+import java.util.List;
 import com.tippingpoint.sql.SqlBaseException;
 
 /**
@@ -19,6 +20,12 @@ public interface BusinessObjectBuilder {
 	 * @throws SqlBaseException
 	 */
 	BusinessObject get(Object objId) throws SqlBaseException;
+
+	/**
+	 * This method returns a collection of objects representing all of the objects of this type.
+	 * @throws SqlBaseException 
+	 */
+	List<BusinessObject> getAll() throws SqlBaseException;
 
 	/**
 	 * This method returns the name of the object being created. It must be unique in the system.

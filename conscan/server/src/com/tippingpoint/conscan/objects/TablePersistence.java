@@ -42,7 +42,10 @@ public class TablePersistence implements Persistence {
 	/** This member holds the SQL used to generate an insert statement. */
 	private SqlInsert m_sqlInsert;
 
-	/** This member holds the SQL used to generate read an object based on primary key. */
+	/** This member holds the SQL used to read the list of objects. */
+	private SqlQuery m_sqlQuery;
+
+	/** This member holds the SQL used to read an object based on primary key. */
 	private SqlQuery m_sqlQueryById;
 
 	/** This member holds the SQL used to generate an update statement, based on primary key. */
@@ -82,6 +85,7 @@ public class TablePersistence implements Persistence {
 		generateInsert();
 		generateUpdate();
 		generateQueryById();
+		generateQuery();
 	}
 
 	/**
@@ -129,6 +133,51 @@ public class TablePersistence implements Persistence {
 		}
 
 		return mapValues;
+	}
+
+	/**
+	 * This method returns a collection of objects representing all of the objects of this type.
+	 * @throws SqlBaseException 
+	 */
+	public List<Map<String, FieldValue>> getAll() throws SqlBaseException {
+		List<Map<String, FieldValue>> listValues = new ArrayList<Map<String,FieldValue>>();
+
+		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
+		Connection conn = null;
+		SqlExecution sqlQuery = null;
+		ResultSet rs = null;
+
+		try {
+			conn = manager.getConnection();
+			sqlQuery = manager.getSqlManager().getExecution(m_sqlQuery);
+
+			// execute the insert
+			rs = sqlQuery.executeQuery(conn);
+			while (rs.next()) {
+				final Iterator<Column> iterColumns = sqlQuery.getColumnMap();
+				if (iterColumns != null && iterColumns.hasNext()) {
+					final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
+					
+					listValues.add(mapValues);
+
+					int nIndex = 1;
+					while (iterColumns.hasNext()) {
+						final Column column = iterColumns.next();
+
+						mapValues.put(column.getName(), new FieldValue(column.getType().getResult(rs, nIndex++)));
+					}
+				}
+			}
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException("Error reading from table.", e);
+		}
+		finally {
+			ConnectionManager.close(conn, sqlQuery, rs);
+		}
+
+		return listValues;
 	}
 
 	/**
@@ -261,6 +310,17 @@ public class TablePersistence implements Persistence {
 
 			m_sqlInsert = sqlInsert;
 		}
+	}
+
+	/**
+	 * This method generates the statement to read objects of this table.
+	 */
+	private void generateQuery() {
+		final SqlQuery sqlQuery = new SqlQuery();
+
+		sqlQuery.add(m_table, true);
+
+		m_sqlQuery = sqlQuery;
 	}
 
 	/**

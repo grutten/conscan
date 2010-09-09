@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.DatabaseException;
@@ -21,6 +23,7 @@ import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlManagerException;
@@ -50,13 +53,7 @@ public final class Scanner extends Services {
 		try {
 			getConfiguration(writer);
 		}
-		catch (final SqlManagerException e) {
-			processException(response, e);
-		}
-		catch (final SqlBuilderException e) {
-			processException(response, e);
-		}
-		catch (final SqlExecutionException e) {
+		catch (final SqlBaseException e) {
 			processException(response, e);
 		}
 		catch (final DatabaseException e) {
@@ -84,15 +81,15 @@ public final class Scanner extends Services {
 	 * 
 	 * @param writer PrintWriter where the details are returned.
 	 * @throws IOException
-	 * @throws SqlManagerException
-	 * @throws SqlExecutionException
-	 * @throws SqlBuilderException
+	 * @throws SqlBaseException
 	 * @throws DatabaseException
 	 */
-	private void getConfiguration(final Writer writer) throws IOException, SqlManagerException, SqlBuilderException,
-			SqlExecutionException, DatabaseException {
+	private void getConfiguration(final Writer writer) throws IOException, SqlBaseException, DatabaseException {
 
 		writer.write("<configuration>");
+		
+		writeLocations(writer);
+		
 		writer.write("	<tier>");
 		writer.write("		<name>tier1</name>");
 		writer.write("		<locations>");
@@ -136,6 +133,19 @@ public final class Scanner extends Services {
 
 		writer.write("	</activities>");
 		writer.write("</configuration>");
+	}
+
+	/**
+	 * This method writes the locations to the writer.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @throws SqlBaseException 
+	 */
+	private void writeLocations(Writer writer) throws SqlBaseException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("location");
+		if (builder != null) {
+			builder.getAll();
+		}
 	}
 
 	/**

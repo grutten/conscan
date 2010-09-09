@@ -1,6 +1,7 @@
 package com.tippingpoint.conscan.objects;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import com.tippingpoint.sql.SqlBaseException;
 
@@ -8,6 +9,12 @@ import com.tippingpoint.sql.SqlBaseException;
  * This interfaces abstracts the idea that an object can be saved to a persisted state.
  */
 public interface Persistence {
+	/**
+	 * This method returns a collection of objects representing all of the objects of this type.
+	 * @throws SqlBaseException 
+	 */
+	List<Map<String, FieldValue>> getAll() throws SqlBaseException;
+
 	/**
 	 * This method returns a list of all the named elements of the business object.
 	 */

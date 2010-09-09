@@ -320,7 +320,8 @@ public class Table extends Element {
 	 */
 	private void setLogicalKey(final LogicalKeyConstraint constraintLogicalKey) throws DatabaseElementException {
 		if (m_constraintLogicalKey != null) {
-			throw new DatabaseElementException("logical key", Table.class, "logical key has been set previously");
+			throw new DatabaseElementException(constraintLogicalKey.getName(), Table.class,
+					"logical key has been set previously");
 		}
 
 		m_constraintLogicalKey = constraintLogicalKey;
@@ -333,7 +334,8 @@ public class Table extends Element {
 	 */
 	private void setPrimaryKey(final PrimaryKeyConstraint constraintPrimaryKey) throws DatabaseElementException {
 		if (m_constraintPrimaryKey != null) {
-			throw new DatabaseElementException("primary key", Table.class, "primary key has been set previously");
+			throw new DatabaseElementException(constraintPrimaryKey.getName(), Table.class,
+					"primary key has been set previously");
 		}
 
 		m_constraintPrimaryKey = constraintPrimaryKey;

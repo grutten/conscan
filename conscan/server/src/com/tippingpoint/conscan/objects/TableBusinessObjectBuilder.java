@@ -1,5 +1,7 @@
 package com.tippingpoint.conscan.objects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.SqlBaseException;
@@ -38,14 +40,40 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	@Override
 	public BusinessObject get(final Object objId) throws SqlBaseException {
 		final Map<String, FieldValue> mapValues = m_tablePersistence.get(objId);
-		return new TableBusinessObject(m_tablePersistence, mapValues);
+		return get(mapValues);
 	}
 
+	/**
+	 * This method returns a collection of objects representing all of the objects of this type.
+	 * @return 
+	 * @throws SqlBaseException 
+	 */
+	@Override
+	public List<BusinessObject> getAll() throws SqlBaseException {
+		List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
+		List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll();
+		if (listValues != null && !listValues.isEmpty()) {
+			for (Map<String, FieldValue> mapValues : listValues) {
+				listObjects.add(get(mapValues));
+			}
+		}
+		
+		return listObjects;
+	}
+	
 	/**
 	 * This method returns a business object instance.
 	 */
 	@Override
 	public String getName() {
 		return m_tablePersistence.getTable().getName();
+	}
+
+	/**
+	 * This method returns a new object with the given values.
+	 * @param mapValues Map containing the default values of the object.
+	 */
+	private BusinessObject get(final Map<String, FieldValue> mapValues) {
+		return new TableBusinessObject(m_tablePersistence, mapValues);
 	}
 }

@@ -10,8 +10,8 @@ table {
 	border-width: 1px;
 	border-style: solid;
 	border-color: lightgray;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 }
 
 table thead tr {
@@ -60,7 +60,7 @@ div.hover {
 
 div.leftmenu {
 	float: left;
-	margin-right: 20px;
+	margin-right: 2em;
 }
 	
 div.leftmenu h1 {
@@ -72,17 +72,17 @@ div.content h1 {
 }	
 
 ul.tablemenu {
-/*	width: 100%;*/
 	list-style: none;
-	padding: 5px;
-	margin: 5px;
+	padding: 0;
+	margin: 0;
+	margin-bottom: 1em;
 }
 
 ul.tablemenu li {
 	text-align: right;
 }
 
-span.ui-icon {
+.ui-icon {
 	float: right;
 	cursor: pointer;
 }

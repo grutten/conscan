@@ -20,7 +20,7 @@
 			<table>
 				<tr>
 					<td>URL:</td>
-					<td><input type="text" name="url" size="80" value="http://localhost:8080/conscan/activity"/></td>
+					<td><input type="text" name="url" size="80" value="http://localhost:8080/conscan/database"/></td>
 				</tr>
 				<tr>
 					<td>Action:</td>
@@ -75,13 +75,13 @@
 				jQuery.ajax({
 					type: method,
 					url: url,
+					dataType: "xml",
 					success: function(data, textStatus, XMLHttpRequest) {
 						showresults(data, textStatus, XMLHttpRequest);
 						jQuery.unblockUI();
 					},
 					error: showerror
 				});
-				
 			}
 			else {
 				alert('Please specify a URL.');
@@ -89,44 +89,48 @@
 		}
 
 		function showresults(data, textStatus, XMLHttpRequest) {
+			var results = "";
+
 			// alert('Showing ' + data.contentType); 
-			if ("text/xml" == data.contentType) {
-				var results = "";
-				
+			if (XMLHttpRequest.responseXML != undefined) {
 				results += "<pre>";
 
-				jQuery(data).children(':first-child').each(function() {
+				jQuery(XMLHttpRequest.responseXML).children(':first-child').each(function() {
 					results += shownode(this, 1);
 				});
 
 				results += "</pre>";
 
-				jQuery('#results').html(results);
+			} else {
+				results += XMLHttpRequest.responseText;
 			}
+
+			jQuery('#results').html(results);
 		}
 
 		function shownode(node, nLevel) {
-			results = prefix(nLevel) + '&lt;' + node.tagName;
+			var results = "";
+			results += prefix(nLevel) + '&lt;' + node.nodeName;
 
-			if (node.attributes.length > 0) {
+			if (node.attributes != null && node.attributes.length > 0) {
 				for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
 					results += ' ' + node.attributes.item(nIndex).nodeName + '="' + node.attributes.item(nIndex).value + '"';
 				}
 			}
 
-			if (node.childElementCount > 0) {
+			if (node.childNodes.length > 0) {
 				results +=  '&gt;\n';
 
-				for (var nIndex = 0; nIndex < node.childElementCount; ++nIndex) {
-					results += shownode(node.children.item(nIndex), nLevel + 1);
+				for (var nIndex = 0; nIndex < node.childNodes.length; ++nIndex) {
+					results += shownode(node.childNodes.item(nIndex), nLevel + 1);
 				}
-				results += prefix(nLevel) + '&lt;/' + node.tagName + '&gt;\n';
+				results += prefix(nLevel) + '&lt;/' + node.nodeName + '&gt;\n';
 			}
 			else {
-				if (node.textContent.length > 0) {
+				if (node.nodeValue != null && node.nodeValue.length > 0) {
 					results +=  '&gt;';
-					results += node.textContent;
-					results += '&lt;/' + node.tagName + '&gt;\n';
+					results += node.nodeValue;
+					results += '&lt;/' + node.nodeName + '&gt;\n';
 				}
 				else {
 					results += '/&gt;\n';
