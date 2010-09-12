@@ -64,7 +64,7 @@
 	<table name="location">
 		<column name="locationid" type="id"/>
 		<column name="name" type="string" length="100"/>
-		<column name="scan" type="string" length="100"/>
+		<column name="barcode" type="string" length="100"/>
 		<column name="lineage" type="string" length="100" required="true"/>
 		<constraint name="pk_location" type="primary">
 			<column name="locationid"/>
@@ -78,7 +78,7 @@
 		<column name="firstname" type="string" length="100"/>
 		<column name="lastname" type="string" length="100"/>
 		<column name="bookingnumber" type="string" length="100"/>
-		<column name="scan" type="string" length="100"/>
+		<column name="barcode" type="string" length="100"/>
 		<constraint name="pk_offender" type="primary">
 			<column name="offenderid"/>
 		</constraint>

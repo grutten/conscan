@@ -17,51 +17,116 @@
 	</item>
 	<item name="location">
 		<column name="name">jail</column>
-		<column name="scan">1234</column>
+		<column name="barcode">1234</column>
+		<column name="lineage">0001</column>
 	</item>
 	<item name="location">
 		<column name="name">T162-A-012L</column>
-		<column name="scan">0070718001170</column>
+		<column name="barcode">0070718001170</column>
+		<column name="lineage">0001.0001</column>
 	</item>
 	<item name="location">
 		<column name="name">T162-A-011L</column>
-		<column name="scan">0052100746043</column>
+		<column name="barcode">0052100746043</column>
+		<column name="lineage">0001.0002</column>
 	</item>
 	<item name="offender">
 		<column name="firstname">Abe</column>
 		<column name="lastname">Iverson</column>
-		<column name="scan">0812122010450</column>
+		<column name="bookingnumber">345345345</column>
+		<column name="barcode">0812122010450</column>
 	</item>
 	<item name="offender">
 		<column name="firstname">Bob</column>
 		<column name="lastname">Page</column>
-		<column name="scan">0812122010160</column>
+		<column name="bookingnumber">123456789</column>
+		<column name="barcode">0812122010160</column>
 	</item>
 	<item name="offender">
 		<column name="firstname">Cory</column>
 		<column name="lastname">Irving</column>
-		<column name="scan">0832924005201</column>
+		<column name="bookingnumber">234567890</column>
+		<column name="barcode">0832924005201</column>
+	</item>
+	<item name="offenderlocation">
+		<column name="offenderid" value="referenced">
+			<table name="offender">
+				<column name="bookingnumber">345345345</column>
+			</table>
+		</column>
+		<column name="locationid" value="referenced">
+			<table name="location">
+				<column name="lineage">0001.0001</column>
+			</table>
+		</column>
+	</item>
+	<item name="offenderlocation">
+		<column name="offenderid" value="referenced">
+			<table name="offender">
+				<column name="bookingnumber">123456789</column>
+			</table>
+		</column>
+		<column name="locationid" value="referenced">
+			<table name="location">
+				<column name="lineage">0001.0001</column>
+			</table>
+		</column>
+	</item>
+	<item name="offenderlocation">
+		<column name="offenderid" value="referenced">
+			<table name="offender">
+				<column name="bookingnumber">234567890</column>
+			</table>
+		</column>
+		<column name="locationid" value="referenced">
+			<table name="location">
+				<column name="lineage">0001.0002</column>
+			</table>
+		</column>
 	</item>
 	<item name="log">
-		<column name="staffid">2</column>
-		<column name="activityid">1</column>
+		<column name="staffid" value="referenced">
+			<table name="staff">
+				<column name="email">wrosewood@jail.com</column>
+			</table>
+		</column>
+		<column name="activityid" value="referenced">
+			<table name="activity">
+				<column name="name">bedding exchange</column>
+			</table>
+		</column>
 		<column name="locationid">2</column>
 		<column name="offenderid">2</column>
 		<column name="compliancevalueid">1</column>
 	</item>
 	<item name="log">
-		<column name="staffid">2</column>
-		<column name="activityid">1</column>
+		<column name="staffid" value="referenced">
+			<table name="staff">
+				<column name="email">wrosewood@jail.com</column>
+			</table>
+		</column>
+		<column name="activityid" value="referenced">
+			<table name="activity">
+				<column name="name">bedding exchange</column>
+			</table>
+		</column>
 		<column name="locationid">2</column>
 		<column name="offenderid">3</column>
 		<column name="compliancevalueid">1</column>
 	</item>
 	<item name="log">
-		<column name="staffid">2</column>
-		<column name="activityid">1</column>
+		<column name="staffid" value="referenced">
+			<table name="staff">
+				<column name="email">wrosewood@jail.com</column>
+			</table>
+		</column>
+		<column name="activityid" value="referenced">
+			<table name="activity">
+				<column name="name">bedding exchange</column>
+			</table>
+		</column>
 		<column name="locationid">2</column>
-		<column name="offenderid">4</column>
+		<column name="offenderid">3</column>
 		<column name="compliancevalueid">1</column>
 	</item>
-
 </data>
