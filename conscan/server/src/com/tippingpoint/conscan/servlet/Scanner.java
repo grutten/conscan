@@ -87,9 +87,9 @@ public final class Scanner extends Services {
 	private void getConfiguration(final Writer writer) throws IOException, SqlBaseException, DatabaseException {
 
 		writer.write("<configuration>");
-		
+
 		writeLocations(writer);
-		
+
 		writer.write("	<tier>");
 		writer.write("		<name>tier1</name>");
 		writer.write("		<locations>");
@@ -133,19 +133,6 @@ public final class Scanner extends Services {
 
 		writer.write("	</activities>");
 		writer.write("</configuration>");
-	}
-
-	/**
-	 * This method writes the locations to the writer.
-	 * 
-	 * @param writer Writer used for writing out the XML.
-	 * @throws SqlBaseException 
-	 */
-	private void writeLocations(Writer writer) throws SqlBaseException {
-		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("location");
-		if (builder != null) {
-			builder.getAll();
-		}
 	}
 
 	/**
@@ -558,5 +545,18 @@ public final class Scanner extends Services {
 		// writer.write("				<value default=\"true\">administered</value>");
 		// writer.write("			</compliancevalues>");
 		// writer.write("		</complianceconfiguration>");
+	}
+
+	/**
+	 * This method writes the locations to the writer.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @throws SqlBaseException
+	 */
+	private void writeLocations(final Writer writer) throws SqlBaseException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("location");
+		if (builder != null) {
+			builder.getAll();
+		}
 	}
 }

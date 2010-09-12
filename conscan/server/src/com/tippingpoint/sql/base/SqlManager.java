@@ -233,7 +233,7 @@ public abstract class SqlManager {
 	 * 
 	 * @param sqlCreate
 	 * @throws SqlManagerException
-	 * @throws SqlBuilderException 
+	 * @throws SqlBuilderException
 	 */
 	public SqlExecution getExecution(final Command sqlCommand) throws SqlManagerException, SqlBuilderException {
 		SqlExecution execution = null;
@@ -246,7 +246,7 @@ public abstract class SqlManager {
 		if (execution == null) {
 			throw new SqlManagerException("No factory found for SQL type of '" + sqlCommand.getClass() + "'");
 		}
-		
+
 		// trigger the creation of the SQL statement
 		execution.getSql();
 

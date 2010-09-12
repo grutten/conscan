@@ -137,10 +137,11 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	public List<Map<String, FieldValue>> getAll() throws SqlBaseException {
-		List<Map<String, FieldValue>> listValues = new ArrayList<Map<String,FieldValue>>();
+		final List<Map<String, FieldValue>> listValues = new ArrayList<Map<String, FieldValue>>();
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 
@@ -158,7 +159,7 @@ public class TablePersistence implements Persistence {
 				final Iterator<Column> iterColumns = sqlQuery.getColumnMap();
 				if (iterColumns != null && iterColumns.hasNext()) {
 					final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
-					
+
 					listValues.add(mapValues);
 
 					int nIndex = 1;

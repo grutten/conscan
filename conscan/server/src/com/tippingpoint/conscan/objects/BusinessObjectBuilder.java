@@ -23,7 +23,8 @@ public interface BusinessObjectBuilder {
 
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	List<BusinessObject> getAll() throws SqlBaseException;
 

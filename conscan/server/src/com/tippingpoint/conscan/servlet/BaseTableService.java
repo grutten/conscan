@@ -25,17 +25,18 @@ import com.tippingpoint.utilities.XmlUtilities;
 public class BaseTableService extends Services {
 	private static Log m_log = LogFactory.getLog(BaseTableService.class);
 	private static final long serialVersionUID = 6661798263642526305L;
-	
-	private String m_strTableName;
+
+	private final String m_strTableName;
 
 	/**
 	 * This constructor sets the name of the underlying table.
+	 * 
 	 * @param strTableName
 	 */
-	protected BaseTableService(String strTableName) {
+	protected BaseTableService(final String strTableName) {
 		m_strTableName = strTableName;
 	}
-	
+
 	/**
 	 * This method executes the get command; which is used to return the contents of a <base table service>.
 	 * 

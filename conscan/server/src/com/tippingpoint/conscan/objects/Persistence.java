@@ -11,7 +11,8 @@ import com.tippingpoint.sql.SqlBaseException;
 public interface Persistence {
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	List<Map<String, FieldValue>> getAll() throws SqlBaseException;
 

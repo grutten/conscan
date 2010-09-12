@@ -45,22 +45,23 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 * @return 
-	 * @throws SqlBaseException 
+	 * 
+	 * @return
+	 * @throws SqlBaseException
 	 */
 	@Override
 	public List<BusinessObject> getAll() throws SqlBaseException {
-		List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
-		List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll();
+		final List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
+		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll();
 		if (listValues != null && !listValues.isEmpty()) {
-			for (Map<String, FieldValue> mapValues : listValues) {
+			for (final Map<String, FieldValue> mapValues : listValues) {
 				listObjects.add(get(mapValues));
 			}
 		}
-		
+
 		return listObjects;
 	}
-	
+
 	/**
 	 * This method returns a business object instance.
 	 */
@@ -71,6 +72,7 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 
 	/**
 	 * This method returns a new object with the given values.
+	 * 
 	 * @param mapValues Map containing the default values of the object.
 	 */
 	private BusinessObject get(final Map<String, FieldValue> mapValues) {
