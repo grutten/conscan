@@ -1,7 +1,9 @@
 package com.tippingpoint.utilities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * This class holds simple utility classes associated with XML.
@@ -18,6 +20,26 @@ public class XmlUtilities {
 	 */
 	public static String close(final String strTagName) {
 		return "</" + strTagName + ">";
+	}
+
+	/**
+	 * This method returns the object in a string form.
+	 * 
+	 * @param value Object containing the value to convert to a string.
+	 */
+	public static String getValue(final Object objValue) {
+		String strValue = "";
+
+		if (objValue != null) {
+			if (objValue instanceof Date) {
+				strValue = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format((Date)objValue);
+			}
+			else {
+				strValue = objValue.toString();
+			}
+		}
+
+		return strValue;
 	}
 
 	/**

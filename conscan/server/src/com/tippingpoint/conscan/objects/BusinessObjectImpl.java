@@ -44,14 +44,37 @@ public abstract class BusinessObjectImpl extends BusinessObject {
 	}
 
 	/**
+	 * This method returns the identifier field value for this business object. If the object does not have an
+	 * identifier, this may return null.
+	 */
+	@Override
+	public FieldValue getIdentifierField() {
+		FieldValue fieldValue = null;
+
+		final String strIdentifierName = m_persistence.getIdentifierName();
+		if (strIdentifierName != null) {
+			fieldValue = getValue(strIdentifierName);
+		}
+
+		return fieldValue;
+	}
+
+	/**
 	 * This method returns the value for the named field.
 	 * 
 	 * @param strName String containing the name.
 	 */
 	@Override
-	public Object getValue(final String strName) {
-		final FieldValue fieldValue = m_mapValues.get(strName);
-		return fieldValue != null ? fieldValue.getValue() : null;
+	public FieldValue getValue(final String strName) {
+		return m_mapValues.get(strName);
+	}
+
+	/**
+	 * This method returns an iterator over the value for the fields.
+	 */
+	@Override
+	public Iterator<FieldValue> getValues() {
+		return m_mapValues.values().iterator();
 	}
 
 	/**
@@ -76,7 +99,7 @@ public abstract class BusinessObjectImpl extends BusinessObject {
 	public Object setValue(final String strName, final Object objValue) {
 		FieldValue value = m_mapValues.get(strName);
 		if (value == null) {
-			value = new FieldValue();
+			value = new FieldValue(strName);
 			m_mapValues.put(strName, value);
 		}
 

@@ -13,6 +13,12 @@ public abstract class BusinessObject {
 	public abstract Iterator<String> getFields();
 
 	/**
+	 * This method returns the identifier field value for this business object. If the object does not have an
+	 * identifier, this may return null.
+	 */
+	public abstract FieldValue getIdentifierField();
+
+	/**
 	 * This method returns the type of business object.
 	 */
 	public abstract String getType();
@@ -22,7 +28,12 @@ public abstract class BusinessObject {
 	 * 
 	 * @param strName String containing the name.
 	 */
-	public abstract Object getValue(String strName);
+	public abstract FieldValue getValue(String strName);
+
+	/**
+	 * This method returns an iterator over the value for the fields.
+	 */
+	public abstract Iterator<FieldValue> getValues();
 
 	/**
 	 * This method persists the object.

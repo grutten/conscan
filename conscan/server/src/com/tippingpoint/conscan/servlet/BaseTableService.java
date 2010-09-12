@@ -3,8 +3,6 @@ package com.tippingpoint.conscan.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +14,6 @@ import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.utilities.NameValuePair;
-import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class serves the <base table service> for related objects.
@@ -112,18 +108,6 @@ public class BaseTableService extends Services {
 	private void returnObject(final HttpServletResponse response, final BusinessObject businessObject)
 			throws IOException {
 		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-
-		writer.append(XmlUtilities.open("object", new NameValuePair("type", businessObject.getType())));
-
-		final Iterator<String> iterFields = businessObject.getFields();
-		if (iterFields != null && iterFields.hasNext()) {
-			while (iterFields.hasNext()) {
-				final String strName = iterFields.next();
-				writer.append(XmlUtilities.tag("field", Collections.singletonList(new NameValuePair("name", strName)),
-						businessObject.getValue(strName)));
-			}
-		}
-
-		writer.append(XmlUtilities.close("object"));
+		writeObject(writer, businessObject);
 	}
 }

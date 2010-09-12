@@ -24,7 +24,7 @@ public final class NowDataRule implements DataRule {
 	public void apply(final Map<String, FieldValue> mapValues) {
 		FieldValue fieldValue = mapValues.get(m_strName);
 		if (fieldValue == null) {
-			fieldValue = new FieldValue();
+			fieldValue = new FieldValue(m_strName);
 			mapValues.put(m_strName, fieldValue);
 		}
 

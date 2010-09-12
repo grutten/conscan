@@ -110,30 +110,38 @@
 
 		function shownode(node, nLevel) {
 			var results = "";
-			results += prefix(nLevel) + '&lt;' + node.nodeName;
 
-			if (node.attributes != null && node.attributes.length > 0) {
-				for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
-					results += ' ' + node.attributes.item(nIndex).nodeName + '="' + node.attributes.item(nIndex).value + '"';
-				}
+			if (node.nodeType == 3) {
+				results += node.nodeValue;
 			}
-
-			if (node.childNodes.length > 0) {
-				results +=  '&gt;\n';
-
-				for (var nIndex = 0; nIndex < node.childNodes.length; ++nIndex) {
-					results += shownode(node.childNodes.item(nIndex), nLevel + 1);
+			else { 
+				results += '\n' + prefix(nLevel) + '&lt;' + node.nodeName;
+	
+				if (node.attributes != null && node.attributes.length > 0) {
+					for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
+						results += ' ' + node.attributes.item(nIndex).nodeName + '="' + node.attributes.item(nIndex).value + '"';
+					}
 				}
-				results += prefix(nLevel) + '&lt;/' + node.nodeName + '&gt;\n';
-			}
-			else {
-				if (node.nodeValue != null && node.nodeValue.length > 0) {
+	
+				if (node.childNodes.length > 0) {
 					results +=  '&gt;';
-					results += node.nodeValue;
-					results += '&lt;/' + node.nodeName + '&gt;\n';
+					for (var nIndex = 0; nIndex < node.childNodes.length; ++nIndex) {
+						results += shownode(node.childNodes.item(nIndex), nLevel + 1);
+					}
+					if (results.substring(results.length - 4) == '&gt;') {
+						results += '\n' + prefix(nLevel);
+					}
+					results += '&lt;/' + node.nodeName + '&gt;';
 				}
 				else {
-					results += '/&gt;\n';
+					if (node.nodeValue != null && node.nodeValue.length > 0) {
+						results +=  '&gt;';
+						results += node.nodeValue;
+						results += '&lt;/' + node.nodeName + '&gt;';
+					}
+					else {
+						results += '/&gt;';
+					}
 				}
 			}
 

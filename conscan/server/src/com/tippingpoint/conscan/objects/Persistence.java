@@ -22,6 +22,11 @@ public interface Persistence {
 	Iterator<String> getFields();
 
 	/**
+	 * This method returns the name of the identifier field, if available.
+	 */
+	String getIdentifierName();
+
+	/**
 	 * This method saves the object, if necessary.
 	 * 
 	 * @param mapValues Map of values used to persist the object.

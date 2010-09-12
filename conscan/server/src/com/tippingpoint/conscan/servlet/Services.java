@@ -2,9 +2,15 @@ package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Iterator;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
+import com.tippingpoint.conscan.objects.BusinessObject;
+import com.tippingpoint.conscan.objects.FieldValue;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is the base class for service based servlets.
@@ -50,5 +56,35 @@ public abstract class Services extends HttpServlet {
 		response.setContentType("text/xml");
 
 		return response.getWriter();
+	}
+
+	/**
+	 * This method writes the business object to the writer.
+	 * @param writer Writer used for writing out the XML.
+	 * @param businessObject BusinessObject which is being written to the XML.
+	 * @throws IOException 
+	 */
+	protected void writeObject(Writer writer, BusinessObject businessObject) throws IOException {
+		NameValuePair pair = null;
+		final FieldValue fvIdentifier = businessObject.getIdentifierField();
+		if (fvIdentifier != null) {
+			pair =
+				new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue()));
+		}
+	
+		writer.write(XmlUtilities.open(businessObject.getType(), pair));
+	
+		final Iterator<FieldValue> iterValues = businessObject.getValues();
+		if (iterValues != null && iterValues.hasNext()) {
+			while (iterValues.hasNext()) {
+				final FieldValue fieldValue = iterValues.next();
+				if (!fieldValue.getName().equals(pair.getName())) {
+					writer.write(XmlUtilities.tag(fieldValue.getName(), null, XmlUtilities
+							.getValue(fieldValue.getValue())));
+				}
+			}
+		}
+	
+		writer.write(XmlUtilities.close(businessObject.getType()));
 	}
 }

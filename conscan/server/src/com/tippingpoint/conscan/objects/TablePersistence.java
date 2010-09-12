@@ -96,7 +96,7 @@ public class TablePersistence implements Persistence {
 	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
 		final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
 
-		mapValues.put(m_PrimaryKeyColumn.getName(), new FieldValue(objId));
+		mapValues.put(m_PrimaryKeyColumn.getName(), new FieldValue(m_PrimaryKeyColumn.getName(), objId));
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 
@@ -120,7 +120,8 @@ public class TablePersistence implements Persistence {
 					while (iterColumns.hasNext()) {
 						final Column column = iterColumns.next();
 
-						mapValues.put(column.getName(), new FieldValue(column.getType().getResult(rs, nIndex++)));
+						mapValues.put(column.getName(), new FieldValue(column.getName(), column.getType().getResult(rs,
+								nIndex++)));
 					}
 				}
 			}
@@ -166,7 +167,8 @@ public class TablePersistence implements Persistence {
 					while (iterColumns.hasNext()) {
 						final Column column = iterColumns.next();
 
-						mapValues.put(column.getName(), new FieldValue(column.getType().getResult(rs, nIndex++)));
+						mapValues.put(column.getName(), new FieldValue(column.getName(), column.getType().getResult(rs,
+								nIndex++)));
 					}
 				}
 			}
@@ -187,6 +189,13 @@ public class TablePersistence implements Persistence {
 	@Override
 	public Iterator<String> getFields() {
 		return m_listFields.iterator();
+	}
+
+	/**
+	 * This method returns the name of the identifier field, if available.
+	 */
+	public String getIdentifierName() {
+		return m_PrimaryKeyColumn != null ? m_PrimaryKeyColumn.getName() : null;
 	}
 
 	/**

@@ -7,11 +7,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.Column;
@@ -87,50 +89,12 @@ public final class Scanner extends Services {
 	private void getConfiguration(final Writer writer) throws IOException, SqlBaseException, DatabaseException {
 
 		writer.write("<configuration>");
-
 		writeLocations(writer);
-
-		writer.write("	<tier>");
-		writer.write("		<name>tier1</name>");
-		writer.write("		<locations>");
-		writer.write("			<location>");
-		writer.write("				<name>T162-A-012L</name>");
-		writer.write("				<barcode>0070718001170</barcode>");
-		writer.write("				<offenders>");
-		writer.write("					<offender>");
-		writer.write("						<name>Iverson</name>");
-		writer.write("						<bookingnumber>345345345</bookingnumber>");
-		writer.write("						<barcode>0812122010450</barcode>");
-		writer.write("					</offender>");
-		writer.write("					<offender>");
-		writer.write("						<name>Page</name>");
-		writer.write("						<bookingnumber>123456789</bookingnumber>");
-		writer.write("						<barcode>0812122010160</barcode>");
-		writer.write("					</offender>");
-		writer.write("				</offenders>");
-		writer.write("			</location>");
-		writer.write("			<location>");
-		writer.write("				<name>T162-A-011L</name>");
-		writer.write("				<barcode>L987654111</barcode>");
-		writer.write("				<offenders>");
-		writer.write("					<offender>");
-		writer.write("						<name>Irving</name>");
-		writer.write("						<bookingnumber>234567890</bookingnumber>");
-		writer.write("						<barcode>0832924005201</barcode>");
-		writer.write("					</offender>");
-		writer.write("				</offenders>");
-		writer.write("			</location>");
-		writer.write("		</locations>");
-		writer.write("	</tier>");
 		writer.write("	<complianceconfigurations>");
-
 		writeComplianceConfigurations(writer);
-
 		writer.write("	</complianceconfigurations>");
 		writer.write("	<activities>");
-
 		writeActivities(writer);
-
 		writer.write("	</activities>");
 		writer.write("</configuration>");
 	}
@@ -552,11 +516,21 @@ public final class Scanner extends Services {
 	 * 
 	 * @param writer Writer used for writing out the XML.
 	 * @throws SqlBaseException
+	 * @throws IOException
 	 */
-	private void writeLocations(final Writer writer) throws SqlBaseException {
+	private void writeLocations(final Writer writer) throws SqlBaseException, IOException {
 		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("location");
 		if (builder != null) {
-			builder.getAll();
+			final List<BusinessObject> listLocations = builder.getAll();
+			if (listLocations != null && !listLocations.isEmpty()) {
+				writer.write(XmlUtilities.open("locations"));
+
+				for (final BusinessObject businessObject : listLocations) {
+					writeObject(writer, businessObject);
+				}
+
+				writer.write(XmlUtilities.close("locations"));
+			}
 		}
 	}
 }
