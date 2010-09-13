@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.tippingpoint.database.Column;
@@ -94,7 +94,7 @@ public class TablePersistence implements Persistence {
 	 * @throws SqlBaseException
 	 */
 	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
-		final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
+		final Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
 
 		mapValues.put(m_PrimaryKeyColumn.getName(), new FieldValue(m_PrimaryKeyColumn.getName(), objId));
 
@@ -159,7 +159,7 @@ public class TablePersistence implements Persistence {
 			while (rs.next()) {
 				final Iterator<Column> iterColumns = sqlQuery.getColumnMap();
 				if (iterColumns != null && iterColumns.hasNext()) {
-					final Map<String, FieldValue> mapValues = new HashMap<String, FieldValue>();
+					final Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
 
 					listValues.add(mapValues);
 
@@ -229,6 +229,9 @@ public class TablePersistence implements Persistence {
 		try {
 			conn = manager.getConnection();
 			sqlInsert = manager.getSqlManager().getExecution(m_sqlInsert);
+			
+			// apply any rules to the values
+			applyRules(mapValues);
 
 			// populate the insert statement with the parameters from the map
 			setValues(sqlInsert, mapValues);
@@ -285,6 +288,9 @@ public class TablePersistence implements Persistence {
 		try {
 			conn = manager.getConnection();
 			sqlUpdate = manager.getSqlManager().getExecution(m_sqlUpdate);
+
+			// apply any rules to the values
+			applyRules(mapValues);
 
 			// populate the update statement with the parameters from the map
 			setValues(sqlUpdate, mapValues);
@@ -375,16 +381,21 @@ public class TablePersistence implements Persistence {
 	}
 
 	/**
-	 * This method sets the values in the passed in command.
+	 * This method applies any rules the the data before persisting the object.
 	 */
-	private void setValues(final SqlExecution sqlExecution, final Map<String, FieldValue> mapValues) {
+	private void applyRules(final Map<String, FieldValue> mapValues) {
 		// fire any rules to set data
 		if (m_listRules != null && !m_listRules.isEmpty()) {
 			for (final DataRule dataRule : m_listRules) {
 				dataRule.apply(mapValues);
 			}
 		}
+	}
 
+	/**
+	 * This method sets the values in the passed in command.
+	 */
+	private void setValues(final SqlExecution sqlExecution, final Map<String, FieldValue> mapValues) {
 		// set the values into SQL statement
 		final Iterator<ParameterizedValue> iterParameters = sqlExecution.getParameters();
 		if (iterParameters != null && iterParameters.hasNext()) {

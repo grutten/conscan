@@ -1,7 +1,7 @@
 package com.tippingpoint.conscan.objects;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import com.tippingpoint.sql.SqlBaseException;
 
@@ -21,7 +21,7 @@ public abstract class BusinessObjectImpl extends BusinessObject {
 	 * @param persistence Persistence instance to use to write/read the object.
 	 */
 	public BusinessObjectImpl(final Persistence persistence) {
-		this(persistence, new HashMap<String, FieldValue>());
+		this(persistence, new LinkedHashMap<String, FieldValue>());
 	}
 
 	/**

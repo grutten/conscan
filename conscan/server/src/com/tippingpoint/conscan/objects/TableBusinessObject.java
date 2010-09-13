@@ -1,6 +1,7 @@
 package com.tippingpoint.conscan.objects;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class TableBusinessObject extends BusinessObjectImpl {
@@ -13,7 +14,7 @@ public final class TableBusinessObject extends BusinessObjectImpl {
 	 * @param persistence Persistence instance to use to write/read the object.
 	 */
 	public TableBusinessObject(final TablePersistence persistence) {
-		this(persistence, new HashMap<String, FieldValue>());
+		this(persistence, new LinkedHashMap<String, FieldValue>());
 	}
 
 	/**

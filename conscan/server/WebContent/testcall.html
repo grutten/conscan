@@ -112,7 +112,7 @@
 			var results = "";
 
 			if (node.nodeType == 3) {
-				results += node.nodeValue;
+				results += jQuery.trim(node.nodeValue);
 			}
 			else { 
 				results += '\n' + prefix(nLevel) + '&lt;' + node.nodeName;
