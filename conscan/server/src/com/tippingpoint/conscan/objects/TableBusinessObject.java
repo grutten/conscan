@@ -1,6 +1,5 @@
 package com.tippingpoint.conscan.objects;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
