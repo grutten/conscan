@@ -60,31 +60,31 @@ public abstract class Services extends HttpServlet {
 
 	/**
 	 * This method writes the business object to the writer.
+	 * 
 	 * @param writer Writer used for writing out the XML.
 	 * @param businessObject BusinessObject which is being written to the XML.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	protected void writeObject(Writer writer, BusinessObject businessObject) throws IOException {
+	protected void writeObject(final Writer writer, final BusinessObject businessObject) throws IOException {
 		NameValuePair pair = null;
 		final FieldValue fvIdentifier = businessObject.getIdentifierField();
 		if (fvIdentifier != null) {
-			pair =
-				new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue()));
+			pair = new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue()));
 		}
-	
+
 		writer.write(XmlUtilities.open(businessObject.getType(), pair));
-	
+
 		final Iterator<FieldValue> iterValues = businessObject.getValues();
 		if (iterValues != null && iterValues.hasNext()) {
 			while (iterValues.hasNext()) {
 				final FieldValue fieldValue = iterValues.next();
 				if (!fieldValue.getName().equals(pair.getName())) {
-					writer.write(XmlUtilities.tag(fieldValue.getName(), null, XmlUtilities
-							.getValue(fieldValue.getValue())));
+					writer.write(XmlUtilities.tag(fieldValue.getName(), null, XmlUtilities.getValue(fieldValue
+							.getValue())));
 				}
 			}
 		}
-	
+
 		writer.write(XmlUtilities.close(businessObject.getType()));
 	}
 }

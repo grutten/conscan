@@ -64,21 +64,6 @@ public final class Scanner extends Services {
 	}
 
 	/**
-	 * This method returns the execution to return the activities available.
-	 * 
-	 * @throws SqlManagerException
-	 * @throws SqlBuilderException
-	 */
-	private SqlExecution getActivityExecution() throws SqlManagerException, SqlBuilderException {
-		final Schema schema = getSchema();
-		final SqlQuery sqlQuery = new SqlQuery();
-
-		sqlQuery.add(schema.getTable("activity"), true);
-
-		return getSqlManager().getExecution(sqlQuery);
-	}
-
-	/**
 	 * This method retrieves the current configuration.
 	 * 
 	 * @param writer PrintWriter where the details are returned.
@@ -93,9 +78,7 @@ public final class Scanner extends Services {
 		writer.write("	<complianceconfigurations>");
 		writeComplianceConfigurations(writer);
 		writer.write("	</complianceconfigurations>");
-		writer.write("	<activities>");
 		writeActivities(writer);
-		writer.write("	</activities>");
 		writer.write("</configuration>");
 	}
 
@@ -143,52 +126,22 @@ public final class Scanner extends Services {
 	 * This method writes the activities to the writer.
 	 * 
 	 * @param writer Writer used for writing out the XML.
-	 * @throws SqlManagerException
-	 * @throws SqlBuilderException
-	 * @throws SqlExecutionException
-	 * @throws DatabaseException
+	 * @throws SqlBaseException
 	 * @throws IOException
 	 */
-	private void writeActivities(final Writer writer) throws SqlManagerException, SqlBuilderException,
-			SqlExecutionException, DatabaseException, IOException {
-		final SqlExecution sqlExecution = getActivityExecution();
+	private void writeActivities(final Writer writer) throws SqlBaseException, IOException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("activity");
+		if (builder != null) {
+			final List<BusinessObject> listLocations = builder.getAll();
+			if (listLocations != null && !listLocations.isEmpty()) {
+				writer.write(XmlUtilities.open("activities"));
 
-		Connection conn = null;
-		ResultSet rs = null;
-
-		try {
-			final Table tableActivity = getSchema().getTable("activity");
-			final Column columnActivityId = tableActivity.getPrimaryKeyColumn();
-
-			conn = getManager().getConnection();
-			rs = sqlExecution.executeQuery(conn);
-			while (rs.next()) {
-				final Id idActivity = (Id)sqlExecution.getObject(columnActivityId, rs);
-				if (idActivity != null) {
-					final NameValuePair pair = new NameValuePair(columnActivityId.getName(), idActivity.toString());
-
-					writer.write(XmlUtilities.open("activity", pair));
-
-					final Iterator<ColumnDefinition> iterColumns = tableActivity.getColumns();
-					if (iterColumns != null && iterColumns.hasNext()) {
-						while (iterColumns.hasNext()) {
-							final Column column = iterColumns.next();
-							if (!column.equals(columnActivityId)) {
-								writer.write(XmlUtilities.tag(column.getName(), null, sqlExecution
-										.getObject(column, rs)));
-							}
-						}
-					}
-
-					writer.write(XmlUtilities.close("activity"));
+				for (final BusinessObject businessObject : listLocations) {
+					writeObject(writer, businessObject);
 				}
+
+				writer.write(XmlUtilities.close("activities"));
 			}
-		}
-		catch (final SQLException e) {
-			throw new SqlExecutionException("SQL exception retrieving compliance configurations.", e);
-		}
-		finally {
-			DbUtils.closeQuietly(conn, null, rs);
 		}
 
 		// writer.write("		<!-- SCANTYPE: 1 - cell, 2 - offender -->");

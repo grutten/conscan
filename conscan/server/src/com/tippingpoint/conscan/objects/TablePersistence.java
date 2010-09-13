@@ -229,7 +229,7 @@ public class TablePersistence implements Persistence {
 		try {
 			conn = manager.getConnection();
 			sqlInsert = manager.getSqlManager().getExecution(m_sqlInsert);
-			
+
 			// apply any rules to the values
 			applyRules(mapValues);
 
@@ -307,6 +307,18 @@ public class TablePersistence implements Persistence {
 	}
 
 	/**
+	 * This method applies any rules the the data before persisting the object.
+	 */
+	private void applyRules(final Map<String, FieldValue> mapValues) {
+		// fire any rules to set data
+		if (m_listRules != null && !m_listRules.isEmpty()) {
+			for (final DataRule dataRule : m_listRules) {
+				dataRule.apply(mapValues);
+			}
+		}
+	}
+
+	/**
 	 * This method generates the statement for the insert into this table.
 	 */
 	private void generateInsert() {
@@ -377,18 +389,6 @@ public class TablePersistence implements Persistence {
 			}
 
 			m_sqlUpdate = sqlUpdate;
-		}
-	}
-
-	/**
-	 * This method applies any rules the the data before persisting the object.
-	 */
-	private void applyRules(final Map<String, FieldValue> mapValues) {
-		// fire any rules to set data
-		if (m_listRules != null && !m_listRules.isEmpty()) {
-			for (final DataRule dataRule : m_listRules) {
-				dataRule.apply(mapValues);
-			}
 		}
 	}
 
