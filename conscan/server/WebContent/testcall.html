@@ -20,7 +20,7 @@
 			<table>
 				<tr>
 					<td>URL:</td>
-					<td><input type="text" name="url" size="80" value="http://localhost:8080/conscan/database"/></td>
+					<td><input type="text" name="url" size="80"/></td>
 				</tr>
 				<tr>
 					<td>Action:</td>
@@ -59,7 +59,30 @@
 		jQuery('#errorcontinue').live('click', function() {
 			jQuery.unblockUI();
 		});
+		jQuery(document).ready(function() {
+			protocol = window.location.protocol;
+			var url = protocol;
+			url += '//';
+			url += window.location.hostname;
 
+			// add port if not the standard port
+			port =  window.location.port;
+			if (!(protocol == 'http:' && port == '80') || (protocol == 'https:' && port == '443')) {
+				url = url + ':' + port;
+			}
+
+			var path = window.location.pathname
+			var nSlashIndex = path.lastIndexOf('/');
+			if (nSlashIndex > 0) {
+				path = path.substr(1, nSlashIndex);
+			}
+			
+			url += '/' + path;
+
+			//alert('URL: ' + url);
+
+			jQuery('input[name=url]').val(url);
+		});
 
 		function testcall() {
 			jQuery('#message').html('');

@@ -169,7 +169,7 @@
 					jQuery('span#contenttitle').html('Insert');
 					jQuery('div.contentdata').html(table);
 
-					$(document).ready(function() { 
+					jQuery(document).ready(function() { 
 						// prepare Options Object 
 						var options = { 
 						    success: function() {
@@ -179,7 +179,7 @@
 						}; 
 
 						// pass options to ajaxForm 
-						$('#insertform').ajaxForm(options);
+						jQuery('#insertform').ajaxForm(options);
 					});
 				});
 			}
