@@ -63,6 +63,8 @@
 					jQuery(this).children('column').each(function() {
 						strLookup = "";
 						if (jQuery(this).text() != null && jQuery(this).text().length > 0) {
+							// Each object has a unique querystring value in the DOM of the
+							// format 'querystring=TABLENAMEid-#' (e.g. 'querystring=activityid-3').
 							strLookup = jQuery(this).attr('name') + "-" + jQuery(this).text();
 							strTd = "<td querystring='" + strLookup + "'>";
 							listItems[strLookup] = strLookup;
@@ -80,7 +82,6 @@
 				table += '</table>';
 
 				// Second pass to look up values based on IDs
-				
 				for (var key in listItems) {
 					strTemp = "querystring='" + key + "'";
 					updateItem(key);
