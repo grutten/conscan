@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Scan Confirmation</title>
+		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<!--
+		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		 -->
+		<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
+		<script type="text/javascript" src="js/ajaxupload.js"></script>
+		<script type="text/javascript" src="js/jquery.form.js"></script>
+	</head>
+	<body>
+		<h1>Scan Confirmation</h1>
+		<div class="leftmenu">
+			<span>Tables</span>
+			<ul class="tablemenu"></ul>
+			<span id="importupload" class="ui-icon ui-icon-circle-arrow-n"></span>
+		</div>
+		<div class="content">
+			<span id="contenttitle">&nbsp;</span>
+			<div class="contentdata"></div>
+		</div>
+		<div id="errordialog" class="hidden">
+			<div id="errortitle" class="erroritem"></div>
+			<div id="errormessage" class="erroritem"></div>
+			<div id="errortrace" class="hidden erroritem"></div>
+			<br/>
+			<div class="erroritem">
+				<input type="button" id="errorcontinue" value="Continue"/>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function showTableData(data) {
+				var listItems = new Object();
+				table = "";
+				table += '<table>';
+
+				jQuery(data).find('columns').each(function() {
+					table += '<thead>';
+					table += '<tr>';
+					table += '<td>&nbsp;</td>';
+					jQuery(this).children('column').each(function() {
+						table += '<td>';
+						table += jQuery(this).attr('name');
+						table += '</td>';
+					});
+					table += '</tr>';
+					table += '</thead>';
+				});
+				table += '  <tbody>';
+				jQuery(data).find('item').each(function() {
+					table += '    <tr>';
+					table += '<td><span class="ui-icon ui-icon-trash"></span></td>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						strLookup = "";
+						if (jQuery(this).text() != null && jQuery(this).text().length > 0) {
+							strLookup = jQuery(this).attr('name') + "-" + jQuery(this).text();
+							strTd = "<td querystring='" + strLookup + "'>";
+							listItems[strLookup] = strLookup;
+						}
+						else
+							strTd = "<td>";
+						table += strTd;
+						table += jQuery(this).text();
+						table += '</td>';
+					});
+
+					table += '    </tr>';
+				});
+				table += '  </tbody>';
+				table += '</table>';
+
+				// Second pass to look up values based on IDs
+				
+				for (var key in listItems) {
+					strTemp = "querystring='" + key + "'";
+					updateItem(key);
+				}
+
+				jQuery('span#contenttitle').html('Data');
+				jQuery('div.contentdata').html(table);
+			}
+
+			function updateItem(strLookup) {
+				var nTokenLocation = strLookup.indexOf("-");
+				var strTableName = "";
+				var strId = "";
+				if (nTokenLocation > 0) {
+					strTableName = strLookup.substring(0, nTokenLocation - 2);
+					strId = strLookup.substring(nTokenLocation + 1);
+					var strUrl = strTableName + '/' + strId; 
+					jQuery.ajax({
+						type: 'GET',
+						url: strUrl,
+						success: updateAllTdCallbacks,
+						error: showerror
+					});
+				}
+			}
+			
+			function updateAllTdCallbacks(data) {
+				jQuery(data).find('staff').each(function() {
+					var strSelector = "td[querystring=staffid-" + jQuery(this).attr('staffid') + "]";
+					var strShow = jQuery(this).children('email').text();
+					jQuery(strSelector).text(strShow);
+				});
+				jQuery(data).find('activity').each(function() {
+					var strSelector = "td[querystring=activityid-" + jQuery(this).attr('activityid') + "]";
+					var strShow = jQuery(this).children('name').text();
+					jQuery(strSelector).text(strShow);
+				});
+				jQuery(data).find('location').each(function() {
+					var strSelector = "td[querystring=locationid-" + jQuery(this).attr('locationid') + "]";
+					var strShow = jQuery(this).children('name').text();
+					jQuery(strSelector).text(strShow);
+				});
+				jQuery(data).find('offender').each(function() {
+					var strSelector = "td[querystring=offenderid-" + jQuery(this).attr('offenderid') + "]";
+					var strShow = jQuery(this).children('lastname').text();
+					jQuery(strSelector).text(strShow);
+//					updateTdCallback(this, "lastname", "offender");
+				});
+				jQuery(data).find('compliancevalue').each(function() {
+					var strSelector = "td[querystring=compliancevalueid-" + jQuery(this).attr('compliancevalueid') + "]";
+					var strShow = jQuery(this).children('value').text();
+					jQuery(strSelector).text(strShow);
+				});
+			}
+
+			// See if we can't create common code for updating each <td>
+			function updateTdCallback(currObj, strObjProperty, strTableName) {
+				var strAttr = strTableName + "id";
+				var strSelector = "td[querystring=" + strTableName + "-" + jQuery(currObj).attr(strAttr) + "]";
+				var strShow = jQuery(currObj).children(strObjProperty).text();
+				alert(strSelector + " = " + strShow);
+				jQuery(strSelector).text(strShow);
+			}
+
+			function lookup(data) {
+				// switch (data) { staffid: 
+			}
+
+			function retrieveTableData(table) {
+				jQuery.ajax({
+					type: 'GET',
+					url: 'database/' + table,
+					success: showTableData,
+					error: showerror
+				});
+			}
+
+			function showtables(data) {
+				// alert('Returned: ' + data);
+				tables = '';
+				jQuery(data).find('table').each(function() {
+					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;' +
+							 '<span class="ui-icon ui-icon-circle-plus"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-zoomin"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-info"></span>&nbsp;' +
+							 '</li>';
+				});
+				jQuery('ul.tablemenu').append(tables);
+				retrieveTableData('log');				
+			}
+
+			function loadtables() {
+				jQuery.ajax({
+					type: "OPTIONS",
+					url: "database/log",
+					dataType: "xml",
+					success: showtables,
+					error: showerror
+				});
+			}
+
+
+			function droprow(event) {
+				alert('droprow - not implemented');
+			}
+
+			jQuery(document).ready(function() {
+				jQuery('#errorcontinue').click(function() {
+					jQuery.unblockUI();
+				});
+				loadtables();
+
+				new AjaxUpload('importupload', {
+					action: 'database',
+					// Fired before the file is uploaded
+					// You can return false to cancel upload
+					// @param file basename of uploaded file
+					// @param extension of that file
+					onSubmit: function(file, extension) {
+			            jQuery.blockUI({ message: 'Uploading ' + file});
+					},
+					// Fired when file upload is completed
+					// WARNING! DO NOT USE "FALSE" STRING AS A RESPONSE!
+					// @param file basename of uploaded file
+					// @param response server response
+					onComplete: function(file, response) {
+						//alert('complete');
+			            jQuery.unblockUI();
+					}
+				});
+			});
+			jQuery('.ui-icon-trash').live('click', droprow);
+		</script>
+		<script type="text/javascript" src="js/conscan.js"></script>
+	</body>
+</html>
