@@ -3,7 +3,10 @@ package com.tippingpoint.conscan.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -16,7 +19,10 @@ import com.tippingpoint.utilities.XmlUtilities;
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
+	private static final String ATTRIBUTE_NAME = "name";
 	private static final long serialVersionUID = -5482024580102875533L;
+	private static final String TAG_FIELD = "field";
+	private static final String TAG_OBJECT = "object";
 
 	/**
 	 * This method returns and XML string representing the exception.
@@ -66,25 +72,29 @@ public abstract class Services extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected void writeObject(final Writer writer, final BusinessObject businessObject) throws IOException {
-		NameValuePair pair = null;
+		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
+
 		final FieldValue fvIdentifier = businessObject.getIdentifierField();
 		if (fvIdentifier != null) {
-			pair = new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue()));
+			listAttributes
+					.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue())));
 		}
 
-		writer.write(XmlUtilities.open(businessObject.getType(), pair));
+		writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
 
 		final Iterator<FieldValue> iterValues = businessObject.getValues();
 		if (iterValues != null && iterValues.hasNext()) {
 			while (iterValues.hasNext()) {
 				final FieldValue fieldValue = iterValues.next();
-				if (!fieldValue.getName().equals(pair.getName())) {
-					writer.write(XmlUtilities.tag(fieldValue.getName(), null, XmlUtilities.getValue(fieldValue
-							.getValue())));
+				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
+					writer.write(XmlUtilities.tag(TAG_FIELD, Collections.singletonList(new NameValuePair(
+							ATTRIBUTE_NAME, fieldValue.getName())), XmlUtilities.getValue(fieldValue.getValue())));
 				}
 			}
 		}
 
-		writer.write(XmlUtilities.close(businessObject.getType()));
+		writer.write(XmlUtilities.close(TAG_OBJECT));
 	}
 }
