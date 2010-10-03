@@ -63,7 +63,7 @@ public class LogEntry {
 	}
 	
 	public void write() throws IOException {
-		m_logOutputStream.write("<item name='log'>\n");
+		m_logOutputStream.write("<object name='log'>\n");
 		writeTag("staffid", "999");
 		writeTag("created", getDateCreated());
 		writeTag("activityid", m_activity.getActivityId());
@@ -72,11 +72,11 @@ public class LogEntry {
 		if (getLocation() != null)
 			writeTag("locationid", getLocation().getLocationId());
 		writeTag("compliancevalueid", getComplianceValue().getCompliancevalueId());
-		m_logOutputStream.write("</item>\n");
+		m_logOutputStream.write("</object>\n");
 		m_logOutputStream.flush(); 
 	}
 	
 	private  void writeTag(String strTagName, String strValue) throws IOException {
-		m_logOutputStream.write("\t<column name='" + strTagName + "'>" + strValue + "</column>\n");
+		m_logOutputStream.write("\t<field name='" + strTagName + "'>" + strValue + "</field>\n");
 	}
 }

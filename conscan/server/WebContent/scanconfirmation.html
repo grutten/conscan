@@ -45,19 +45,20 @@
 				jQuery(data).find('columns').each(function() {
 					table += '<thead>';
 					table += '<tr>';
-					table += '<td>&nbsp;</td>';
+//					table += '<td>&nbsp;</td>';
 					jQuery(this).children('column').each(function() {
 						table += '<td>';
 						table += jQuery(this).attr('name');
 						table += '</td>';
 					});
+					table += '<td>&nbsp;</td>';  // notes column header
 					table += '</tr>';
 					table += '</thead>';
 				});
 				table += '  <tbody>';
 				jQuery(data).find('item').each(function() {
 					table += '    <tr>';
-					table += '<td><span class="ui-icon ui-icon-trash"></span></td>';
+//					table += '<td><span class="ui-icon ui-icon-trash"></span></td>';
 
 					// add the columns to the string
 					jQuery(this).children('column').each(function() {
@@ -75,6 +76,9 @@
 						table += jQuery(this).text();
 						table += '</td>';
 					});
+					
+					// Add notes column
+					table += '<td><span class="ui-icon ui-icon-pencil"></span></td>';
 
 					table += '    </tr>';
 				});
@@ -109,41 +113,21 @@
 			}
 			
 			function updateAllTdCallbacks(data) {
-				jQuery(data).find('staff').each(function() {
-					var strSelector = "td[querystring=staffid-" + jQuery(this).attr('staffid') + "]";
-					var strShow = jQuery(this).children('email').text();
-					jQuery(strSelector).text(strShow);
-				});
-				jQuery(data).find('activity').each(function() {
-					var strSelector = "td[querystring=activityid-" + jQuery(this).attr('activityid') + "]";
-					var strShow = jQuery(this).children('name').text();
-					jQuery(strSelector).text(strShow);
-				});
-				jQuery(data).find('location').each(function() {
-					var strSelector = "td[querystring=locationid-" + jQuery(this).attr('locationid') + "]";
-					var strShow = jQuery(this).children('name').text();
-					jQuery(strSelector).text(strShow);
-				});
-				jQuery(data).find('offender').each(function() {
-					var strSelector = "td[querystring=offenderid-" + jQuery(this).attr('offenderid') + "]";
-					var strShow = jQuery(this).children('lastname').text();
-					jQuery(strSelector).text(strShow);
-//					updateTdCallback(this, "lastname", "offender");
-				});
-				jQuery(data).find('compliancevalue').each(function() {
-					var strSelector = "td[querystring=compliancevalueid-" + jQuery(this).attr('compliancevalueid') + "]";
-					var strShow = jQuery(this).children('value').text();
-					jQuery(strSelector).text(strShow);
-				});
+				updateTdCallback(data, "staff", "email");				
+				updateTdCallback(data, "activity", "name");				
+				updateTdCallback(data, "location", "name");
+				updateTdCallback(data, "offender", "lastname");				
+				updateTdCallback(data, "compliancevalue", "value");
 			}
 
-			// See if we can't create common code for updating each <td>
-			function updateTdCallback(currObj, strObjProperty, strTableName) {
-				var strAttr = strTableName + "id";
-				var strSelector = "td[querystring=" + strTableName + "-" + jQuery(currObj).attr(strAttr) + "]";
-				var strShow = jQuery(currObj).children(strObjProperty).text();
-				alert(strSelector + " = " + strShow);
-				jQuery(strSelector).text(strShow);
+			function updateTdCallback(data, strTableName, strProperty) {
+				var strFind = "object[name='" + strTableName + "']";
+				jQuery(data).find(strFind).each(function() {
+					var strAttrId = strTableName + "id";
+					var strSelector = "td[querystring=" + strTableName + "id-" + jQuery(this).attr(strAttrId) + "]";
+					var strShow = jQuery(this).children("field[name='" + strProperty + "']").text();
+					jQuery(strSelector).text(strShow);
+				});
 			}
 
 			function lookup(data) {
