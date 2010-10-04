@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 import com.tippingpoint.database.Column;
@@ -11,7 +12,9 @@ import com.tippingpoint.database.ColumnTypeDate;
 import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
+import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
@@ -182,6 +185,34 @@ public class TestParser extends TestDbCase {
 			assertEquals("pk_activity", primaryKey.getName());
 			assertEquals(tableActivity, primaryKey.getTable());
 			assertEquals(tableActivity.getColumn("activityid"), primaryKey.getColumns().next());
+			
+			final Table tableTag = schema.getTable("tag");
+			assertNotNull(tableTag);
+			
+			Constraint constraint = tableTag.getConstraint("fk_tag_tagtype");
+			assertNotNull(constraint);
+			assertTrue(constraint instanceof ForeignKeyConstraint);
+
+			ForeignKeyConstraint foreignKeyConstraint = (ForeignKeyConstraint)constraint;
+			assertNotNull(foreignKeyConstraint);
+			
+			assertEquals(tableTag, foreignKeyConstraint.getTable());
+			
+			final Table tableTagType = schema.getTable("tagtype");
+			assertNotNull(tableTagType);
+			
+			assertEquals(tableTagType, foreignKeyConstraint.getForeignTable());
+			
+			List<ForeignKeyConstraint> listReferences = tableTagType.getReferences();
+			assertNotNull(listReferences);
+			assertEquals(1, listReferences.size());
+			assertEquals(foreignKeyConstraint, listReferences.get(0));
+
+			final Table tableRoleTag = schema.getTable("roletag");
+			assertNotNull(tableRoleTag);
+			
+			final Table tableRole = schema.getTable("role");
+			assertNotNull(tableRole);
 		}
 		catch (final IOException e) {
 			e.printStackTrace();

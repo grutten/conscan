@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
+import com.tippingpoint.database.ForeignKey;
+import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
@@ -41,9 +43,6 @@ public class TablePersistence implements Persistence {
 
 	/** This member holds the SQL used to generate an insert statement. */
 	private SqlInsert m_sqlInsert;
-
-	/** This member holds the SQL used to read the list of objects. */
-	private SqlQuery m_sqlQuery;
 
 	/** This member holds the SQL used to read an object based on primary key. */
 	private SqlQuery m_sqlQueryById;
@@ -85,12 +84,11 @@ public class TablePersistence implements Persistence {
 		generateInsert();
 		generateUpdate();
 		generateQueryById();
-		generateQuery();
 	}
 
 	/**
 	 * This method returns the data from the persistence layer for the given identifier.
-	 * 
+	 *
 	 * @throws SqlBaseException
 	 */
 	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
@@ -138,26 +136,29 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 * 
+	 *
+	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 * @throws SqlBaseException
 	 */
-	public List<Map<String, FieldValue>> getAll() throws SqlBaseException {
+	public List<Map<String, FieldValue>> getAll(List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<Map<String, FieldValue>> listValues = new ArrayList<Map<String, FieldValue>>();
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 
 		Connection conn = null;
-		SqlExecution sqlQuery = null;
+		SqlExecution sql= null;
 		ResultSet rs = null;
+		
+		final SqlQuery sqlQuery = getQuery(listCommonValues);
 
 		try {
 			conn = manager.getConnection();
-			sqlQuery = manager.getSqlManager().getExecution(m_sqlQuery);
+			sql = manager.getSqlManager().getExecution(sqlQuery);
 
-			// execute the insert
-			rs = sqlQuery.executeQuery(conn);
+			// execute the query
+			rs = sql.executeQuery(conn);
 			while (rs.next()) {
-				final Iterator<Column> iterColumns = sqlQuery.getColumnMap();
+				final Iterator<Column> iterColumns = sql.getColumnMap();
 				if (iterColumns != null && iterColumns.hasNext()) {
 					final Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
 
@@ -177,7 +178,7 @@ public class TablePersistence implements Persistence {
 			throw new SqlExecutionException("Error reading from table.", e);
 		}
 		finally {
-			ConnectionManager.close(conn, sqlQuery, rs);
+			ConnectionManager.close(conn, sql, rs);
 		}
 
 		return listValues;
@@ -199,6 +200,62 @@ public class TablePersistence implements Persistence {
 	}
 
 	/**
+	 * This method returns a list of business object names that are related to this object.
+	 */
+	public List<String> getRelatedNames() {
+		List<String> listRelatedNames = null;
+		
+		List<ForeignKeyConstraint> listReferences = m_table.getReferences();
+		if (listReferences != null && !listReferences.isEmpty()) {
+			listRelatedNames = new ArrayList<String>();
+			for (ForeignKeyConstraint foreignKeyConstraint : listReferences) {
+				Table table = foreignKeyConstraint.getTable();
+				listRelatedNames.add(table.getName());
+			}
+		}
+
+		return listRelatedNames;
+	}
+
+	/**
+	 * This method returns a list containing the named related objects.
+	 * @param strRelatedName String containing the name of the related object
+	 * @param mapValues Map of values used to persist the object.
+	 * @throws SqlBaseException 
+	 */
+	public List<BusinessObject> getReleatedObjects(String strRelatedName, final Map<String, FieldValue> mapValues) throws SqlBaseException {
+		List<BusinessObject> listReleatedObjects = null;
+		
+		ForeignKeyConstraint foreignKeyConstraint = getRestraint(strRelatedName);
+		if (foreignKeyConstraint != null) {
+			listReleatedObjects = new ArrayList<BusinessObject>();
+			
+			List<FieldValue> listValues = new ArrayList<FieldValue>();
+			
+			Iterator<Column> iterColumns = foreignKeyConstraint.getColumns();
+			if (iterColumns != null && iterColumns.hasNext()) {
+				while (iterColumns.hasNext()) {
+					ForeignKey foreignKey = (ForeignKey)iterColumns.next();
+					
+					Column columnParent = foreignKey.getParentColumn();
+					Column columnChild = foreignKey.getChildColumn();
+					
+					// get the value from the parent object
+					FieldValue value = mapValues.get(columnParent.getName());
+					
+					// add the condition based on the child's name
+					listValues.add(new FieldValue(columnChild.getName(), value.getValue()));
+				}
+			}
+			
+			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strRelatedName);
+			listReleatedObjects = builder.getAll(listValues);
+		}
+
+		return listReleatedObjects;
+	}
+
+	/**
 	 * This method returns the table which is being persisted.
 	 */
 	public Table getTable() {
@@ -214,7 +271,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method writes the data to the persistence layer.
-	 * 
+	 *
 	 * @throws SqlExecutionException
 	 * @throws SqlManagerException
 	 * @throws SqlBuilderException
@@ -249,7 +306,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method saves the object, if necessary.
-	 * 
+	 *
 	 * @param mapValues Map of values used to persist the object.
 	 * @throws SqlBuilderException
 	 * @throws SqlManagerException
@@ -273,7 +330,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method writes the data to the persistence layer.
-	 * 
+	 *
 	 * @throws SqlExecutionException
 	 * @throws SqlManagerException
 	 * @throws SqlBuilderException
@@ -341,17 +398,6 @@ public class TablePersistence implements Persistence {
 	}
 
 	/**
-	 * This method generates the statement to read objects of this table.
-	 */
-	private void generateQuery() {
-		final SqlQuery sqlQuery = new SqlQuery();
-
-		sqlQuery.add(m_table, true);
-
-		m_sqlQuery = sqlQuery;
-	}
-
-	/**
 	 * This method generates the statement to read an object of this table by primary key.
 	 */
 	private void generateQueryById() {
@@ -390,6 +436,48 @@ public class TablePersistence implements Persistence {
 
 			m_sqlUpdate = sqlUpdate;
 		}
+	}
+
+	/**
+	 * This method generates the a query with conditions added for the common values.
+	 * @param listCommonValues List containing the values that will be common to all the objects..
+	 */
+	private SqlQuery getQuery(List<FieldValue> listCommonValues) {
+		final SqlQuery sqlQuery = new SqlQuery();
+
+		sqlQuery.add(m_table, true);
+		
+		if (listCommonValues != null && !listCommonValues.isEmpty()) {
+			for (FieldValue fieldValue : listCommonValues) {
+				Column column = m_table.getColumn(fieldValue.getName());
+				if (column != null) {
+					sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
+				}
+			}
+		}
+		
+		return sqlQuery;
+	}
+
+	/**
+	 * This method returns the first foreign key referencing the named table.
+	 * @param strTableName String containing the foreign key table name.
+	 */
+	private ForeignKeyConstraint getRestraint(String strRelatedName) {
+		ForeignKeyConstraint foundForeignKeyConstraint = null;
+		
+		List<ForeignKeyConstraint> listReferences = m_table.getReferences();
+		if (listReferences != null && !listReferences.isEmpty()) {
+			for (ForeignKeyConstraint foreignKeyConstraint : listReferences) {
+				Table table = foreignKeyConstraint.getTable();
+				if (strRelatedName.equals(table.getName())) {
+					foundForeignKeyConstraint = foreignKeyConstraint;
+					break;
+				}
+			}
+		}
+
+		return foundForeignKeyConstraint;
 	}
 
 	/**

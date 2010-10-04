@@ -46,13 +46,23 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
 	 * 
-	 * @return
 	 * @throws SqlBaseException
 	 */
 	@Override
 	public List<BusinessObject> getAll() throws SqlBaseException {
+		return getAll(null);
+	}
+
+	/**
+	 * This method returns a collection of objects representing all of the objects of this type with the given field
+	 * values.
+	 * 
+	 * @param listCommonValues List containing the values that will be common to all the objects..
+	 * @throws SqlBaseException
+	 */
+	public List<BusinessObject> getAll(List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
-		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll();
+		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll(listCommonValues);
 		if (listValues != null && !listValues.isEmpty()) {
 			for (final Map<String, FieldValue> mapValues : listValues) {
 				listObjects.add(get(mapValues));

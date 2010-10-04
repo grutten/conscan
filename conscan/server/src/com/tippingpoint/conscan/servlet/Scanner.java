@@ -3,31 +3,20 @@ package com.tippingpoint.conscan.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
-import com.tippingpoint.database.Column;
-import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.DatabaseException;
-import com.tippingpoint.database.ForeignKey;
-import com.tippingpoint.database.Id;
 import com.tippingpoint.database.Schema;
-import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
-import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlManagerException;
 import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.base.SqlExecution;
@@ -74,10 +63,10 @@ public final class Scanner extends Services {
 	private void getConfiguration(final Writer writer) throws IOException, SqlBaseException, DatabaseException {
 
 		writer.write("<configuration>");
-		writeLocations(writer);
-		writer.write("	<complianceconfigurations>");
+		writeObjects(writer, "location", false);
+//		writer.write("	<complianceconfigurations>");
 		writeComplianceConfigurations(writer);
-		writer.write("	</complianceconfigurations>");
+//		writer.write("	</complianceconfigurations>");
 		writeActivities(writer);
 		writer.write("</configuration>");
 	}
@@ -130,19 +119,7 @@ public final class Scanner extends Services {
 	 * @throws IOException
 	 */
 	private void writeActivities(final Writer writer) throws SqlBaseException, IOException {
-		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("activity");
-		if (builder != null) {
-			final List<BusinessObject> listLocations = builder.getAll();
-			if (listLocations != null && !listLocations.isEmpty()) {
-				writer.write(XmlUtilities.open("activities"));
-
-				for (final BusinessObject businessObject : listLocations) {
-					writeObject(writer, businessObject);
-				}
-
-				writer.write(XmlUtilities.close("activities"));
-			}
-		}
+		writeObjects(writer, "activity", false);
 
 		// writer.write("		<!-- SCANTYPE: 1 - cell, 2 - offender -->");
 		// writer.write("		<!-- COMPLIANCETYPE: 1 - cell, 2 - offender -->");
@@ -314,112 +291,123 @@ public final class Scanner extends Services {
 	 * This method writes the compliance configurations to the writer.
 	 * 
 	 * @param writer Writer used for writing out the XML.
-	 * @throws SqlManagerException
-	 * @throws SqlBuilderException
-	 * @throws SqlExecutionException
-	 * @throws DatabaseException
+	 * @throws SqlBaseException
 	 * @throws IOException
 	 */
-	private void writeComplianceConfigurations(final Writer writer) throws SqlManagerException, SqlBuilderException,
-			SqlExecutionException, DatabaseException, IOException {
-		final SqlExecution sqlExecution = getConfigurationExecution();
+	private void writeComplianceConfigurations(final Writer writer) throws SqlBaseException, IOException {
+		writeObjects(writer, "compliance", true);
+//		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("compliance");
+//		if (builder != null) {
+//			final List<BusinessObject> listLocations = builder.getAll(true);
+//			if (listLocations != null && !listLocations.isEmpty()) {
+//				writer.write(XmlUtilities.open("compliances"));
+//
+//				for (final BusinessObject businessObject : listLocations) {
+//					writeObject(writer, businessObject);
+//				}
+//
+//				writer.write(XmlUtilities.close("compliances"));
+//			}
+//		}
 
-		Connection conn = null;
-		ResultSet rs = null;
-
-		try {
-			Id idLastCompliance = null;
-			boolean bComplianceValue = false;
-
-			final Table tableCompliance = getSchema().getTable("compliance");
-			final Column columnComplianceId = tableCompliance.getPrimaryKeyColumn();
-			final Table tableComplianceValue = getSchema().getTable("compliancevalue");
-			final Column columnComplianceValueId = tableComplianceValue.getPrimaryKeyColumn();
-			Column columnComplianceValueChildId = null;
-
-			final ForeignKey foreignKey = tableComplianceValue.getForeignKey(columnComplianceId);
-			if (foreignKey != null) {
-				columnComplianceValueChildId = foreignKey.getChildColumn();
-			}
-
-			conn = getManager().getConnection();
-			rs = sqlExecution.executeQuery(conn);
-			while (rs.next()) {
-				final Id idCompliance = (Id)sqlExecution.getObject(columnComplianceId, rs);
-				if (idLastCompliance == null || !idLastCompliance.equals(idCompliance)) {
-					if (idLastCompliance != null) {
-						if (bComplianceValue) {
-							// close out the previously opened compliance value
-							writer.write(XmlUtilities.close("compliancevalues"));
-
-							bComplianceValue = false;
-						}
-
-						// close out the previously opened compliance configuration
-						writer.write(XmlUtilities.close("complianceconfiguration"));
-					}
-
-					final NameValuePair pair = new NameValuePair(columnComplianceId.getName(), idCompliance.toString());
-
-					writer.write(XmlUtilities.open("complianceconfiguration", pair));
-
-					final Iterator<ColumnDefinition> iterColumns = tableCompliance.getColumns();
-					if (iterColumns != null && iterColumns.hasNext()) {
-						while (iterColumns.hasNext()) {
-							final Column column = iterColumns.next();
-							if (!column.equals(columnComplianceId)) {
-								writer.write(XmlUtilities.tag(column.getName(), null, sqlExecution
-										.getObject(column, rs)));
-							}
-						}
-					}
-
-					idLastCompliance = idCompliance;
-				}
-
-				final Id idComplianceValue = (Id)sqlExecution.getObject(columnComplianceValueId, rs);
-				if (idComplianceValue != null) {
-					if (!bComplianceValue) {
-						writer.write(XmlUtilities.open("compliancevalues"));
-						bComplianceValue = true;
-					}
-
-					final NameValuePair pair =
-						new NameValuePair(columnComplianceValueId.getName(), idComplianceValue.toString());
-
-					writer.write(XmlUtilities.open("compliancevalue", pair));
-
-					final Iterator<ColumnDefinition> iterColumns = tableComplianceValue.getColumns();
-					if (iterColumns != null && iterColumns.hasNext()) {
-						while (iterColumns.hasNext()) {
-							final Column column = iterColumns.next();
-							if (!column.equals(columnComplianceValueId) && !column.equals(columnComplianceValueChildId)) {
-								writer.write(XmlUtilities.tag(column.getName(), null, sqlExecution
-										.getObject(column, rs)));
-							}
-						}
-					}
-
-					writer.write(XmlUtilities.close("compliancevalue"));
-				}
-			}
-
-			if (idLastCompliance != null) {
-				if (bComplianceValue) {
-					// close out the previously opened compliance value
-					writer.write(XmlUtilities.close("compliancevalues"));
-				}
-
-				// close out the previously opened compliance configuration
-				writer.write(XmlUtilities.close("complianceconfiguration"));
-			}
-		}
-		catch (final SQLException e) {
-			throw new SqlExecutionException("SQL exception retrieving compliance configurations.", e);
-		}
-		finally {
-			DbUtils.closeQuietly(conn, null, rs);
-		}
+		// final SqlExecution sqlExecution = getConfigurationExecution();
+		//
+		// Connection conn = null;
+		// ResultSet rs = null;
+		//
+		// try {
+		// Id idLastCompliance = null;
+		// boolean bComplianceValue = false;
+		//
+		// final Table tableCompliance = getSchema().getTable("compliance");
+		// final Column columnComplianceId = tableCompliance.getPrimaryKeyColumn();
+		// final Table tableComplianceValue = getSchema().getTable("compliancevalue");
+		// final Column columnComplianceValueId = tableComplianceValue.getPrimaryKeyColumn();
+		// Column columnComplianceValueChildId = null;
+		//
+		// final ForeignKey foreignKey = tableComplianceValue.getForeignKey(columnComplianceId);
+		// if (foreignKey != null) {
+		// columnComplianceValueChildId = foreignKey.getChildColumn();
+		// }
+		//
+		// conn = getManager().getConnection();
+		// rs = sqlExecution.executeQuery(conn);
+		// while (rs.next()) {
+		// final Id idCompliance = (Id)sqlExecution.getObject(columnComplianceId, rs);
+		// if (idLastCompliance == null || !idLastCompliance.equals(idCompliance)) {
+		// if (idLastCompliance != null) {
+		// if (bComplianceValue) {
+		// // close out the previously opened compliance value
+		// writer.write(XmlUtilities.close("compliancevalues"));
+		//
+		// bComplianceValue = false;
+		// }
+		//
+		// // close out the previously opened compliance configuration
+		// writer.write(XmlUtilities.close("complianceconfiguration"));
+		// }
+		//
+		// final NameValuePair pair = new NameValuePair(columnComplianceId.getName(), idCompliance.toString());
+		//
+		// writer.write(XmlUtilities.open("complianceconfiguration", pair));
+		//
+		// final Iterator<ColumnDefinition> iterColumns = tableCompliance.getColumns();
+		// if (iterColumns != null && iterColumns.hasNext()) {
+		// while (iterColumns.hasNext()) {
+		// final Column column = iterColumns.next();
+		// if (!column.equals(columnComplianceId)) {
+		// writer.write(XmlUtilities.tag(column.getName(), null, sqlExecution
+		// .getObject(column, rs)));
+		// }
+		// }
+		// }
+		//
+		// idLastCompliance = idCompliance;
+		// }
+		//
+		// final Id idComplianceValue = (Id)sqlExecution.getObject(columnComplianceValueId, rs);
+		// if (idComplianceValue != null) {
+		// if (!bComplianceValue) {
+		// writer.write(XmlUtilities.open("compliancevalues"));
+		// bComplianceValue = true;
+		// }
+		//
+		// final NameValuePair pair =
+		// new NameValuePair(columnComplianceValueId.getName(), idComplianceValue.toString());
+		//
+		// writer.write(XmlUtilities.open("compliancevalue", pair));
+		//
+		// final Iterator<ColumnDefinition> iterColumns = tableComplianceValue.getColumns();
+		// if (iterColumns != null && iterColumns.hasNext()) {
+		// while (iterColumns.hasNext()) {
+		// final Column column = iterColumns.next();
+		// if (!column.equals(columnComplianceValueId) && !column.equals(columnComplianceValueChildId)) {
+		// writer.write(XmlUtilities.tag(column.getName(), null, sqlExecution
+		// .getObject(column, rs)));
+		// }
+		// }
+		// }
+		//
+		// writer.write(XmlUtilities.close("compliancevalue"));
+		// }
+		// }
+		//
+		// if (idLastCompliance != null) {
+		// if (bComplianceValue) {
+		// // close out the previously opened compliance value
+		// writer.write(XmlUtilities.close("compliancevalues"));
+		// }
+		//
+		// // close out the previously opened compliance configuration
+		// writer.write(XmlUtilities.close("complianceconfiguration"));
+		// }
+		// }
+		// catch (final SQLException e) {
+		// throw new SqlExecutionException("SQL exception retrieving compliance configurations.", e);
+		// }
+		// finally {
+		// DbUtils.closeQuietly(conn, null, rs);
+		// }
 
 		// writer.write("		<complianceconfiguration id=\"1\">");
 		// writer.write("			<name>default</name>");
@@ -465,24 +453,26 @@ public final class Scanner extends Services {
 	}
 
 	/**
-	 * This method writes the locations to the writer.
+	 * This method writes the name objects to the writer.
 	 * 
 	 * @param writer Writer used for writing out the XML.
+	 * @param strObjectName String containing the name of the object to write.
+	 * @param bDeep boolean indicating if related objects should be retrieved at the same time.
 	 * @throws SqlBaseException
 	 * @throws IOException
 	 */
-	private void writeLocations(final Writer writer) throws SqlBaseException, IOException {
-		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("location");
+	private void writeObjects(final Writer writer, String strObjectName, boolean bDeep) throws SqlBaseException, IOException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strObjectName);
 		if (builder != null) {
-			final List<BusinessObject> listLocations = builder.getAll();
-			if (listLocations != null && !listLocations.isEmpty()) {
-				writer.write(XmlUtilities.open("locations"));
+			final List<BusinessObject> listObjects = builder.getAll();
+			if (listObjects != null && !listObjects.isEmpty()) {
+				writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
 
-				for (final BusinessObject businessObject : listLocations) {
-					writeObject(writer, businessObject);
+				for (final BusinessObject businessObject : listObjects) {
+					writeObject(writer, businessObject, bDeep);
 				}
 
-				writer.write(XmlUtilities.close("locations"));
+				writer.write(XmlUtilities.close(TAG_LIST));
 			}
 		}
 	}

@@ -2,13 +2,14 @@ package com.tippingpoint.conscan.objects;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import com.tippingpoint.sql.SqlBaseException;
 
 /**
  * This class is an implementation of a business object.
  */
-public abstract class BusinessObjectImpl extends BusinessObject {
+public abstract class BusinessObjectImpl implements BusinessObject {
 	/** This member holds the field values of the object. */
 	private final Map<String, FieldValue> m_mapValues;
 
@@ -57,6 +58,23 @@ public abstract class BusinessObjectImpl extends BusinessObject {
 		}
 
 		return fieldValue;
+	}
+
+	/**
+	 * This method returns a list of business object names that are related to this object.
+	 */
+	public List<String> getRelatedNames() {
+		return m_persistence.getRelatedNames();
+	}
+
+	/**
+	 * This method returns a list containing the named related objects.
+	 * 
+	 * @param strRelatedName String containing the name of the related object
+	 * @throws SqlBaseException
+	 */
+	public List<BusinessObject> getReleatedObjects(final String strRelatedName) throws SqlBaseException {
+		return m_persistence.getReleatedObjects(strRelatedName, m_mapValues);
 	}
 
 	/**

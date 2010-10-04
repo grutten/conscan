@@ -99,7 +99,7 @@ public class ForeignKey implements Column {
 	 */
 	@Override
 	public String toString() {
-		return m_childColumn.getName() + " -> " + m_parentColumn.getName();
+		return m_childColumn.getFQName() + " -> " + m_parentColumn.getFQName();
 	}
 
 	/**

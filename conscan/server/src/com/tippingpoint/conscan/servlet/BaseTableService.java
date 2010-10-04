@@ -104,10 +104,11 @@ public class BaseTableService extends Services {
 	 * @param response HttpServletResponse where the results are to be returned.
 	 * @param businessObject BusinessObject to be returned.
 	 * @throws IOException
+	 * @throws SqlBaseException 
 	 */
 	private void returnObject(final HttpServletResponse response, final BusinessObject businessObject)
-			throws IOException {
+			throws IOException, SqlBaseException {
 		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-		writeObject(writer, businessObject);
+		writeObject(writer, businessObject, false);
 	}
 }

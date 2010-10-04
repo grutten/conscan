@@ -29,6 +29,15 @@ public interface BusinessObjectBuilder {
 	List<BusinessObject> getAll() throws SqlBaseException;
 
 	/**
+	 * This method returns a collection of objects representing all of the objects of this type with the given field
+	 * values.
+	 * 
+	 * @param listCommonValues List containing the values that will be common to all the objects..
+	 * @throws SqlBaseException
+	 */
+	List<BusinessObject> getAll(List<FieldValue> listCommonValues) throws SqlBaseException;
+
+	/**
 	 * This method returns the name of the object being created. It must be unique in the system.
 	 */
 	String getName();

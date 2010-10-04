@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.FieldValue;
+import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
 
@@ -19,7 +20,8 @@ import com.tippingpoint.utilities.XmlUtilities;
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
-	private static final String ATTRIBUTE_NAME = "name";
+	protected static final String ATTRIBUTE_NAME = "name";
+	protected static final String TAG_LIST = "list";
 	private static final long serialVersionUID = -5482024580102875533L;
 	private static final String TAG_FIELD = "field";
 	private static final String TAG_OBJECT = "object";
@@ -69,9 +71,11 @@ public abstract class Services extends HttpServlet {
 	 * 
 	 * @param writer Writer used for writing out the XML.
 	 * @param businessObject BusinessObject which is being written to the XML.
+	 * @param bDeep boolean indicating if related objects should be retrieved at the same time.
 	 * @throws IOException
+	 * @throws SqlBaseException 
 	 */
-	protected void writeObject(final Writer writer, final BusinessObject businessObject) throws IOException {
+	protected void writeObject(final Writer writer, final BusinessObject businessObject, boolean bDeep) throws IOException, SqlBaseException {
 		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
 		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
@@ -91,6 +95,23 @@ public abstract class Services extends HttpServlet {
 				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
 					writer.write(XmlUtilities.tag(TAG_FIELD, Collections.singletonList(new NameValuePair(
 							ATTRIBUTE_NAME, fieldValue.getName())), XmlUtilities.getValue(fieldValue.getValue())));
+				}
+			}
+		}
+		
+		if (bDeep) {
+			List<String> listRelatedNames = businessObject.getRelatedNames();
+			if (listRelatedNames != null && !listRelatedNames.isEmpty()) {
+				for (String strRelatedName : listRelatedNames) {
+					List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strRelatedName);
+					if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
+						writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
+						for (BusinessObject businessRelatedObject : listRelatedObjects) {
+							writeObject(writer, businessRelatedObject, false);
+						}
+
+						writer.write(XmlUtilities.close(TAG_LIST));
+					}
 				}
 			}
 		}

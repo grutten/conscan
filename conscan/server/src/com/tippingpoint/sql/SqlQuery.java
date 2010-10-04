@@ -74,6 +74,11 @@ public class SqlQuery extends BuilderCommand {
 		return m_listQueryColumns;
 	}
 
+	/**
+	 * This method returns the set of tables found in the query.
+	 * 
+	 * @return
+	 */
 	public Set<Table> getTables() {
 		return m_setTables;
 	}
