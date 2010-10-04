@@ -73,9 +73,10 @@ public abstract class Services extends HttpServlet {
 	 * @param businessObject BusinessObject which is being written to the XML.
 	 * @param bDeep boolean indicating if related objects should be retrieved at the same time.
 	 * @throws IOException
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
-	protected void writeObject(final Writer writer, final BusinessObject businessObject, boolean bDeep) throws IOException, SqlBaseException {
+	protected void writeObject(final Writer writer, final BusinessObject businessObject, final boolean bDeep)
+			throws IOException, SqlBaseException {
 		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
 		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
@@ -98,15 +99,15 @@ public abstract class Services extends HttpServlet {
 				}
 			}
 		}
-		
+
 		if (bDeep) {
-			List<String> listRelatedNames = businessObject.getRelatedNames();
+			final List<String> listRelatedNames = businessObject.getRelatedNames();
 			if (listRelatedNames != null && !listRelatedNames.isEmpty()) {
-				for (String strRelatedName : listRelatedNames) {
-					List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strRelatedName);
+				for (final String strRelatedName : listRelatedNames) {
+					final List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strRelatedName);
 					if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
 						writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
-						for (BusinessObject businessRelatedObject : listRelatedObjects) {
+						for (final BusinessObject businessRelatedObject : listRelatedObjects) {
 							writeObject(writer, businessRelatedObject, false);
 						}
 

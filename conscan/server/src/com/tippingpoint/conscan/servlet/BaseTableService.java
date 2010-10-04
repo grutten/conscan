@@ -104,7 +104,7 @@ public class BaseTableService extends Services {
 	 * @param response HttpServletResponse where the results are to be returned.
 	 * @param businessObject BusinessObject to be returned.
 	 * @throws IOException
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
 	private void returnObject(final HttpServletResponse response, final BusinessObject businessObject)
 			throws IOException, SqlBaseException {

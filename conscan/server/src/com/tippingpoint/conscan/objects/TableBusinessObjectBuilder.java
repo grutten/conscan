@@ -60,7 +60,7 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 * @throws SqlBaseException
 	 */
-	public List<BusinessObject> getAll(List<FieldValue> listCommonValues) throws SqlBaseException {
+	public List<BusinessObject> getAll(final List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
 		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll(listCommonValues);
 		if (listValues != null && !listValues.isEmpty()) {

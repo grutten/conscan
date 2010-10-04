@@ -15,7 +15,7 @@ public final class Activity extends BaseTableService {
 	public Activity() {
 		super("activity");
 	}
-	
+
 	/**
 	 * This method executes the options command; which is used to return the activities available to the current user.
 	 * 

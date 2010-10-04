@@ -34,10 +34,12 @@ public interface Persistence {
 
 	/**
 	 * This method returns a list containing the named related objects.
+	 * 
 	 * @param strRelatedName String containing the name of the related object
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
-	List<BusinessObject> getReleatedObjects(String strRelatedName, Map<String, FieldValue> mapValues) throws SqlBaseException;
+	List<BusinessObject> getReleatedObjects(String strRelatedName, Map<String, FieldValue> mapValues)
+			throws SqlBaseException;
 
 	/**
 	 * This method saves the object, if necessary.

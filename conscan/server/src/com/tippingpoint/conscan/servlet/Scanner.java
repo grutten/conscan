@@ -12,15 +12,9 @@ import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.DatabaseException;
-import com.tippingpoint.database.Schema;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.sql.SqlBuilderException;
-import com.tippingpoint.sql.SqlManagerException;
-import com.tippingpoint.sql.SqlQuery;
-import com.tippingpoint.sql.base.SqlExecution;
-import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
 
@@ -64,29 +58,9 @@ public final class Scanner extends Services {
 
 		writer.write("<configuration>");
 		writeObjects(writer, "location", false);
-//		writer.write("	<complianceconfigurations>");
 		writeComplianceConfigurations(writer);
-//		writer.write("	</complianceconfigurations>");
 		writeActivities(writer);
 		writer.write("</configuration>");
-	}
-
-	/**
-	 * This method returns the execution to return the compliance values available.
-	 * 
-	 * @throws SqlManagerException
-	 * @throws SqlBuilderException
-	 */
-	private SqlExecution getConfigurationExecution() throws SqlManagerException, SqlBuilderException {
-		final Schema schema = getSchema();
-		final SqlQuery sqlQuery = new SqlQuery();
-
-		sqlQuery.setAssociativeJoins(true);
-
-		sqlQuery.add(schema.getTable("compliance"), true);
-		sqlQuery.add(schema.getTable("compliancevalue"), true);
-
-		return getSqlManager().getExecution(sqlQuery);
 	}
 
 	/**
@@ -95,20 +69,6 @@ public final class Scanner extends Services {
 	private ConnectionManager getManager() {
 		final ConnectionManagerFactory factory = ConnectionManagerFactory.getFactory();
 		return factory.getDefaultManager();
-	}
-
-	/**
-	 * This method returns the schema in use.
-	 */
-	private Schema getSchema() {
-		return getManager().getSchema();
-	}
-
-	/**
-	 * This method returns the SQL manager in use.
-	 */
-	private SqlManager getSqlManager() {
-		return getManager().getSqlManager();
 	}
 
 	/**
@@ -296,19 +256,19 @@ public final class Scanner extends Services {
 	 */
 	private void writeComplianceConfigurations(final Writer writer) throws SqlBaseException, IOException {
 		writeObjects(writer, "compliance", true);
-//		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("compliance");
-//		if (builder != null) {
-//			final List<BusinessObject> listLocations = builder.getAll(true);
-//			if (listLocations != null && !listLocations.isEmpty()) {
-//				writer.write(XmlUtilities.open("compliances"));
-//
-//				for (final BusinessObject businessObject : listLocations) {
-//					writeObject(writer, businessObject);
-//				}
-//
-//				writer.write(XmlUtilities.close("compliances"));
-//			}
-//		}
+		// final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("compliance");
+		// if (builder != null) {
+		// final List<BusinessObject> listLocations = builder.getAll(true);
+		// if (listLocations != null && !listLocations.isEmpty()) {
+		// writer.write(XmlUtilities.open("compliances"));
+		//
+		// for (final BusinessObject businessObject : listLocations) {
+		// writeObject(writer, businessObject);
+		// }
+		//
+		// writer.write(XmlUtilities.close("compliances"));
+		// }
+		// }
 
 		// final SqlExecution sqlExecution = getConfigurationExecution();
 		//
@@ -461,12 +421,14 @@ public final class Scanner extends Services {
 	 * @throws SqlBaseException
 	 * @throws IOException
 	 */
-	private void writeObjects(final Writer writer, String strObjectName, boolean bDeep) throws SqlBaseException, IOException {
+	private void writeObjects(final Writer writer, final String strObjectName, final boolean bDeep)
+			throws SqlBaseException, IOException {
 		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strObjectName);
 		if (builder != null) {
 			final List<BusinessObject> listObjects = builder.getAll();
 			if (listObjects != null && !listObjects.isEmpty()) {
-				writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
+				writer.write(XmlUtilities.open(TAG_LIST,
+						new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
 
 				for (final BusinessObject businessObject : listObjects) {
 					writeObject(writer, businessObject, bDeep);

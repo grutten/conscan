@@ -88,7 +88,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns the data from the persistence layer for the given identifier.
-	 *
+	 * 
 	 * @throws SqlBaseException
 	 */
 	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
@@ -136,19 +136,19 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
-	 *
+	 * 
 	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 * @throws SqlBaseException
 	 */
-	public List<Map<String, FieldValue>> getAll(List<FieldValue> listCommonValues) throws SqlBaseException {
+	public List<Map<String, FieldValue>> getAll(final List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<Map<String, FieldValue>> listValues = new ArrayList<Map<String, FieldValue>>();
 
 		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 
 		Connection conn = null;
-		SqlExecution sql= null;
+		SqlExecution sql = null;
 		ResultSet rs = null;
-		
+
 		final SqlQuery sqlQuery = getQuery(listCommonValues);
 
 		try {
@@ -204,12 +204,12 @@ public class TablePersistence implements Persistence {
 	 */
 	public List<String> getRelatedNames() {
 		List<String> listRelatedNames = null;
-		
-		List<ForeignKeyConstraint> listReferences = m_table.getReferences();
+
+		final List<ForeignKeyConstraint> listReferences = m_table.getReferences();
 		if (listReferences != null && !listReferences.isEmpty()) {
 			listRelatedNames = new ArrayList<String>();
-			for (ForeignKeyConstraint foreignKeyConstraint : listReferences) {
-				Table table = foreignKeyConstraint.getTable();
+			for (final ForeignKeyConstraint foreignKeyConstraint : listReferences) {
+				final Table table = foreignKeyConstraint.getTable();
 				listRelatedNames.add(table.getName());
 			}
 		}
@@ -219,35 +219,37 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns a list containing the named related objects.
+	 * 
 	 * @param strRelatedName String containing the name of the related object
 	 * @param mapValues Map of values used to persist the object.
-	 * @throws SqlBaseException 
+	 * @throws SqlBaseException
 	 */
-	public List<BusinessObject> getReleatedObjects(String strRelatedName, final Map<String, FieldValue> mapValues) throws SqlBaseException {
+	public List<BusinessObject> getReleatedObjects(final String strRelatedName, final Map<String, FieldValue> mapValues)
+			throws SqlBaseException {
 		List<BusinessObject> listReleatedObjects = null;
-		
-		ForeignKeyConstraint foreignKeyConstraint = getRestraint(strRelatedName);
+
+		final ForeignKeyConstraint foreignKeyConstraint = getRestraint(strRelatedName);
 		if (foreignKeyConstraint != null) {
 			listReleatedObjects = new ArrayList<BusinessObject>();
-			
-			List<FieldValue> listValues = new ArrayList<FieldValue>();
-			
-			Iterator<Column> iterColumns = foreignKeyConstraint.getColumns();
+
+			final List<FieldValue> listValues = new ArrayList<FieldValue>();
+
+			final Iterator<Column> iterColumns = foreignKeyConstraint.getColumns();
 			if (iterColumns != null && iterColumns.hasNext()) {
 				while (iterColumns.hasNext()) {
-					ForeignKey foreignKey = (ForeignKey)iterColumns.next();
-					
-					Column columnParent = foreignKey.getParentColumn();
-					Column columnChild = foreignKey.getChildColumn();
-					
+					final ForeignKey foreignKey = (ForeignKey)iterColumns.next();
+
+					final Column columnParent = foreignKey.getParentColumn();
+					final Column columnChild = foreignKey.getChildColumn();
+
 					// get the value from the parent object
-					FieldValue value = mapValues.get(columnParent.getName());
-					
+					final FieldValue value = mapValues.get(columnParent.getName());
+
 					// add the condition based on the child's name
 					listValues.add(new FieldValue(columnChild.getName(), value.getValue()));
 				}
 			}
-			
+
 			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strRelatedName);
 			listReleatedObjects = builder.getAll(listValues);
 		}
@@ -271,7 +273,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method writes the data to the persistence layer.
-	 *
+	 * 
 	 * @throws SqlExecutionException
 	 * @throws SqlManagerException
 	 * @throws SqlBuilderException
@@ -306,7 +308,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method saves the object, if necessary.
-	 *
+	 * 
 	 * @param mapValues Map of values used to persist the object.
 	 * @throws SqlBuilderException
 	 * @throws SqlManagerException
@@ -330,7 +332,7 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method writes the data to the persistence layer.
-	 *
+	 * 
 	 * @throws SqlExecutionException
 	 * @throws SqlManagerException
 	 * @throws SqlBuilderException
@@ -440,36 +442,38 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method generates the a query with conditions added for the common values.
+	 * 
 	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 */
-	private SqlQuery getQuery(List<FieldValue> listCommonValues) {
+	private SqlQuery getQuery(final List<FieldValue> listCommonValues) {
 		final SqlQuery sqlQuery = new SqlQuery();
 
 		sqlQuery.add(m_table, true);
-		
+
 		if (listCommonValues != null && !listCommonValues.isEmpty()) {
-			for (FieldValue fieldValue : listCommonValues) {
-				Column column = m_table.getColumn(fieldValue.getName());
+			for (final FieldValue fieldValue : listCommonValues) {
+				final Column column = m_table.getColumn(fieldValue.getName());
 				if (column != null) {
 					sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
 				}
 			}
 		}
-		
+
 		return sqlQuery;
 	}
 
 	/**
 	 * This method returns the first foreign key referencing the named table.
+	 * 
 	 * @param strTableName String containing the foreign key table name.
 	 */
-	private ForeignKeyConstraint getRestraint(String strRelatedName) {
+	private ForeignKeyConstraint getRestraint(final String strRelatedName) {
 		ForeignKeyConstraint foundForeignKeyConstraint = null;
-		
-		List<ForeignKeyConstraint> listReferences = m_table.getReferences();
+
+		final List<ForeignKeyConstraint> listReferences = m_table.getReferences();
 		if (listReferences != null && !listReferences.isEmpty()) {
-			for (ForeignKeyConstraint foreignKeyConstraint : listReferences) {
-				Table table = foreignKeyConstraint.getTable();
+			for (final ForeignKeyConstraint foreignKeyConstraint : listReferences) {
+				final Table table = foreignKeyConstraint.getTable();
 				if (strRelatedName.equals(table.getName())) {
 					foundForeignKeyConstraint = foreignKeyConstraint;
 					break;
