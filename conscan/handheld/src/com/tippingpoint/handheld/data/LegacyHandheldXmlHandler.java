@@ -5,20 +5,24 @@ import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
-public class HandheldXmlHandler extends SaxBaseHandler {
-	private boolean m_bLoggingEnabled = false;
-	private Data m_data;
+/**
+ * This class parses the grammar based on the original sample XML file sent to 
+ * the handheld.  The syntax contained in the original file was typed in by
+ * hand and was created since we didn't have a way to generate the XML from
+ * the database yet.
+ * @author mgee
+ *
+ */
+public class LegacyHandheldXmlHandler extends SaxBaseHandler {
+//	private Data m_data;
 	private String m_strTierName;
 	
-	HandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+	LegacyHandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
 		super(parentHandler, reader);
 		
 		m_data = d;
 	}
 
-    public void endDocument () {
-    	handheldLog("End document");
-    }
 
     public void endElement (String uri, String name, String qName) {
 		if (TAG_NAME.equalsIgnoreCase(name)) {
@@ -50,7 +54,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 
     protected Data getData() { return m_data; }
 	
-	protected class ActivityHandler extends HandheldXmlHandler {
+	protected class ActivityHandler extends LegacyHandheldXmlHandler {
 		private String m_strActivityName;
 		private String m_strComplianceConfiguration;
 		private String m_strActivityId;
@@ -107,7 +111,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	    }
 	}
 	
-	protected class ComplianceConfigurationHandler extends HandheldXmlHandler {
+	protected class ComplianceConfigurationHandler extends LegacyHandheldXmlHandler {
 		private String m_strComplianceConfigurationId;
 		private String m_strComplianceConfigurationName;
 		private String m_strComplianceValueId;
@@ -165,7 +169,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	    }
 	}
 	
-	protected class LocationHandler extends HandheldXmlHandler {
+	protected class LocationHandler extends LegacyHandheldXmlHandler {
 		private String m_strLocationId;
 		private String m_strLocationName;
 		private String m_strLocationBarCode;
@@ -212,7 +216,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	    }
 	}
 
-	protected class OffenderHandler extends HandheldXmlHandler {
+	protected class OffenderHandler extends LegacyHandheldXmlHandler {
 		private String m_strOffenderId;
 		private String m_strOffenderName;
 		private String m_strBookingNumber;
@@ -263,21 +267,6 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	    }
 	}
 	
-	protected void logEndElement(String strTitle, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("End element (" + strTitle + "): " + qName);
-		else
-			handheldLog("End element (" + strTitle + "): {" + uri + "}" + name);
-		
-	}
-	protected void logStartElement(String strTitle, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("Start element (" + strTitle + "): " + qName);
-		else
-			handheldLog("Start element (" + strTitle + "): {" + uri + "}" + name);
-		
-	}
 
-	protected void handheldLog(String str) { if (m_bLoggingEnabled) System.out.println(str); }
 	
 }

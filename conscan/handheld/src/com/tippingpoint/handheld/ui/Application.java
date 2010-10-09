@@ -20,7 +20,7 @@ public class Application extends Frame {
     		bEnvironmentIsHandheld = true;
     	}
     	
-        Data d = new Data(strConfigFile);
+        Data d = new Data(strConfigFile, Data.CONST_PARSER_CURRENT);
         if (bEnvironmentIsHandheld)
             mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
     	else

@@ -11,9 +11,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.tippingpoint.handheld.ui.DataChoice;
+import com.tippingpoint.util.xml.SaxBaseHandler;
 
 public class Data {
 	XMLReader m_xmlreader;
+	
+	public static final int CONST_PARSER_ORIGINAL = 1;
+	public static final int CONST_PARSER_CURRENT = 2;
 	
 	// Storage
 	private HashMap m_hashCompliance = new HashMap();
@@ -28,12 +32,22 @@ public class Data {
 	// Persistence
 	private LogEntry m_log = new LogEntry();
 	
-	public Data(String strFilename) {
+	public Data(String strFilename, int nParserType) {
 		try {
 			m_xmlreader = XMLReaderFactory.createXMLReader();
-			HandheldXmlHandler saxhandler = new HandheldXmlHandler(null, m_xmlreader, this);
-			m_xmlreader.setContentHandler(saxhandler);
-			m_xmlreader.setErrorHandler(saxhandler);
+			SaxBaseHandler saxHandler = null;
+			
+			switch (nParserType) {
+				case CONST_PARSER_ORIGINAL:
+					saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);
+					break;
+				case CONST_PARSER_CURRENT:
+					saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);
+					break;
+			}
+			
+			m_xmlreader.setContentHandler(saxHandler);
+			m_xmlreader.setErrorHandler(saxHandler);
 			FileReader reader = new FileReader(strFilename);
 			// TODO: there is a null pointer exception during startup if the
 			// path to the XML config is incorrect in the .LNK shortcut file.
