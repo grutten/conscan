@@ -43,7 +43,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 	//	private Data m_data;
 	private String m_strTierName;
 	
-	LegacyHandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+	LegacyHandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d) {
 		super(parentHandler, reader);
 		
 		m_data = d;
@@ -75,7 +75,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		logStartElement("LegacyHandheld", uri, name, qName);
     }
 
-    protected Data getData() { return m_data; }
+    protected LegacyData getData() { return m_data; }
 	
 	protected class ActivityHandler extends LegacyHandheldXmlHandler {
 		private String m_strActivityName;
@@ -85,7 +85,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		private String m_strCompliancetype;
 		private Activity m_activity;
 		
-		ActivityHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+		ActivityHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d) {
 			super(parentHandler, reader, d);
 		}
 
@@ -143,7 +143,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		private ComplianceConfiguration m_complianceConfiguration;
 
 		
-		ComplianceConfigurationHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+		ComplianceConfigurationHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d) {
 			super(parentHandler, reader, d);
 		}
 
@@ -200,7 +200,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		
 		private Location m_location;
 		
-		LocationHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+		LocationHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d) {
 			super(parentHandler, reader, d);
 		}
 
@@ -248,7 +248,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		
 		private ArrayList m_listOffenderInLocation;
 		
-		OffenderHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d, ArrayList listOffenderInLocation) {
+		OffenderHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d, ArrayList listOffenderInLocation) {
 			super(parentHandler, reader, d);
 			m_listOffenderInLocation = listOffenderInLocation;
 		}

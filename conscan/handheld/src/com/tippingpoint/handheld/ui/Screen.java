@@ -16,7 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import com.intermec.datacollection.BarcodeReader;
-import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.LegacyData;
 import com.tippingpoint.version.HandheldVersion;
 
 public class Screen extends Frame {
@@ -83,7 +83,7 @@ public class Screen extends Frame {
     protected int m_screenState;
 
     // provides access to data configuration
-    private Data m_data;
+    private LegacyData m_data;
     
 	Screen() {
     	super("TPSS v " + HandheldVersion.VERSIONSTRING);
@@ -144,11 +144,11 @@ public class Screen extends Frame {
     public void drawSecurityCheck() { /**/ }
     public void drawCellSearch() { /**/ }
 
-    public Data getData() { return m_data; }
+    public LegacyData getData() { return m_data; }
     
     protected boolean getIsRunningOnHandheld() { return m_bRunningOnHandheld; }
         
-    public void setData(Data d) { m_data = d; }
+    public void setData(LegacyData d) { m_data = d; }
     
     protected void setupListeners() {
         addWindowListener(

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tippingpoint.handheld.data.Activity;
-import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.LegacyData;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
@@ -27,7 +27,7 @@ public class ScreenLayout extends ScreenListeners {
 	 */
 	private static final long serialVersionUID = 4407720571552707102L;
 
-	ScreenLayout(Data d, boolean bIsRunningOnHandheld) {
+	ScreenLayout(LegacyData d, boolean bIsRunningOnHandheld) {
 		super(bIsRunningOnHandheld);
 		
         setData(d);

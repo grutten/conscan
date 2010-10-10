@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Panel;
 //import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.LegacyData;
 
 public class Simulator extends ScreenLayout {
 	
@@ -17,7 +17,7 @@ public class Simulator extends ScreenLayout {
     
 //    private static String BUTTON_SCAN = "Scan Barcode";
     
-    Simulator(Data d) { 
+    Simulator(LegacyData d) { 
     	super(d, false);
     	
     	m_choiceBarcode = new Choice();

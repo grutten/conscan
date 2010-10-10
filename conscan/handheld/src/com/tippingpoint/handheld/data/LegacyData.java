@@ -13,7 +13,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import com.tippingpoint.handheld.ui.DataChoice;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
-public class Data {
+public class LegacyData {
 	XMLReader m_xmlreader;
 	
 	// Legacy Storage
@@ -29,7 +29,7 @@ public class Data {
 	// Persistence
 	private LogEntry m_log = new LogEntry();
 	
-	public Data(String strFilename) {
+	public LegacyData(String strFilename) {
 		try {
 			m_xmlreader = XMLReaderFactory.createXMLReader();
 			SaxBaseHandler saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);

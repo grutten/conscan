@@ -1,7 +1,7 @@
 package com.tippingpoint.handheld.ui;
 
 import java.awt.Frame;
-import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.LegacyData;
 
 public class Application extends Frame {
 	static final long serialVersionUID = -1;
@@ -14,7 +14,7 @@ public class Application extends Frame {
     	boolean bEnvironmentIsHandheld = false;
 //    	String strConfigFile = "xml\\handheld.xml";
     	String strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\scanner.xml";
-    	Data d;
+    	LegacyData d;
 
     	if (args.length > 0) {
     		strConfigFile = args[0];
@@ -22,9 +22,9 @@ public class Application extends Frame {
     	}
     	
     	if (bEnvironmentIsHandheld)
-	        d = new Data(strConfigFile);
+	        d = new LegacyData(strConfigFile);
 	    else
-    		d = new Data(strConfigFile);
+    		d = new LegacyData(strConfigFile);
         
     	Screen mainFrame = null;
 

@@ -4,7 +4,7 @@ import java.io.CharArrayWriter;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.LegacyData;
 
 public class SaxBaseHandler extends DefaultHandler {
 	
@@ -12,7 +12,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	private SaxBaseHandler m_ParentHandler;
 	private XMLReader m_xmlReader;
 
-	protected Data m_data;
+	protected LegacyData m_data;
 	
 	
 	protected static final String VALUE_DEFAULT_TRUE = "true";
