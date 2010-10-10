@@ -513,14 +513,10 @@ public final class Database extends Services {
 				if (iterColumnMap != null && iterColumnMap.hasNext()) {
 					while (iterColumnMap.hasNext()) {
 						final Column column = iterColumnMap.next();
-
 						final Object objValue = sqlExecution.getObject(column, rs);
 
-						final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
-
-						listAttributes.add(new NameValuePair(Element.ATTRIBUTE_NAME, column.getName()));
-
-						m_writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, listAttributes, objValue));
+						m_writer.append(XmlUtilities.tag(ColumnDefinition.TAG_NAME, new NameValuePair(
+								Element.ATTRIBUTE_NAME, column.getName()), objValue));
 					}
 				}
 			}

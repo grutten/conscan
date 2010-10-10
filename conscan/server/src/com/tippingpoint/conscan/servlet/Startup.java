@@ -3,11 +3,16 @@ package com.tippingpoint.conscan.servlet;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
@@ -19,14 +24,20 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.StringProperties;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is used to load the application.
  */
-public final class Startup extends HttpServlet {
+public final class Startup extends Services {
 	private static final String APPLICATION_NAME = "ConScan";
 	private static Log m_log = LogFactory.getLog(Startup.class);
+
+	/** This member holds the local services. */
+	private static List<LocalService> m_mapServices = new ArrayList<LocalService>();
+
 	private static final long serialVersionUID = -8868702728732992660L;
 
 	/**
@@ -93,6 +104,36 @@ public final class Startup extends HttpServlet {
 	}
 
 	/**
+	 * This method executes the options command; which is used to return the services available to the current user.
+	 */
+	@Override
+	protected void doOptions(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+
+		writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, "service")));
+
+		final Iterator<LocalService> iterServices = m_mapServices.iterator();
+		if (iterServices != null && iterServices.hasNext()) {
+			while (iterServices.hasNext()) {
+				final LocalService localService = iterServices.next();
+
+				writer.write(XmlUtilities.open(TAG_OBJECT, new NameValuePair(ATTRIBUTE_NAME, "service")));
+
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "path"), localService
+						.getPath()));
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "method"), localService
+						.getMethod()));
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "description"), localService
+						.getDescription()));
+
+				writer.write(XmlUtilities.close(TAG_OBJECT));
+			}
+		}
+
+		writer.write(XmlUtilities.close(TAG_LIST));
+	}
+
+	/**
 	 * This method returns the properties for the application.
 	 */
 	private StringProperties getProperties() {
@@ -111,5 +152,77 @@ public final class Startup extends HttpServlet {
 		}
 
 		return new StringProperties(properties);
+	}
+
+	static {
+		Startup.register(Scanner.class, METHOD_OPTIONS, null);
+		Startup.register(Database.class, METHOD_GET, null);
+		Startup.register(Database.class, METHOD_DELETE, null);
+		Startup.register(Database.class, METHOD_OPTIONS, null);
+		Startup.register(Database.class, METHOD_POST, null);
+		Startup.register(Activity.class, METHOD_GET, null);
+		Startup.register(ComplianceValue.class, METHOD_GET, null);
+		Startup.register(Location.class, METHOD_GET, null);
+		Startup.register(Offender.class, METHOD_GET, null);
+		Startup.register(Staff.class, METHOD_GET, null);
+	}
+
+	/**
+	 * This method registers a new web services that is available.
+	 * 
+	 * @param clsService Class that is providing the service.
+	 * @param strMethod String containing the method parameter for the service.
+	 */
+	public static void register(final Class<? extends Services> clsService, final String strMethod,
+			final String strDescription) {
+		m_mapServices.add(new LocalService(clsService.getSimpleName().toLowerCase(), strMethod, strDescription));
+	}
+
+	/**
+	 * This class is used to hold information about a service being offered.
+	 */
+	private static class LocalService {
+		/** This method holds the description of the service. */
+		private final String m_strDescription;
+
+		/** This method holds the method of the service. */
+		private final String m_strMethod;
+
+		/** This method holds the path of the service. */
+		private final String m_strPath;
+
+		/**
+		 * This method constructs a new local service.
+		 * 
+		 * @param strPath String containing the path to the service.
+		 * @param strMethod String containing the method parameter for the service.
+		 * @param strDescription String containing the description of the service.
+		 */
+		public LocalService(final String strPath, final String strMethod, final String strDescription) {
+			m_strPath = strPath;
+			m_strMethod = strMethod;
+			m_strDescription = strDescription;
+		}
+
+		/**
+		 * This method returns the description for the service.
+		 */
+		public String getDescription() {
+			return m_strDescription;
+		}
+
+		/**
+		 * This method returns the method for the service.
+		 */
+		public String getMethod() {
+			return m_strMethod;
+		}
+
+		/**
+		 * This method returns the path for the service.
+		 */
+		public String getPath() {
+			return m_strPath;
+		}
 	}
 }

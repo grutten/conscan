@@ -12,8 +12,6 @@ import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.DatabaseException;
-import com.tippingpoint.sql.ConnectionManager;
-import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
@@ -61,14 +59,6 @@ public final class Scanner extends Services {
 		writeComplianceConfigurations(writer);
 		writeActivities(writer);
 		writer.write("</configuration>");
-	}
-
-	/**
-	 * This method returns the connection manager in use.
-	 */
-	private ConnectionManager getManager() {
-		final ConnectionManagerFactory factory = ConnectionManagerFactory.getFactory();
-		return factory.getDefaultManager();
 	}
 
 	/**

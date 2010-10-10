@@ -1,6 +1,7 @@
 package com.tippingpoint.utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -131,6 +132,13 @@ public class XmlUtilities {
 		strBuffer.append("/>");
 
 		return strBuffer.toString();
+	}
+
+	/**
+	 * This method returns a tag for the given named element.
+	 */
+	public static String tag(final String strTagName, final NameValuePair pair, final Object objValue) {
+		return tag(strTagName, Collections.singletonList(pair), objValue);
 	}
 
 	/**

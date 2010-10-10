@@ -86,3 +86,8 @@ ul.tablemenu li {
 	float: right;
 	cursor: pointer;
 }
+
+div#availableservices table, div#availableservices td {
+	border: none;
+	font-size: small;
+}

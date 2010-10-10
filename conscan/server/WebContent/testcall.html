@@ -17,6 +17,11 @@
 	<body>
 		<h1>Test AJAX Call</h1>
 		<div>
+			<h2>Available Services</h2>
+			<div id="availableservices"></div>
+		</div>
+		<div>
+			<h2>Execute Service</h2>
 			<table>
 				<tr>
 					<td>URL:</td>
@@ -55,9 +60,17 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		var baseurl = '';
+		
 		jQuery('.ui-icon-circle-arrow-e').live('click', testcall);
 		jQuery('#errorcontinue').live('click', function() {
 			jQuery.unblockUI();
+		});
+		jQuery('.ui-icon-check').live('click', function() {
+			var control = jQuery(this).parent().next();
+			jQuery('input[name=url]').val(baseurl + jQuery.trim(control.text()));
+			control = control.next();
+			jQuery('select[name=action]').val(jQuery.trim(control.text()));
 		});
 		jQuery(document).ready(function() {
 			protocol = window.location.protocol;
@@ -81,7 +94,10 @@
 
 			//alert('URL: ' + url);
 
-			jQuery('input[name=url]').val(url);
+			baseurl = url;
+			jQuery('input[name=url]').val(baseurl);
+
+			getAvailableServices(url);
 		});
 
 		function testcall() {
@@ -186,6 +202,36 @@
 			}
 
 			return prefix;				
+		}
+
+		function getAvailableServices(url) {
+			jQuery.ajax({
+				type: 'OPTIONS',
+				url: 'services',
+				dataType: "xml",
+				success: showAvailableServices,
+				error: showerror
+			});
+		}
+
+		function showAvailableServices(data, textStatus, XMLHttpRequest) {
+			table = "";
+			table += '<table>';
+
+			jQuery(XMLHttpRequest.responseXML).find('object[name=service]').each(function() {
+				table += '<tr>';
+
+				table += '<td><span class="ui-icon ui-icon-check"></span></td>';
+				jQuery(this).children('field').each(function() {
+					table += '<td>';
+					table += jQuery(this).text();
+					table += '</td>';
+				});
+
+				table += '</tr>';
+			});
+			table += '</table>';
+			jQuery('div#availableservices').html(table);
 		}
 	</script>
 	<script type="text/javascript" src="js/conscan.js"></script>

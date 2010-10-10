@@ -16,6 +16,11 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet-mapping>
+    <servlet-name>Startup</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>Activity</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Activity</servlet-class>

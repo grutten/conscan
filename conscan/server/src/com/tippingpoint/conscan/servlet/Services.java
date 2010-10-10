@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
@@ -21,10 +20,19 @@ import com.tippingpoint.utilities.XmlUtilities;
  */
 public abstract class Services extends HttpServlet {
 	protected static final String ATTRIBUTE_NAME = "name";
+
+	protected static final String METHOD_DELETE = "DELETE";
+	protected static final String METHOD_GET = "GET";
+	protected static final String METHOD_HEAD = "HEAD";
+	protected static final String METHOD_OPTIONS = "OPTIONS";
+	protected static final String METHOD_POST = "POST";
+	protected static final String METHOD_PUT = "PUT";
+
+	protected static final String TAG_FIELD = "field";
 	protected static final String TAG_LIST = "list";
+	protected static final String TAG_OBJECT = "object";
+
 	private static final long serialVersionUID = -5482024580102875533L;
-	private static final String TAG_FIELD = "field";
-	private static final String TAG_OBJECT = "object";
 
 	/**
 	 * This method returns and XML string representing the exception.
@@ -94,8 +102,8 @@ public abstract class Services extends HttpServlet {
 			while (iterValues.hasNext()) {
 				final FieldValue fieldValue = iterValues.next();
 				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
-					writer.write(XmlUtilities.tag(TAG_FIELD, Collections.singletonList(new NameValuePair(
-							ATTRIBUTE_NAME, fieldValue.getName())), XmlUtilities.getValue(fieldValue.getValue())));
+					writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
+							XmlUtilities.getValue(fieldValue.getValue())));
 				}
 			}
 		}
