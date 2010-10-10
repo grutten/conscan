@@ -11,6 +11,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="isdefault">true</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="value">refused</column>
@@ -19,6 +20,198 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliance">
+		<column name="name">workorder</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">comply</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">true</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">cleanliness</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">paint</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">lights</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">sinks/toilets/showers</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">clean/office supplies</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">hot water</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">heat/air cond</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">doors/locks/gates</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">phones/tv/vending</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+
+
+	
+	<item name="compliance">
+		<column name="name">cellsearch</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">nothing found</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">true</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">cell phone</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">drugs</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">excessive property</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">i/m alcohol</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">smoking materials</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">weapon</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="value">other</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+	</item>
+	<item name="activity">
+		<column name="name">security check</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">default</column>
+			</table>
+		</column>
+		<column name="scantype">2</column>
+		<column name="compliancetype">1</column>
+	</item>
+	<item name="activity">
+		<column name="name">cell search</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="scantype">2</column>
+		<column name="compliancetype">2</column>
 	</item>
 	<item name="activity">
 		<column name="name">bedding exchange</column>
@@ -27,38 +220,8 @@
 				<column name="name">default</column>
 			</table>
 		</column>
-	</item>
-	<item name="activity">
-		<column name="name">blanket exchange</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
-	</item>
-	<item name="activity">
-		<column name="name">outerwear exchange</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
-	</item>
-	<item name="activity">
-		<column name="name">underwear exchange</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
-	</item>
-	<item name="activity">
-		<column name="name">towel exchange</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
 		<column name="name">showers</column>
@@ -67,6 +230,8 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
 		<column name="name">recreation</column>
@@ -75,22 +240,8 @@
 				<column name="name">default</column>
 			</table>
 		</column>
-	</item>
-	<item name="activity">
-		<column name="name">library</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
-	</item>
-	<item name="activity">
-		<column name="name">mail call</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
 		<column name="name">meals</column>
@@ -99,6 +250,8 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
 		<column name="name">dayroom/indoor recreation</column>
@@ -107,14 +260,8 @@
 				<column name="name">default</column>
 			</table>
 		</column>
-	</item>
-	<item name="activity">
-		<column name="name">religious services</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
 		<column name="name">school</column>
@@ -123,37 +270,37 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
-		<column name="name">stores/canteen</column>
+		<column name="name">medical/dental</column>
 		<column name="complianceid" value="referenced">
 			<table name="compliance">
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
-		<column name="name">video orientation</column>
+		<column name="name">visits</column>
 		<column name="complianceid" value="referenced">
 			<table name="compliance">
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="scantype">1</column>
+		<column name="compliancetype">1</column>
 	</item>
 	<item name="activity">
-		<column name="name">telephones</column>
+		<column name="name">repair order</column>
 		<column name="complianceid" value="referenced">
 			<table name="compliance">
-				<column name="name">default</column>
+				<column name="name">workorder</column>
 			</table>
 		</column>
-	</item>
-	<item name="activity">
-		<column name="name">legal mail</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">default</column>
-			</table>
-		</column>
+		<column name="scantype">2</column>
+		<column name="compliancetype">2</column>
 	</item>
 </data>

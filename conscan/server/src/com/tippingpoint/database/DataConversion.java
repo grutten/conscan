@@ -172,6 +172,8 @@ public final class DataConversion {
 
 			if (objValue instanceof Boolean) {
 				objReturnValue = new Integer(Boolean.TRUE.equals(objValue) ? 1 : 0);
+			} else if (objValue instanceof String) {
+				objReturnValue = new Integer("true".equalsIgnoreCase(objValue.toString()) ? 1 : 0);
 			}
 
 			return objReturnValue;
