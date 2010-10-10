@@ -14,7 +14,33 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
  *
  */
 public class LegacyHandheldXmlHandler extends SaxBaseHandler {
-//	private Data m_data;
+	
+	protected static final String ATTRIBUTE_ACTIVITYID = "activityid";
+	protected static final String ATTRIBUTE_COMPLIANCECONFIGURATIONID = "complianceconfigurationid";
+	protected static final String ATTRIBUTE_COMPLIANCEVALUEID = "compliancevalueid";
+	protected static final String ATTRIBUTE_LOCATIONID = "locationid";
+	protected static final String ATTRIBUTE_OFFENDERID = "offenderid";
+	
+	protected static final String TAG_ACTIVITIES = "activities";
+	protected static final String TAG_ACTIVITY = "activity";
+	protected static final String TAG_BARCODE = "barcode";
+	protected static final String TAG_BOOKINGNUMBER = "bookingnumber";
+	protected static final String TAG_COMPLIANCECONFIGURATION = "complianceconfiguration";
+	protected static final String TAG_COMPLIANCECONFIGURATIONS = "complianceconfigurations";
+	protected static final String TAG_COMPLIANCETYPE = "compliancetype";
+	protected static final String TAG_COMPLIANCEVALUE = "compliancevalue";
+	protected static final String TAG_COMPLIANCEVALUES = "compliancevalues";
+	protected static final String TAG_DEFAULT = "isdefault";
+	protected static final String TAG_LOCATION = "location";
+	protected static final String TAG_LOCATIONS = "locations";
+	protected static final String TAG_NAME = "name";
+	protected static final String TAG_OFFENDER = "offender";
+	protected static final String TAG_OFFENDERS = "offenders";
+	protected static final String TAG_SCANTYPE = "scantype";
+	protected static final String TAG_TIER = "tier";
+	protected static final String TAG_VALUE = "value";
+	
+	//	private Data m_data;
 	private String m_strTierName;
 	
 	LegacyHandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
@@ -30,15 +56,12 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 		    handheldLog("     -->" + m_strTierName + "<--");
 		}
 		
-		logEndElement("Handheld", uri, name, qName);
+		logEndElement("LegacyHandheld", uri, name, qName);
     }
 
     public String getName() {	return "root handler"; }
     public String toString() { return getName(); }
     
-    public void startDocument () {
-    	handheldLog("Start document");
-    }
 	
     public void startElement (String uri, String name, String qName, Attributes atts) {
     	if (TAG_LOCATIONS.equalsIgnoreCase(name))
@@ -49,7 +72,7 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
     		pushHandler(new ActivityHandler(this, getReader(), getData()));
     	
     	
-		logStartElement("Handheld", uri, name, qName);
+		logStartElement("LegacyHandheld", uri, name, qName);
     }
 
     protected Data getData() { return m_data; }

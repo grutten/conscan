@@ -83,7 +83,7 @@ public class Screen extends Frame {
     protected int m_screenState;
 
     // provides access to data configuration
-    protected Data m_data;
+    private Data m_data;
     
 	Screen() {
     	super("TPSS v " + HandheldVersion.VERSIONSTRING);
@@ -144,9 +144,12 @@ public class Screen extends Frame {
     public void drawSecurityCheck() { /**/ }
     public void drawCellSearch() { /**/ }
 
+    public Data getData() { return m_data; }
     
     protected boolean getIsRunningOnHandheld() { return m_bRunningOnHandheld; }
         
+    public void setData(Data d) { m_data = d; }
+    
     protected void setupListeners() {
         addWindowListener(
                 new WindowAdapter() {

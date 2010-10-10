@@ -16,10 +16,7 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
 public class Data {
 	XMLReader m_xmlreader;
 	
-	public static final int CONST_PARSER_ORIGINAL = 1;
-	public static final int CONST_PARSER_CURRENT = 2;
-	
-	// Storage
+	// Legacy Storage
 	private HashMap m_hashCompliance = new HashMap();
 	private HashMap m_hashLocationByBarcode = new HashMap();
 	private HashMap m_hashLocationByOffendersBarcode = new HashMap();
@@ -32,19 +29,10 @@ public class Data {
 	// Persistence
 	private LogEntry m_log = new LogEntry();
 	
-	public Data(String strFilename, int nParserType) {
+	public Data(String strFilename) {
 		try {
 			m_xmlreader = XMLReaderFactory.createXMLReader();
-			SaxBaseHandler saxHandler = null;
-			
-			switch (nParserType) {
-				case CONST_PARSER_ORIGINAL:
-					saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);
-					break;
-				case CONST_PARSER_CURRENT:
-					saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);
-					break;
-			}
+			SaxBaseHandler saxHandler = new LegacyHandheldXmlHandler(null, m_xmlreader, this);
 			
 			m_xmlreader.setContentHandler(saxHandler);
 			m_xmlreader.setErrorHandler(saxHandler);

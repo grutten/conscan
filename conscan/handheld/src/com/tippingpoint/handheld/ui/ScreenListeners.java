@@ -60,7 +60,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				// Displays the scanned data in the text field
-				m_data.setBarcode(sNewData);
+				getData().setBarcode(sNewData);
 				respondToScanEvent();
 				System.out.println("barcode scanned: " + sNewData);
 				
@@ -103,7 +103,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     }
     
     protected Activity findActivity(String strActivity) {
-    	Iterator iActivities = m_data.getActivities().iterator();
+    	Iterator iActivities = getData().getActivities().iterator();
     	Activity searchResult = null;
     	while (searchResult == null && iActivities.hasNext()) {
     		Activity currentItem = (Activity)iActivities.next();
@@ -194,7 +194,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
         
         m_choiceListenerActivity = new ItemListener() {
             public void itemStateChanged(ItemEvent ie) {
-            	m_data.reset();
+            	getData().reset();
             	drawActivityScreen();
             	setVisible(true);
             }
@@ -206,17 +206,17 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
 		
-		m_data.populateScannables(strBarcode, a);
+		getData().populateScannables(strBarcode, a);
     }
 
     private void addLogEntry() {
-		ArrayList arrScannables = m_data.getScannables();
+		ArrayList arrScannables = getData().getScannables();
 
 		// persist
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
         Iterator i = arrScannables.iterator();
-        LogEntry logEntry = m_data.getLogEntry();
+        LogEntry logEntry = getData().getLogEntry();
         logEntry.setActivity(a);
         
 		try {  // wraps the write of the log entry
@@ -286,7 +286,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 		}
 
 		logEntry.clean();
-        m_data.reset();
+		getData().reset();
 		
 		// go back to the activity screen for another scan
         drawActivityScreen();
@@ -294,7 +294,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     }
     
     private void respondToScanEvent() {
-		String strBarcode = m_data.getBarcode();
+		String strBarcode = getData().getBarcode();
 		respondToScanEvent(strBarcode);
     }
     

@@ -30,9 +30,9 @@ public class ScreenLayout extends ScreenListeners {
 	ScreenLayout(Data d, boolean bIsRunningOnHandheld) {
 		super(bIsRunningOnHandheld);
 		
-        m_data = d;
+        setData(d);
         
-        m_data.populateActivities(m_choiceActivity, m_data.getActivities());
+        getData().populateActivities(m_choiceActivity, getData().getActivities());
         m_choiceActivity.addItemListener(getActivityChoiceListener());
 
         // NOTE: the listener that responds to a scan event populates the
@@ -99,7 +99,7 @@ public class ScreenLayout extends ScreenListeners {
 //		addField(m_panelBodyActivity, cbDocumentation, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         addItem(m_panelBodyActivity, cbDocumentation, 0, nRow++, 1, 1, 1.0, 0.0, 0, 15, 15, 15, GridBagConstraints.NORTHWEST);
 
-        ArrayList arrScannables = m_data.getScannables();
+        ArrayList arrScannables = getData().getScannables();
         
         // Render the offender/compliance label/dropdown
         Iterator i = arrScannables.iterator();
@@ -130,10 +130,10 @@ public class ScreenLayout extends ScreenListeners {
         
 
 		// DEV only - scan code
-        m_labelBarcode.setText(m_data.getBarcode());
+        m_labelBarcode.setText(getData().getBarcode());
 //        addLabel(m_panelBodyActivity, m_labelBarcode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         
-        String strFeedback = m_data.getFeedback();
+        String strFeedback = getData().getFeedback();
         m_labelFeedback.setText(strFeedback);
         if (strFeedback != null && strFeedback.length() > 0) 
             addLabel(m_panelBodyActivity, m_labelFeedback, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
@@ -150,7 +150,7 @@ public class ScreenLayout extends ScreenListeners {
 		m_panelBodyDetail.removeAll();
     	
         // Location
-        LogEntry logEntry = m_data.getLogEntry();
+        LogEntry logEntry = getData().getLogEntry();
         int nRow = 0;
         addLabel(m_panelBodyDetail, new Label("Institution: TTCF"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         if (logEntry.getOffender() != null)
@@ -180,7 +180,7 @@ public class ScreenLayout extends ScreenListeners {
         Choice cOffenders = new Choice();
 
         // Render the offender/compliance label/dropdown
-        Set entries = m_data.getAllOffenders().entrySet();
+        Set entries = getData().getAllOffenders().entrySet();
         Iterator i = entries.iterator();
         while (i.hasNext()) {
         	Map.Entry entry = (Map.Entry) i.next();
@@ -200,7 +200,7 @@ public class ScreenLayout extends ScreenListeners {
         addField(m_panelBodyActivity, barCode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         
 		// DEV only - scan code
-        m_labelBarcode.setText(m_data.getBarcode());
+        m_labelBarcode.setText(getData().getBarcode());
 //        addLabel(m_panelBodyActivity, m_labelBarcode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         
 		drawButtons(null, nRow);
@@ -242,7 +242,7 @@ public class ScreenLayout extends ScreenListeners {
     		// Label containing offender's name, booking #
     		String strOffender = currOffender.getName() + ", " + currOffender.getBookingNumber();
 	        
-	        m_data.populateCompliance(cCompliance, activity);
+    		getData().populateCompliance(cCompliance, activity);
 	        if (activity.isCellScan() && activity.isOffenderCompliance()) {
     	        // Render: Compliance button for replacing this offender + combo
     	        Button buttonReplaceOffender = new Button(">");
@@ -263,7 +263,7 @@ public class ScreenLayout extends ScreenListeners {
     		
     		String strLocation = currLocation.getName();
 	        addLabel(m_panelBodyActivity, new Label(strLocation), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
-	        m_data.populateCompliance(cCompliance, activity);
+	        getData().populateCompliance(cCompliance, activity);
 	        addField(m_panelBodyActivity, cCompliance, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
     	}
 

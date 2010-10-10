@@ -11,20 +11,28 @@ public class Application extends Frame {
      * @param args Array of String arguments.
      */
     public static void main(String[] args) {
-    	String strConfigFile = "xml\\handheld.xml";
     	boolean bEnvironmentIsHandheld = false;
-    	Screen mainFrame = null;
-    	
+//    	String strConfigFile = "xml\\handheld.xml";
+    	String strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\scanner.xml";
+    	Data d;
+
     	if (args.length > 0) {
     		strConfigFile = args[0];
     		bEnvironmentIsHandheld = true;
     	}
     	
-        Data d = new Data(strConfigFile, Data.CONST_PARSER_CURRENT);
+    	if (bEnvironmentIsHandheld)
+	        d = new Data(strConfigFile);
+	    else
+    		d = new Data(strConfigFile);
+        
+    	Screen mainFrame = null;
+
         if (bEnvironmentIsHandheld)
             mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
     	else
             mainFrame = new Simulator(d);
+        
         
         mainFrame.draw();
         if (mainFrame instanceof Simulator) {
