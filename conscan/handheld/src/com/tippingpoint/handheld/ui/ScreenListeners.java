@@ -137,7 +137,9 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
                 String action = ae.getActionCommand();
                 
                 if (action.equals(BUTTON_DETAIL)) {
-                    drawDetailScreen();
+System.out.println("Detail Button - not implemented yet");
+// Must first provide a way to store a list/map of log objects
+//                    drawDetailScreen();
                     setVisible(true);
                 } 
                 else {
