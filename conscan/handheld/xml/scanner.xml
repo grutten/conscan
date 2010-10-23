@@ -1,0 +1,178 @@
+<configuration>
+ <list name="location">
+  <object name="location" locationid="1">
+   <field name="name">jail</field>
+   <field name="barcode">1234</field>
+   <field name="lineage">0001</field>
+  </object>
+  <object name="location" locationid="2">
+   <field name="name">T162-A-012L</field>
+   <field name="barcode">0070718001170</field>
+   <field name="lineage">0001.0001</field>
+  </object>
+  <object name="location" locationid="3">
+   <field name="name">T162-A-011L</field>
+   <field name="barcode">0052100746043</field>
+   <field name="lineage">0001.0002</field>
+  </object>
+ </list>
+ <list name="compliance">
+  <object name="compliance" complianceid="1">
+   <field name="name">default</field>
+   <list name="compliancevalue">
+    <object name="compliancevalue" compliancevalueid="1">
+     <field name="complianceid">1</field>
+     <field name="value">comply</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="2">
+     <field name="complianceid">1</field>
+     <field name="value">refused</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+   </list>
+   <list name="activity">
+    <object name="activity" activityid="1">
+     <field name="name">bedding exchange</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="2">
+     <field name="name">blanket exchange</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="3">
+     <field name="name">outerwear exchange</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="4">
+     <field name="name">underwear exchange</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="5">
+     <field name="name">towel exchange</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="6">
+     <field name="name">showers</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="7">
+     <field name="name">recreation</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="8">
+     <field name="name">library</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="9">
+     <field name="name">mail call</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="10">
+     <field name="name">meals</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="11">
+     <field name="name">dayroom/indoor recreation</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="12">
+     <field name="name">religious services</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="13">
+     <field name="name">school</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="14">
+     <field name="name">stores/canteen</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="15">
+     <field name="name">video orientation</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="16">
+     <field name="name">telephones</field>
+     <field name="complianceid">1</field>
+    </object>
+    <object name="activity" activityid="17">
+     <field name="name">legal mail</field>
+     <field name="complianceid">1</field>
+    </object>
+   </list>
+  </object>
+ </list>
+ <list name="activity">
+  <object name="activity" activityid="1">
+   <field name="name">bedding exchange</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="2">
+   <field name="name">blanket exchange</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="3">
+   <field name="name">outerwear exchange</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="4">
+   <field name="name">underwear exchange</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="5">
+   <field name="name">towel exchange</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="6">
+   <field name="name">showers</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="7">
+   <field name="name">recreation</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="8">
+   <field name="name">library</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="9">
+   <field name="name">mail call</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="10">
+   <field name="name">meals</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="11">
+   <field name="name">dayroom/indoor recreation</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="12">
+   <field name="name">religious services</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="13">
+   <field name="name">school</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="14">
+   <field name="name">stores/canteen</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="15">
+   <field name="name">video orientation</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="16">
+   <field name="name">telephones</field>
+   <field name="complianceid">1</field>
+  </object>
+  <object name="activity" activityid="17">
+   <field name="name">legal mail</field>
+   <field name="complianceid">1</field>
+  </object>
+ </list>
+</configuration>
