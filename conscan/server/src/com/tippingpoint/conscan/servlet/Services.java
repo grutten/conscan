@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.FieldValue;
 import com.tippingpoint.sql.SqlBaseException;
@@ -122,6 +123,56 @@ public abstract class Services extends HttpServlet {
 						writer.write(XmlUtilities.close(TAG_LIST));
 					}
 				}
+			}
+		}
+
+		writer.write(XmlUtilities.close(TAG_OBJECT));
+	}
+
+	/**
+	 * This method writes the business object to the writer. Additionally, the named child are written.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @param businessObject BusinessObject which is being written to the XML.
+	 * @param strObjectChildName String containing the name of the object to write.
+	 * @throws IOException
+	 * @throws SqlBaseException
+	 */
+	protected void writeObject(final Writer writer, final BusinessObject businessObject, final String strObjectChildName)
+			throws IOException, SqlBaseException {
+		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
+
+		final FieldValue fvIdentifier = businessObject.getIdentifierField();
+		if (fvIdentifier != null) {
+			listAttributes
+					.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue())));
+		}
+
+		writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
+
+		final Iterator<FieldValue> iterValues = businessObject.getValues();
+		if (iterValues != null && iterValues.hasNext()) {
+			while (iterValues.hasNext()) {
+				final FieldValue fieldValue = iterValues.next();
+				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
+					writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
+							XmlUtilities.getValue(fieldValue.getValue())));
+				}
+			}
+		}
+
+		if (StringUtils.isNotBlank(strObjectChildName)) {
+			final List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strObjectChildName);
+			if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
+				writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listRelatedObjects.get(0)
+						.getType())));
+				for (final BusinessObject businessRelatedObject : listRelatedObjects) {
+					writeObject(writer, businessRelatedObject, false);
+				}
+
+				writer.write(XmlUtilities.close(TAG_LIST));
 			}
 		}
 
