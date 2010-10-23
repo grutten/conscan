@@ -17,13 +17,66 @@
   </object>
  </list>
  <list name="compliance">
+  <object name="compliance" complianceid="3">
+   <field name="name">cellsearch</field>
+   <list name="compliancevalue">
+    <object name="compliancevalue" compliancevalueid="14">
+     <field name="complianceid">3</field>
+     <field name="value">cell phone</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="15">
+     <field name="complianceid">3</field>
+     <field name="value">drugs</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="16">
+     <field name="complianceid">3</field>
+     <field name="value">excessive property</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="17">
+     <field name="complianceid">3</field>
+     <field name="value">i/m alcohol</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="13">
+     <field name="complianceid">3</field>
+     <field name="value">nothing found</field>
+     <field name="isdefault">true</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="20">
+     <field name="complianceid">3</field>
+     <field name="value">other</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="18">
+     <field name="complianceid">3</field>
+     <field name="value">smoking materials</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+    <object name="compliancevalue" compliancevalueid="19">
+     <field name="complianceid">3</field>
+     <field name="value">weapon</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
+    </object>
+   </list>
+  </object>
   <object name="compliance" complianceid="1">
    <field name="name">default</field>
    <list name="compliancevalue">
     <object name="compliancevalue" compliancevalueid="1">
      <field name="complianceid">1</field>
      <field name="value">comply</field>
-     <field name="isdefault">false</field>
+     <field name="isdefault">true</field>
      <field name="displayorder"/>
     </object>
     <object name="compliancevalue" compliancevalueid="2">
@@ -33,146 +86,139 @@
      <field name="displayorder"/>
     </object>
    </list>
-   <list name="activity">
-    <object name="activity" activityid="1">
-     <field name="name">bedding exchange</field>
-     <field name="complianceid">1</field>
+  </object>
+  <object name="compliance" complianceid="2">
+   <field name="name">workorder</field>
+   <list name="compliancevalue">
+    <object name="compliancevalue" compliancevalueid="8">
+     <field name="complianceid">2</field>
+     <field name="value">clean/office supplies</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="2">
-     <field name="name">blanket exchange</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="4">
+     <field name="complianceid">2</field>
+     <field name="value">cleanliness</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="3">
-     <field name="name">outerwear exchange</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="3">
+     <field name="complianceid">2</field>
+     <field name="value">comply</field>
+     <field name="isdefault">true</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="4">
-     <field name="name">underwear exchange</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="11">
+     <field name="complianceid">2</field>
+     <field name="value">doors/locks/gates</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="5">
-     <field name="name">towel exchange</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="10">
+     <field name="complianceid">2</field>
+     <field name="value">heat/air cond</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="6">
-     <field name="name">showers</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="9">
+     <field name="complianceid">2</field>
+     <field name="value">hot water</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="7">
-     <field name="name">recreation</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="6">
+     <field name="complianceid">2</field>
+     <field name="value">lights</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="8">
-     <field name="name">library</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="5">
+     <field name="complianceid">2</field>
+     <field name="value">paint</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="9">
-     <field name="name">mail call</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="12">
+     <field name="complianceid">2</field>
+     <field name="value">phones/tv/vending</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
-    <object name="activity" activityid="10">
-     <field name="name">meals</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="11">
-     <field name="name">dayroom/indoor recreation</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="12">
-     <field name="name">religious services</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="13">
-     <field name="name">school</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="14">
-     <field name="name">stores/canteen</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="15">
-     <field name="name">video orientation</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="16">
-     <field name="name">telephones</field>
-     <field name="complianceid">1</field>
-    </object>
-    <object name="activity" activityid="17">
-     <field name="name">legal mail</field>
-     <field name="complianceid">1</field>
+    <object name="compliancevalue" compliancevalueid="7">
+     <field name="complianceid">2</field>
+     <field name="value">sinks/toilets/showers</field>
+     <field name="isdefault">false</field>
+     <field name="displayorder"/>
     </object>
    </list>
   </object>
  </list>
  <list name="activity">
   <object name="activity" activityid="1">
-   <field name="name">bedding exchange</field>
+   <field name="name">security check</field>
    <field name="complianceid">1</field>
+   <field name="scantype">2</field>
+   <field name="compliancetype">1</field>
   </object>
   <object name="activity" activityid="2">
-   <field name="name">blanket exchange</field>
-   <field name="complianceid">1</field>
+   <field name="name">cell search</field>
+   <field name="complianceid">3</field>
+   <field name="scantype">2</field>
+   <field name="compliancetype">2</field>
   </object>
   <object name="activity" activityid="3">
-   <field name="name">outerwear exchange</field>
+   <field name="name">bedding exchange</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
   <object name="activity" activityid="4">
-   <field name="name">underwear exchange</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="5">
-   <field name="name">towel exchange</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="6">
    <field name="name">showers</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="7">
+  <object name="activity" activityid="5">
    <field name="name">recreation</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="8">
-   <field name="name">library</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="9">
-   <field name="name">mail call</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="10">
+  <object name="activity" activityid="6">
    <field name="name">meals</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="11">
+  <object name="activity" activityid="7">
    <field name="name">dayroom/indoor recreation</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="12">
-   <field name="name">religious services</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="13">
+  <object name="activity" activityid="8">
    <field name="name">school</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="14">
-   <field name="name">stores/canteen</field>
+  <object name="activity" activityid="9">
+   <field name="name">medical/dental</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="15">
-   <field name="name">video orientation</field>
+  <object name="activity" activityid="10">
+   <field name="name">visits</field>
    <field name="complianceid">1</field>
+   <field name="scantype">1</field>
+   <field name="compliancetype">1</field>
   </object>
-  <object name="activity" activityid="16">
-   <field name="name">telephones</field>
-   <field name="complianceid">1</field>
-  </object>
-  <object name="activity" activityid="17">
-   <field name="name">legal mail</field>
-   <field name="complianceid">1</field>
+  <object name="activity" activityid="11">
+   <field name="name">repair order</field>
+   <field name="complianceid">2</field>
+   <field name="scantype">2</field>
+   <field name="compliancetype">2</field>
   </object>
  </list>
 </configuration>
