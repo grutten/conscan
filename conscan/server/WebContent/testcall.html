@@ -16,33 +16,43 @@
 	</head>
 	<body>
 		<h1>Test AJAX Call</h1>
-		<table><tr>
-		
-		<td><div>
-			<h2>Execute Service</h2>
-			<table>
-				<tr>
-					<td>URL:</td>
-					<td><input type="text" name="url" size="80"/></td>
-				</tr>
-				<tr>
-					<td>Action:</td>
-					<td>
-						<select name="action">
-							<option>GET</option>
-							<option>PUT</option>
-							<option>POST</option>
-							<option>OPTIONS</option>
-							<option>HEAD</option>
-							<option>DELETE</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2"><span class="ui-icon ui-icon-circle-arrow-e"></span></td>
-				</tr>
-			</table>
-		</div>
+		<table>
+			<tr>
+				<td>
+					<div>
+						<h2>Execute Service</h2>
+						<table>
+							<tr>
+								<td>URL:</td>
+								<td><input type="text" name="url" size="80"/></td>
+							</tr>
+							<tr>
+								<td>Action:</td>
+								<td>
+									<select name="action">
+										<option>GET</option>
+										<option>PUT</option>
+										<option>POST</option>
+										<option>OPTIONS</option>
+										<option>HEAD</option>
+										<option>DELETE</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><span class="ui-icon ui-icon-circle-arrow-e"></span></td>
+							</tr>
+						</table>
+					</div>
+				</td>
+				<td>
+					<div>
+						<h2>Available Services</h2>
+						<div id="availableservices"></div>
+					</div>
+				</td>
+			</tr>
+		</table>
 		<div>
 			<div id="message"></div>
 			<div id="results"></div>
@@ -56,13 +66,6 @@
 				<input type="button" id="errorcontinue" value="Continue"/>
 			</div>
 		</div>
-		</td>
-		<td><div>
-			<h2>Available Services</h2>
-			<div id="availableservices"></div>
-		</div>
-		</td>
-		
 	</body>
 	<script type="text/javascript">
 		var baseurl = '';
