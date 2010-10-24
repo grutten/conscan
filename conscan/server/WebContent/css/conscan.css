@@ -1,7 +1,10 @@
 @CHARSET "ISO-8859-1";
 
+body {
+	background: #24AFF0;
+}
+
 h1 {
-	background-color: #1BB1E6;
 	color: #FFFFFF;
 	font-family: sans-serif;
 }
@@ -36,6 +39,28 @@ td {
 
 #errormessage {
 	text-align: left;
+}
+
+div.main {
+	-moz-border-radius: 1em;
+	background-color: #FFFFFF;
+	padding: 1em;
+	margin: 1em;
+}
+
+div.main div.menu {
+	border-right: solid thin #24AFF0;
+	height: 100%;
+	width: 8em;
+}
+
+div.main h3 {
+	margin: 0.5em 0em;
+}
+
+div.login {
+	float: right;
+	margin-right: 2em;
 }
 
 div.hidden {
