@@ -39,8 +39,11 @@ public class Table extends Element {
 	private final List<WeakReference<ForeignKeyConstraint>> m_listParentForeignKeys =
 		new ArrayList<WeakReference<ForeignKeyConstraint>>();
 
+	/** This member holds a weak reference to the schema for which this table belongs. */
+	private WeakReference<Schema> m_schema;
+
 	/**
-	 * This method constructs a new table.
+	 * This method constructs a new blank table. This is needed for the digester.
 	 */
 	public Table() {
 	}
@@ -244,6 +247,13 @@ public class Table extends Element {
 	}
 
 	/**
+	 * This method returns the schema for which the table belongs.
+	 */
+	public Schema getSchema() {
+		return m_schema.get();
+	}
+
+	/**
 	 * This method returns if this has a primary key of an id only.
 	 */
 	public boolean hasIdPrimaryKey() {
@@ -311,6 +321,15 @@ public class Table extends Element {
 	 */
 	void addReference(final ForeignKeyConstraint key) {
 		m_listParentForeignKeys.add(new WeakReference<ForeignKeyConstraint>(key));
+	}
+
+	/**
+	 * This method sets the schema for which the table belongs.
+	 * 
+	 * @param schema Schema that contains the table.
+	 */
+	void setSchema(final Schema schema) {
+		m_schema = new WeakReference<Schema>(schema);
 	}
 
 	/**

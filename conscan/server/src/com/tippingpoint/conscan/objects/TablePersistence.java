@@ -246,7 +246,7 @@ public class TablePersistence implements Persistence {
 					final FieldValue value = mapValues.get(columnParent.getName());
 
 					// add the condition based on the child's name
-					listValues.add(new FieldValue(columnChild.getName(), value.getValue()));
+					listValues.add(new FieldValue(columnChild, value.getValue()));
 				}
 			}
 
@@ -452,9 +452,22 @@ public class TablePersistence implements Persistence {
 
 		if (listCommonValues != null && !listCommonValues.isEmpty()) {
 			for (final FieldValue fieldValue : listCommonValues) {
-				final Column column = m_table.getColumn(fieldValue.getName());
+				Column column = fieldValue.getColumn();
+				if (column == null) {
+					column = m_table.getColumn(fieldValue.getName());
+				}
+				
 				if (column != null) {
-					sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
+					if (m_table.equals(column.getTable())) {
+						sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
+					} else {
+						final ForeignKeyConstraint foreignKeyConstraint = getRestraint(column.getTable().getName());
+						if (foreignKeyConstraint != null) {
+							sqlQuery.add(foreignKeyConstraint.getTable(), false);
+							
+							sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
+						}
+					}
 				}
 			}
 		}
@@ -473,8 +486,7 @@ public class TablePersistence implements Persistence {
 		final List<ForeignKeyConstraint> listReferences = m_table.getReferences();
 		if (listReferences != null && !listReferences.isEmpty()) {
 			for (final ForeignKeyConstraint foreignKeyConstraint : listReferences) {
-				final Table table = foreignKeyConstraint.getTable();
-				if (strRelatedName.equals(table.getName())) {
+				if (isRelationship(strRelatedName, foreignKeyConstraint)) {
 					foundForeignKeyConstraint = foreignKeyConstraint;
 					break;
 				}
@@ -482,6 +494,31 @@ public class TablePersistence implements Persistence {
 		}
 
 		return foundForeignKeyConstraint;
+	}
+
+	/**
+	 * This method returns if the specified foreign key is related to the passed in name.
+	 * @param strRelatedName String containing the name of the related table.
+	 * @param foreignKeyConstraint ForeignKeyConstraint constraint to check.
+	 */
+	private boolean isRelationship(String strRelatedName, ForeignKeyConstraint foreignKeyConstraint) {
+		boolean bFound = false;
+		
+		// check to see if the table is simply a child table
+		final Table table = foreignKeyConstraint.getTable();
+		if (strRelatedName.equals(table.getName())) {
+			bFound = true;
+		} else {
+			// check to see if the child table is a mapping table
+			Table tableRelated = m_table.getSchema().getTable(strRelatedName);
+			if (tableRelated != null && tableRelated.hasIdPrimaryKey()) {
+				if (table.getForeignKey(tableRelated.getPrimaryKeyColumn()) != null) {
+					bFound = true;
+				}
+			}
+		}
+
+		return bFound;
 	}
 
 	/**

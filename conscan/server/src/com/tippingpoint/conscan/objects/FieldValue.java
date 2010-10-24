@@ -1,6 +1,7 @@
 package com.tippingpoint.conscan.objects;
 
 import org.apache.commons.lang.ObjectUtils;
+import com.tippingpoint.database.Column;
 
 /**
  * This class is used to have a value for a field.
@@ -9,11 +10,28 @@ public class FieldValue {
 	/** This member holds if this value has changed. */
 	private boolean m_bDirty;
 
+	/** This member holds the column for which this value represents. **/
+	private Column m_column;
+
 	/** This member holds the actual value. */
 	private Object m_objValue;
 
 	/** This member holds the name of the field. */
 	private String m_strName;
+
+	/**
+	 * This method constructs a new field value for the given value. If this constructor is used, the field is assumed
+	 * to be clean.
+	 * 
+	 * @param column Column representing the field.
+	 * @param objValue Object containing the initial value of the field.
+	 */
+	public FieldValue(final Column column, final Object objValue) {
+		m_column = column;
+		m_strName = column.getName();
+		m_objValue = objValue;
+		m_bDirty = false;
+	}
 
 	/**
 	 * This method constructs a new field value with a null value.
@@ -35,6 +53,13 @@ public class FieldValue {
 		m_strName = strName;
 		m_objValue = objValue;
 		m_bDirty = false;
+	}
+
+	/**
+	 * This method returns the column of the field.
+	 */
+	public Column getColumn() {
+		return m_column;
 	}
 
 	/**
