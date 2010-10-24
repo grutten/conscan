@@ -9,11 +9,33 @@
    <field name="name">T162-A-012L</field>
    <field name="barcode">0070718001170</field>
    <field name="lineage">0001.0001</field>
+   <list name="offender">
+    <object name="offender" offenderid="1">
+     <field name="firstname">Abe</field>
+     <field name="lastname">Iverson</field>
+     <field name="bookingnumber">345345345</field>
+     <field name="barcode">0812122010450</field>
+    </object>
+    <object name="offender" offenderid="2">
+     <field name="firstname">Bob</field>
+     <field name="lastname">Page</field>
+     <field name="bookingnumber">123456789</field>
+     <field name="barcode">0812122010160</field>
+    </object>
+   </list>
   </object>
   <object name="location" locationid="3">
    <field name="name">T162-A-011L</field>
    <field name="barcode">0052100746043</field>
    <field name="lineage">0001.0002</field>
+   <list name="offender">
+    <object name="offender" offenderid="3">
+     <field name="firstname">Cory</field>
+     <field name="lastname">Irving</field>
+     <field name="bookingnumber">234567890</field>
+     <field name="barcode">0832924005201</field>
+    </object>
+   </list>
   </object>
  </list>
  <list name="compliance">
