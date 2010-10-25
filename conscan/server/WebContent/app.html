@@ -3,11 +3,14 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>ConScan</title>
+		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.simplemodal.1.4.min.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
-		<div class="login">Test</div>
+		<div class="login"><span id="loginlink">Login</span></div>
 		<div class="main">
 			<div class="menu">
 				<h3>Menu</h3>
@@ -15,5 +18,39 @@
 			<div class="field">
 			</div>
 		</div>
+		<div class="hidden wideborder" id="logindialog">
+			<table class="noborder">
+				<tbody>
+				<tr>
+					<td>User:</td>
+					<td><input type="text" name="user"></input></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input type="password" name="username"></input></td>
+				</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<input type="reset" value="Clear"></input>
+							<input type="submit" value="Submit"></input>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+			});
+			jQuery('#loginlink').live('click', showlogin);
+
+			function showlogin() {
+				$("#logindialog").modal({
+					opacity:70,
+					overlayCss: {backgroundColor:"#EEEEEE"}
+				});
+			}
+		</script>
 	</body>
 </html>

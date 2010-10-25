@@ -1,0 +1,21 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background: #24AFF0;
+}
+
+div table tfoot td {
+	text-align: right;
+}
+
+table.noborder {
+	border: none;
+}
+
+table.noborder td {
+	border: none;
+}
+
+div.wideborder {
+	border: thick solid #24AFF0;
+}
