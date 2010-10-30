@@ -4,17 +4,12 @@ import java.io.CharArrayWriter;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.tippingpoint.handheld.data.LegacyData;
-
 public class SaxBaseHandler extends DefaultHandler {
 	
-	private boolean m_bLoggingEnabled = false;
+	private boolean m_bLoggingEnabled = true;
 	private SaxBaseHandler m_ParentHandler;
 	private XMLReader m_xmlReader;
 
-	protected LegacyData m_data;
-	
-	
 	protected static final String VALUE_DEFAULT_TRUE = "true";
 	protected static final String VALUE_DEFAULT_FALSE = "false";
 	
@@ -56,19 +51,5 @@ public class SaxBaseHandler extends DefaultHandler {
 	
 	protected void handheldLog(String str) { if (m_bLoggingEnabled) System.out.println(str); }
 	
-	protected void logEndElement(String strTitle, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("End element (" + strTitle + "): " + qName);
-		else
-			handheldLog("End element (" + strTitle + "): {" + uri + "}" + name);
-		
-	}
-	protected void logStartElement(String strTitle, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("Start element (" + strTitle + "): " + qName);
-		else
-			handheldLog("Start element (" + strTitle + "): {" + uri + "}" + name);
-		
-	}
 	
 }

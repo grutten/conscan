@@ -13,7 +13,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import com.tippingpoint.handheld.ui.DataChoice;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
-public class LegacyData {
+public class LegacyData implements DataInterface {
 	XMLReader m_xmlreader;
 	
 	// Legacy Storage

@@ -16,4 +16,5 @@ public class Offender {
 	public void setOffenderId(String strId) { m_strOffenderId = strId; } 
 	public void setName(String strName) { m_strName = strName; }
 
+	public String toString() { return getName(); }
 }

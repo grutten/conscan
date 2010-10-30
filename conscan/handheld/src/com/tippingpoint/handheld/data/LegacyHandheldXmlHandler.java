@@ -40,7 +40,8 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
 	protected static final String TAG_TIER = "tier";
 	protected static final String TAG_VALUE = "value";
 	
-	//	private Data m_data;
+	private LegacyData m_data;
+	
 	private String m_strTierName;
 	
 	LegacyHandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, LegacyData d) {
@@ -76,6 +77,22 @@ public class LegacyHandheldXmlHandler extends SaxBaseHandler {
     }
 
     protected LegacyData getData() { return m_data; }
+    
+	protected void logEndElement(String strTitle, String uri, String name, String qName) {
+		if ("".equals (uri))
+			handheldLog("End element (" + strTitle + "): " + qName);
+		else
+			handheldLog("End element (" + strTitle + "): {" + uri + "}" + name);
+		
+	}
+    
+	protected void logStartElement(String strTitle, String uri, String name, String qName) {
+		if ("".equals (uri))
+			handheldLog("Start element (" + strTitle + "): " + qName);
+		else
+			handheldLog("Start element (" + strTitle + "): {" + uri + "}" + name);
+		
+	}
 	
 	protected class ActivityHandler extends LegacyHandheldXmlHandler {
 		private String m_strActivityName;
