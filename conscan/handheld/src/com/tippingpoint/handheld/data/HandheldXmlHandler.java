@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
+import com.tippingpoint.util.string.StringFormat;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
 /**
@@ -24,6 +25,9 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	protected static final String CLASS_LOCATION = "Location";
 	protected static final String CLASS_OFFENDER = "Offender";
 	
+	protected static final String OBJ_ACTIVITY = "activity";
+	protected static final String OBJ_COMPLIANCE = "compliance";
+	protected static final String OBJ_COMPLIANCEVALUE = "compliancevalue";
 	protected static final String OBJ_LOCATION = "location";
 	protected static final String OBJ_OFFENDER = "offender";
 	
@@ -69,8 +73,15 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     		logStartElement(qName, uri, name, "name=" + strCurrObjName);
     	}
     	else if (TAG_OBJECT.equalsIgnoreCase(qName)) {
+    		// Create the object and store it
     		Object currObj = createObject(strCurrObjName);
     		getData().addObject(strCurrObjName, currObj);
+    		
+    		// If the current object has an ID, set it
+    		String strObjectIdAttributeName = strCurrObjName + "id";
+    		String strObjectIdValue = attrs.getValue(strObjectIdAttributeName);
+    		if (StringFormat.isSpecified(strObjectIdValue))
+        		setField(strObjectIdAttributeName, strObjectIdValue);
     		
     		logStartElement(qName, uri, name, strCurrObjNameValuePair);
     	}
@@ -110,10 +121,16 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     private Object createObject(String strObjectName) {
     	Object object = null;
     	
-    	if (OBJ_LOCATION.equalsIgnoreCase(strObjectName))
+    	if (OBJ_ACTIVITY.equalsIgnoreCase(strObjectName))
+    		object = new Activity();
+    	else if (OBJ_LOCATION.equalsIgnoreCase(strObjectName))
     		object = new Location();
     	else if (OBJ_OFFENDER.equalsIgnoreCase(strObjectName))
     		object = new Offender();
+    	else if (OBJ_COMPLIANCE.equalsIgnoreCase(strObjectName))
+    		object = new ComplianceConfiguration();
+    	else if (OBJ_COMPLIANCEVALUE.equalsIgnoreCase(strObjectName))
+    		object = new ComplianceValue();
     	return object;
     }
     
@@ -134,31 +151,28 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	
 	private void setField(String strFieldName, String strValue) {
     	Object o = getData().getCurrentObject();
-//    	String strClassPath = "com.tippingpoint.handheld.data.";
-    	
-//    	if ((strClassPath + CLASS_LOCATION).equalsIgnoreCase(o.getClass().getName())) {
-//    		Location l = (Location)o;
-    		Class cls = o.getClass();
-    		Method[] methods = cls.getDeclaredMethods();
-    		Method methodToInvoke = null;
-    		String strMethodName = "set" + strFieldName;
-    		
-    		for (Method m: methods) {
-    			if (strMethodName.equalsIgnoreCase(m.getName()))
-    				methodToInvoke = m;
-    			if (methodToInvoke != null)
-    				break;
-    		}
-//    		if (methodToInvoke != null  & l != null) {
-       		if (methodToInvoke != null) {
-    			try {
-    				methodToInvoke.invoke(o, new Object[] {strValue});
-    			}
-    			catch (Exception e) {
-    				System.out.println(e.getStackTrace());
-    			}
-    		}
-//    	}
+		Class cls = o.getClass();
+		Method[] methods = cls.getDeclaredMethods();
+		Method methodToInvoke = null;
+		String strMethodName = "set" + strFieldName;
+		
+		// Find the method for the field being set
+		for (Method m: methods) {
+			if (strMethodName.equalsIgnoreCase(m.getName()))
+				methodToInvoke = m;
+			if (methodToInvoke != null)
+				break;
+		}
+		
+		// Set the field's value if the method was found
+   		if (methodToInvoke != null) {
+			try {
+				methodToInvoke.invoke(o, new Object[] {strValue});
+			}
+			catch (Exception e) {
+				System.out.println(e.getStackTrace());
+			}
+		}
     	
 	}
     

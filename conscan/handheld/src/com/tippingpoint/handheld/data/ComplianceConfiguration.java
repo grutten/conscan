@@ -13,4 +13,6 @@ public class ComplianceConfiguration {
 	public ArrayList getValues() { return m_listValues; } // collection of all values for the compliance config
 	public void setComplianceId(String strId) { m_strComplianceId = strId; }
 	public void setName(String strName) { m_strName = strName; }
+	
+	public String toString() { return getName(); }
 }

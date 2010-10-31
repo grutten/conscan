@@ -1,9 +1,10 @@
 package com.tippingpoint.handheld.data;
 
 public class Activity {
+	private String m_strActivityId;
+
 	private String m_strName;
 	private String m_strComplianceId;
-	private String m_strActivityId;
 	private String m_strScanType;
 	private String m_strComplianceType;
 	
@@ -21,4 +22,6 @@ public class Activity {
 	public void setActivityId(String strId) { m_strActivityId = strId; } 
 	public void setName(String strName) { m_strName = strName; }
 	public void setScantype(String strScantype) { m_strScanType = strScantype; }
+	
+	public String toString() { return getName(); }
 }
