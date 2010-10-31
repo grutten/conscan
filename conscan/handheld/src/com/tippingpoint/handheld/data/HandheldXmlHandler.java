@@ -12,10 +12,14 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
 /**
  * Parsing algorithm:
  * <configuration> -> create root map
- * 		<list> - if no current object, create map entry in root's map for list (e.g. locations or compliances)
- * 			   - else, create map entry in current object's map for list (e.g. compliancevalues)
- * 		<object> - add to current map
- * 		<field> - save to current object
+ * 		<list> - if no current object, create map entry in root's map for list 
+ * 					(e.g. locations, compliances, or activities)
+ * 			   - else, create map entry in current object's map for list 
+ * 					(e.g. offenders, compliancevalues, {no child objects for activity})
+ * 		<object> - add to current map object, an instance representing one of the <list>
+ * 					entries found in the XML.
+ * 		<field> - save to current map object, an instance representing one of the <object>
+ * 					entries found in the XML.
  * @author mgee
  *
  */
@@ -90,11 +94,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     	}
     	else if (!"field".equalsIgnoreCase(qName))
     		logStartElement(qName, uri, name, strCurrObjName);
-//    	else
-//    		logStartElement("HH", uri, name, qName);
     }
-	
-    
     
     private ArrayList addList(String strName) {
     	Object o = getData().getCurrentObject();
@@ -131,6 +131,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     		object = new ComplianceConfiguration();
     	else if (OBJ_COMPLIANCEVALUE.equalsIgnoreCase(strObjectName))
     		object = new ComplianceValue();
+    	
     	return object;
     }
     
@@ -139,7 +140,6 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 			handheldLog("End element (" + strTagName + "): " + (qName != null ? qName : ""));
 		else
 			handheldLog("End element (" + strTagName + "): {" + uri + "}" + name);
-		
 	}
     
 	private void logStartElement(String strTagName, String uri, String name, String qName) {
@@ -157,7 +157,10 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 		String strMethodName = "set" + strFieldName;
 		
 		// Find the method for the field being set
-		for (Method m: methods) {
+		int nMethodCount = methods.length;
+		for (int i = 0; i < nMethodCount; ++i) {
+			Method m = methods[i];
+			
 			if (strMethodName.equalsIgnoreCase(m.getName()))
 				methodToInvoke = m;
 			if (methodToInvoke != null)
@@ -173,7 +176,6 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 				System.out.println(e.getStackTrace());
 			}
 		}
-    	
 	}
     
 }

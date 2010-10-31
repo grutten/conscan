@@ -5,7 +5,7 @@
 package com.tippingpoint.util.string;
 
 import java.io.PrintWriter;
-import java.util.regex.Pattern;
+//import java.util.regex.Pattern;
 
 /**
  * StringFormat
@@ -27,7 +27,7 @@ public class StringFormat {
 	/**
 	 * Regular expression used while escaping script tags.
 	 */
-	private static final Pattern REGEX_SCRIPT = Pattern.compile("(?i:<(script|iframe|frame))");
+//	private static final Pattern REGEX_SCRIPT = Pattern.compile("(?i:<(script|iframe|frame))");
 	
 	/**
 	 * Replacement string used with REGEX_SCRIPT
@@ -657,11 +657,13 @@ public class StringFormat {
 		return strClean != null ? strClean.toString() : str;
 	}
 	
+/* REGEX not supported in Java 1.2	
 	public static String stripXssAttempt(String strUnstripped) {
 		if (StringFormat.isSpecified(strUnstripped) && strUnstripped.indexOf('<') > -1)
 			strUnstripped = REGEX_SCRIPT.matcher(strUnstripped).replaceAll(REPLACE_STRING);
 		return strUnstripped;
 	}
+*/	
 	
 	/**
 	 * Unescapes Unicode escape sequences embedded within a string. Unicode
