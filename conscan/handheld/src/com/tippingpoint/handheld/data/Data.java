@@ -3,6 +3,7 @@ package com.tippingpoint.handheld.data;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Stack;
 
 import org.xml.sax.InputSource;
@@ -12,10 +13,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
 public class Data implements DataInterface{
+	protected static final String INDEX_ACTIVITY = "activity";
+	protected static final String INDEX_COMPLIANCE = "compliance";
+	protected static final String INDEX_LOCATION = "location";
+	protected static final String INDEX_LOCATIONBYOFFENDER = "offenderloc";
+
 	XMLReader m_xmlreader;
 
 	// storage
-	private HashMap m_hashRoot = new HashMap();
+	private HashMap m_hashLookup = new HashMap(); // Populated from root map data, provides index of objects
+	private HashMap m_hashRoot = new HashMap();  // Contains lists of all objects represented in XML
 	private Stack m_stackCurrObj = new Stack();
 	
 	public Data(String strFilename) {
@@ -36,7 +43,7 @@ public class Data implements DataInterface{
 				System.out.println("XML configuration file missing.");
 				
 			m_xmlreader.parse(new InputSource(reader));
-//			populateLocationsByOffendersBarcode(m_hashLocationByOffendersBarcode, m_hashLocationByBarcode);
+			populateLookupMaps();
 		}
 		catch (Exception e) {
 			System.out.println("Failed to create XMLReader");
@@ -109,4 +116,55 @@ public class Data implements DataInterface{
 	public void saveOffender(Offender offender){ ; /* asdf */ }
 	public void setBarcode(String strBarcode){ ; /* asdf */ }
 	
+	private void populateLookupMaps() {
+		// Define the indexes
+		m_hashLookup.put(INDEX_ACTIVITY, new HashMap());
+		m_hashLookup.put(INDEX_COMPLIANCE, new HashMap());
+		m_hashLookup.put(INDEX_LOCATION, new HashMap());
+		m_hashLookup.put(INDEX_LOCATIONBYOFFENDER, new HashMap());
+		
+		// Populate the activity index
+		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
+		ArrayList arrActivity = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY);
+		Iterator i = arrActivity.iterator();
+		while (i.hasNext()) {
+			Activity activity = (Activity)i.next();
+			mapCurr.put(activity.getName(), activity);
+		}
+		System.out.println("Index Created: ACTIVITY");
+
+		// Populate the compliance index
+		mapCurr = (HashMap)m_hashLookup.get(INDEX_COMPLIANCE);
+		ArrayList arrCompliance = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_COMPLIANCE);
+		i = arrCompliance.iterator();
+		while (i.hasNext()) {
+			ComplianceConfiguration configuration = (ComplianceConfiguration)i.next();
+			mapCurr.put(configuration.getComplianceId(), configuration);
+		}
+		System.out.println("Index Created: COMPLIANCE");
+		
+		// Populate the location index
+		mapCurr = (HashMap)m_hashLookup.get(INDEX_LOCATION);
+		ArrayList arrLocation = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_LOCATION);
+		i = arrLocation.iterator();
+		while (i.hasNext()) {
+			Location location = (Location)i.next();
+			mapCurr.put(location.getBarcode(), location);
+		}
+		System.out.println("Index Created: LOCATION");
+		
+		// Populate the location by offender index
+		mapCurr = (HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER);
+		arrLocation = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_LOCATION);
+		i = arrLocation.iterator();
+		while (i.hasNext()) {
+			Location location = (Location)i.next();
+			Iterator iOffender = location.getOffenders().iterator();
+			while (iOffender.hasNext()) {
+				Offender offender = (Offender)iOffender.next();
+				mapCurr.put(offender.getBarcode(), location);
+			}
+		}
+		System.out.println("Index Created: LOCATIONBYOFFENDER");
+	}
 }

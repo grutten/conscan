@@ -53,12 +53,12 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 		// always pop the current object unless it's a field!!!
     	if (TAG_FIELD.equalsIgnoreCase(qName)) {
     		setField(m_strCurrentFieldName, m_strCurrentTagValue);
-    		logStartElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + m_strCurrentTagValue);
+    		logEndElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + m_strCurrentTagValue);
     	}
     	else if (!TAG_FIELD.equalsIgnoreCase(qName)) {
 			Object o = getData().popObject();
 			if (o != null)
-				System.out.println("end Element - pop obj type: " + o.getClass().getName());
+				handheldLog("end Element - pop obj type: " + o.getClass().getName());
 		}
 	}
 	
