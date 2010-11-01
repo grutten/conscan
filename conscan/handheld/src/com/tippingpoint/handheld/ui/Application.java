@@ -3,6 +3,7 @@ package com.tippingpoint.handheld.ui;
 import java.awt.Frame;
 
 import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.DataInterface;
 import com.tippingpoint.handheld.data.LegacyData;
 
 public class Application extends Frame {
@@ -30,7 +31,7 @@ public class Application extends Frame {
     		bEnvironmentIsHandheld = true;
     	}
     	
-   		LegacyData  d = null;
+   		DataInterface  d = null;
     	if (!bEnvironmentIsHandheld) {    	
         	strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\scanner.xml";
     	    Data d2 = new Data(strConfigFile);
@@ -41,7 +42,8 @@ public class Application extends Frame {
     	    System.out.println(d2.toString());
     	}
     	else {
-    		d = new LegacyData(strConfigFile);
+//    		d = new LegacyData(strConfigFile);
+    		d = new Data(strConfigFile);
     		
         	Screen mainFrame = null;
 

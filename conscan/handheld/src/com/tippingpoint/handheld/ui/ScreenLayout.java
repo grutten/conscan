@@ -10,11 +10,15 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import com.tippingpoint.handheld.data.Activity;
+import com.tippingpoint.handheld.data.ComplianceConfiguration;
+import com.tippingpoint.handheld.data.ComplianceValue;
+import com.tippingpoint.handheld.data.DataInterface;
 import com.tippingpoint.handheld.data.LegacyData;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
@@ -27,12 +31,12 @@ public class ScreenLayout extends ScreenListeners {
 	 */
 	private static final long serialVersionUID = 4407720571552707102L;
 
-	ScreenLayout(LegacyData d, boolean bIsRunningOnHandheld) {
+	ScreenLayout(DataInterface d, boolean bIsRunningOnHandheld) {
 		super(bIsRunningOnHandheld);
 		
         setData(d);
         
-        getData().populateActivities(m_choiceActivity, getData().getActivities());
+        populateActivities(m_choiceActivity, getData().getActivities());
         m_choiceActivity.addItemListener(getActivityChoiceListener());
 
         // NOTE: the listener that responds to a scan event populates the
@@ -180,7 +184,7 @@ public class ScreenLayout extends ScreenListeners {
         Choice cOffenders = new Choice();
 
         // Render the offender/compliance label/dropdown
-        Set entries = getData().getAllOffenders().entrySet();
+        Set entries = getData().getOffenders().entrySet();
         Iterator i = entries.iterator();
         while (i.hasNext()) {
         	Map.Entry entry = (Map.Entry) i.next();
@@ -242,7 +246,7 @@ public class ScreenLayout extends ScreenListeners {
     		// Label containing offender's name, booking #
     		String strOffender = currOffender.getName() + ", " + currOffender.getBookingNumber();
 	        
-    		getData().populateCompliance(cCompliance, activity);
+    		populateCompliance(cCompliance, activity, getData().getCompliance());
 	        if (activity.isCellScan() && activity.isOffenderCompliance()) {
     	        // Render: Compliance button for replacing this offender + combo
     	        Button buttonReplaceOffender = new Button(">");
@@ -263,11 +267,49 @@ public class ScreenLayout extends ScreenListeners {
     		
     		String strLocation = currLocation.getName();
 	        addLabel(m_panelBodyActivity, new Label(strLocation), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
-	        getData().populateCompliance(cCompliance, activity);
+	        populateCompliance(cCompliance, activity, getData().getCompliance());
 	        addField(m_panelBodyActivity, cCompliance, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
     	}
 
     	return nRow;
+    }
+    
+    private void populateActivities(Choice c, ArrayList listActivities) {
+    	Iterator iActivities = listActivities.iterator();
+    	while (iActivities.hasNext()) {
+    		Activity a = (Activity)iActivities.next();
+    		
+    		c.add(a.getName());
+    	}
+    }
+    
+    /**
+     * This method populates the compliance list based on the compliance type
+     * of a given activity.
+     * @param choice
+     * @param listActivities
+     */
+    private void populateCompliance(DataChoice choice, Activity a, HashMap mapCompliance) {
+//    	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)m_hashCompliance.get(a.getComplianceId());
+    	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)mapCompliance.get(a.getComplianceId());
+    	ArrayList listValues = complianceConfiguration.getValues();
+    	Iterator i = listValues.iterator();
+    	choice.removeAll();
+    	
+    	String strDefault = null;
+    	while(i.hasNext()) {
+    		ComplianceValue complianceValue = (ComplianceValue)i.next();
+    		
+    		if (complianceValue.getDefault())
+    			strDefault = complianceValue.getValue();
+    		choice.add(complianceValue.getValue(), complianceValue);
+    	}
+    	
+    	if (strDefault == null)
+    		choice.select(0);
+    	else
+    		choice.select(strDefault);
+    	
     }
     
 }

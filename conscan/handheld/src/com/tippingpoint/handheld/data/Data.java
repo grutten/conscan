@@ -15,15 +15,24 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
 public class Data implements DataInterface{
 	protected static final String INDEX_ACTIVITY = "activity";
 	protected static final String INDEX_COMPLIANCE = "compliance";
-	protected static final String INDEX_LOCATION = "location";
-	protected static final String INDEX_LOCATIONBYOFFENDER = "offenderloc";
+	protected static final String INDEX_LOCATION = "1location";
+	protected static final String INDEX_LOCATIONBYOFFENDER = "qwer";
+	protected static final String INDEX_OFFENDER = "offender";
 
 	XMLReader m_xmlreader;
 
-	// storage
+	// general storage
 	private HashMap m_hashLookup = new HashMap(); // Populated from root map data, provides index of objects
 	private HashMap m_hashRoot = new HashMap();  // Contains lists of all objects represented in XML
 	private Stack m_stackCurrObj = new Stack();
+
+	// custom storage TODO: better name in comment please
+	private ArrayList m_listScannablesForLogging = new ArrayList();  // Array of type Scannable
+	private String m_strCurrentBarcode;
+	private String m_strFeedback;
+	
+	// Persistence
+	private LogEntry m_log = new LogEntry();
 	
 	public Data(String strFilename) {
 		try {
@@ -66,6 +75,19 @@ public class Data implements DataInterface{
 		
 	}
 	
+	public void addObject(String strName, Object obj) {
+		Object o = m_stackCurrObj.peek();
+		ArrayList list = (ArrayList)o;
+		if (list != null) {
+			list.add(obj);
+			m_stackCurrObj.push(obj);
+		}
+		else {
+			// TODO: throw exception????
+			System.out.println("Unexpected object type on top of stack: " );
+		}
+	}
+
 	/**
 	 * This method creates a new list and adds it to the root map.
 	 * @param strKeyName
@@ -79,26 +101,80 @@ public class Data implements DataInterface{
 		
 		return arrList;
 	}
-
-	public void addObject(String strName, Object obj) {
-		Object o = m_stackCurrObj.peek();
-		ArrayList list = (ArrayList)o;
-		if (list != null) {
-			list.add(obj);
-			m_stackCurrObj.push(obj);
-		}
-		else {
-			// TODO: throw exception????
-			System.out.println("Unexpected object type on top of stack: " );
-		}
+	
+	public ArrayList getActivities() { return (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY); }
+	public String getBarcode() { return m_strCurrentBarcode; }
+	public HashMap getCompliance() { return (HashMap)m_hashLookup.get(INDEX_COMPLIANCE); }
+	
+	public Object getCurrentObject() {
+		return m_stackCurrObj.peek();
 	}
+	
+	public String getFeedback() { return m_strFeedback;	}
+	public HashMap getLocations() { return (HashMap)m_hashLookup.get(INDEX_LOCATION); }
+	public LogEntry getLogEntry() { return m_log; }
+	public HashMap getOffenders() { return (HashMap)m_hashLookup.get(INDEX_OFFENDER); }
+	public ArrayList getScannables() { return m_listScannablesForLogging; }
 	
 	public Object popObject() {
 		return m_stackCurrObj.pop();
 	}
 	
-	public Object getCurrentObject() {
-		return m_stackCurrObj.peek();
+	/**
+	 * The scannables that are populated here rely on knowledge of the
+	 *  activity scan type.  For instance, a 'bedding exchange' or a
+	 *  'shower' requires a single offender scan whereas a 'security check'
+	 *  or a 'cell check' requires a cell scan.
+	 *  
+	 *  TODO: This method is where we can catch the wrong scan type and
+	 *  give feedback to the officer.  eg. Officer scanned a cell barcode
+	 *  when the activity was 'clothing exchange' -> tell officer to
+	 *  scan offender instead.
+	 *  @param strBarcode can be either an offender or a location
+	 *  @param activity the currently selected activity 
+	 * @return
+	 */
+	public ArrayList populateScannables(String strBarcode, Activity activity) {
+		clearScannables();
+		setFeedback("");
+		
+		if (activity.isOffenderScan()) {
+			Offender o = getOffenderByBarcode(strBarcode);
+			if (o != null)
+				addScannable(o);
+			else {
+				setFeedback(strBarcode + " EXPECTING: offender scan");
+			}
+		}
+		else if (activity.isCellScan() && activity.isOffenderCompliance()) {
+	    	Location l = getLocationByBarcode(strBarcode);
+	    	
+			if (l == null) {
+				setFeedback(strBarcode + " EXPECTING: location scan");
+			}
+			else {
+				Iterator i = l.getOffenders().iterator();
+				while (i.hasNext()) {
+					Offender o = (Offender)i.next();
+					addScannable(o);
+					System.out.println("added scannable offender: " + o.getName());
+				}
+			}
+		}
+		else if (activity.isCellScan() && activity.isCellCompliance()) {
+	    	Location l = getLocationByBarcode(strBarcode);
+	    	
+			if (l == null) {
+				setFeedback(strBarcode + " EXPECTING: location scan");
+			}
+			else
+				addScannable(l);
+		}
+		else
+			setFeedback("BUG: undetermined scan type");
+
+		
+		return m_listScannablesForLogging; 
 	}
 	
 	// TODO: Have a validation method that runs through each collection
@@ -109,12 +185,58 @@ public class Data implements DataInterface{
 	// invalid object and the type of that object for debugging purposes.
 	// It would also be useful if each invalid object could have its key logged.
 	
-	public ArrayList getActivities() { return null; }
-	public void saveActivity(Activity a) { ; /* asdf */ }
-	public void saveCompliance(ComplianceConfiguration compliance){ ; /* asdf */ }
-	public void saveLocation(Location location){ ; /* asdf */ }
-	public void saveOffender(Offender offender){ ; /* asdf */ }
-	public void setBarcode(String strBarcode){ ; /* asdf */ }
+	/**
+	 * This method resets state to the beginning.  It is typically called after
+	 * a successful record operation.
+	 */
+	public void reset() {
+		setBarcode("<ready for scan>");
+		m_listScannablesForLogging.clear();
+		m_strFeedback = "";
+	}
+	
+//	public void saveActivity(Activity a) { ; /* asdf */ }
+//	public void saveCompliance(ComplianceConfiguration compliance){ ; /* asdf */ }
+//	public void saveLocation(Location location){ ; /* asdf */ }
+//	public void saveOffender(Offender offender){ ; /* asdf */ }
+	public void setBarcode(String strBarcode){ m_strCurrentBarcode = strBarcode; }
+	
+	private void addScannable(Location l) {
+		Scannable s = new Scannable();
+		
+		s.setObject(l);
+		m_listScannablesForLogging.add(s);
+	}
+	
+	private void addScannable(Offender o) {
+		Scannable s = new Scannable();
+		
+		s.setObject(o);
+		m_listScannablesForLogging.add(s);
+	}
+	
+	/**
+	 * Destroys temporary data in the scannable list (e.g. compliance control)
+	 */
+	private void clearScannables() {
+		Iterator i = m_listScannablesForLogging.iterator();
+		while (i.hasNext()) {
+			Object o = i.next();
+			
+			if (o instanceof Scannable) {
+				Scannable s = (Scannable)o;
+				
+				s.clearComplianceControl();
+			}
+				
+		}
+		
+		m_listScannablesForLogging.clear();
+	}
+	
+	private Location getLocationByBarcode(String strBarcode) { return (Location)getLocations().get(strBarcode); }
+	
+	private Offender getOffenderByBarcode(String strBarcode) { return (Offender)getOffenders().get(strBarcode); }
 	
 	private void populateLookupMaps() {
 		// Define the indexes
@@ -122,6 +244,7 @@ public class Data implements DataInterface{
 		m_hashLookup.put(INDEX_COMPLIANCE, new HashMap());
 		m_hashLookup.put(INDEX_LOCATION, new HashMap());
 		m_hashLookup.put(INDEX_LOCATIONBYOFFENDER, new HashMap());
+		m_hashLookup.put(INDEX_OFFENDER, new HashMap());
 		
 		// Populate the activity index
 		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
@@ -166,5 +289,22 @@ public class Data implements DataInterface{
 			}
 		}
 		System.out.println("Index Created: LOCATIONBYOFFENDER");
+		
+		// Populate the location by offender index
+		mapCurr = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
+		arrLocation = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_LOCATION);
+		i = arrLocation.iterator();
+		while (i.hasNext()) {
+			Location location = (Location)i.next();
+			Iterator iOffender = location.getOffenders().iterator();
+			while (iOffender.hasNext()) {
+				Offender offender = (Offender)iOffender.next();
+				mapCurr.put(offender.getBarcode(), offender);
+			}
+		}
+		System.out.println("Index Created: OFFENDER");
 	}
+	
+	private void setFeedback(String strFeedback) { m_strFeedback = strFeedback; }
+	
 }

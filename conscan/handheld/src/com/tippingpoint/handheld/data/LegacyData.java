@@ -53,8 +53,9 @@ public class LegacyData implements DataInterface {
 	}
 
 	public ArrayList getActivities() { return m_listActivities; }
-	public HashMap getAllOffenders() { return m_hashOffenderByBarcode; }
+	public HashMap getOffenders() { return m_hashOffenderByBarcode; }
 	public String getBarcode() { return m_strCurrentBarcode; }
+	public HashMap getCompliance() { return m_hashCompliance; }
 	public ComplianceConfiguration getComplianceConfiguration(String strId) { return (ComplianceConfiguration)m_hashCompliance.get(strId); }
 	public String getFeedback() { return m_strFeedback;	}
 	public Location getLocationByBarcode(String strBarcode) { return (Location)m_hashLocationByBarcode.get(strBarcode); }
@@ -84,42 +85,7 @@ public class LegacyData implements DataInterface {
 	public void setBarcode(String strBarcode) { m_strCurrentBarcode = strBarcode; }
 	public void setFeedback(String strFeedback) { m_strFeedback = strFeedback; }
 	
-    public void populateActivities(Choice c, ArrayList listActivities) {
-    	Iterator iActivities = listActivities.iterator();
-    	while (iActivities.hasNext()) {
-    		Activity a = (Activity)iActivities.next();
-    		
-    		c.add(a.getName());
-    	}
-    }
 
-    /**
-     * This method populates the compliance list based on the compliance type
-     * of a given activity.
-     * @param choice
-     * @param listActivities
-     */
-    public void populateCompliance(DataChoice choice, Activity a) {
-    	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)m_hashCompliance.get(a.getComplianceId());
-    	ArrayList listValues = complianceConfiguration.getValues();
-    	Iterator i = listValues.iterator();
-    	choice.removeAll();
-    	
-    	String strDefault = null;
-    	while(i.hasNext()) {
-    		ComplianceValue complianceValue = (ComplianceValue)i.next();
-    		
-    		if (complianceValue.getDefault())
-    			strDefault = complianceValue.getValue();
-    		choice.add(complianceValue.getValue(), complianceValue);
-    	}
-    	
-    	if (strDefault == null)
-    		choice.select(0);
-    	else
-    		choice.select(strDefault);
-    	
-    }
     
 	/**
 	 * The scannables that are populated here rely on knowledge of the
@@ -240,4 +206,15 @@ public class LegacyData implements DataInterface {
 		return m_hashLocationByOffendersBarcode;
 	}
 
+	// These methods are not used by the legacy handler, but must be added here
+	// during conversion from the legacy data/xmlHandler objects to the new
+	// objects used for the latest XML format.
+	public ArrayList addList(String strKeyName, ArrayList arrList) { return null; }
+	public void addObject(String strName, Object obj) { /* no implementation needed */ }
+	public ArrayList createList(String strKeyName) { return null; }
+	public Object getCurrentObject() { return null; }
+	public HashMap getLocations() { return null; }
+	public Object popObject() { return null; }
+	
+	
 }

@@ -1,6 +1,11 @@
 package com.tippingpoint.handheld.data;
 
 public class Activity {
+	private static final String SCANTYPE_OFFENDER = "1";
+	private static final String SCANTYPE_CELL = "2";
+	private static final String COMPLIANCETYPE_OFFENDER = "1";
+	private static final String COMPLIANCETYPE_CELL = "2";
+	
 	private String m_strActivityId;
 
 	private String m_strName;
@@ -13,10 +18,10 @@ public class Activity {
 	public String getActivityId() { return m_strActivityId; }
 	public String getName() { return m_strName; }
 	public String getScantype() { return m_strScanType; }
-	public boolean isCellScan() { return "1".equalsIgnoreCase(m_strScanType); }
-	public boolean isOffenderScan() {return "2".equalsIgnoreCase(m_strScanType); }
-	public boolean isCellCompliance() { return "1".equalsIgnoreCase(m_strComplianceType); }
-	public boolean isOffenderCompliance() { return "2".equalsIgnoreCase(m_strComplianceType); }
+	public boolean isCellScan() { return SCANTYPE_CELL.equalsIgnoreCase(m_strScanType); }
+	public boolean isOffenderScan() {return SCANTYPE_OFFENDER.equalsIgnoreCase(m_strScanType); }
+	public boolean isCellCompliance() { return COMPLIANCETYPE_CELL.equalsIgnoreCase(m_strComplianceType); }
+	public boolean isOffenderCompliance() { return COMPLIANCETYPE_OFFENDER.equalsIgnoreCase(m_strComplianceType); }
 	public void setComplianceId(String strId) { m_strComplianceId = strId; }
 	public void setCompliancetype(String strCompliancetype) { m_strComplianceType = strCompliancetype; }
 	public void setActivityId(String strId) { m_strActivityId = strId; } 

@@ -40,10 +40,10 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	protected static final String TAG_LIST = "list";
 	protected static final String TAG_OBJECT = "object";
 	
-	private Data m_data;
+	private DataInterface m_data;
 	private String m_strCurrentFieldName;
 	
-	HandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, Data d) {
+	HandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, DataInterface d) {
 		super(parentHandler, reader);
 		
 		m_data = d;
@@ -116,7 +116,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     	return arrList;
     }
     
-    private Data getData() { return m_data; }
+    private DataInterface getData() { return m_data; }
 
     private Object createObject(String strObjectName) {
     	Object object = null;
