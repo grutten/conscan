@@ -10,11 +10,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ConfirmationPopup extends PopupPanel {
 	private VerticalPanel m_panel = new VerticalPanel();
 	private FlexTable stocksFlexTable = new FlexTable();
-	private TextBox newSymbolTextBox = new TextBox();
-	private Button addStockButton = new Button("Add");
-	private Label lastUpdatedLabel = new Label();
+	private Button addStockButton = new Button("Confirm");
 	
-    public ConfirmationPopup() {
+	public ConfirmationPopup() {
     	
         // PopupPanel's constructor takes 'auto-hide' as its boolean parameter.
         // If this is set, the panel closes itself automatically when the user
@@ -29,24 +27,33 @@ public class ConfirmationPopup extends PopupPanel {
         setWidget(m_panel);
         
 		// Create table for stock data.
-	    stocksFlexTable.setText(0, 0, "Symbol");
-	    stocksFlexTable.setText(0, 1, "Price");
-	    stocksFlexTable.setText(0, 2, "Change");
-	    stocksFlexTable.setText(0, 3, "Remove");
+	    stocksFlexTable.setText(0, 0, "Location");
+	    stocksFlexTable.setText(0, 1, "Activity");
+	    stocksFlexTable.setText(0, 2, "Offender");
+	    stocksFlexTable.setText(0, 3, "Compliance");
+	    
+	    populateFlexTable(stocksFlexTable);
+	    
 	    // Add styles to elements in the stock list table.
-	    stocksFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
-	    stocksFlexTable.addStyleName("watchList");
-	    stocksFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
-	    stocksFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
-	    stocksFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
+	    stocksFlexTable.getRowFormatter().addStyleName(0, "logEntryListHeader");
+	    stocksFlexTable.addStyleName("logEntryList");
+	    stocksFlexTable.getCellFormatter().addStyleName(0, 1, "logEntryListNumericColumn");
+	    stocksFlexTable.getCellFormatter().addStyleName(0, 2, "logEntryListNumericColumn");
+	    stocksFlexTable.getCellFormatter().addStyleName(0, 3, "logEntryListRemoveColumn");
 	    
 		// Assemble Add Stock panel.
 	    m_panel.add(stocksFlexTable);
-	    m_panel.add(newSymbolTextBox);
-	    newSymbolTextBox.setSize("170px", "38px");
 	    m_panel.add(addStockButton);
 	    m_panel.addStyleName("addPanel");	    
-        
-      }
+	}
 
+    void populateFlexTable(FlexTable stocksFlexTable) {
+    	for (int i = 1; i < 10; ++i) {
+	    	stocksFlexTable.setText(i, 0, "T162-A-012L");
+	    	stocksFlexTable.setText(i, 1, "security check");
+	    	stocksFlexTable.setText(i, 2, "Iverson");
+	    	stocksFlexTable.setText(i, 3, "comply");
+    	}
+    }
+	
 }
