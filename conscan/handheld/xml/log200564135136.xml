@@ -1,0 +1,35 @@
+<object name='log'>
+	<field name='staffid'>999</field>
+	<field name='created'>Sat Jun 04 13:52:59 GMT 2005</field>
+	<field name='activityid'>1</field>
+	<field name='offenderid'>345345345</field>
+	<field name='compliancevalueid'>1</field>
+</object>
+<object name='log'>
+	<field name='staffid'>999</field>
+	<field name='created'>Sat Jun 04 13:52:59 GMT 2005</field>
+	<field name='activityid'>1</field>
+	<field name='offenderid'>123456789</field>
+	<field name='compliancevalueid'>1</field>
+</object>
+<object name='log'>
+	<field name='staffid'>999</field>
+	<field name='created'>Sat Jun 04 13:53:08 GMT 2005</field>
+	<field name='activityid'>3</field>
+	<field name='offenderid'>123456789</field>
+	<field name='compliancevalueid'>1</field>
+</object>
+<object name='log'>
+	<field name='staffid'>999</field>
+	<field name='created'>Sat Jun 04 13:53:12 GMT 2005</field>
+	<field name='activityid'>3</field>
+	<field name='offenderid'>345345345</field>
+	<field name='compliancevalueid'>1</field>
+</object>
+<object name='log'>
+	<field name='staffid'>999</field>
+	<field name='created'>Sat Jun 04 13:53:23 GMT 2005</field>
+	<field name='activityid'>11</field>
+	<field name='locationid'>2</field>
+	<field name='compliancevalueid'>5</field>
+</object>
