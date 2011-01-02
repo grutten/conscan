@@ -54,6 +54,7 @@ public class LogService extends Services {
 
 						final BufferedReader readerData = new BufferedReader(new InputStreamReader(stream));
 						
+						out.println("<objects>");
 						String strLine = null;
 						do {
 							strLine = readerData.readLine();
@@ -61,6 +62,7 @@ public class LogService extends Services {
 								out.println(strLine);
 							}
 						} while (strLine != null);
+						out.println("</objects>");
 					}
 				}
 			}
