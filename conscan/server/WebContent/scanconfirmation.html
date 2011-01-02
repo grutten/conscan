@@ -44,11 +44,11 @@
 
 				// Header text
 				table += '<thead><tr>';
-				table += '<td>staffid</td>';
+				table += '<td>staff</td>';
 				table += '<td>created</td>';
-				table += '<td>activityid</td>';
-				table += '<td>offenderid</td>';
-				table += '<td>compliancevalueid</td>';
+				table += '<td>activity</td>';
+				table += '<td>offender/location</td>';
+				table += '<td>compliancevalue</td>';
 				table += '<td>&nbsp;</td>';  // notes column header
 				table += '</tr></thead>';
 
@@ -130,40 +130,6 @@
 				// switch (data) { staffid: 
 			}
 
-			function retrieveTableData(table) {
-				jQuery.ajax({
-					type: 'GET',
-					url: 'database/' + table,
-					success: showTableData,
-					error: showerror
-				});
-			}
-
-			function showtables(data) {
-				// alert('Returned: ' + data);
-				tables = '';
-				jQuery(data).find('table').each(function() {
-					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;' +
-							 '<span class="ui-icon ui-icon-circle-plus"></span>&nbsp;' +
-							 '<span class="ui-icon ui-icon-zoomin"></span>&nbsp;' +
-							 '<span class="ui-icon ui-icon-info"></span>&nbsp;' +
-							 '</li>';
-				});
-				jQuery('ul.tablemenu').append(tables);
-				retrieveTableData('log');				
-			}
-
-			function loadtables() {
-				jQuery.ajax({
-					type: "OPTIONS",
-					url: "database/log",
-					dataType: "xml",
-					success: showtables,
-					error: showerror
-				});
-			}
-
-
 			function droprow(event) {
 				alert('droprow - not implemented');
 			}
@@ -172,7 +138,6 @@
 				jQuery('#errorcontinue').click(function() {
 					jQuery.unblockUI();
 				});
-				loadtables();
 
 				new AjaxUpload('importupload', {
 					action: 'log',
@@ -188,6 +153,7 @@
 					// @param file basename of uploaded file
 					// @param response server response
 					onComplete: function(file, response) {
+						showTableData(response);
 						//alert('complete');
 			            jQuery.unblockUI();
 					}
