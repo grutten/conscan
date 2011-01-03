@@ -2,12 +2,9 @@ package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
@@ -74,28 +71,6 @@ public class BaseTableService extends Services {
 		else {
 			returnXml(response, HttpServletResponse.SC_NO_CONTENT);
 		}
-	}
-
-	/**
-	 * This method breaks down the string used to identify the object.
-	 * 
-	 * @param strPathInfo String containing the path information.
-	 */
-	private List<String> getObjects(final String strPathInfo) {
-		final List<String> listElements = new ArrayList<String>();
-
-		// convert the path information to an array of strings
-		if (StringUtils.isNotBlank(strPathInfo)) {
-			final StringTokenizer tokenizer = new StringTokenizer(strPathInfo, "/");
-			while (tokenizer.hasMoreTokens()) {
-				final String strElement = StringUtils.trimToNull(tokenizer.nextToken());
-				if (strElement != null) {
-					listElements.add(strElement);
-				}
-			}
-		}
-
-		return listElements;
 	}
 
 	/**

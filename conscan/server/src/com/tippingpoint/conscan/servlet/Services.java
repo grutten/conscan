@@ -6,11 +6,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import com.tippingpoint.conscan.objects.BusinessObject;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
+import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.FieldValue;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
@@ -34,6 +37,28 @@ public abstract class Services extends HttpServlet {
 	protected static final String TAG_OBJECT = "object";
 
 	private static final long serialVersionUID = -5482024580102875533L;
+
+	/**
+	 * This method breaks down the string used to identify the object.
+	 * 
+	 * @param strPathInfo String containing the path information.
+	 */
+	protected List<String> getObjects(final String strPathInfo) {
+		final List<String> listElements = new ArrayList<String>();
+
+		// convert the path information to an array of strings
+		if (StringUtils.isNotBlank(strPathInfo)) {
+			final StringTokenizer tokenizer = new StringTokenizer(strPathInfo, "/");
+			while (tokenizer.hasMoreTokens()) {
+				final String strElement = StringUtils.trimToNull(tokenizer.nextToken());
+				if (strElement != null) {
+					listElements.add(strElement);
+				}
+			}
+		}
+
+		return listElements;
+	}
 
 	/**
 	 * This method returns and XML string representing the exception.
@@ -177,5 +202,59 @@ public abstract class Services extends HttpServlet {
 		}
 
 		writer.write(XmlUtilities.close(TAG_OBJECT));
+	}
+
+	/**
+	 * This method writes the name objects to the writer.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @param strObjectName String containing the name of the object to write.
+	 * @param bDeep boolean indicating if related objects should be retrieved at the same time.
+	 * @throws SqlBaseException
+	 * @throws IOException
+	 */
+	protected void writeObjects(final Writer writer, final String strObjectName, final boolean bDeep)
+			throws SqlBaseException, IOException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strObjectName);
+		if (builder != null) {
+			final List<BusinessObject> listObjects = builder.getAll();
+			if (listObjects != null && !listObjects.isEmpty()) {
+				writer.write(XmlUtilities.open(TAG_LIST,
+						new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
+
+				for (final BusinessObject businessObject : listObjects) {
+					writeObject(writer, businessObject, bDeep);
+				}
+
+				writer.write(XmlUtilities.close(TAG_LIST));
+			}
+		}
+	}
+
+	/**
+	 * This method writes the name objects to the writer. Additionally, the named children are written.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @param strObjectName String containing the name of the object to write.
+	 * @param strObjectChildName String containing the name of the object to write.
+	 * @throws SqlBaseException
+	 * @throws IOException
+	 */
+	protected void writeObjects(final Writer writer, final String strObjectName, final String strObjectChildName)
+			throws SqlBaseException, IOException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strObjectName);
+		if (builder != null) {
+			final List<BusinessObject> listObjects = builder.getAll();
+			if (listObjects != null && !listObjects.isEmpty()) {
+				writer.write(XmlUtilities.open(TAG_LIST,
+						new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
+
+				for (final BusinessObject businessObject : listObjects) {
+					writeObject(writer, businessObject, strObjectChildName);
+				}
+
+				writer.write(XmlUtilities.close(TAG_LIST));
+			}
+		}
 	}
 }

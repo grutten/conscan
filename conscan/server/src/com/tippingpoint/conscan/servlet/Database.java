@@ -69,7 +69,7 @@ public final class Database extends Services {
 		m_log.debug("Delete: " + strObjects);
 
 		try {
-			final List<Element> listElements = getObjects(strObjects);
+			final List<Element> listElements = getElements(strObjects);
 			if (listElements != null && !listElements.isEmpty()) {
 				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 				switch (listElements.size()) {
@@ -128,7 +128,7 @@ public final class Database extends Services {
 		m_log.debug("Get: " + strObjects);
 
 		try {
-			final List<Element> listElements = getObjects(strObjects);
+			final List<Element> listElements = getElements(strObjects);
 			switch (listElements.size()) {
 			case 1:
 				final Element element = listElements.get(0);
@@ -175,7 +175,7 @@ public final class Database extends Services {
 		m_log.debug("Options: " + strObjects);
 
 		try {
-			final List<Element> listElements = getObjects(strObjects);
+			final List<Element> listElements = getElements(strObjects);
 			switch (listElements.size()) {
 			case 0:
 				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
@@ -261,7 +261,7 @@ public final class Database extends Services {
 			m_log.debug("Post: " + strObjects);
 
 			try {
-				final List<Element> listElements = getObjects(strObjects);
+				final List<Element> listElements = getElements(strObjects);
 				switch (listElements.size()) {
 				case 1:
 					final Element element = listElements.get(0);
@@ -299,7 +299,7 @@ public final class Database extends Services {
 	 * @throws DatabaseElementException
 	 * @throws SqlExecutionException
 	 */
-	private List<Element> getObjects(final String strObjects) throws DatabaseElementException, SQLException,
+	private List<Element> getElements(final String strObjects) throws DatabaseElementException, SQLException,
 			SqlExecutionException {
 		final List<Element> listElements = new ArrayList<Element>();
 

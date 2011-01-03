@@ -40,6 +40,8 @@ public final class Startup extends Services {
 
 	private static final long serialVersionUID = -8868702728732992660L;
 
+	private static final String SERVICE_SUFFIX = "service";
+
 	/**
 	 * This method is called on initialization.
 	 */
@@ -166,6 +168,7 @@ public final class Startup extends Services {
 		Startup.register(Offender.class, METHOD_GET, null);
 		Startup.register(Staff.class, METHOD_GET, null);
 		Startup.register(LogService.class, METHOD_POST, null);
+		Startup.register(UserService.class, METHOD_GET, null);
 	}
 
 	/**
@@ -176,7 +179,12 @@ public final class Startup extends Services {
 	 */
 	public static void register(final Class<? extends Services> clsService, final String strMethod,
 			final String strDescription) {
-		m_mapServices.add(new LocalService(clsService.getSimpleName().toLowerCase(), strMethod, strDescription));
+		String strPath = clsService.getSimpleName().toLowerCase();
+		if (strPath.endsWith(SERVICE_SUFFIX)) {
+			strPath = strPath.substring(0, strPath.length() - SERVICE_SUFFIX.length());
+		}
+
+		m_mapServices.add(new LocalService(strPath, strMethod, strDescription));
 	}
 
 	/**
