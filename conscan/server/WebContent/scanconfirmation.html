@@ -5,11 +5,10 @@
 		<title>Scan Confirmation</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
-		<!--
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
-		 -->
 		<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
 		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery.simplemodal.1.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
 		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
@@ -18,6 +17,7 @@
 	</head>
 	<body>
 		<h1>Scan Confirmation</h1>
+		
 		<div class="leftmenu">
 			<span>Tables</span>
 			<ul class="tablemenu"></ul>
@@ -26,6 +26,10 @@
 		<div class="content">
 			<span id="contenttitle">&nbsp;</span>
 			<div class="contentdata"></div>
+		</div>
+		<div class="hidden wideborder" id="notesdialog">
+			Notes:<input id="idinputnotes" type="text" name="notes" size="80"/>
+			<div><span class="done">done</span></div>
 		</div>
 		<div id="errordialog" class="hidden">
 			<div id="errortitle" class="erroritem"></div>
@@ -53,6 +57,8 @@
 				table += '</tr></thead>';
 
 				table += '  <tbody>';
+				
+				var nRowCount = 1;
 				jQuery(data).find('object').each(function() {
 					table += '    <tr>';
 
@@ -74,9 +80,11 @@
 					});
 					
 					// Add notes column
-					table += '<td><span class="ui-icon ui-icon-pencil"></span></td>';
+					table += "<td><div class='login'><span id='noteslink" + nRowCount + "' class='ui-icon ui-icon-pencil'/></div><div id='row" + nRowCount + "'>asdf</div></td>";
 
 					table += '    </tr>';
+					++nRowCount;
+					
 				});
 				table += '  </tbody>';
 				table += '</table>';
@@ -159,7 +167,32 @@
 					}
 				});
 			});
-			jQuery('.ui-icon-trash').live('click', droprow);
+			
+			jQuery('.ui-icon-pencil').live('click', shownotes);
+			function shownotes() {
+				var strKey = jQuery(this).attr('id');
+				var strRow = "#row" + strKey.substring(9);
+				
+				$('#notesdialog').modal({
+					opacity:90,
+					overlayCss: {backgroundColor:"#EEEEEE"},
+					onShow: function (dialog) {
+						var modal = this;
+
+						// pre-populate the input field
+						jQuery("#idinputnotes").val(jQuery(strRow).text());
+
+						// if the user clicks "done"
+						$('.done', dialog.data[0]).click(function () {
+							jQuery(strRow).text(jQuery("#idinputnotes").val());
+							
+							// close the dialog
+							modal.close(); // or $.modal.close();
+						});
+					}
+				});
+			}
+			
 		</script>
 		<script type="text/javascript" src="js/conscan.js"></script>
 	</body>
