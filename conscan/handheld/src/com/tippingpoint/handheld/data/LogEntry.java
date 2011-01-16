@@ -68,7 +68,7 @@ public class LogEntry {
 		writeTag("created", getDateCreated());
 		writeTag("activityid", m_activity.getActivityId());
 		if (getOffender() != null)
-			writeTag("offenderid", getOffender().getBookingNumber());
+			writeTag("offenderid", getOffender().getOffenderId());
 		if (getLocation() != null)
 			writeTag("locationid", getLocation().getLocationId());
 		writeTag("compliancevalueid", getComplianceValue().getComplianceValueId());
