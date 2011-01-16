@@ -113,45 +113,54 @@ public abstract class Services extends HttpServlet {
 			throws IOException, SqlBaseException {
 		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
-		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
+		if (businessObject != null) {
+			listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
 
-		final FieldValue fvIdentifier = businessObject.getIdentifierField();
-		if (fvIdentifier != null) {
-			listAttributes
-					.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue())));
-		}
-
-		writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
-
-		final Iterator<FieldValue> iterValues = businessObject.getValues();
-		if (iterValues != null && iterValues.hasNext()) {
-			while (iterValues.hasNext()) {
-				final FieldValue fieldValue = iterValues.next();
-				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
-					writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
-							XmlUtilities.getValue(fieldValue.getValue())));
-				}
+			final FieldValue fvIdentifier = businessObject.getIdentifierField();
+			if (fvIdentifier != null) {
+				listAttributes.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier
+						.getValue())));
 			}
-		}
 
-		if (bDeep) {
-			final List<String> listRelatedNames = businessObject.getRelatedNames();
-			if (listRelatedNames != null && !listRelatedNames.isEmpty()) {
-				for (final String strRelatedName : listRelatedNames) {
-					final List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strRelatedName);
-					if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
-						writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
-						for (final BusinessObject businessRelatedObject : listRelatedObjects) {
-							writeObject(writer, businessRelatedObject, false);
-						}
+			writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
 
-						writer.write(XmlUtilities.close(TAG_LIST));
+			final Iterator<FieldValue> iterValues = businessObject.getValues();
+			if (iterValues != null && iterValues.hasNext()) {
+				while (iterValues.hasNext()) {
+					final FieldValue fieldValue = iterValues.next();
+					if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
+						writer.write(XmlUtilities.tag(TAG_FIELD,
+								new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()), XmlUtilities
+										.getValue(fieldValue.getValue())));
 					}
 				}
 			}
-		}
 
-		writer.write(XmlUtilities.close(TAG_OBJECT));
+			if (bDeep) {
+				final List<String> listRelatedNames = businessObject.getRelatedNames();
+				if (listRelatedNames != null && !listRelatedNames.isEmpty()) {
+					for (final String strRelatedName : listRelatedNames) {
+						final List<BusinessObject> listRelatedObjects =
+							businessObject.getReleatedObjects(strRelatedName);
+						if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
+							writer
+									.write(XmlUtilities.open(TAG_LIST,
+											new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
+							for (final BusinessObject businessRelatedObject : listRelatedObjects) {
+								writeObject(writer, businessRelatedObject, false);
+							}
+
+							writer.write(XmlUtilities.close(TAG_LIST));
+						}
+					}
+				}
+			}
+
+			writer.write(XmlUtilities.close(TAG_OBJECT));
+		}
+		else {
+			writer.write(XmlUtilities.tag(TAG_OBJECT, listAttributes));
+		}
 	}
 
 	/**

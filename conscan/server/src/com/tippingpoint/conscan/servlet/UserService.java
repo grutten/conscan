@@ -37,37 +37,43 @@ public class UserService extends Services {
 
 		final List<String> listElements = getObjects(strPathInfo);
 		if (listElements == null || listElements.isEmpty()) {
+			String strEmail = null;
+
 			final Cookie[] aCookies = request.getCookies();
 			if (aCookies != null && aCookies.length > 0) {
 				for (final Cookie cookie : aCookies) {
 					if (COOKIE_NAME.equals(cookie.getName())) {
-						final String strValue = cookie.getValue();
-
-						PrintWriter out;
-						try {
-							out = returnXml(response, HttpServletResponse.SC_OK);
-
-							final List<FieldValue> listParameters = new ArrayList<FieldValue>();
-
-							listParameters.add(new FieldValue("email", strValue));
-
-							final BusinessObjectBuilder builder =
-								BusinessObjectBuilderFactory.get().getBuilder("staff");
-							final List<BusinessObject> listBusinessObject = builder.getAll(listParameters);
-
-							if (listBusinessObject != null && listBusinessObject.size() == 1) {
-								writeObject(out, listBusinessObject.get(0), false);
-							}
-							else {
-								returnXml(response, HttpServletResponse.SC_NO_CONTENT);
-							}
-						}
-						catch (final SqlBaseException e) {
-							m_log.error("Database error reading the current user.", e);
-							processException(response, e);
-						}
+						strEmail = cookie.getValue();
 					}
 				}
+			}
+
+			try {
+				if (strEmail != null) {
+					final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
+
+					final List<FieldValue> listParameters = new ArrayList<FieldValue>();
+
+					listParameters.add(new FieldValue("email", strEmail));
+
+					final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder("staff");
+					final List<BusinessObject> listBusinessObject = builder.getAll(listParameters);
+
+					if (listBusinessObject != null && listBusinessObject.size() == 1) {
+						writeObject(out, listBusinessObject.get(0), false);
+					}
+					else {
+						returnXml(response, HttpServletResponse.SC_NO_CONTENT);
+					}
+				}
+				else {
+					// no user found, so return an empty object
+					writeObject(response.getWriter(), null, false);
+				}
+			}
+			catch (final SqlBaseException e) {
+				m_log.error("Database error reading the current user.", e);
+				processException(response, e);
 			}
 		}
 	}
