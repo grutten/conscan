@@ -6,7 +6,7 @@
 		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
-		<script type="text/javascript" src="js/jquery.simplemodal.1.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -16,6 +16,7 @@
 				<h3>Menu</h3>
 			</div>
 			<div class="field">
+			this is my field
 			</div>
 		</div>
 		<div class="hidden wideborder" id="logindialog">
@@ -27,14 +28,13 @@
 				</tr>
 				<tr>
 					<td>Password:</td>
-					<td><input type="password" name="username"></input></td>
+					<td><input type="password" name="password"></input></td>
 				</tr>
 				</tbody>
 				<tfoot>
 					<tr>
 						<td colspan="2">
-							<input type="reset" value="Clear"></input>
-							<input type="submit" value="Submit"></input>
+							<input type="submit" value="Submit" class="loginsubmit"></input>
 						</td>
 					</tr>
 				</tfoot>
@@ -48,7 +48,18 @@
 			function showlogin() {
 				$("#logindialog").modal({
 					opacity:70,
-					overlayCss: {backgroundColor:"#EEEEEE"}
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: function (dialog) {
+						var modal = this;
+	
+						// if the user clicks "done"
+						$('.loginsubmit', dialog.data[0]).click(function () {
+							// close the dialog
+							modal.close(); // or $.modal.close();
+						});
+					}
 				});
 			}
 		</script>
