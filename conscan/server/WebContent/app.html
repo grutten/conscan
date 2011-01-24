@@ -7,6 +7,7 @@
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery.form.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -20,29 +21,30 @@
 			</div>
 		</div>
 		<div class="hidden wideborder" id="logindialog">
-			<table class="noborder">
-				<tbody>
-				<tr>
-					<td>User:</td>
-					<td><input type="text" name="user"></input></td>
-				</tr>
-				<tr>
-					<td>Password:</td>
-					<td><input type="password" name="password"></input></td>
-				</tr>
-				</tbody>
-				<tfoot>
+			<form id="logindialogform">
+				<table class="noborder">
+					<tbody>
 					<tr>
-						<td colspan="2">
-							<input type="submit" value="Submit" class="loginsubmit"></input>
-						</td>
+						<td>User:</td>
+						<td><input type="text" name="user"></input></td>
 					</tr>
-				</tfoot>
-			</table>
+					<tr>
+						<td>Password:</td>
+						<td><input type="password" name="password"></input></td>
+					</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="loginsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
 		</div>
 		<script type="text/javascript">
-			jQuery(document).ready(function() {
-			});
 			jQuery('#loginlink').live('click', showlogin);
 
 			function showlogin() {
@@ -50,18 +52,20 @@
 					opacity:70,
 					overlayCss: {
 						backgroundColor:"#EEEEEE"
-					},
-					onShow: function (dialog) {
-						var modal = this;
-	
-						// if the user clicks "done"
-						$('.loginsubmit', dialog.data[0]).click(function () {
-							// close the dialog
-							modal.close(); // or $.modal.close();
-						});
 					}
 				});
 			}
+
+			jQuery(document).ready(function() { 
+				// prepare Options Object 
+				var options = {
+					url: 'user',
+					type: 'PUT'
+				}; 
+
+				// pass options to ajaxForm 
+				jQuery('#logindialogform').ajaxForm(options);
+			});
 		</script>
 	</body>
 </html>
