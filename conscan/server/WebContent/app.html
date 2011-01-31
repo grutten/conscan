@@ -11,7 +11,7 @@
 	</head>
 	<body>
 		<h1>ConScan</h1>
-		<div class="login"><span id="loginlink">Login</span></div>
+		<div class="login"><span id="loginlink">Login</span><span id="logout">&nbsp;|&nbsp;<span id="logoutlink">Logout</span></span></div>
 		<div class="main">
 			<div class="menu">
 				<h3>Menu</h3>
@@ -21,6 +21,7 @@
 			</div>
 		</div>
 		<div class="hidden wideborder" id="logindialog">
+			<div class="errormsg"></div>
 			<form id="logindialogform">
 				<table class="noborder">
 					<tbody>
@@ -46,25 +47,93 @@
 		</div>
 		<script type="text/javascript">
 			jQuery('#loginlink').live('click', showlogin);
+			jQuery('#logoutlink').live('click', logout);
 
-			function showlogin() {
-				$("#logindialog").modal({
-					opacity:70,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					}
-				});
+			function loginsuccess(responseXML, statusText, xhr, form) {
+//				alert('login success: ' + statusText);
+				processUser(responseXML);
+				jQuery.modal.close();
 			}
 
-			jQuery(document).ready(function() { 
+			function loginerror(responseXML, statusText, xhr, form) {
+				if (204 == responseXML.status) {
+					seterrormsg('Invalid login. Please try again.');
+				}
+				else {
+					alert('login error: ' + statusText + "-" + xhr.responseText);
+				}
+			}
+
+			function seterrormsg(message) {
+				jQuery('div.errormsg').html('Invalid login. Please try again.');
+			}
+
+			function onshowlogin() {
 				// prepare Options Object 
 				var options = {
 					url: 'user',
-					type: 'PUT'
+					type: 'PUT',
+					dataType: 'xml',
+					success: loginsuccess,
+					error: loginerror
 				}; 
 
 				// pass options to ajaxForm 
 				jQuery('#logindialogform').ajaxForm(options);
+			}
+
+			function showlogin() {
+				jQuery("#logindialog").modal({
+					opacity:70,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: onshowlogin
+				});
+			}
+
+			function logout() {
+				jQuery.ajax({
+					url: 'user',
+					type: 'DELETE',
+					success: function() {
+						jQuery('span#loginlink').html('No User');
+						
+						checkLogin();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('logout error: ' + statusText);
+					} 
+				});
+			}
+
+			function processUser(xml) {
+				var firstName;
+				var lastName;
+				
+				jQuery(xml).find("field").each(function() {
+					if (jQuery(this).attr('name') == "firstname") {
+						firstName = jQuery(this).text();
+					} else if (jQuery(this).attr('name') == "lastname") {
+						lastName = jQuery(this).text();
+					}
+				});
+
+				jQuery('span#loginlink').html(firstName + ' ' + lastName);
+			}
+
+			function checkLogin() {
+				jQuery.ajax({
+					url: 'user',
+					type: 'GET',
+					success: processUser,
+					error: showlogin 
+				});
+			}
+
+			jQuery(document).ready(function() {
+				// when the page first comes up, check for a logged in user
+				checkLogin();
 			});
 		</script>
 	</body>

@@ -1,6 +1,5 @@
 package com.tippingpoint.utilities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +90,19 @@ public class XmlUtilities {
 	/**
 	 * This method returns a tag for the given named element.
 	 */
+	public static String tag(final String strTagName) {
+		final StringBuilder strBuffer = new StringBuilder();
+
+		start(strBuffer, strTagName);
+
+		strBuffer.append("/>");
+
+		return strBuffer.toString();
+	}
+
+	/**
+	 * This method returns a tag for the given named element.
+	 */
 	public static String tag(final String strTagName, final List<NameValuePair> listAttributes) {
 		final StringBuilder strBuffer = new StringBuilder();
 
@@ -138,7 +150,15 @@ public class XmlUtilities {
 	 * This method returns a tag for the given named element.
 	 */
 	public static String tag(final String strTagName, final NameValuePair pair, final Object objValue) {
-		return tag(strTagName, Collections.singletonList(pair), objValue);
+		return tag(strTagName, pair != null ? Collections.singletonList(pair) : null, objValue);
+	}
+
+	/**
+	 * This method adds the tag to the passed in buffer.
+	 */
+	private static void start(final StringBuilder strBuffer, final String strTagName) {
+		strBuffer.append('<');
+		strBuffer.append(strTagName);
 	}
 
 	/**
@@ -146,8 +166,7 @@ public class XmlUtilities {
 	 */
 	private static void start(final StringBuilder strBuffer, final String strTagName,
 			final List<NameValuePair> listAttributes) {
-		strBuffer.append('<');
-		strBuffer.append(strTagName);
+		start(strBuffer, strTagName);
 
 		if (listAttributes != null && !listAttributes.isEmpty()) {
 			for (final NameValuePair pair : listAttributes) {
@@ -168,14 +187,6 @@ public class XmlUtilities {
 	 * This method adds the tag to the passed in buffer.
 	 */
 	private static void start(final StringBuilder strBuffer, final String strTagName, final NameValuePair pair) {
-		List<NameValuePair> listAttributes = null;
-
-		if (pair != null) {
-			listAttributes = new ArrayList<NameValuePair>();
-
-			listAttributes.add(pair);
-		}
-
-		start(strBuffer, strTagName, listAttributes);
+		start(strBuffer, strTagName, pair != null ? Collections.singletonList(pair) : null);
 	}
 }

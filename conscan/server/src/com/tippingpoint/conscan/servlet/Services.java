@@ -111,9 +111,9 @@ public abstract class Services extends HttpServlet {
 	 */
 	protected void writeObject(final Writer writer, final BusinessObject businessObject, final boolean bDeep)
 			throws IOException, SqlBaseException {
-		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
-
 		if (businessObject != null) {
+			final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
 			listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
 
 			final FieldValue fvIdentifier = businessObject.getIdentifierField();
@@ -159,7 +159,7 @@ public abstract class Services extends HttpServlet {
 			writer.write(XmlUtilities.close(TAG_OBJECT));
 		}
 		else {
-			writer.write(XmlUtilities.tag(TAG_OBJECT, listAttributes));
+			writer.write(XmlUtilities.tag(TAG_OBJECT));
 		}
 	}
 

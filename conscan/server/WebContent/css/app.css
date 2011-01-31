@@ -19,3 +19,8 @@ table.noborder td {
 div.wideborder {
 	border: thick solid #24AFF0;
 }
+
+div.errormsg {
+	font-style: italic;
+	color: red;
+}

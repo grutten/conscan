@@ -32,6 +32,25 @@ public class UserService extends Services {
 	private static final long serialVersionUID = 2641405874048058605L;
 
 	/**
+	 * This method executes the delete command; which is used to log a user out of the system.
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		m_log.debug("Delete");
+
+		// find the cookie to get the logged in user
+		final Cookie cookie = getCookie(request);
+		if (cookie != null) {
+			// kill the cookie
+			cookie.setMaxAge(0);
+
+			response.addCookie(cookie);
+		}
+	}
+
+	/**
 	 * This method executes the get command; which is used to return the current information used to identify the
 	 * currently logged in user.
 	 * 
@@ -47,13 +66,9 @@ public class UserService extends Services {
 		if (listElements == null || listElements.isEmpty()) {
 			String strEmail = null;
 
-			final Cookie[] aCookies = request.getCookies();
-			if (aCookies != null && aCookies.length > 0) {
-				for (final Cookie cookie : aCookies) {
-					if (COOKIE_NAME.equals(cookie.getName())) {
-						strEmail = cookie.getValue();
-					}
-				}
+			final Cookie cookie = getCookie(request);
+			if (cookie != null) {
+				strEmail = cookie.getValue();
 			}
 
 			try {
@@ -64,8 +79,7 @@ public class UserService extends Services {
 					writeObject(out, boUser, false);
 				}
 				else {
-					// no user found, so return an empty object
-					writeObject(response.getWriter(), null, false);
+					returnXml(response, HttpServletResponse.SC_NOT_FOUND);
 				}
 			}
 			catch (final SqlBaseException e) {
@@ -89,11 +103,16 @@ public class UserService extends Services {
 
 		if (strUser != null) {
 			try {
+				final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
 				final BusinessObject boUser = getUser(strUser, strPassword);
 				if (boUser != null) {
-					final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
-
 					writeObject(out, boUser, false);
+					final FieldValue fieldEmail = boUser.getValue("email");
+					if (fieldEmail != null) {
+						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
+						cookie.setMaxAge(-1); // set it as a session cookie
+						response.addCookie(cookie);
+					}
 				}
 				else {
 					returnXml(response, HttpServletResponse.SC_NO_CONTENT);
@@ -103,6 +122,25 @@ public class UserService extends Services {
 				processException(response, e);
 			}
 		}
+	}
+
+	/**
+	 * This method returns the user cookie from the request.
+	 */
+	private Cookie getCookie(final HttpServletRequest request) {
+		Cookie foundCookie = null;
+
+		final Cookie[] aCookies = request.getCookies();
+		if (aCookies != null && aCookies.length > 0) {
+			for (final Cookie cookie : aCookies) {
+				if (COOKIE_NAME.equals(cookie.getName())) {
+					foundCookie = cookie;
+					break;
+				}
+			}
+		}
+
+		return foundCookie;
 	}
 
 	/**
