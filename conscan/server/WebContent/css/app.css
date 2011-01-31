@@ -24,3 +24,7 @@ div.errormsg {
 	font-style: italic;
 	color: red;
 }
+
+.clickablelink {
+	cursor: pointer;
+}
