@@ -3,7 +3,6 @@ package com.tippingpoint.conscan.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +13,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.tippingpoint.xml.ScannerInputStreamReader;
 
 /**
  * This class is used to process log requests.
@@ -52,7 +53,7 @@ public class LogService extends Services {
 						System.out.println("File field " + strName + " with file name " + fileItemStream.getName() +
 								" detected.");
 
-						final BufferedReader readerData = new BufferedReader(new InputStreamReader(stream));
+						final BufferedReader readerData = new BufferedReader(new ScannerInputStreamReader(stream, "objects"));
 						
 						out.println("<objects>");
 						String strLine = null;
