@@ -3,8 +3,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>ConScan</title>
-		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
@@ -15,13 +15,19 @@
 			<span id="loginlink">Login</span>
 			<span id="logout">&nbsp;|&nbsp;<span id="logoutlink" class="clickablelink">Logout</span></span>
 		</div>
-		<div class="main">
+		<div class="main curvedblock">
 			<div class="menu">
 				<h3>Menu</h3>
+				<ul>
+					<li class="curvedblocksmall linkable">Staff</li>
+					<li class="curvedblocksmall linkable">Other</li>
+				</ul>
 			</div>
 			<div class="field">
-			this is my field
+				<h3 id="fieldtitle">ConScan</h3>
+				<div id="fieldcontent"></div>
 			</div>
+			<div class="clear"/>
 		</div>
 		<div class="hidden wideborder" id="logindialog">
 			<div class="errormsg"></div>
@@ -51,6 +57,11 @@
 		<script type="text/javascript">
 			jQuery('#loginlink').live('click', showlogin);
 			jQuery('#logoutlink').live('click', logout);
+			jQuery('.linkable').live('click', linkage);
+
+			function linkage(eventObject) {
+				alert('Link: ' + eventObject);
+			}
 
 			function loginsuccess(responseXML, statusText, xhr, form) {
 //				alert('login success: ' + statusText);
