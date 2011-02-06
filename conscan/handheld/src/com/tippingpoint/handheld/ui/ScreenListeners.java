@@ -266,7 +266,7 @@ System.out.println("Detail Button - not implemented yet");
 	        		}
 	        	}
 	        	else
-	    	        System.out.println("scannable object is not an officer or a location ");
+	    	        System.out.println("scannable object is not an offender or a location ");
 	        		
 				logEntry.write();
 	        }
