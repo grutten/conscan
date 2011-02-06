@@ -1,10 +1,9 @@
-<root>
+<objects>
 <object name='log'>
 	<field name='staffid'>2</field>
 	<field name='created'>Sun Jan 02 01:30:33 GMT 2011</field>
 	<field name='activityid'>1</field>
 	<field name='offenderid'>1</field>
-		<field name='locationid'>2</field>
 	<field name='compliancevalueid'>1</field>
 </object>
 <object name='log'>
@@ -12,7 +11,6 @@
 	<field name='created'>Sun Jan 02 01:30:33 GMT 2011</field>
 	<field name='activityid'>1</field>
 	<field name='offenderid'>2</field>
-		<field name='locationid'>2</field>
 	<field name='compliancevalueid'>1</field>
 </object>
 <object name='log'>
@@ -20,7 +18,6 @@
 	<field name='created'>Sun Jan 02 01:30:41 GMT 2011</field>
 	<field name='activityid'>3</field>
 	<field name='offenderid'>2</field>
-		<field name='locationid'>2</field>
 	<field name='compliancevalueid'>1</field>
 </object>
 <object name='log'>
@@ -28,7 +25,6 @@
 	<field name='created'>Sun Jan 02 01:30:47 GMT 2011</field>
 	<field name='activityid'>4</field>
 	<field name='offenderid'>1</field>
-		<field name='locationid'>2</field>
 	<field name='compliancevalueid'>1</field>
 </object>
 <object name='log'>
@@ -45,4 +41,5 @@
 	<field name='locationid'>2</field>
 	<field name='compliancevalueid'>5</field>
 </object>
-</root>
+
+
