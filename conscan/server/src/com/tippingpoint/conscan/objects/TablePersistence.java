@@ -533,7 +533,8 @@ public class TablePersistence implements Persistence {
 				final Column column = parameterizedValue.getColumn();
 				final FieldValue fieldValue = mapValues.get(column.getName());
 
-				parameterizedValue.setValue(fieldValue.getValue());
+				if (fieldValue != null)
+					parameterizedValue.setValue(fieldValue.getValue());
 			}
 		}
 	}
