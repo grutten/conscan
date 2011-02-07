@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -14,6 +17,8 @@ import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.tippingpoint.conscan.objects.BusinessObject;
+import com.tippingpoint.xml.Data;
 import com.tippingpoint.xml.ScannerInputStreamReader;
 
 /**
@@ -40,6 +45,8 @@ public class LogService extends Services {
 
 				final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
 
+				out.println("<objects>");
+				
 				final FileItemIterator iter = upload.getItemIterator(request);
 				while (iter.hasNext()) {
 					final FileItemStream fileItemStream = iter.next();
@@ -54,16 +61,20 @@ public class LogService extends Services {
 								" detected.");
 
 						final BufferedReader readerData = new BufferedReader(new ScannerInputStreamReader(stream, "objects"));
+						Data dataTippingPointServer = new Data(readerData);
 						
-						String strLine = null;
-						do {
-							strLine = readerData.readLine();
-							if (strLine != null) {
-								out.println(strLine);
-							}
-						} while (strLine != null);
+						ArrayList<BusinessObject> arr = dataTippingPointServer.get(); 
+						
+						Iterator<BusinessObject> iterBusinessObject = arr.iterator();
+						while (iterBusinessObject.hasNext()) {
+							BusinessObject currBusinessObject = iterBusinessObject.next();
+							writeObject(out, currBusinessObject, false);
+						}
 					}
 				}
+				
+				out.println("</objects>");
+
 			}
 			else {
 				throw new IllegalArgumentException("Log posts must be multi-part.");

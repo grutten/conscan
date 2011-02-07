@@ -36,6 +36,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
     		m_log.debug("Field : " + m_strCurrentFieldName + " - " + m_strCurrentTagValue);
     		if (m_objCurrentObject != null) {
 				m_objCurrentObject.setValue(m_strCurrentFieldName, m_strCurrentTagValue);
+				System.out.println("FIELD IDENTIFIED: " + m_strCurrentFieldName);
 				m_strCurrentFieldName = null;
     		}
     		else
@@ -44,14 +45,16 @@ public class GenericXmlHandler extends SaxBaseHandler {
     	}
     	else if (TAG_OBJECT.equals(qName)) {
     		if (m_objCurrentObject != null) {
-///*    			
     			try {
     				m_objCurrentObject.save();
+    				m_data.add(m_objCurrentObject);
     			}
     			catch (SqlBaseException e) {
-    				m_log.debug("Unexpected error saving Business Object: " + e.toString());
+    				m_log.debug("Unexpected SqlBaseException exception saving Business Object: " + e.toString());
     			}
-//*/    			
+    			catch (Exception e) {
+    				m_log.debug("Unexpected exception saving Business Object: " + e.toString());
+    			}
     		}
     		else
         		m_log.debug("Unexpected null object in GenericXmlHandler");
