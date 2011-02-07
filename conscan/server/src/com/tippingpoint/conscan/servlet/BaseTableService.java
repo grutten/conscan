@@ -39,13 +39,13 @@ public class BaseTableService extends Services {
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		final String strPathInfo = request.getPathInfo();
 
-		m_log.debug("Get: " + strPathInfo);
+		m_log.debug("Get: " + (strPathInfo != null ? strPathInfo : "<no path>" ));
 
-		final List<String> listElements = getObjects(strPathInfo);
-		if (listElements != null && !listElements.isEmpty()) {
-			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(m_strTableName);
-			if (builder != null) {
-				try {
+		try {
+			final List<String> listElements = getObjects(strPathInfo);
+			if (listElements != null && !listElements.isEmpty()) {
+				final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(m_strTableName);
+				if (builder != null) {
 					switch (listElements.size()) {
 					case 1:
 						final BusinessObject businessObject = builder.get(listElements.get(0));
@@ -59,17 +59,18 @@ public class BaseTableService extends Services {
 					break;
 					}
 				}
-				catch (final SqlBaseException e) {
-					m_log.error("Database error retrieving " + m_strTableName + " object.", e);
-					processException(response, e);
+				else {
+					returnXml(response, HttpServletResponse.SC_NO_CONTENT);
 				}
 			}
 			else {
-				returnXml(response, HttpServletResponse.SC_NO_CONTENT);
+				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+				writeObjects(writer, m_strTableName, false);
 			}
 		}
-		else {
-			returnXml(response, HttpServletResponse.SC_NO_CONTENT);
+		catch (final SqlBaseException e) {
+			m_log.error("Database error retrieving " + m_strTableName + " object.", e);
+			processException(response, e);
 		}
 	}
 

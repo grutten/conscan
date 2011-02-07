@@ -27,7 +27,10 @@
 				<h3 id="fieldtitle">ConScan</h3>
 				<div id="fieldcontent"></div>
 			</div>
-			<div class="clear"/>
+			<div class="clear"></div>
+		</div>
+		<div class="footer">
+			&copy; 2001 Tipping Point Software Solutions
 		</div>
 		<div class="hidden wideborder" id="logindialog">
 			<div class="errormsg"></div>
@@ -57,10 +60,30 @@
 		<script type="text/javascript">
 			jQuery('#loginlink').live('click', showlogin);
 			jQuery('#logoutlink').live('click', logout);
-			jQuery('.linkable').live('click', linkage);
+			jQuery('div.menu .linkable').live('click', menuitemclick);
 
-			function linkage(eventObject) {
-				alert('Link: ' + eventObject);
+			function menuitemclick(event) {
+				var menuitem = event.target.innerHTML;
+
+				// set the title of the field to the same as the menu item
+				jQuery('#fieldtitle').html(menuitem);
+
+				// get the item list based on the menu item
+				menuitem = menuitem.toLowerCase();
+				getItemList(menuitem);
+			}
+
+			function getItemList(item) {
+				alert('getItemList: ' + item);
+				jQuery.ajax({
+					url: item,
+					type: 'GET',
+					dataType: 'xml',
+					success: displaylist,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + item + ' error: ' + statusText);
+					} 
+				});
 			}
 
 			function loginsuccess(responseXML, statusText, xhr, form) {
@@ -145,6 +168,40 @@
 				});
 			}
 
+			var objectoptions = new Object();
+			
+			function getobjectoptions(name) {
+				var options = objectoptions[name];
+
+				if (typeof(options) == 'undefined') {
+					jQuery.ajax({
+						type: 'OPTIONS',
+						url: 'database/' + name,
+						async: false,
+						success: function() {
+							objectoptions[name] = "found it";
+						},
+						error: function(responseXML, statusText, xhr, form) {
+							alert('Error getting options for ' + name + ': ' + statusText);
+						} 
+					});
+				}
+
+				return objectoptions[name];
+			}
+
+			function displaylist(responseXML, statusText, xhr) {
+				var options;
+
+				jQuery(responseXML).children("list").each(function() {
+					options = getobjectoptions(jQuery(this).attr('name'));					
+				});
+
+				alert('options: ' + options); 
+
+				jQuery('div#fieldcontent').html(options);
+			}
+			
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();

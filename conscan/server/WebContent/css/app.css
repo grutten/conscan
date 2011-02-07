@@ -1,7 +1,19 @@
 @CHARSET "ISO-8859-1";
 
 body {
-	background: #24AFF0;
+/*	background: #24AFF0;*/
+}
+
+h1 {
+/*	color: #FFFFFF;*/
+	color: black;
+		font-family: sans-serif;
+}
+
+div.main {
+	border: 2px #24AFF0 solid;
+	margin: 5px;
+	padding: 5px;
 }
 
 div.main h3 {
@@ -72,4 +84,9 @@ div.field {
 
 .linkable:hover {
 	background-color: #CCCCCC;
+}
+
+div.footer {
+	font-size: small;
+	text-align: center;
 }
