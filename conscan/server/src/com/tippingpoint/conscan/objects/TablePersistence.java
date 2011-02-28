@@ -79,6 +79,7 @@ public class TablePersistence implements Persistence {
 
 		if (m_table.hasIdPrimaryKey()) {
 			m_PrimaryKeyColumn = m_table.getPrimaryKeyColumn();
+			m_listRules.add(new IdInsertDataRule(m_PrimaryKeyColumn));
 		}
 
 		generateInsert();
