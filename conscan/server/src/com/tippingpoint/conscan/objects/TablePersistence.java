@@ -12,6 +12,7 @@ import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ForeignKey;
 import com.tippingpoint.database.ForeignKeyConstraint;
+import com.tippingpoint.database.IdFactory;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
@@ -79,7 +80,11 @@ public class TablePersistence implements Persistence {
 
 		if (m_table.hasIdPrimaryKey()) {
 			m_PrimaryKeyColumn = m_table.getPrimaryKeyColumn();
-			m_listRules.add(new IdInsertDataRule(m_PrimaryKeyColumn));
+			
+			IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+			if (!idFactory.idDerived()) {
+				m_listRules.add(new IdInsertDataRule(m_PrimaryKeyColumn));
+			}
 		}
 
 		generateInsert();
@@ -385,13 +390,15 @@ public class TablePersistence implements Persistence {
 		final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
 		if (iterColumns != null && iterColumns.hasNext()) {
 			final SqlInsert sqlInsert = new SqlInsert(m_table);
+			
+			boolean bIncludePrimaryKey = !ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().idDerived();
 
 			// loop through all the columns to put into the statement
 			while (iterColumns.hasNext()) {
 				final ColumnDefinition column = iterColumns.next();
 
 				// add all columns, but the primary key
-				if (m_PrimaryKeyColumn == null || !m_PrimaryKeyColumn.equals(column)) {
+				if (bIncludePrimaryKey || m_PrimaryKeyColumn == null || !m_PrimaryKeyColumn.equals(column)) {
 					sqlInsert.add(new ParameterizedValue(column, null));
 				}
 			}

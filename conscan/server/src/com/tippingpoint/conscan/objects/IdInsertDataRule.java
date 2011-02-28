@@ -3,6 +3,8 @@ package com.tippingpoint.conscan.objects;
 import java.util.Map;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnTypeId;
+import com.tippingpoint.database.IdFactory;
+import com.tippingpoint.sql.ConnectionManagerFactory;
 
 /**
  * This rule adds a new ID if it is not there on save.
@@ -31,7 +33,8 @@ public class IdInsertDataRule implements DataRule {
 		String strName = m_columnId.getName();
 		FieldValue fieldValue = mapValues.get(strName);
 		if (fieldValue == null) {
-			fieldValue = new FieldValue(strName);
+			IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+			fieldValue = new FieldValue(strName, idFactory.getNewValue());
 			mapValues.put(strName, fieldValue);
 		}
 	}
