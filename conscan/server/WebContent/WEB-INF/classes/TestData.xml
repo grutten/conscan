@@ -84,49 +84,4 @@
 			</table>
 		</column>
 	</item>
-	<item name="log">
-		<column name="staffid" value="referenced">
-			<table name="staff">
-				<column name="email">wrosewood@jail.com</column>
-			</table>
-		</column>
-		<column name="activityid" value="referenced">
-			<table name="activity">
-				<column name="name">bedding exchange</column>
-			</table>
-		</column>
-		<column name="locationid">2</column>
-		<column name="offenderid">2</column>
-		<column name="compliancevalueid">1</column>
-	</item>
-	<item name="log">
-		<column name="staffid" value="referenced">
-			<table name="staff">
-				<column name="email">wrosewood@jail.com</column>
-			</table>
-		</column>
-		<column name="activityid" value="referenced">
-			<table name="activity">
-				<column name="name">bedding exchange</column>
-			</table>
-		</column>
-		<column name="locationid">2</column>
-		<column name="offenderid">3</column>
-		<column name="compliancevalueid">1</column>
-	</item>
-	<item name="log">
-		<column name="staffid" value="referenced">
-			<table name="staff">
-				<column name="email">wrosewood@jail.com</column>
-			</table>
-		</column>
-		<column name="activityid" value="referenced">
-			<table name="activity">
-				<column name="name">bedding exchange</column>
-			</table>
-		</column>
-		<column name="locationid">2</column>
-		<column name="offenderid">3</column>
-		<column name="compliancevalueid">1</column>
-	</item>
 </data>
