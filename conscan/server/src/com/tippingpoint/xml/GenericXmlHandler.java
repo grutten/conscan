@@ -19,7 +19,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 	protected static final String TAG_OBJECT = "object";
 	
 	private DataInterface m_data;
-	private static Log m_log = LogFactory.getLog(Activity.class);
+	private static Log m_log = LogFactory.getLog(GenericXmlHandler.class);
 	private BusinessObject m_objCurrentObject;
 	private String m_strCurrentFieldName;
 	
