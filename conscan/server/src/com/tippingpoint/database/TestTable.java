@@ -1,6 +1,7 @@
 package com.tippingpoint.database;
 
 import java.util.Iterator;
+import java.util.UUID;
 import com.tippingpoint.test.TestCommonCase;
 
 /**
@@ -69,6 +70,16 @@ public final class TestTable extends TestCommonCase {
 		}
 		catch (final DatabaseElementException e) {
 			e.printStackTrace(System.out);
+		}
+	}
+
+	/**
+	 * This method tests the id generation.
+	 */
+	public void testId() {
+		for (int nIndex = 0; nIndex < 10; ++nIndex) {
+			final UUID x = UUID.randomUUID();
+			System.out.println("UUID " + nIndex + ": " + x);
 		}
 	}
 

@@ -2,9 +2,12 @@ package com.tippingpoint.sql;
 
 import java.io.StringReader;
 import com.tippingpoint.database.ColumnDefinition;
+import com.tippingpoint.database.IdAutoFactory;
+import com.tippingpoint.database.IdGuidFactory;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.database.parser.Parser;
+import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.sql.mysql.SqlManagerMySql;
 import com.tippingpoint.sql.sqlserver.SqlManagerSqlServer;
@@ -37,13 +40,16 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests the basics.
 	 */
 	public void testBasics() {
-		final SqlManager sqlManager = new SqlManagerSqlServer();
-		assertNotNull(sqlManager);
-
-		final Table tableDemographic = m_schema.getTable("demographic");
-		assertNotNull(tableDemographic);
-
 		try {
+			final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+			assertNotNull(manager);
+
+			final SqlManager sqlManager = manager.getSqlManager();
+			assertNotNull(sqlManager);
+
+			final Table tableDemographic = m_schema.getTable("demographic");
+			assertNotNull(tableDemographic);
+
 			final SqlQuery sqlQuery = new SqlQuery();
 			assertNotNull(sqlQuery);
 
@@ -71,7 +77,8 @@ public final class TestSqlBuilder extends TestCommonCase {
 
 			sqlInsert.addColumnsForTable();
 
-			check("INSERT INTO demographic(firstName, lastName, creation) VALUES(?, ?, ?)", sqlManager, sqlInsert);
+			check("INSERT INTO demographic(userid, firstName, lastName, creation) VALUES(?, ?, ?, ?)", sqlManager,
+					sqlInsert);
 
 			final SqlUpdate sqlUpdate = new SqlUpdate(tableDemographic);
 			assertNotNull(sqlUpdate);
@@ -140,10 +147,17 @@ public final class TestSqlBuilder extends TestCommonCase {
 	}
 
 	/**
+	 * This method tests the GUID version of the identities.
+	 */
+	public void testGuidIdentities() {
+
+	}
+
+	/**
 	 * This method tests MySQL Server specific SQL statements.
 	 */
 	public void testMySqlServer() {
-		final SqlManager sqlManager = new SqlManagerMySql();
+		final SqlManager sqlManager = new SqlManagerMySql(new IdAutoFactory());
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -212,10 +226,82 @@ public final class TestSqlBuilder extends TestCommonCase {
 	}
 
 	/**
+	 * This method tests MySQL Server specific SQL statements.
+	 */
+	public void testMySqlServerGuid() {
+		final SqlManager sqlManager = new SqlManagerMySql(new IdGuidFactory());
+		assertNotNull(sqlManager);
+
+		// test creating a table
+		final Table tableActivity = m_schema.getTable("activity");
+		assertNotNull(tableActivity);
+
+		try {
+			SqlCreate sqlCreate = new SqlCreate(tableActivity);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE activity(activityid CHAR(32) NOT NULL, title VARCHAR(200) NULL, "
+					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
+					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
+
+			// test creating a table
+			final Table tableDemographic = m_schema.getTable("demographic");
+			assertNotNull(tableDemographic);
+
+			sqlCreate = new SqlCreate(tableDemographic);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE demographic(userid CHAR(32) NOT NULL, "
+					+ "firstName VARCHAR(100) NULL, lastName VARCHAR(100) NULL, creation DATETIME NULL, "
+					+ "CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
+
+			// use a second table to add a column to the above table
+			final ColumnDefinition columnDescription = tableActivity.getColumn("description");
+			assertNotNull(columnDescription);
+
+			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
+			assertNotNull(sqlAlter);
+
+			sqlAlter.add(columnDescription);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
+
+			// use an existing column in the table to emulate modifying a table.
+			final ColumnDefinition columnCreation = tableDemographic.getColumn("creation");
+			assertNotNull(columnCreation);
+
+			sqlAlter.add(columnCreation);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL, MODIFY creation DATETIME NULL", sqlManager,
+					sqlAlter);
+
+			// try a table with foreign keys
+			final Table tableUserActivity = m_schema.getTable("useractivity");
+			assertNotNull(tableUserActivity);
+
+			sqlCreate = new SqlCreate(tableUserActivity);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE useractivity(userid CHAR(32) NOT NULL, activityid CHAR(32) NOT NULL, "
+					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
+					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
+					sqlManager, sqlCreate);
+		}
+		catch (final SqlBuilderException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
+		catch (final SqlManagerException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
+	}
+
+	/**
 	 * This method tests SQL Server specific SQL statements.
 	 */
 	public void testSqlServer() {
-		final SqlManager sqlManager = new SqlManagerSqlServer();
+		final SqlManager sqlManager = new SqlManagerSqlServer(new IdAutoFactory());
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -284,6 +370,78 @@ public final class TestSqlBuilder extends TestCommonCase {
 	}
 
 	/**
+	 * This method tests SQL Server specific SQL statements.
+	 */
+	public void testSqlServerGuid() {
+		final SqlManager sqlManager = new SqlManagerSqlServer(new IdGuidFactory());
+		assertNotNull(sqlManager);
+
+		// test creating a table
+		final Table tableActivity = m_schema.getTable("activity");
+		assertNotNull(tableActivity);
+
+		try {
+			SqlCreate sqlCreate = new SqlCreate(tableActivity);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE activity(activityid CHAR(32) NOT NULL, title VARCHAR(200) NULL, "
+					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
+					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
+
+			// test creating a table
+			final Table tableDemographic = m_schema.getTable("demographic");
+			assertNotNull(tableDemographic);
+
+			sqlCreate = new SqlCreate(tableDemographic);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE demographic(userid CHAR(32) NOT NULL, firstName VARCHAR(100) NULL, "
+					+ "lastName VARCHAR(100) NULL, creation DATETIME NULL, CONSTRAINT pk_demographic "
+					+ "PRIMARY KEY (userid))", sqlManager, sqlCreate);
+
+			// use a second table to add a column to the above table
+			final ColumnDefinition columnDescription = tableActivity.getColumn("description");
+			assertNotNull(columnDescription);
+
+			final SqlAlter sqlAlter = new SqlAlter(tableDemographic);
+			assertNotNull(sqlAlter);
+
+			sqlAlter.add(columnDescription);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL", sqlManager, sqlAlter);
+
+			// use an existing column in the table to emulate modifying a table.
+			final ColumnDefinition columnCreation = tableDemographic.getColumn("creation");
+			assertNotNull(columnCreation);
+
+			sqlAlter.add(columnCreation);
+
+			check("ALTER TABLE demographic ADD description TEXT NULL, ALTER COLUMN creation DATETIME NULL", sqlManager,
+					sqlAlter);
+
+			// try a table with foreign keys
+			final Table tableUserActivity = m_schema.getTable("useractivity");
+			assertNotNull(tableUserActivity);
+
+			sqlCreate = new SqlCreate(tableUserActivity);
+			assertNotNull(sqlCreate);
+
+			check("CREATE TABLE useractivity(userid CHAR(32) NOT NULL, activityid CHAR(32) NOT NULL, "
+					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
+					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
+					sqlManager, sqlCreate);
+		}
+		catch (final SqlBuilderException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
+		catch (final SqlManagerException e) {
+			e.printStackTrace();
+			assertFalse(e.toString(), true);
+		}
+	}
+
+	/**
 	 * This method is called to initialize the test.
 	 * 
 	 * @throws Exception
@@ -303,7 +461,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 */
 	private void check(final String strSql, final SqlManager sqlManager, final Command sqlCommand)
 			throws SqlManagerException, SqlBuilderException {
-		final com.tippingpoint.sql.base.SqlExecution execution = sqlManager.getExecution(sqlCommand);
+		final SqlExecution execution = sqlManager.getExecution(sqlCommand);
 		assertNotNull(execution);
 
 		assertEquals(strSql, execution.getSql());

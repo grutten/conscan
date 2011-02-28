@@ -14,7 +14,6 @@ import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnTypeFactory;
 import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.ColumnTypeIdReference;
-import com.tippingpoint.database.ColumnTypeInteger;
 import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.ConstraintFactory;
 import com.tippingpoint.database.DatabaseElementException;
@@ -271,8 +270,7 @@ public class SqlSchema {
 				// since a reference to an ID column can not be determined based on the type of the
 				// database column; a foreign key to an ID column can be used to change an integer
 				// column to and idref column type
-				if (ColumnTypeInteger.class.equals(columnChild.getType().getClass()) &&
-						ColumnTypeId.class.equals(columnParent.getType().getClass())) {
+				if (ColumnTypeId.class.equals(columnParent.getType().getClass())) {
 					columnChild.setType(ColumnTypeFactory.getFactory().get(ColumnTypeIdReference.TYPE));
 				}
 			}

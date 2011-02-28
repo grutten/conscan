@@ -3,7 +3,6 @@ package com.tippingpoint.sql;
 import java.util.Iterator;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
-import com.tippingpoint.database.ColumnTypeId;
 import com.tippingpoint.database.Table;
 
 /**
@@ -25,7 +24,7 @@ public class SqlInsert extends TableBuilderCommand {
 		final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
 		while (iterColumns.hasNext()) {
 			final Column column = iterColumns.next();
-			if (!(column.getType() instanceof ColumnTypeId)) {
+			if (!column.getType().idDerived()) {
 				add(new ParameterizedValue(column, null));
 			}
 		}

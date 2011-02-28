@@ -1,6 +1,7 @@
 package com.tippingpoint.sql;
 
 import com.tippingpoint.database.Column;
+import com.tippingpoint.database.ColumnTypeId;
 
 /**
  * This class is used to hold the column mapping of a parameterized value.
@@ -15,8 +16,13 @@ public final class ParameterizedValue {
 	/**
 	 * This method constructs a new value.
 	 */
-	public ParameterizedValue(final Column column, final Object objValue) {
+	public ParameterizedValue(final Column column, Object objValue) {
 		m_column = column;
+
+		if (column.getType() instanceof ColumnTypeId && objValue == null && !column.getType().idDerived()) {
+			objValue = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().getNewValue();
+		}
+
 		m_objValue = objValue;
 	}
 
@@ -41,5 +47,13 @@ public final class ParameterizedValue {
 	 */
 	public void setValue(final Object objValue) {
 		m_objValue = objValue;
+	}
+
+	/**
+	 * This method dumps the parameterized value in a readable fashion.
+	 */
+	@Override
+	public String toString() {
+		return m_column.toString() + "=" + (m_objValue != null ? m_objValue.toString() : "null");
 	}
 }

@@ -2,7 +2,7 @@ package com.tippingpoint.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
+import com.tippingpoint.sql.ConnectionManagerFactory;
 
 /**
  * This class is used for a base class for both ids and sequences. Since we currently only have integer representations
@@ -21,7 +21,7 @@ abstract class ColumnTypeIdentifierBase extends ColumnType {
 	 */
 	@Override
 	public int getJdbcType() {
-		return Types.INTEGER;
+		return ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().getJdbcType();
 	}
 
 	/**
@@ -31,7 +31,7 @@ abstract class ColumnTypeIdentifierBase extends ColumnType {
 	 */
 	@Override
 	public Object getResult(final ResultSet rs, final int nIndex) throws SQLException {
-		return translateObject(rs.getInt(nIndex), rs.wasNull());
+		return translateObject(rs.getString(nIndex), rs.wasNull());
 	}
 
 	/**
@@ -39,11 +39,11 @@ abstract class ColumnTypeIdentifierBase extends ColumnType {
 	 */
 	@Override
 	public boolean hasLength() {
-		return false;
+		return ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().hasLength();
 	}
 
 	/**
 	 * This method interprets the object returned from a ResultSet and translates it into an appropriate object.
 	 */
-	protected abstract Object translateObject(int nValue, boolean bWasNull);
+	protected abstract Object translateObject(String strValue, boolean bWasNull);
 }

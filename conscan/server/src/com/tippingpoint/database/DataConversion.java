@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.tippingpoint.sql.Command;
+import com.tippingpoint.sql.ConnectionManagerFactory;
 
 /**
  * This class is used to map and convert objects to a certain form for use with SQL statements.
@@ -172,7 +173,8 @@ public final class DataConversion {
 
 			if (objValue instanceof Boolean) {
 				objReturnValue = new Integer(Boolean.TRUE.equals(objValue) ? 1 : 0);
-			} else if (objValue instanceof String) {
+			}
+			else if (objValue instanceof String) {
 				objReturnValue = new Integer("true".equalsIgnoreCase(objValue.toString()) ? 1 : 0);
 			}
 
@@ -256,14 +258,8 @@ public final class DataConversion {
 		 */
 		@Override
 		public Object convertToObject(final ResultSet rs, final Integer intIndex) throws SQLException {
-			Id id = null;
-			final int nId = rs.getInt(intIndex);
-
-			if (!rs.wasNull()) {
-				id = new Id(nId);
-			}
-
-			return id;
+			final IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+			return idFactory.getValue(rs, intIndex);
 		}
 
 		/**

@@ -10,19 +10,30 @@ public class Id {
 
 	/** This member holds the identifier. */
 	private Integer m_intValue;
+	
+	/** This member holds the string version of the identifier. */
+	private String m_strValue;
 
 	/**
 	 * This method constructs a new ID object.
 	 */
 	public Id(final Integer intValue) {
 		m_intValue = intValue;
+		m_strValue = intValue.toString();
 	}
 
 	/**
 	 * This method constructs a new ID object.
 	 */
 	public Id(final String strValue) {
-		m_intValue = new Integer(strValue);
+		try {
+			m_intValue = new Integer(strValue);
+			m_strValue = m_intValue.toString();
+		}
+		catch (NumberFormatException e) {
+			// ignore number exception and just store the string
+			m_strValue = strValue;
+		}
 	}
 
 	/**
@@ -44,14 +55,7 @@ public class Id {
 	 * This method returns the value of the id.
 	 */
 	public Object getValue() {
-		return m_intValue;
-	}
-
-	/**
-	 * This methods sets the value of the Id object.
-	 */
-	public void setValue(final Integer intValue) {
-		m_intValue = intValue;
+		return m_intValue != null ? m_intValue : m_strValue;
 	}
 
 	/**
@@ -59,6 +63,6 @@ public class Id {
 	 */
 	@Override
 	public String toString() {
-		return m_intValue != null ? m_intValue.toString() : "<unknown>";
+		return m_strValue != null ? m_strValue : "<unknown>";
 	}
 }

@@ -69,7 +69,7 @@ public class StringProperties {
 	/**
 	 * This method loads this instance with the properties found in the properties instance.
 	 * 
-	 * @param properties Properties containing the valeus to load
+	 * @param properties Properties containing the values to load
 	 */
 	public void load(final Properties properties) {
 		if (properties != null && !properties.isEmpty()) {

@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Properties;
 import junit.framework.TestCase;
+import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.sql.ConnectionManager;
+import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.utilities.StringProperties;
 
 /**
@@ -25,6 +29,29 @@ public class TestCommonCase extends TestCase {
 
 		if (m_unitTestProperties == null) {
 			loadProperties();
+			loadConnectionManager();
+		}
+	}
+
+	/**
+	 * This method loads the default connection manager.
+	 * 
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	private void loadConnectionManager() throws SQLException, DatabaseException {
+		final ConnectionManagerFactory factory = ConnectionManagerFactory.getFactory();
+		if (factory.getDefaultManager() == null) {
+			// set a new connection based on values found in the properties
+			// determine the connection to the database
+			final ConnectionManager.ConnectionSource connectionSource =
+				new ConnectionManager.DriverConnectionSource(m_unitTestProperties);
+			assertTrue(connectionSource.isValid());
+
+			final ConnectionManager manager = new ConnectionManager(connectionSource);
+
+			// register the connection manager
+			factory.register("testing", manager);
 		}
 	}
 

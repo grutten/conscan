@@ -39,6 +39,7 @@ public final class ConnectionManagerFactory {
 	public void register(final String strName, final ConnectionManager connectionManager) {
 		m_mapManagers.put(strName, connectionManager);
 
+		// register the first connection manager as the default
 		if (m_mapManagers.size() == 1) {
 			setDefaultManager(strName);
 		}

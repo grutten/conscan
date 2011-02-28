@@ -21,6 +21,7 @@ import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.DataConversion;
 import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.database.IdFactory;
 import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.SqlAlter;
@@ -49,6 +50,10 @@ public abstract class SqlManager {
 	/** This member holds the mapping of database column types to column types. */
 	private final Map<String, String> m_mapColumnTypes = new HashMap<String, String>();
 
+	/** This member holds a map from the database type to the column type. */
+	private final Map<String, ColumnTypeConverter> m_mapDatebaseTypeConverter =
+		new HashMap<String, ColumnTypeConverter>();
+
 	/** This member holds a map of keywords. */
 	private final Map<String, String> m_mapKeywords = new HashMap<String, String>();
 
@@ -66,13 +71,13 @@ public abstract class SqlManager {
 	/**
 	 * This method constructs a new builder, registering the types handled by the base class.
 	 */
-	public SqlManager() {
-		register(new StaticColumnTypeConverter(ColumnTypeText.class, "TEXT"));
-		register(new StaticColumnTypeConverter(ColumnTypeSmallInteger.class, "SMALLINT"));
-		register(new StaticColumnTypeConverter(ColumnTypeInteger.class, "INTEGER"));
-		register(new StringColumnTypeConverter(ColumnTypeString.class));
-		register(new StaticColumnTypeConverter(ColumnTypeIdReference.class, "INTEGER"));
-		register(new StaticColumnTypeConverter(ColumnTypeDate.class, "DATETIME"));
+	public SqlManager(final IdFactory idFactory) {
+		register(new StaticColumnTypeConverter(ColumnTypeText.TYPE, "TEXT"));
+		register(new StaticColumnTypeConverter(ColumnTypeSmallInteger.TYPE, "SMALLINT"));
+		register(new StaticColumnTypeConverter(ColumnTypeInteger.TYPE, "INT"));
+		register(new StaticColumnTypeConverter(ColumnTypeString.TYPE, "VARCHAR"));
+		register(new StaticColumnTypeConverter(ColumnTypeIdReference.TYPE, idFactory.getDatabaseReferenceType()));
+		register(new StaticColumnTypeConverter(ColumnTypeDate.TYPE, "DATETIME"));
 		register(new BooleanColumnTypeConverter());
 
 		register(KEYWORD_MODIFY_COLUMN, "MODIFY");
@@ -93,6 +98,7 @@ public abstract class SqlManager {
 		registerType("smallint", ColumnTypeSmallInteger.TYPE);
 		registerType("text", ColumnTypeText.TYPE);
 		registerType("tinyint", ColumnTypeBoolean.TYPE);
+		registerType(idFactory.getDatabaseReferenceType(), ColumnTypeId.TYPE);
 
 		// set a default SQL schema
 		setSqlSchema(new SqlSchema(this));
@@ -359,12 +365,11 @@ public abstract class SqlManager {
 			type = ColumnTypeFactory.getFactory().get(ColumnTypeId.TYPE);
 		}
 		else {
-			final String strType = m_mapColumnTypes.get(strDataType);
-			if (strType != null) {
-				type = ColumnTypeFactory.getFactory().get(strType);
-			}
-			else {
-				type = ColumnTypeFactory.getFactory().get(strDataType);
+			final ColumnTypeConverter converter = m_mapDatebaseTypeConverter.get(strDataType.toLowerCase());
+			if (converter != null) {
+				type = ColumnTypeFactory.getFactory().get(converter.getColumnType());
+			} else {
+				throw new IllegalStateException("Did not recognize database type of '" + strDataType + "'");
 			}
 		}
 
@@ -391,9 +396,13 @@ public abstract class SqlManager {
 	 * This method registers a type conversion.
 	 */
 	protected void register(final ColumnTypeConverter converter) {
+		// add to the class type to converter map
 		final Class<? extends ColumnType> clsType = converter.getClassType();
-
 		m_mapTypeConverters.put(clsType, converter);
+
+		// add to the database type to convert map
+		final String strDatabaseType = converter.getDatabaseType();
+		m_mapDatebaseTypeConverter.put(strDatabaseType.toLowerCase(), converter);
 	}
 
 	/**
@@ -467,7 +476,7 @@ public abstract class SqlManager {
 		 * This method creates a new type converter.
 		 */
 		public BooleanColumnTypeConverter() {
-			super(ColumnTypeBoolean.class);
+			super(ColumnTypeBoolean.TYPE);
 		}
 
 		/**
@@ -490,20 +499,28 @@ public abstract class SqlManager {
 
 			return strBuffer.toString();
 		}
+
+		/**
+		 * This method returns the database type associated with this converter.
+		 */
+		@Override
+		public String getDatabaseType() {
+			return "tinyint";
+		}
 	}
 
 	/**
 	 * This class returns the string version of the type.
 	 */
 	protected abstract static class ColumnTypeConverter {
-		/** This member holds the class that is being converted. */
-		private final Class<? extends ColumnType> m_clsType;
+		/** This member holds the class type that is being converted. */
+		private final String m_strColumnType;
 
 		/**
 		 * This method creates a new type converter.
 		 */
-		public ColumnTypeConverter(final Class<? extends ColumnType> clsType) {
-			m_clsType = clsType;
+		public ColumnTypeConverter(final String strColumnType) {
+			m_strColumnType = strColumnType;
 		}
 
 		/**
@@ -515,8 +532,27 @@ public abstract class SqlManager {
 		 * This method returns the class that is being converted.
 		 */
 		public Class<? extends ColumnType> getClassType() {
-			return m_clsType;
+			Class<? extends ColumnType> clsType = null;
+
+			final ColumnType columnType = ColumnTypeFactory.getFactory().get(m_strColumnType);
+			if (columnType != null) {
+				clsType = columnType.getClass();
+			}
+
+			return clsType;
 		}
+
+		/**
+		 * This method returns the string that represents the column type.
+		 */
+		public String getColumnType() {
+			return m_strColumnType;
+		}
+
+		/**
+		 * This method returns the database type associated with this converter.
+		 */
+		public abstract String getDatabaseType();
 	}
 
 	/**
@@ -529,8 +565,8 @@ public abstract class SqlManager {
 		/**
 		 * This method creates a new type converter.
 		 */
-		public StaticColumnTypeConverter(final Class<? extends ColumnType> clsType, final String strType) {
-			super(clsType);
+		public StaticColumnTypeConverter(final String strColumnType, final String strType) {
+			super(strColumnType);
 
 			m_strType = strType;
 		}
@@ -540,27 +576,21 @@ public abstract class SqlManager {
 		 */
 		@Override
 		public String get(final ColumnDefinition column) {
-			return m_strType;
-		}
-	}
+			final StringBuilder strBuffer = new StringBuilder(m_strType);
 
-	/**
-	 * This class returns the string version of the type for variable strings
-	 */
-	protected static class StringColumnTypeConverter extends ColumnTypeConverter {
-		/**
-		 * This method creates a new type converter.
-		 */
-		public StringColumnTypeConverter(final Class<? extends ColumnType> clsType) {
-			super(clsType);
+			if (column.getType().hasLength()) {
+				strBuffer.append('(').append(column.getLength()).append(')');
+			}
+
+			return strBuffer.toString();
 		}
 
 		/**
-		 * This method returns the string version of the type.
+		 * This method returns the database type associated with this converter.
 		 */
 		@Override
-		public String get(final ColumnDefinition column) {
-			return new StringBuilder().append("VARCHAR(").append(column.getLength()).append(')').toString();
+		public String getDatabaseType() {
+			return m_strType;
 		}
 	}
 }

@@ -14,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.database.IdFactory;
+import com.tippingpoint.database.IdGuidFactory;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.base.SqlManager;
@@ -27,8 +29,13 @@ import com.tippingpoint.utilities.StringProperties;
 public final class ConnectionManager {
 	private static final Log m_log = LogFactory.getLog(ConnectionManager.class);
 
+	private static final String PROPERTY_USE_AUTOINCREMENT = "db.use.autoincrement";
+
 	/** This member holds the source of the connections. */
 	private ConnectionSource m_connections = new ConnectionSource();
+
+	/** This member holds the ID factory used for this connection. */
+	private IdFactory m_idFactory;
 
 	/** This member holds the schema definition of the tables found in the database associated with this manager. */
 	private Schema m_schema;
@@ -37,12 +44,23 @@ public final class ConnectionManager {
 	private SqlManager m_sqlManager;
 
 	/**
-	 * This method constructs an new default connection manager.
+	 * This method constructs an new connection manager.
 	 * 
 	 * @throws SQLException
 	 * @throws DatabaseException
 	 */
-	public ConnectionManager(ConnectionSource connections) throws SQLException, DatabaseException {
+	public ConnectionManager(final ConnectionSource connections) throws SQLException, DatabaseException {
+		this(connections, null);
+	}
+
+	/**
+	 * This method constructs an new connection manager.
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseException
+	 */
+	public ConnectionManager(ConnectionSource connections, final StringProperties properties) throws SQLException,
+			DatabaseException {
 		// make sure connection source is specified so a known error will occur
 		if (connections == null) {
 			connections = new ConnectionSource();
@@ -50,6 +68,7 @@ public final class ConnectionManager {
 
 		m_connections = connections;
 
+		setIdFactory(properties);
 		setSqlBuilder();
 	}
 
@@ -68,6 +87,13 @@ public final class ConnectionManager {
 	 */
 	public ConnectionSource getConnectionSource() {
 		return m_connections;
+	}
+
+	/**
+	 * This method returns the Id factory instance.
+	 */
+	public IdFactory getIdFactory() {
+		return m_idFactory;
 	}
 
 	/**
@@ -122,6 +148,25 @@ public final class ConnectionManager {
 	}
 
 	/**
+	 * This method sets the ID factory. By default, a GUID based factory is used, but auto-increments can be used.
+	 * 
+	 * @param properties Properties used to configure the application
+	 */
+	private void setIdFactory(final StringProperties properties) {
+		boolean bUseAutoIncrement = false;
+		if (properties != null) {
+			bUseAutoIncrement = new Boolean(properties.getValue(PROPERTY_USE_AUTOINCREMENT, Boolean.FALSE.toString()));
+		}
+
+		if (bUseAutoIncrement) {
+			m_idFactory = new IdGuidFactory();
+		}
+		else {
+			m_idFactory = new IdGuidFactory();
+		}
+	}
+
+	/**
 	 * This method sets the manager to used for SQL executions.
 	 * 
 	 * @param sqlManager SqlManager instance for this connection.
@@ -149,10 +194,10 @@ public final class ConnectionManager {
 
 			final String strDatabaseType = metaData.getDatabaseProductName();
 			if ("MySQL".equals(strDatabaseType)) {
-				setManager(new SqlManagerMySql());
+				setManager(new SqlManagerMySql(m_idFactory));
 			}
 			else if (strDatabaseType.contains("Microsoft")) {
-				setManager(new SqlManagerSqlServer());
+				setManager(new SqlManagerSqlServer(m_idFactory));
 			}
 			else {
 				throw new DatabaseException("Could not recognize database type '" + strDatabaseType + "'");
@@ -376,7 +421,7 @@ public final class ConnectionManager {
 			// load all of the commonly known drivers
 			loadDriver("com.mysql.jdbc.Driver");
 			loadDriver("net.sourceforge.jtds.jdbc.Driver");
-			loadDriver("oracle.jdbc.OracleDriver");
+			// loadDriver("oracle.jdbc.OracleDriver");
 		}
 
 		/**
