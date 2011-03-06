@@ -240,7 +240,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE activity(activityid CHAR(32) NOT NULL, title VARCHAR(200) NULL, "
+			check("CREATE TABLE activity(activityid CHAR(36) NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
 					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
 
@@ -251,7 +251,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE demographic(userid CHAR(32) NOT NULL, "
+			check("CREATE TABLE demographic(userid CHAR(36) NOT NULL, "
 					+ "firstName VARCHAR(100) NULL, lastName VARCHAR(100) NULL, creation DATETIME NULL, "
 					+ "CONSTRAINT pk_demographic PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
@@ -282,7 +282,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE useractivity(userid CHAR(32) NOT NULL, activityid CHAR(32) NOT NULL, "
+			check("CREATE TABLE useractivity(userid CHAR(36) NOT NULL, activityid CHAR(36) NOT NULL, "
 					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
 					sqlManager, sqlCreate);
@@ -384,7 +384,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			SqlCreate sqlCreate = new SqlCreate(tableActivity);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE activity(activityid CHAR(32) NOT NULL, title VARCHAR(200) NULL, "
+			check("CREATE TABLE activity(activityid CHAR(36) NOT NULL, title VARCHAR(200) NULL, "
 					+ "description TEXT NULL, creation DATETIME NULL, lastmodified DATETIME NULL, "
 					+ "CONSTRAINT pk_activity PRIMARY KEY (activityid))", sqlManager, sqlCreate);
 
@@ -395,7 +395,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableDemographic);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE demographic(userid CHAR(32) NOT NULL, firstName VARCHAR(100) NULL, "
+			check("CREATE TABLE demographic(userid CHAR(36) NOT NULL, firstName VARCHAR(100) NULL, "
 					+ "lastName VARCHAR(100) NULL, creation DATETIME NULL, CONSTRAINT pk_demographic "
 					+ "PRIMARY KEY (userid))", sqlManager, sqlCreate);
 
@@ -426,7 +426,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlCreate = new SqlCreate(tableUserActivity);
 			assertNotNull(sqlCreate);
 
-			check("CREATE TABLE useractivity(userid CHAR(32) NOT NULL, activityid CHAR(32) NOT NULL, "
+			check("CREATE TABLE useractivity(userid CHAR(36) NOT NULL, activityid CHAR(36) NOT NULL, "
 					+ "CONSTRAINT fk_useractivity_demographic FOREIGN KEY (userid) REFERENCES demographic (userid), "
 					+ "CONSTRAINT fk_useractivity_activity FOREIGN KEY (activityid) REFERENCES activity (activityid))",
 					sqlManager, sqlCreate);
