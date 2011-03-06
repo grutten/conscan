@@ -28,6 +28,12 @@ public class LogEntry {
 
         try {
         	m_logOutputStream = new FileWriter("\\My Documents\\log" + strFilename + ".xml");
+        	
+        	if (m_logOutputStream != null)
+        		// NOTE: because the handheld is not designed to recognize when
+        		// this file is complete, the server must provide the closing 
+        		// </objects> tag
+        		m_logOutputStream.write("<objects>\n");
         }
         catch (Exception e) {
         	// TODO: eat the file exception

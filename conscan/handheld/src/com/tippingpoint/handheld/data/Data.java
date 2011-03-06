@@ -16,7 +16,7 @@ public class Data implements DataInterface{
 	protected static final String INDEX_ACTIVITY = "activity";
 	protected static final String INDEX_COMPLIANCE = "compliance";
 	protected static final String INDEX_LOCATION = "1location";
-	protected static final String INDEX_LOCATIONBYOFFENDER = "qwer";
+	protected static final String INDEX_LOCATIONBYOFFENDER = "qwer";  // MAP workaround
 	protected static final String INDEX_OFFENDER = "offender";
 
 	XMLReader m_xmlreader;
@@ -277,7 +277,8 @@ public class Data implements DataInterface{
 		System.out.println("Index Created: LOCATION");
 		
 		// Populate the location by offender index
-		mapCurr = (HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER);
+		HashMap mapLocations = (HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER);
+		HashMap mapOffenders = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
 		arrLocation = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_LOCATION);
 		i = arrLocation.iterator();
 		while (i.hasNext()) {
@@ -285,24 +286,12 @@ public class Data implements DataInterface{
 			Iterator iOffender = location.getOffenders().iterator();
 			while (iOffender.hasNext()) {
 				Offender offender = (Offender)iOffender.next();
-				mapCurr.put(offender.getBarcode(), location);
+				mapLocations.put(offender.getBarcode(), location);
+				mapOffenders.put(offender.getBarcode(), offender);
 			}
 		}
-		System.out.println("Index Created: LOCATIONBYOFFENDER");
+		System.out.println("Index Created: LOCATIONBYOFFENDER & OFFENDER");
 		
-		// Populate the location by offender index
-		mapCurr = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
-		arrLocation = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_LOCATION);
-		i = arrLocation.iterator();
-		while (i.hasNext()) {
-			Location location = (Location)i.next();
-			Iterator iOffender = location.getOffenders().iterator();
-			while (iOffender.hasNext()) {
-				Offender offender = (Offender)iOffender.next();
-				mapCurr.put(offender.getBarcode(), offender);
-			}
-		}
-		System.out.println("Index Created: OFFENDER");
 	}
 	
 	private void setFeedback(String strFeedback) { m_strFeedback = strFeedback; }
