@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.activation.MimeType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,7 @@ import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Element;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
+import com.tippingpoint.database.json.JsonTable;
 import com.tippingpoint.database.parser.Importer;
 import com.tippingpoint.database.parser.Parser;
 import com.tippingpoint.sql.ConnectionManager;
@@ -53,6 +55,7 @@ import com.tippingpoint.utilities.XmlUtilities;
 
 public final class Database extends Services {
 	private static Log m_log = LogFactory.getLog(Database.class);
+
 	private static final long serialVersionUID = 1389375741587926242L;
 
 	/**
@@ -116,7 +119,7 @@ public final class Database extends Services {
 	/**
 	 * This method executes the get command; which is used to return the contents from the database.
 	 * 
-	 * database/<table> - return the contents of the named table 
+	 * database/<table> - return the contents of the named table
 	 * database/<table>?<column>=<value> - return the contents of the named table for the value in the specified column
 	 * 
 	 * @throws IOException
@@ -185,7 +188,7 @@ public final class Database extends Services {
 			case 1:
 				final Element element = listElements.get(0);
 				if (element instanceof Table) {
-					processTable((Table)element, response);
+					processTable(request, (Table)element, response);
 				}
 
 			default:
@@ -395,17 +398,37 @@ public final class Database extends Services {
 	}
 
 	/**
-	 * This method processes returning all the tables in the schema.
+	 * This method processes returning the specified table.
 	 * 
+	 * @param request HttpServletRequest which is making the request.
 	 * @param response HttpServletResponse where the results are to be returned.
 	 * @throws IOException
 	 */
-	private void processTable(final Table table, final HttpServletResponse response) throws IOException {
-		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+	private void processTable(final HttpServletRequest request, final Table table, final HttpServletResponse response)
+			throws IOException {
+		final List<MimeType> listAccepts = getAccepts(request);
 
-		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		for (final MimeType mimeType : listAccepts) {
+			if (MIME_JSON.match(mimeType)) {
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType(MIME_JSON.toString());
 
-		table.writeXml(writer);
+				final PrintWriter out = response.getWriter();
+
+				final JsonTable jsonTable = new JsonTable(table);
+
+				jsonTable.get().writeJSONString(out);
+				break;
+			}
+			else if (MIME_XML.match(mimeType)) {
+				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+
+				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+				table.writeXml(writer);
+				break;
+			}
+		}
 	}
 
 	/**

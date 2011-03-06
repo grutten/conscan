@@ -7,10 +7,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
@@ -27,16 +32,52 @@ public abstract class Services extends HttpServlet {
 
 	protected static final String METHOD_DELETE = "DELETE";
 	protected static final String METHOD_GET = "GET";
+
 	protected static final String METHOD_HEAD = "HEAD";
 	protected static final String METHOD_OPTIONS = "OPTIONS";
 	protected static final String METHOD_POST = "POST";
 	protected static final String METHOD_PUT = "PUT";
+	protected static MimeType MIME_JSON;
+	protected static MimeType MIME_XML;
 
 	protected static final String TAG_FIELD = "field";
 	protected static final String TAG_LIST = "list";
 	protected static final String TAG_OBJECT = "object";
 
+	private static Log m_log = LogFactory.getLog(Services.class);
+
 	private static final long serialVersionUID = -5482024580102875533L;
+
+	/**
+	 * This method returns the list of accept types from the request.
+	 */
+	protected List<MimeType> getAccepts(final HttpServletRequest request) {
+		final List<MimeType> listAccepts = new ArrayList<MimeType>();
+		String strAccepts = request.getHeader("Accept");
+		if (strAccepts == null || strAccepts.length() == 0) {
+			strAccepts = "*/*";
+		}
+
+		final StringTokenizer tokenizer = new StringTokenizer(strAccepts, ",'");
+		while (tokenizer.hasMoreTokens()) {
+			final String strToken = tokenizer.nextToken();
+			if (StringUtils.isNotBlank(strToken)) {
+				try {
+					final MimeType mimeType = new MimeType(strToken);
+
+					m_log.debug("Request has accept type of '" + mimeType.toString() + "'");
+
+					// insert at the start so that the last one is used first
+					listAccepts.add(mimeType);
+				}
+				catch (final MimeTypeParseException e) {
+					m_log.error("Request has an invalid accept type of '" + strToken + "'", e);
+				}
+			}
+		}
+
+		return listAccepts;
+	}
 
 	/**
 	 * This method breaks down the string used to identify the object.
@@ -95,7 +136,7 @@ public abstract class Services extends HttpServlet {
 	 */
 	protected PrintWriter returnXml(final HttpServletResponse response, final int nStatus) throws IOException {
 		response.setStatus(nStatus);
-		response.setContentType("text/xml");
+		response.setContentType(MIME_XML.toString());
 
 		return response.getWriter();
 	}
@@ -264,6 +305,17 @@ public abstract class Services extends HttpServlet {
 
 				writer.write(XmlUtilities.close(TAG_LIST));
 			}
+		}
+	}
+
+	static {
+		try {
+			MIME_JSON = new MimeType("application/json");
+			MIME_XML = new MimeType("text/xml");
+		}
+		catch (final MimeTypeParseException e) {
+			// should never happen since the type is a constant
+			m_log.error("Error parsing JSON mime type.", e);
 		}
 	}
 }

@@ -32,7 +32,7 @@
 		<div class="footer">
 			&copy; 2001 Tipping Point Software Solutions
 		</div>
-		<div class="hidden wideborder" id="logindialog">
+		<div class="hidden wideborder curvedblock" id="logindialog">
 			<div class="errormsg"></div>
 			<form id="logindialogform">
 				<table class="noborder">
@@ -74,7 +74,7 @@
 			}
 
 			function getItemList(item) {
-				alert('getItemList: ' + item);
+				//alert('getItemList: ' + item);
 				jQuery.ajax({
 					url: item,
 					type: 'GET',
@@ -177,9 +177,14 @@
 					jQuery.ajax({
 						type: 'OPTIONS',
 						url: 'database/' + name,
+						datatype: 'json',
 						async: false,
-						success: function() {
-							objectoptions[name] = "found it";
+						beforeSend: function(req) {
+							req.setRequestHeader("Accept", "application/json");
+						},
+						success: function(responseObj) {
+							//alert('Retrieved options for ' + responseObj.table.name);
+							objectoptions[name] = responseObj;
 						},
 						error: function(responseXML, statusText, xhr, form) {
 							alert('Error getting options for ' + name + ': ' + statusText);
@@ -197,7 +202,7 @@
 					options = getobjectoptions(jQuery(this).attr('name'));					
 				});
 
-				alert('options: ' + options); 
+				alert('options: ' + options.table.name); 
 
 				jQuery('div#fieldcontent').html(options);
 			}

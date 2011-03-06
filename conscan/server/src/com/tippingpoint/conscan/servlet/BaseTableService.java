@@ -3,6 +3,7 @@ package com.tippingpoint.conscan.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import javax.activation.MimeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -10,7 +11,10 @@ import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
+import com.tippingpoint.conscan.objects.JsonBusinessObjectList;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class serves the <base table service> for related objects.
@@ -39,7 +43,7 @@ public class BaseTableService extends Services {
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		final String strPathInfo = request.getPathInfo();
 
-		m_log.debug("Get: " + (strPathInfo != null ? strPathInfo : "<no path>" ));
+		m_log.debug("Get: " + (strPathInfo != null ? strPathInfo : "<no path>"));
 
 		try {
 			final List<String> listElements = getObjects(strPathInfo);
@@ -64,8 +68,9 @@ public class BaseTableService extends Services {
 				}
 			}
 			else {
-				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-				writeObjects(writer, m_strTableName, false);
+				writeObjects(request, response, m_strTableName);
+				// final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+				// writeObjects(writer, m_strTableName, false);
 			}
 		}
 		catch (final SqlBaseException e) {
@@ -86,5 +91,51 @@ public class BaseTableService extends Services {
 			throws IOException, SqlBaseException {
 		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
 		writeObject(writer, businessObject, false);
+	}
+
+	/**
+	 * This method returns a list of objects of the specified type.
+	 * 
+	 * @param request
+	 * @param response
+	 * @param strObjectName String containing the name of the object to write.
+	 * @throws IOException
+	 * @throws SqlBaseException
+	 */
+	private void writeObjects(final HttpServletRequest request, final HttpServletResponse response,
+			final String strObjectName) throws IOException, SqlBaseException {
+		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strObjectName);
+		if (builder != null) {
+			final List<BusinessObject> listObjects = builder.getAll();
+			if (listObjects != null && !listObjects.isEmpty()) {
+				final List<MimeType> listAccepts = getAccepts(request);
+
+				for (final MimeType mimeType : listAccepts) {
+					if (MIME_JSON.match(mimeType)) {
+						response.setStatus(HttpServletResponse.SC_OK);
+						response.setContentType(MIME_XML.toString());
+
+						final PrintWriter out = response.getWriter();
+
+						final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
+
+						jsonObjects.get().writeJSONString(out);
+						break;
+					}
+					else if (MIME_XML.match(mimeType)) {
+						final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
+						out.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0)
+								.getType())));
+
+						for (final BusinessObject businessObject : listObjects) {
+							writeObject(out, businessObject, false);
+						}
+
+						out.write(XmlUtilities.close(TAG_LIST));
+						break;
+					}
+				}
+			}
+		}
 	}
 }
