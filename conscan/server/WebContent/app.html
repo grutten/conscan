@@ -76,9 +76,10 @@
 			function getItemList(item) {
 				//alert('getItemList: ' + item);
 				jQuery.ajax({
-					url: item,
 					type: 'GET',
-					dataType: 'xml',
+					url: item,
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
 					success: displaylist,
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Item ' + item + ' error: ' + statusText);
@@ -179,9 +180,7 @@
 						url: 'database/' + name,
 						datatype: 'json',
 						async: false,
-						beforeSend: function(req) {
-							req.setRequestHeader("Accept", "application/json");
-						},
+						beforeSend: addJsonAccepts,
 						success: function(responseObj) {
 							//alert('Retrieved options for ' + responseObj.table.name);
 							objectoptions[name] = responseObj;
@@ -195,18 +194,37 @@
 				return objectoptions[name];
 			}
 
-			function displaylist(responseXML, statusText, xhr) {
-				var options;
-
-				jQuery(responseXML).children("list").each(function() {
-					options = getobjectoptions(jQuery(this).attr('name'));					
-				});
-
-				alert('options: ' + options.table.name); 
-
-				jQuery('div#fieldcontent').html(options);
+			function addJsonAccepts(req) {
+				req.setRequestHeader("Accept", "application/json");
 			}
-			
+
+			function displaylist(responseObj, statusText, xhr) {
+				var columns = getobjectoptions(responseObj.name);					
+
+				// alert('Options for: ' + columns.table.name);
+
+				var strHtml = '';
+				for (index in responseObj.objects) {
+					var object = responseObj.objects[index];
+
+					strHtml += display(columns.table, object);
+				}
+
+				jQuery('div#fieldcontent').html(strHtml);
+			}
+
+			function display(table, object) {
+				var strHtml = '';
+
+				for (index in table.column) {
+					var column = table.column[index];
+					
+					strHtml += column.name + '=' + object[column.name] + '<br/>'; 
+				}
+
+				return strHtml;
+			}
+
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();

@@ -113,7 +113,7 @@ public class BaseTableService extends Services {
 				for (final MimeType mimeType : listAccepts) {
 					if (MIME_JSON.match(mimeType)) {
 						response.setStatus(HttpServletResponse.SC_OK);
-						response.setContentType(MIME_XML.toString());
+						response.setContentType(MIME_JSON.toString());
 
 						final PrintWriter out = response.getWriter();
 
