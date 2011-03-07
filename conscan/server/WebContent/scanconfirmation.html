@@ -64,6 +64,7 @@
 					table += '    <tr>';
 
 					// add the columns to the string
+					var strLogId = jQuery(this).attr('logid');
 					jQuery(this).children('field').each(function() {
 						strLookup = "";
 						if (jQuery(this).text() != null && jQuery(this).text().length > 0) {
@@ -81,7 +82,7 @@
 					});
 
 					// Add notes column
-					table += "<td><div class='login'><span id='noteslink" + nRowCount + "' class='ui-icon ui-icon-pencil' /></div><div id='row" + nRowCount + "'></div></td>";
+					table += "<td><div class='login'><span id='" + strLogId + "' class='ui-icon ui-icon-pencil' /></div><div id='row" + strLogId + "'></div></td>";
 
 					table += '    </tr>';
 					++nRowCount;
@@ -171,8 +172,8 @@
 
 			jQuery('.ui-icon-pencil').live('click', shownotes);
 			function shownotes() {
-				var strKey = jQuery(this).attr('id');
-				var strRow = "#row" + strKey.substring(9);
+				var strLogId = jQuery(this).attr('id');
+				var strRow = "#row" + strLogId;
 
 				$('#notesdialog').modal({
 					opacity:90,
