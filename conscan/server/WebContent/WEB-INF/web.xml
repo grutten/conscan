@@ -42,6 +42,16 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>Compliance</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.Compliance</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>Compliance</servlet-name>
+    <url-pattern>/compliance/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>ComplianceValue</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.ComplianceValue</servlet-class>
   </servlet>
