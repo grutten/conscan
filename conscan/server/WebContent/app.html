@@ -8,6 +8,7 @@
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -210,7 +211,9 @@
 					strHtml += display(columns.table, object);
 				}
 
-				jQuery('div#fieldcontent').html(strHtml);
+				displayTable("div#fieldcontent", columns.table, responseObj.objects);
+
+				//jQuery('div#fieldcontent').html(strHtml);
 			}
 
 			function display(table, object) {
@@ -225,6 +228,56 @@
 				return strHtml;
 			}
 
+			function getTableColumns(table) {
+				var tablecolumns = new Array();
+
+				// find the column definitions
+				for (index in table.column) {
+					var column = table.column[index];
+
+					if (column.type == "id") {
+						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
+					} else if (column.type == "password") {
+						tablecolumns[index] = {"sTitle": column.name, fnRender: renderPassword }
+					} else {
+						tablecolumns[index] = {"sTitle": column.name }
+					}
+				}
+
+				return tablecolumns;
+			}
+
+			function displayTable(field, table, objects) {
+				var tablecolumns = getTableColumns(table);
+
+				var data = new Array();
+
+				// loop through all the objects
+				for (index in objects) {
+					var object = objects[index];
+					var dataObject = new Array();
+					data[index] = dataObject;
+
+					for (indexColumn in table.column) {
+						var column = table.column[indexColumn];
+
+						dataObject[indexColumn] = object[column.name];
+					}
+				}
+
+				// add a blank table first
+				jQuery(field).html( '<table class="noborder" style="width:100%" id="example"></table>' );
+				// use the tool to load that table
+				jQuery('#example').dataTable( {
+					"aaData": data,
+					"aoColumns": tablecolumns
+				} );	
+			}
+
+			function renderPassword(obj) {
+				return "****";
+			}
+			
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
