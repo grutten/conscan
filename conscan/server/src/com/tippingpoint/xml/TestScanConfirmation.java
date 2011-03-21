@@ -1,22 +1,15 @@
 package com.tippingpoint.xml;
 
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import javax.servlet.ServletException;
-
 import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
-
 import com.tippingpoint.conscan.objects.TablePersistence;
-import com.tippingpoint.conscan.servlet.Startup;
 import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.parser.Parser;
@@ -25,23 +18,21 @@ import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.StringProperties;
-import com.tippingpoint.xml.Data;
-
 
 public class TestScanConfirmation extends TestCase {
-	
-	private static Log m_log = LogFactory.getLog(Startup.class);
 
 	private static final String APPLICATION_NAME = "ConScan";
 
+	private static Log m_log = LogFactory.getLog(TestScanConfirmation.class);
+
 	public void testMain() {
 		init();
-		
-    	String strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\log20111212956.xml";
-	    Data d2 = new Data(strConfigFile);
-		
+
+		final String strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\log20111212956.xml";
+		final Data d2 = new Data(strConfigFile);
+
 	}
-	
+
 	/**
 	 * This method returns the properties for the application.
 	 */
@@ -62,7 +53,7 @@ public class TestScanConfirmation extends TestCase {
 
 		return new StringProperties(properties);
 	}
-	
+
 	private void init() {
 		final StringProperties properties = getProperties();
 

@@ -4,14 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
-
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
-import com.tippingpoint.conscan.servlet.Activity;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.xml.DataInterface;
-import com.tippingpoint.xml.SaxBaseHandler;
 
 public class GenericXmlHandler extends SaxBaseHandler {
 
