@@ -188,6 +188,17 @@
 						$('.done', dialog.data[0]).click(function () {
 							jQuery(strRow).text(jQuery("#idinputnotes").val());
 
+							var strLogCommentXml = getLogCommentXml();
+							alert ("strXml from shownotes: " + strLogCommentXml);
+							
+							jQuery.ajax({
+								type: "POST",
+								url: "database/logcomment",
+								data: strLogCommentXml,
+								dataType: "xml",								
+								error: showerror
+							});
+							
 							// close the dialog
 							modal.close(); // or $.modal.close();
 						});
@@ -195,6 +206,21 @@
 				});
 			}
 
+			function getLogCommentXml() {
+				var strXml = "<objects>\n";
+				
+				strXml += "\t<field name='logid'>";
+				strXml += "3f15ba36-f9d2-496f-92ac-dfd47ea9ba6d";
+				strXml += "</field>\n";
+
+				strXml += "\t<field name='comment'>";
+				strXml += "asdf";
+				strXml += "</field>\n";
+				
+				strXml += "</objects>\n";
+				return strXml;
+			}
+			
 		</script>
 		<script type="text/javascript" src="js/conscan.js"></script>
 	</body>

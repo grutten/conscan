@@ -112,6 +112,16 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>LogComment</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.LogCommentService</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>LogComment</servlet-name>
+    <url-pattern>/logcomment/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>User</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.UserService</servlet-class>
   </servlet>
