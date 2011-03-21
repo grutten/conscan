@@ -6,5 +6,4 @@ public class ComplianceValue extends BaseTableService {
 	public ComplianceValue() {
 		super("compliancevalue");
 	}
-
 }

@@ -20,8 +20,11 @@
 			<div class="menu">
 				<h3>Menu</h3>
 				<ul>
-					<li class="curvedblocksmall linkable">Staff</li>
-					<li class="curvedblocksmall linkable">Other</li>
+					<li class="curvedblocksmall linkable">staff</li>
+					<li class="curvedblocksmall linkable">compliance</li>
+					<li class="curvedblocksmall linkable">activity</li>
+					<li class="curvedblocksmall linkable">location</li>
+					<li class="curvedblocksmall linkable">offender</li>
 				</ul>
 			</div>
 			<div class="field">
@@ -237,7 +240,7 @@
 
 					if (column.type == "id") {
 						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
-					} else if (column.type == "password") {
+					} else if (column.type == "password" || column.name == "password") {
 						tablecolumns[index] = {"sTitle": column.name, fnRender: renderPassword }
 					} else {
 						tablecolumns[index] = {"sTitle": column.name }
