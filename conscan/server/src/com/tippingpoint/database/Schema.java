@@ -34,7 +34,7 @@ public final class Schema extends Element {
 	 */
 	public void addTable(final Table table) {
 		m_tables.put(table.getName(), table);
-		
+
 		table.setSchema(this);
 	}
 

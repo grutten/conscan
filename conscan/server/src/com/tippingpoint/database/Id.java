@@ -10,7 +10,7 @@ public class Id {
 
 	/** This member holds the identifier. */
 	private Integer m_intValue;
-	
+
 	/** This member holds the string version of the identifier. */
 	private String m_strValue;
 
@@ -30,7 +30,7 @@ public class Id {
 			m_intValue = new Integer(strValue);
 			m_strValue = m_intValue.toString();
 		}
-		catch (NumberFormatException e) {
+		catch (final NumberFormatException e) {
 			// ignore number exception and just store the string
 			m_strValue = strValue;
 		}

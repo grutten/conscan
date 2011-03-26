@@ -177,12 +177,13 @@ public final class Importer {
 					if (bContinue) {
 						final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 						final SqlInsert sqlInsert = new SqlInsert(m_activeTable);
-						
+
 						// if the table needs an id value, then generate one
 						if (m_activeTable.hasIdPrimaryKey()) {
-							Column columnPrimary = m_activeTable.getPrimaryKeyColumn();
-							Object columnObject = m_mapValues.get(columnPrimary);
-							IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+							final Column columnPrimary = m_activeTable.getPrimaryKeyColumn();
+							final Object columnObject = m_mapValues.get(columnPrimary);
+							final IdFactory idFactory =
+								ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
 							if (columnObject == null && !idFactory.idDerived()) {
 								setColumnValue(columnPrimary, idFactory.getNewValue());
 							}

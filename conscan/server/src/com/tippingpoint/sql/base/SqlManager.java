@@ -368,7 +368,8 @@ public abstract class SqlManager {
 			final ColumnTypeConverter converter = m_mapDatebaseTypeConverter.get(strDataType.toLowerCase());
 			if (converter != null) {
 				type = ColumnTypeFactory.getFactory().get(converter.getColumnType());
-			} else {
+			}
+			else {
 				throw new IllegalStateException("Did not recognize database type of '" + strDataType + "'");
 			}
 		}

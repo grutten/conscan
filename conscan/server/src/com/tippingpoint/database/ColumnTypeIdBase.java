@@ -14,14 +14,6 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 	}
 
 	/**
-	 * This method interprets the object returned from a ResultSet and translates it into an appropriate object.
-	 */
-	@Override
-	protected Object translateObject(final String strValue, final boolean bWasNull) {
-		return !bWasNull ? new Id(strValue) : null;
-	}
-
-	/**
 	 * This method gives a changes for the type to set any restrictions on the column type.
 	 * 
 	 * @param columnDefinition ColumnDefinition being defined by this type.
@@ -34,5 +26,13 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 		if (idFactory.hasLength()) {
 			columnDefinition.setLength(idFactory.getLength());
 		}
+	}
+
+	/**
+	 * This method interprets the object returned from a ResultSet and translates it into an appropriate object.
+	 */
+	@Override
+	protected Object translateObject(final String strValue, final boolean bWasNull) {
+		return !bWasNull ? new Id(strValue) : null;
 	}
 }

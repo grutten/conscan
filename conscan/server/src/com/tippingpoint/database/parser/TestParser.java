@@ -185,32 +185,32 @@ public class TestParser extends TestDbCase {
 			assertEquals("pk_activity", primaryKey.getName());
 			assertEquals(tableActivity, primaryKey.getTable());
 			assertEquals(tableActivity.getColumn("activityid"), primaryKey.getColumns().next());
-			
+
 			final Table tableTag = schema.getTable("tag");
 			assertNotNull(tableTag);
-			
-			Constraint constraint = tableTag.getConstraint("fk_tag_tagtype");
+
+			final Constraint constraint = tableTag.getConstraint("fk_tag_tagtype");
 			assertNotNull(constraint);
 			assertTrue(constraint instanceof ForeignKeyConstraint);
 
-			ForeignKeyConstraint foreignKeyConstraint = (ForeignKeyConstraint)constraint;
+			final ForeignKeyConstraint foreignKeyConstraint = (ForeignKeyConstraint)constraint;
 			assertNotNull(foreignKeyConstraint);
-			
+
 			assertEquals(tableTag, foreignKeyConstraint.getTable());
-			
+
 			final Table tableTagType = schema.getTable("tagtype");
 			assertNotNull(tableTagType);
-			
+
 			assertEquals(tableTagType, foreignKeyConstraint.getForeignTable());
-			
-			List<ForeignKeyConstraint> listReferences = tableTagType.getReferences();
+
+			final List<ForeignKeyConstraint> listReferences = tableTagType.getReferences();
 			assertNotNull(listReferences);
 			assertEquals(1, listReferences.size());
 			assertEquals(foreignKeyConstraint, listReferences.get(0));
 
 			final Table tableRoleTag = schema.getTable("roletag");
 			assertNotNull(tableRoleTag);
-			
+
 			final Table tableRole = schema.getTable("role");
 			assertNotNull(tableRole);
 		}

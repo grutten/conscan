@@ -42,7 +42,7 @@ public class ColumnTypeId extends ColumnTypeIdBase {
 	@Override
 	public void setRestrictions(final ColumnDefinition columnDefinition) {
 		super.setRestrictions(columnDefinition);
-		
+
 		// all id columns are required in the database
 		columnDefinition.setRequired(true);
 	}

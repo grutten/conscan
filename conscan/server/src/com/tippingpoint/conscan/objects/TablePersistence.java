@@ -80,8 +80,8 @@ public class TablePersistence implements Persistence {
 
 		if (m_table.hasIdPrimaryKey()) {
 			m_PrimaryKeyColumn = m_table.getPrimaryKeyColumn();
-			
-			IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+
+			final IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
 			if (!idFactory.idDerived()) {
 				m_listRules.add(new IdInsertDataRule(m_PrimaryKeyColumn));
 			}
@@ -390,8 +390,9 @@ public class TablePersistence implements Persistence {
 		final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
 		if (iterColumns != null && iterColumns.hasNext()) {
 			final SqlInsert sqlInsert = new SqlInsert(m_table);
-			
-			boolean bIncludePrimaryKey = !ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().idDerived();
+
+			final boolean bIncludePrimaryKey =
+				!ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory().idDerived();
 
 			// loop through all the columns to put into the statement
 			while (iterColumns.hasNext()) {
@@ -464,15 +465,16 @@ public class TablePersistence implements Persistence {
 				if (column == null) {
 					column = m_table.getColumn(fieldValue.getName());
 				}
-				
+
 				if (column != null) {
 					if (m_table.equals(column.getTable())) {
 						sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
-					} else {
+					}
+					else {
 						final ForeignKeyConstraint foreignKeyConstraint = getRestraint(column.getTable().getName());
 						if (foreignKeyConstraint != null) {
 							sqlQuery.add(foreignKeyConstraint.getTable(), false);
-							
+
 							sqlQuery.add(new ValueCondition(column, Operation.EQUALS, fieldValue.getValue()));
 						}
 					}
@@ -506,19 +508,21 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method returns if the specified foreign key is related to the passed in name.
+	 * 
 	 * @param strRelatedName String containing the name of the related table.
 	 * @param foreignKeyConstraint ForeignKeyConstraint constraint to check.
 	 */
-	private boolean isRelationship(String strRelatedName, ForeignKeyConstraint foreignKeyConstraint) {
+	private boolean isRelationship(final String strRelatedName, final ForeignKeyConstraint foreignKeyConstraint) {
 		boolean bFound = false;
-		
+
 		// check to see if the table is simply a child table
 		final Table table = foreignKeyConstraint.getTable();
 		if (strRelatedName.equals(table.getName())) {
 			bFound = true;
-		} else {
+		}
+		else {
 			// check to see if the child table is a mapping table
-			Table tableRelated = m_table.getSchema().getTable(strRelatedName);
+			final Table tableRelated = m_table.getSchema().getTable(strRelatedName);
 			if (tableRelated != null && tableRelated.hasIdPrimaryKey()) {
 				if (table.getForeignKey(tableRelated.getPrimaryKeyColumn()) != null) {
 					bFound = true;
@@ -541,8 +545,9 @@ public class TablePersistence implements Persistence {
 				final Column column = parameterizedValue.getColumn();
 				final FieldValue fieldValue = mapValues.get(column.getName());
 
-				if (fieldValue != null)
+				if (fieldValue != null) {
 					parameterizedValue.setValue(fieldValue.getValue());
+				}
 			}
 		}
 	}
