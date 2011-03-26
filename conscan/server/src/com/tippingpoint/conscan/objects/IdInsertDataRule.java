@@ -11,31 +11,35 @@ import com.tippingpoint.sql.ConnectionManagerFactory;
  */
 public class IdInsertDataRule implements DataRule {
 	/** This member holds the id column. */
-	private Column m_columnId;
-	
+	private final Column m_columnId;
+
 	/**
 	 * This method constructs a new rule for the given column.
 	 */
-	public IdInsertDataRule(Column columnId) {
+	public IdInsertDataRule(final Column columnId) {
 		if (!(columnId.getType() instanceof ColumnTypeId)) {
 			throw new IllegalArgumentException("Column '" + columnId.getName() + "' is not an ID column.");
 		}
 
 		m_columnId = columnId;
 	}
-	
+
 	/**
 	 * This method applies the rule.
 	 */
 	@Override
-	public void apply(Map<String, FieldValue> mapValues) {
+	public void apply(final Map<String, FieldValue> mapValues) {
 		// if the field does not exist, just insert it into the map
-		String strName = m_columnId.getName();
+		final String strName = m_columnId.getName();
 		FieldValue fieldValue = mapValues.get(strName);
 		if (fieldValue == null) {
-			IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
-			fieldValue = new FieldValue(strName, idFactory.getNewValue());
+			fieldValue = new FieldValue(strName);
 			mapValues.put(strName, fieldValue);
+		}
+
+		if (fieldValue.getValue() == null) {
+			final IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+			fieldValue.setValue(idFactory.getNewValue());
 		}
 	}
 }
