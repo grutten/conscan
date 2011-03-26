@@ -37,6 +37,7 @@ public abstract class Services extends HttpServlet {
 	protected static final String METHOD_OPTIONS = "OPTIONS";
 	protected static final String METHOD_POST = "POST";
 	protected static final String METHOD_PUT = "PUT";
+	protected static MimeType MIME_ALL;
 	protected static MimeType MIME_JSON;
 	protected static MimeType MIME_XML;
 
@@ -310,6 +311,7 @@ public abstract class Services extends HttpServlet {
 
 	static {
 		try {
+			MIME_ALL = new MimeType("*/*");
 			MIME_JSON = new MimeType("application/json");
 			MIME_XML = new MimeType("text/xml");
 		}

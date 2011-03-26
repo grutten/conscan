@@ -409,7 +409,15 @@ public final class Database extends Services {
 		final List<MimeType> listAccepts = getAccepts(request);
 
 		for (final MimeType mimeType : listAccepts) {
-			if (MIME_JSON.match(mimeType)) {
+			if (MIME_ALL.match(mimeType) || MIME_XML.match(mimeType)) {
+				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
+
+				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+				table.writeXml(writer);
+				break;
+			}
+			else if (MIME_JSON.match(mimeType)) {
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.setContentType(MIME_JSON.toString());
 
@@ -418,14 +426,6 @@ public final class Database extends Services {
 				final JsonTable jsonTable = new JsonTable(table);
 
 				jsonTable.get().writeJSONString(out);
-				break;
-			}
-			else if (MIME_XML.match(mimeType)) {
-				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-
-				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-				table.writeXml(writer);
 				break;
 			}
 		}
