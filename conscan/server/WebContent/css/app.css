@@ -90,3 +90,23 @@ div.footer {
 	font-size: small;
 	text-align: center;
 }
+
+div.dataTables_wrapper {
+	width: 98%;
+}
+
+div.dataTables_filter {
+	float: right;
+	text-align: right;
+	width: 49%;
+}
+
+div.dataTables_length {
+	float: left;
+	width: 49%;
+}
+
+table.dataTables_content {
+	clear: right;
+	width: 100%;
+}
