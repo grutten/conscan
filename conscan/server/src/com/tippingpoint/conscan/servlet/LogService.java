@@ -29,7 +29,7 @@ public class LogService extends BaseTableService {
 	private static final long serialVersionUID = -9171678128325820555L;
 
 	public LogService() {
-		super("log");
+		super("logg");
 	}
 	
 	/**

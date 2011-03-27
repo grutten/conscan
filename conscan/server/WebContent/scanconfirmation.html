@@ -1,6 +1,8 @@
 	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
+		<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+		
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 		<title>Scan Confirmation</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css" />
@@ -64,7 +66,7 @@
 					table += '    <tr>';
 
 					// add the columns to the string
-					var strLogId = jQuery(this).attr('logid');
+					var strLogId = jQuery(this).attr('loggid');
 					jQuery(this).children('field').each(function() {
 						strLookup = "";
 						if (jQuery(this).text() != null && jQuery(this).text().length > 0) {
@@ -187,16 +189,13 @@
 						// if the user clicks "done"
 						$('.done', dialog.data[0]).click(function () {
 							jQuery(strRow).text(jQuery("#idinputnotes").val());
-
-							var strLogCommentXml = getLogCommentXml();
-							alert ("strXml from shownotes: " + strLogCommentXml);
-							
+							var strLogCommentXml = getLogCommentXml(strLogId, jQuery(strRow).text());
 							jQuery.ajax({
 								type: "POST",
-								url: "database/logcomment",
+								url: "logcomment",
 								data: strLogCommentXml,
 								dataType: "xml",								
-								error: showerror
+//								error: showerror
 							});
 							
 							// close the dialog
@@ -206,18 +205,18 @@
 				});
 			}
 
-			function getLogCommentXml() {
-				var strXml = "<objects>\n";
-				
-				strXml += "\t<field name='logid'>";
-				strXml += "3f15ba36-f9d2-496f-92ac-dfd47ea9ba6d";
+			function getLogCommentXml(strParentId, strComment) {
+				var strXml = "<objects><object name='logcomment'>\n";
+			
+				strXml += "\t<field name='loggid'>";
+				strXml += strParentId;
 				strXml += "</field>\n";
 
 				strXml += "\t<field name='comment'>";
-				strXml += "asdf";
+				strXml += strComment;
 				strXml += "</field>\n";
 				
-				strXml += "</objects>\n";
+				strXml += "</object></objects>\n";
 				return strXml;
 			}
 			

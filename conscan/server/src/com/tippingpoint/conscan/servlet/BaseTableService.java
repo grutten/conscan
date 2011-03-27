@@ -1,9 +1,12 @@
 package com.tippingpoint.conscan.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 import javax.activation.MimeType;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -15,6 +18,7 @@ import com.tippingpoint.conscan.objects.JsonBusinessObjectList;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
+import com.tippingpoint.xml.Data;
 
 /**
  * This class serves the <base table service> for related objects.
@@ -79,6 +83,21 @@ public class BaseTableService extends Services {
 		}
 	}
 
+	/**
+	 * This method is used to execute the post command; which is used to insert records.
+	 */
+	@Override
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		ServletInputStream inputStream = request.getInputStream();
+		final BufferedReader readerData = new BufferedReader(new InputStreamReader(inputStream));
+		Data dataTippingPointServer = new Data(readerData);
+
+		// TODO: figure out how to get the Data object to work without an instance
+		// so the followiung code can be removed.
+		if (dataTippingPointServer.getObjectName().equalsIgnoreCase("asdf"))
+			m_log.debug("table: " + dataTippingPointServer.getObjectName());
+	}	
+	
 	/**
 	 * This method returns the passed in object.
 	 * 
