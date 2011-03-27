@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -75,6 +77,10 @@ public abstract class Services extends HttpServlet {
 					m_log.error("Request has an invalid accept type of '" + strToken + "'", e);
 				}
 			}
+		}
+
+		if (listAccepts.size() > 1) {
+			Collections.sort(listAccepts, new MimeTypeComparator());
 		}
 
 		return listAccepts;
@@ -318,6 +324,30 @@ public abstract class Services extends HttpServlet {
 		catch (final MimeTypeParseException e) {
 			// should never happen since the type is a constant
 			m_log.error("Error parsing JSON mime type.", e);
+		}
+	}
+
+	/**
+	 * This class is used to sort Mime types. In general, the non-specific references are moved to the end of the list.
+	 */
+	private static class MimeTypeComparator implements Comparator<MimeType> {
+		@Override
+		public int compare(final MimeType mimeType1, final MimeType mimeType2) {
+			int nCompare = -1; // assume the current order
+
+			if (mimeType1.getPrimaryType().equals(mimeType2.getPrimaryType())) {
+				if (mimeType1.getSubType().equals(mimeType2.getSubType())) {
+					nCompare = 0;
+				}
+				else if ("*".equals(mimeType1.getSubType())) {
+					nCompare = 1; // move 2 to before 1 since it represents all types
+				}
+			}
+			else if ("*".equals(mimeType1.getPrimaryType())) {
+				nCompare = 1; // move 2 to before 1 since it represents all types
+			}
+
+			return nCompare;
 		}
 	}
 }
