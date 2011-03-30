@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.activation.MimeType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +20,12 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
-import com.tippingpoint.conscan.objects.BusinessObject;
-import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
-import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.Constraint;
-import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.DatabaseException;
 import com.tippingpoint.database.Element;
 import com.tippingpoint.database.Schema;
@@ -292,86 +286,6 @@ public final class Database extends Services {
 				processException(response, e);
 			}
 		}
-	}
-
-	/**
-	 * This method breaks down the string used to identify the object.
-	 * 
-	 * @param strObjects String containing the path information.
-	 * @throws SQLException
-	 * @throws DatabaseElementException
-	 * @throws SqlExecutionException
-	 */
-	private List<Element> getElements(final String strObjects) throws DatabaseElementException, SQLException,
-			SqlExecutionException {
-		final List<Element> listElements = new ArrayList<Element>();
-
-		// convert the path string of type 'table/column' to an array of strings
-		if (StringUtils.isNotBlank(strObjects)) {
-			final List<String> listObjects = new ArrayList<String>();
-			final StringTokenizer tokenizer = new StringTokenizer(strObjects, "/");
-			while (tokenizer.hasMoreTokens()) {
-				final String strObject = StringUtils.trimToNull(tokenizer.nextToken());
-				if (strObject != null) {
-					listObjects.add(strObject);
-				}
-			}
-
-			// if strings were specified, then convert to elements
-			if (listObjects.size() > 0) {
-				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-				final Schema schema = manager.getSchema(manager.getConnectionSource().getSchema());
-
-				final Table table = schema.getTable(listObjects.get(0));
-				if (table != null) {
-					listElements.add(table);
-
-					// if there are more objects, then find the column or constraint
-					if (listObjects.size() > 1) {
-						final ColumnDefinition column = table.getColumn(listObjects.get(1));
-						if (column != null) {
-							listElements.add(column);
-						}
-						else {
-							final Constraint constraint = table.getConstraint(listObjects.get(1));
-							if (constraint != null) {
-								listElements.add(constraint);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return listElements;
-	}
-
-	/**
-	 * This method inserts a single record into the table.
-	 * 
-	 * @param table Table which is the target of the insert.
-	 * @param request HttpServletRequest which is making the request.
-	 * @param response HttpServletResponse where the results are to be returned.
-	 * @throws SQLException
-	 * @throws SqlBaseException
-	 */
-	private void insertTable(final Table table, final HttpServletRequest request, final HttpServletResponse response)
-			throws SqlBaseException, SQLException {
-		final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(table.getName());
-
-		final BusinessObject object = builder.get();
-
-		final Iterator<String> iterNames = object.getFields();
-		if (iterNames != null && iterNames.hasNext()) {
-			while (iterNames.hasNext()) {
-				final String strName = iterNames.next();
-				object.setValue(strName, StringUtils.trimToNull(request.getParameter(strName)));
-			}
-
-			object.save();
-		}
-
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	/**
