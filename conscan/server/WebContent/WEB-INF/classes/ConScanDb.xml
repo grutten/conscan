@@ -151,16 +151,16 @@
 			</table>
 		</constraint>
 	</table>
-	<table name="logcomment">
-		<column name="logcommentid" type="id"/>
+	<table name="scannerlogcomment">
+		<column name="scannerlogcommentid" type="id"/>
 		<column name="scannerlogid" type="idref"/>
 		<column name="comment" type="text"/>
 		<column name="created" type="date"/>
 		<column name="modified" type="date"/>
-		<constraint name="pk_logcomment" type="primary">
-			<column name="logcommentid"/>
+		<constraint name="pk_scannerlogcomment" type="primary">
+			<column name="scannerlogcommentid"/>
 		</constraint>
-		<constraint name="fk_logcomment_scannerlog" type="foreign">
+		<constraint name="fk_scannerlogcomment_scannerlog" type="foreign">
 			<column name="scannerlogid"/>
 			<table name="scannerlog">
 				<column name="scannerlogid"/>

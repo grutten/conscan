@@ -112,13 +112,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>LogComment</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.LogCommentService</servlet-class>
+    <servlet-name>ScannerLogComment</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLogCommentService</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>LogComment</servlet-name>
-    <url-pattern>/logcomment/*</url-pattern>
+    <servlet-name>ScannerLogComment</servlet-name>
+    <url-pattern>/scannerlogcomment/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

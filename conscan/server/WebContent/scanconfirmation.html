@@ -192,7 +192,7 @@
 							var strLogCommentXml = getLogCommentXml(strLogId, jQuery(strRow).text());
 							jQuery.ajax({
 								type: "POST",
-								url: "logcomment",
+								url: "scannerlogcomment",
 								data: strLogCommentXml,
 								dataType: "xml",								
 //								error: showerror
@@ -206,7 +206,7 @@
 			}
 
 			function getLogCommentXml(strParentId, strComment) {
-				var strXml = "<objects><object name='logcomment'>\n";
+				var strXml = "<objects><object name='scannerlogcomment'>\n";
 			
 				strXml += "\t<field name='scannerlogid'>";
 				strXml += strParentId;
