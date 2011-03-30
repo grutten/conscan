@@ -102,13 +102,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>Log</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.LogService</servlet-class>
+    <servlet-name>ScannerLog</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLogService</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>Log</servlet-name>
-    <url-pattern>/log/*</url-pattern>
+    <servlet-name>ScannerLog</servlet-name>
+    <url-pattern>/scannerlog/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

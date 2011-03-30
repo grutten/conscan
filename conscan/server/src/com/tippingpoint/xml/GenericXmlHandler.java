@@ -36,7 +36,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 				m_strCurrentFieldName = null;
     		}
     		else
-        		m_log.debug("Unexpected null object in GenericXmlHandler");
+        		m_log.debug("Unexpected null object in GenericXmlHandler - field:" + m_strCurrentTagValue);
 
     	}
     	else if (TAG_OBJECT.equals(qName)) {

@@ -66,7 +66,7 @@
 					table += '    <tr>';
 
 					// add the columns to the string
-					var strLogId = jQuery(this).attr('loggid');
+					var strLogId = jQuery(this).attr('scannerlogid');
 					jQuery(this).children('field').each(function() {
 						strLookup = "";
 						if (jQuery(this).text() != null && jQuery(this).text().length > 0) {
@@ -152,7 +152,7 @@
 				});
 
 				new AjaxUpload('importupload', {
-					action: 'log',
+					action: 'scannerlog',
 					// Fired before the file is uploaded
 					// You can return false to cancel upload
 					// @param file basename of uploaded file
@@ -208,7 +208,7 @@
 			function getLogCommentXml(strParentId, strComment) {
 				var strXml = "<objects><object name='logcomment'>\n";
 			
-				strXml += "\t<field name='loggid'>";
+				strXml += "\t<field name='scannerlogid'>";
 				strXml += strParentId;
 				strXml += "</field>\n";
 

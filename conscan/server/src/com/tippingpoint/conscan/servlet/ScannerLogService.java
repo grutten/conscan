@@ -24,12 +24,12 @@ import com.tippingpoint.xml.ScannerInputStreamReader;
 /**
  * This class is used to process log requests.
  */
-public class LogService extends BaseTableService {
-	private static Log m_log = LogFactory.getLog(LogService.class);
+public class ScannerLogService extends BaseTableService {
+	private static Log m_log = LogFactory.getLog(ScannerLogService.class);
 	private static final long serialVersionUID = -9171678128325820555L;
 
-	public LogService() {
-		super("logg");
+	public ScannerLogService() {
+		super("scannerlog");
 	}
 	
 	/**
