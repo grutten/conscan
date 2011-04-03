@@ -110,3 +110,7 @@ table.dataTables_content {
 	clear: right;
 	width: 100%;
 }
+
+.shrink {
+	font-size: smaller;
+}
