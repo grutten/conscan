@@ -60,10 +60,6 @@ div.menu ul {
 }
 
 div.menu li {
-	margin: 5px 10px;
-	padding: 0;
-	background-color: #ECECEC;
-	text-align: center;
 }
 
 div.field {
@@ -76,9 +72,13 @@ div.field {
 
 .curvedblocksmall {
 	-moz-border-radius: 0.5em;
+	margin: 5px 10px;
+	padding: 0px 10px;
 }
 
 .linkable {
+	background-color: #ECECEC;
+	text-align: center;
 	cursor: pointer;
 }
 

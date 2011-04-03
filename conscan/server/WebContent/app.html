@@ -25,6 +25,7 @@
 					<li class="curvedblocksmall linkable">activity</li>
 					<li class="curvedblocksmall linkable">location</li>
 					<li class="curvedblocksmall linkable">offender</li>
+					<li class="curvedblocksmall linkable">log</li>
 				</ul>
 			</div>
 			<div class="field">
@@ -34,7 +35,7 @@
 			<div class="clear"></div>
 		</div>
 		<div class="footer">
-			&copy; 2001 Tipping Point Software Solutions
+			&copy; 2011 Tipping Point Software Solutions
 		</div>
 		<div class="hidden wideborder curvedblock" id="logindialog">
 			<div class="errormsg"></div>
@@ -65,6 +66,11 @@
 			jQuery('#loginlink').live('click', showlogin);
 			jQuery('#logoutlink').live('click', logout);
 			jQuery('div.menu .linkable').live('click', menuitemclick);
+			jQuery('span.linkable').live('click', additem);
+
+			function additem(event) {
+				alert("Add was hit!");
+			}
 
 			function menuitemclick(event) {
 				var menuitem = event.target.innerHTML;
@@ -87,7 +93,7 @@
 					success: displaylist,
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Item ' + item + ' error: ' + statusText);
-					} 
+					}
 				});
 			}
 
@@ -111,16 +117,16 @@
 			}
 
 			function onshowlogin() {
-				// prepare Options Object 
+				// prepare Options Object
 				var options = {
 					url: 'user',
 					type: 'PUT',
 					dataType: 'xml',
 					success: loginsuccess,
 					error: loginerror
-				}; 
+				};
 
-				// pass options to ajaxForm 
+				// pass options to ajaxForm
 				jQuery('#logindialogform').ajaxForm(options);
 			}
 
@@ -140,19 +146,19 @@
 					type: 'DELETE',
 					success: function() {
 						jQuery('span#loginlink').html('No User');
-						
+
 						checkLogin();
 					},
 					error: function(responseXML, statusText, xhr, form) {
 						alert('logout error: ' + statusText);
-					} 
+					}
 				});
 			}
 
 			function processUser(xml) {
 				var firstName;
 				var lastName;
-				
+
 				jQuery(xml).find("field").each(function() {
 					if (jQuery(this).attr('name') == "firstname") {
 						firstName = jQuery(this).text();
@@ -169,12 +175,12 @@
 					url: 'user',
 					type: 'GET',
 					success: processUser,
-					error: showlogin 
+					error: showlogin
 				});
 			}
 
 			var objectoptions = new Object();
-			
+
 			function getobjectoptions(name) {
 				var options = objectoptions[name];
 
@@ -191,7 +197,7 @@
 						},
 						error: function(responseXML, statusText, xhr, form) {
 							alert('Error getting options for ' + name + ': ' + statusText);
-						} 
+						}
 					});
 				}
 
@@ -203,20 +209,20 @@
 			}
 
 			function displaylist(responseObj, statusText, xhr) {
-				var columns = getobjectoptions(responseObj.name);					
+				var columns = getobjectoptions(responseObj.name);
 
 				// alert('Options for: ' + columns.table.name);
 
-				var strHtml = '';
-				for (index in responseObj.objects) {
-					var object = responseObj.objects[index];
-
-					strHtml += display(columns.table, object);
-				}
+				//var strHtml = '';
+				//for (index in responseObj.objects) {
+				//	var object = responseObj.objects[index];
+				//	strHtml += display(columns.table, object);
+				//}
+				//jQuery('div#fieldcontent').html(strHtml);
 
 				displayTable("div#fieldcontent", columns.table, responseObj.objects);
 
-				//jQuery('div#fieldcontent').html(strHtml);
+				jQuery("div#fieldcontent").prepend('<span class="curvedblocksmall linkable">Add</span><br/>');
 			}
 
 			function display(table, object) {
@@ -224,8 +230,8 @@
 
 				for (index in table.column) {
 					var column = table.column[index];
-					
-					strHtml += column.name + '=' + object[column.name] + '<br/>'; 
+
+					strHtml += column.name + '=' + object[column.name] + '<br/>';
 				}
 
 				return strHtml;
@@ -269,19 +275,20 @@
 				}
 
 				// add a blank table first
-				jQuery(field).html( '<table class="dataTables_content noborder" id="example"></table>' );
+				jQuery(field).html('<table class="dataTables_content noborder" id="example"></table>');
 				// use the tool to load that table
-				jQuery('#example').dataTable( {
-					"aaData": data,
-					"aoColumns": tablecolumns,
-					"bAutoWidth": false
-				} );	
+				var options = {
+						"aaData": data,
+						"aoColumns": tablecolumns,
+						"bAutoWidth": false
+				};
+				jQuery('#example').dataTable(options);
 			}
 
 			function renderPassword(obj) {
 				return "****";
 			}
-			
+
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
