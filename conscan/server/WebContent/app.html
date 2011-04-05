@@ -25,7 +25,7 @@
 					<li class="curvedblocksmall linkable">activity</li>
 					<li class="curvedblocksmall linkable">location</li>
 					<li class="curvedblocksmall linkable">offender</li>
-					<li class="curvedblocksmall linkable">log</li>
+					<li class="curvedblocksmall linkable">scannerlog</li>
 				</ul>
 			</div>
 			<div class="field">
@@ -67,6 +67,7 @@
 			jQuery('#logoutlink').live('click', logout);
 			jQuery('div.menu .linkable').live('click', menuitemclick);
 			jQuery('span.linkable').live('click', additem);
+			var strFkTableNameValue = "empty";
 
 			function additem(event) {
 				alert("Add was hit!");
@@ -270,7 +271,26 @@
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
 
-						dataObject[indexColumn] = object[column.name];
+						// check for an idRefs and replace foreign key with the value 
+						// from the 'name' field of the record associated with the
+						// foreign key.
+						if ("idref" == column.type) {
+							var strGuid = object[column.name];
+							var nTokenLocation = column.name.indexOf("id");
+							var strFkTable = column.name.substring(0, nTokenLocation);
+							var strUrl = strFkTable + '/' + strGuid;
+							
+							jQuery.ajax({
+								async: 'false',
+								type: 'GET',
+								url: strUrl,
+								success: replaceGuidWithMeaningfulString
+							});
+							alert("pause");
+							dataObject[indexColumn] = strFkTableNameValue;
+						}	
+						else
+							dataObject[indexColumn] = object[column.name];
 					}
 				}
 
@@ -285,6 +305,20 @@
 				jQuery('#example').dataTable(options);
 			}
 
+			function replaceGuidWithMeaningfulString(data) {
+				strFkTableNameValue = "";
+				jQuery(data).find('object').each(function() {
+					if ("staff" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='lastname']").text();
+					else if ("compliancevalue" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='value']").text();
+					else if ("offender" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='lastname']").text();
+					else
+						strFkTableNameValue = jQuery(this).children("field[name='name']").text();
+				});
+			}			
+			
 			function renderPassword(obj) {
 				return "****";
 			}
