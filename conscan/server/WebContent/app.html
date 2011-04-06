@@ -281,12 +281,11 @@
 							var strUrl = strFkTable + '/' + strGuid;
 							
 							jQuery.ajax({
-								async: 'false',
+								async: false,
 								type: 'GET',
 								url: strUrl,
 								success: replaceGuidWithMeaningfulString
 							});
-							alert("pause");
 							dataObject[indexColumn] = strFkTableNameValue;
 						}	
 						else
@@ -327,6 +326,6 @@
 				// when the page first comes up, check for a logged in user
 				checkLogin();
 			});
-		</script>
+			</script>
 	</body>
 </html>
