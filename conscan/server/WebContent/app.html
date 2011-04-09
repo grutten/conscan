@@ -62,15 +62,59 @@
 				</table>
 			</form>
 		</div>
+		<div class="hidden wideborder curvedblock" id="adddialog">
+			<div class="errormsg"></div>
+			<form id="adddialogform">
+				<table class="noborder">
+					<tbody id="adddialogbody">
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="addsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
 		<script type="text/javascript">
 			jQuery('#loginlink').live('click', showlogin);
 			jQuery('#logoutlink').live('click', logout);
 			jQuery('div.menu .linkable').live('click', menuitemclick);
-			jQuery('span.linkable').live('click', additem);
+			jQuery('span.linkable').live('click', showadditem);
 			var strFkTableNameValue = "empty";
 
+			function showadditem(event) {
+				var name = event.target.attributes['type'].value;
+				//alert("Ping: " + name);
+				populateAddItemForm(name);
+				jQuery("#adddialog").modal({
+					opacity:70,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: additem
+				});
+			}
+
+			function populateAddItemForm(name) {
+				jQuery('#adddialogform').prepend(name);
+			}
+
 			function additem(event) {
-				alert("Add was hit!");
+				// prepare Options Object
+				var options = {
+					url: 'user',
+					type: 'PUT',
+					dataType: 'xml',
+					success: loginsuccess,
+					error: loginerror
+				};
+
+				// pass options to ajaxForm
+				jQuery('#adddialogform').ajaxForm(options);
 			}
 
 			function menuitemclick(event) {
@@ -223,7 +267,7 @@
 
 				displayTable("div#fieldcontent", columns.table, responseObj.objects);
 
-				jQuery("#fieldtitle").append('<span class="curvedblocksmall linkable shrink">+ Add</span>');
+				jQuery("#fieldtitle").append('<span class="curvedblocksmall linkable shrink" type="' + responseObj.name + '">+ Add</span>');
 			}
 
 			function display(table, object) {
