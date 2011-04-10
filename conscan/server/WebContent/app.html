@@ -5,7 +5,10 @@
 		<title>ConScan</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<link type="text/css" rel="stylesheet" href="css/app.css">
+		<!--
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+		 -->
+		<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
@@ -65,7 +68,13 @@
 		<div class="hidden wideborder curvedblock" id="adddialog">
 			<div class="errormsg"></div>
 			<form id="adddialogform">
+				<input type="hidden" name="addname" value=""/>
 				<table class="noborder">
+					<thead>
+						<tr>
+							<td colspan="2"  id="adddialogtitle"></td>
+						</tr>
+					</thead>
 					<tbody id="adddialogbody">
 					</tbody>
 					<tfoot>
@@ -91,7 +100,7 @@
 				//alert("Ping: " + name);
 				populateAddItemForm(name);
 				jQuery("#adddialog").modal({
-					opacity:70,
+					opacity:80,
 					overlayCss: {
 						backgroundColor:"#EEEEEE"
 					},
@@ -100,17 +109,64 @@
 			}
 
 			function populateAddItemForm(name) {
-				jQuery('#adddialogform').prepend(name);
+				jQuery('#adddialogtitle').html('New ' + name);
+				jQuery('input[name="addname"]:hidden').attr('value', name);
+
+				var body = jQuery("tbody#adddialogbody");
+				body.empty();
+
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				// find the column definitions
+				for (index in table.column) {
+					row = getrow(table.column[index]);
+
+					if (typeof(row) != 'undefined') {
+						body.append(row);
+					}
+				}
 			}
 
-			function additem(event) {
+			function getrow(column) {
+				var row;
+				
+				if (column.type != "id" && column.type != 'date') {
+					row = jQuery(document.createElement('tr'));
+
+					var labelCell = jQuery(document.createElement('td'));
+					row.append(labelCell);
+					labelCell.text(column.name + ':');
+					var inputCell = jQuery(document.createElement('td'));
+					row.append(inputCell);
+					var input = jQuery(document.createElement('input'));
+
+					// set the type of input
+					if (column.type == "password" || column.name == "password") {
+						input.attr('type', 'password');
+					} else {
+						input.attr('type', 'text');
+					}
+					inputCell.append(input);
+				} 
+
+				return row;
+			}
+
+			function additem(dialog) {
+				var name = jQuery('input[name="addname"]:hidden').val();
+				
 				// prepare Options Object
 				var options = {
-					url: 'user',
-					type: 'PUT',
+					url: name,
+					type: 'POST',
 					dataType: 'xml',
-					success: loginsuccess,
-					error: loginerror
+					success: function(responseXML, statusText, xhr, form) {
+						alert('Success: ' + statusText);
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
 				};
 
 				// pass options to ajaxForm
@@ -314,7 +370,7 @@
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
 						
-						// check for an idRefs and replace foreign key with the value 
+						// check for an idRefs and replace foreign key with the value
 						// from the 'name' field of the record associated with the
 						// foreign key.
 						if ("idref" == column.type) {
@@ -322,7 +378,7 @@
 							var nTokenLocation = column.name.indexOf("id");
 							var strFkTable = column.name.substring(0, nTokenLocation);
 							var strUrl = strFkTable + '/' + strGuid;
-							
+
 							jQuery.ajax({
 								async: false,
 								type: 'GET',
@@ -330,7 +386,7 @@
 								success: replaceGuidWithMeaningfulString
 							});
 							dataObject[indexColumn] = strFkTableNameValue;
-						}	
+						}
 						else
 							dataObject[indexColumn] = object[column.name];
 					}
@@ -390,8 +446,8 @@
 					else
 						strFkTableNameValue = jQuery(this).children("field[name='name']").text();
 				});
-			}			
-			
+			}
+
 			function renderPassword(obj) {
 				return "****";
 			}
