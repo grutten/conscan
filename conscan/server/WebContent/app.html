@@ -95,64 +95,7 @@
 			jQuery('span.linkable').live('click', showadditem);
 			var strFkTableNameValue = "empty";
 
-			function showadditem(event) {
-				var name = event.target.attributes['type'].value;
-				//alert("Ping: " + name);
-				populateAddItemForm(name);
-				jQuery("#adddialog").modal({
-					opacity:80,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					onShow: additem
-				});
-			}
-
-			function populateAddItemForm(name) {
-				jQuery('#adddialogtitle').html('New ' + name);
-				jQuery('input[name="addname"]:hidden').attr('value', name);
-
-				var body = jQuery("tbody#adddialogbody");
-				body.empty();
-
-				var columns = getobjectoptions(name);
-				var table = columns.table;
-
-				// find the column definitions
-				for (index in table.column) {
-					row = getrow(table.column[index]);
-
-					if (typeof(row) != 'undefined') {
-						body.append(row);
-					}
-				}
-			}
-
-			function getrow(column) {
-				var row;
-				
-				if (column.type != "id" && column.type != 'date') {
-					row = jQuery(document.createElement('tr'));
-
-					var labelCell = jQuery(document.createElement('td'));
-					row.append(labelCell);
-					labelCell.text(column.name + ':');
-					var inputCell = jQuery(document.createElement('td'));
-					row.append(inputCell);
-					var input = jQuery(document.createElement('input'));
-
-					// set the type of input
-					if (column.type == "password" || column.name == "password") {
-						input.attr('type', 'password');
-					} else {
-						input.attr('type', 'text');
-					}
-					inputCell.append(input);
-				} 
-
-				return row;
-			}
-
+			
 			function additem(dialog) {
 				var name = jQuery('input[name="addname"]:hidden').val();
 				
@@ -173,104 +116,10 @@
 				jQuery('#adddialogform').ajaxForm(options);
 			}
 
-			function menuitemclick(event) {
-				var menuitem = event.target.innerHTML;
-
-				// set the title of the field to the same as the menu item
-				jQuery('#fieldtitle').html(menuitem);
-
-				// get the item list based on the menu item
-				menuitem = menuitem.toLowerCase();
-				getItemList(menuitem);
+			function addJsonAccepts(req) {
+				req.setRequestHeader("Accept", "application/json");
 			}
-
-			function getItemList(item) {
-				//alert('getItemList: ' + item);
-				jQuery.ajax({
-					type: 'GET',
-					url: item,
-					datatype: 'json',
-					beforeSend: addJsonAccepts,
-					success: displaylist,
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Item ' + item + ' error: ' + statusText);
-					}
-				});
-			}
-
-			function loginsuccess(responseXML, statusText, xhr, form) {
-//				alert('login success: ' + statusText);
-				processUser(responseXML);
-				jQuery.modal.close();
-			}
-
-			function loginerror(responseXML, statusText, xhr, form) {
-				if (204 == responseXML.status) {
-					seterrormsg('Invalid login. Please try again.');
-				}
-				else {
-					alert('login error: ' + statusText + "-" + xhr.responseText);
-				}
-			}
-
-			function seterrormsg(message) {
-				jQuery('div.errormsg').html('Invalid login. Please try again.');
-			}
-
-			function onshowlogin() {
-				// prepare Options Object
-				var options = {
-					url: 'user',
-					type: 'PUT',
-					dataType: 'xml',
-					success: loginsuccess,
-					error: loginerror
-				};
-
-				// pass options to ajaxForm
-				jQuery('#logindialogform').ajaxForm(options);
-			}
-
-			function showlogin() {
-				jQuery("#logindialog").modal({
-					opacity:70,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					onShow: onshowlogin
-				});
-			}
-
-			function logout() {
-				jQuery.ajax({
-					url: 'user',
-					type: 'DELETE',
-					success: function() {
-						jQuery('span#loginlink').html('No User');
-
-						checkLogin();
-					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('logout error: ' + statusText);
-					}
-				});
-			}
-
-			function processUser(xml) {
-				var firstName;
-				var lastName;
-
-				jQuery(xml).find("field").each(function() {
-					if (jQuery(this).attr('name') == "firstname") {
-						firstName = jQuery(this).text();
-					} else if (jQuery(this).attr('name') == "lastname") {
-						lastName = jQuery(this).text();
-					}
-				});
-
-				jQuery('span#loginlink').html(firstName + ' ' + lastName);
-			}
-
+			
 			function checkLogin() {
 				jQuery.ajax({
 					url: 'user',
@@ -279,34 +128,37 @@
 					error: showlogin
 				});
 			}
+			
+			function customize(field, table, objects) {
+				if ("scannerlog" == table.name)
+					customizeScannerLog(field, table, objects);
+			}
+			
+			function customizeScannerLog(field, table, objects) {
+				// Add controls for scannerlog notes
+				var nCloneTh = document.createElement( 'th' );
+				var nCloneTd = document.createElement( 'td' );
+				nCloneTd.innerHTML = '<img src="images/details_open.png" /><span id="idSpanNotes" />';
+				nCloneTd.className = "center";
+				$('#example thead tr').each( function () {
+					this.appendChild( nCloneTh.cloneNode(true));
+				} );
+	
+				$('#example tbody tr').each( function () {
+					this.appendChild(  nCloneTd.cloneNode( true ));
+				} );
+			}			
+			
+			function display(table, object) {
+				var strHtml = '';
 
-			var objectoptions = new Object();
+				for (index in table.column) {
+					var column = table.column[index];
 
-			function getobjectoptions(name) {
-				var options = objectoptions[name];
-
-				if (typeof(options) == 'undefined') {
-					jQuery.ajax({
-						type: 'OPTIONS',
-						url: 'database/' + name,
-						datatype: 'json',
-						async: false,
-						beforeSend: addJsonAccepts,
-						success: function(responseObj) {
-							//alert('Retrieved options for ' + responseObj.table.name);
-							objectoptions[name] = responseObj;
-						},
-						error: function(responseXML, statusText, xhr, form) {
-							alert('Error getting options for ' + name + ': ' + statusText);
-						}
-					});
+					strHtml += column.name + '=' + object[column.name] + '<br/>';
 				}
 
-				return objectoptions[name];
-			}
-
-			function addJsonAccepts(req) {
-				req.setRequestHeader("Accept", "application/json");
+				return strHtml;
 			}
 
 			function displaylist(responseObj, statusText, xhr) {
@@ -324,37 +176,6 @@
 				displayTable("div#fieldcontent", columns.table, responseObj.objects);
 
 				jQuery("#fieldtitle").append('<span class="curvedblocksmall linkable shrink" type="' + responseObj.name + '">+ Add</span>');
-			}
-
-			function display(table, object) {
-				var strHtml = '';
-
-				for (index in table.column) {
-					var column = table.column[index];
-
-					strHtml += column.name + '=' + object[column.name] + '<br/>';
-				}
-
-				return strHtml;
-			}
-
-			function getTableColumns(table) {
-				var tablecolumns = new Array();
-
-				// find the column definitions
-				for (index in table.column) {
-					var column = table.column[index];
-					
-					if (column.type == "id") {
-						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
-					} else if (column.type == "password" || column.name == "password") {
-						tablecolumns[index] = {"sTitle": column.name, fnRender: renderPassword }
-					} else {
-						tablecolumns[index] = {"sTitle": column.name }
-					}
-				}
-				
-				return tablecolumns;
 			}
 			
 			function displayTable(field, table, objects) {
@@ -405,34 +226,181 @@
 				customize(field, table, objects);				
 			}
 			
-			function customize(field, table, objects) {
-				if ("scannerlog" == table.name)
-					customizeScannerLog(field, table, objects);
+			function getItemList(item) {
+				//alert('getItemList: ' + item);
+				jQuery.ajax({
+					type: 'GET',
+					url: item,
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
+					success: displaylist,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + item + ' error: ' + statusText);
+					}
+				});
+			}
+
+			var objectoptions = new Object();
+			function getobjectoptions(name) {
+				var options = objectoptions[name];
+
+				if (typeof(options) == 'undefined') {
+					jQuery.ajax({
+						type: 'OPTIONS',
+						url: 'database/' + name,
+						datatype: 'json',
+						async: false,
+						beforeSend: addJsonAccepts,
+						success: function(responseObj) {
+							//alert('Retrieved options for ' + responseObj.table.name);
+							objectoptions[name] = responseObj;
+						},
+						error: function(responseXML, statusText, xhr, form) {
+							alert('Error getting options for ' + name + ': ' + statusText);
+						}
+					});
+				}
+
+				return objectoptions[name];
 			}
 			
-			function customizeScannerLog(field, table, objects) {
-				// Add controls for scannerlog notes
-				var nCloneTh = document.createElement( 'th' );
-				var nCloneTd = document.createElement( 'td' );
-				nCloneTd.innerHTML = '<img src="images/details_open.png">';
-				nCloneTd.className = "center";
-	
-				$('#example thead tr').each( function () {
-					this.insertBefore( nCloneTh, this.childNodes[0] );
-				} );
-	
-				$('#example tbody tr').each( function () {
-					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-				} );
+			function getrow(column) {
+				var row;
 				
-				$('#example thead tr').each( function () {
-					this.appendChild( nCloneTh.cloneNode(true));
-				} );
-	
-				$('#example tbody tr').each( function () {
-					this.appendChild(  nCloneTd.cloneNode( true ));
-				} );
-			}			
+				if (column.type != "id" && column.type != 'date') {
+					row = jQuery(document.createElement('tr'));
+
+					var labelCell = jQuery(document.createElement('td'));
+					row.append(labelCell);
+					labelCell.text(column.name + ':');
+					var inputCell = jQuery(document.createElement('td'));
+					row.append(inputCell);
+					var input = jQuery(document.createElement('input'));
+
+					// set the type of input
+					if (column.type == "password" || column.name == "password") {
+						input.attr('type', 'password');
+					} else {
+						input.attr('type', 'text');
+					}
+					inputCell.append(input);
+				} 
+
+				return row;
+			}
+
+			function getTableColumns(table) {
+				var tablecolumns = new Array();
+
+				// find the column definitions
+				for (index in table.column) {
+					var column = table.column[index];
+					
+					if (column.type == "id") {
+						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
+					} else if (column.type == "password" || column.name == "password") {
+						tablecolumns[index] = {"sTitle": column.name, fnRender: renderPassword }
+					} else {
+						tablecolumns[index] = {"sTitle": column.name }
+					}
+				}
+				
+				return tablecolumns;
+			}
+			
+			function loginerror(responseXML, statusText, xhr, form) {
+				if (204 == responseXML.status) {
+					seterrormsg('Invalid login. Please try again.');
+				}
+				else {
+					alert('login error: ' + statusText + "-" + xhr.responseText);
+				}
+			}
+
+			function loginsuccess(responseXML, statusText, xhr, form) {
+//				alert('login success: ' + statusText);
+				processUser(responseXML);
+				jQuery.modal.close();
+			}
+
+			function logout() {
+				jQuery.ajax({
+					url: 'user',
+					type: 'DELETE',
+					success: function() {
+						jQuery('span#loginlink').html('No User');
+
+						checkLogin();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('logout error: ' + statusText);
+					}
+				});
+			}
+			
+			function menuitemclick(event) {
+				var menuitem = event.target.innerHTML;
+
+				// set the title of the field to the same as the menu item
+				jQuery('#fieldtitle').html(menuitem);
+
+				// get the item list based on the menu item
+				menuitem = menuitem.toLowerCase();
+				getItemList(menuitem);
+			}
+
+			function onshowlogin() {
+				// prepare Options Object
+				var options = {
+					url: 'user',
+					type: 'PUT',
+					dataType: 'xml',
+					success: loginsuccess,
+					error: loginerror
+				};
+
+				// pass options to ajaxForm
+				jQuery('#logindialogform').ajaxForm(options);
+			}
+			
+			function populateAddItemForm(name) {
+				jQuery('#adddialogtitle').html('New ' + name);
+				jQuery('input[name="addname"]:hidden').attr('value', name);
+
+				var body = jQuery("tbody#adddialogbody");
+				body.empty();
+
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				// find the column definitions
+				for (index in table.column) {
+					row = getrow(table.column[index]);
+
+					if (typeof(row) != 'undefined') {
+						body.append(row);
+					}
+				}
+			}
+
+			function processUser(xml) {
+				var firstName;
+				var lastName;
+
+				jQuery(xml).find("field").each(function() {
+					if (jQuery(this).attr('name') == "firstname") {
+						firstName = jQuery(this).text();
+					} else if (jQuery(this).attr('name') == "lastname") {
+						lastName = jQuery(this).text();
+					}
+				});
+
+				jQuery('span#loginlink').html(firstName + ' ' + lastName);
+			}
+
+			function renderPassword(obj) {
+				return "****";
+			}
 
 			function replaceGuidWithMeaningfulString(data) {
 				strFkTableNameValue = "";
@@ -448,8 +416,27 @@
 				});
 			}
 
-			function renderPassword(obj) {
-				return "****";
+			function showadditem(event) {
+				var name = event.target.attributes['type'].value;
+				//alert("Ping: " + name);
+				populateAddItemForm(name);
+				jQuery("#adddialog").modal({
+					opacity:80,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: additem
+				});
+			}
+
+			function showlogin() {
+				jQuery("#logindialog").modal({
+					opacity:70,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: onshowlogin
+				});
 			}
 
 			jQuery(document).ready(function() {
