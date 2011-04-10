@@ -288,7 +288,7 @@
 				// find the column definitions
 				for (index in table.column) {
 					var column = table.column[index];
-
+					
 					if (column.type == "id") {
 						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
 					} else if (column.type == "password" || column.name == "password") {
@@ -297,13 +297,12 @@
 						tablecolumns[index] = {"sTitle": column.name }
 					}
 				}
-
+				
 				return tablecolumns;
 			}
-
+			
 			function displayTable(field, table, objects) {
 				var tablecolumns = getTableColumns(table);
-
 				var data = new Array();
 
 				// loop through all the objects
@@ -314,7 +313,7 @@
 
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
-
+						
 						// check for an idRefs and replace foreign key with the value 
 						// from the 'name' field of the record associated with the
 						// foreign key.
@@ -346,7 +345,38 @@
 						"bAutoWidth": false
 				};
 				jQuery('#example').dataTable(options);
+
+				customize(field, table, objects);				
 			}
+			
+			function customize(field, table, objects) {
+				if ("scannerlog" == table.name)
+					customizeScannerLog(field, table, objects);
+			}
+			
+			function customizeScannerLog(field, table, objects) {
+				// Add controls for scannerlog notes
+				var nCloneTh = document.createElement( 'th' );
+				var nCloneTd = document.createElement( 'td' );
+				nCloneTd.innerHTML = '<img src="images/details_open.png">';
+				nCloneTd.className = "center";
+	
+				$('#example thead tr').each( function () {
+					this.insertBefore( nCloneTh, this.childNodes[0] );
+				} );
+	
+				$('#example tbody tr').each( function () {
+					this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+				} );
+				
+				$('#example thead tr').each( function () {
+					this.appendChild( nCloneTh.cloneNode(true));
+				} );
+	
+				$('#example tbody tr').each( function () {
+					this.appendChild(  nCloneTd.cloneNode( true ));
+				} );
+			}			
 
 			function replaceGuidWithMeaningfulString(data) {
 				strFkTableNameValue = "";
