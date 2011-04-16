@@ -277,6 +277,7 @@
 					row.append(inputCell);
 					var input = jQuery(document.createElement('input'));
 
+					input.attr('name', column.name);
 					// set the type of input
 					if (column.type == "password" || column.name == "password") {
 						input.attr('type', 'password');

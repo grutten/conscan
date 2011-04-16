@@ -4,18 +4,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 import javax.activation.MimeType;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.JsonBusinessObjectList;
+import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.database.Element;
+import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
 import com.tippingpoint.xml.Data;
@@ -88,14 +94,49 @@ public class BaseTableService extends Services {
 	 */
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		ServletInputStream inputStream = request.getInputStream();
-		final BufferedReader readerData = new BufferedReader(new InputStreamReader(inputStream));
-		Data dataTippingPointServer = new Data(readerData);
+		// check that we have a file upload request
+		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (isMultipart) {
+			ServletInputStream inputStream = request.getInputStream();
+			final BufferedReader readerData = new BufferedReader(new InputStreamReader(inputStream));
+			Data dataTippingPointServer = new Data(readerData);
+	
+			// TODO: figure out how to get the Data object to work without an instance
+			// so the following code can be removed.
+			if (dataTippingPointServer.getObjectName().equalsIgnoreCase("asdf"))
+				m_log.debug("table: " + dataTippingPointServer.getObjectName());
+		} else {
+			m_log.debug("Post: " + m_strTableName);
 
-		// TODO: figure out how to get the Data object to work without an instance
-		// so the followiung code can be removed.
-		if (dataTippingPointServer.getObjectName().equalsIgnoreCase("asdf"))
-			m_log.debug("table: " + dataTippingPointServer.getObjectName());
+			try {
+				final List<Element> listElements = getElements(m_strTableName);
+				switch (listElements.size()) {
+				case 1:
+					final Element element = listElements.get(0);
+					if (element instanceof Table) {
+						insertTable((Table)element, request, response);
+					}
+				default:
+				break;
+				}
+			}
+			catch (final DatabaseException e) {
+				m_log.error("Database error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SqlExecutionException e) {
+				m_log.error("Database error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SQLException e) {
+				m_log.error("SQL error inserting row into table.", e);
+				processException(response, e);
+			}
+			catch (final SqlBaseException e) {
+				m_log.error("SQL error inserting row into table.", e);
+				processException(response, e);
+			}
+		}
 	}	
 	
 	/**
