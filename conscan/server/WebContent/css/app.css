@@ -34,6 +34,7 @@ table.noborder td {
 
 div.wideborder {
 	border: thick solid #24AFF0;
+	padding: 5px;
 }
 
 div.errormsg {
