@@ -103,9 +103,10 @@
 				var options = {
 					url: name,
 					type: 'POST',
-					dataType: 'xml',
 					success: function(responseXML, statusText, xhr, form) {
-						alert('Success: ' + statusText);
+						//alert('Success: ' + statusText);
+						getItemList(name);
+						jQuery.modal.close();
 					},
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Error: ' + statusText);
