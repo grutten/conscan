@@ -384,6 +384,11 @@
 				}
 			}
 			
+			function notessuccess(responseXML, statusText, xhr, form) {
+//				alert('notes success: ' + statusText);
+				processNotes(responseXML);
+				jQuery.modal.close();
+			}
 			
 			function onshowlogin() {
 				// prepare Options Object
@@ -486,11 +491,7 @@
 				});
 			}
 
-			
-			jQuery(document).ready(function() {
-				// when the page first comes up, check for a logged in user
-				checkLogin();
-				
+			function shownotes() {
 				$('#example tbody td img').live('click', function () {
 					var strScannerLogId = jQuery(this).attr('id');
 					
@@ -517,14 +518,18 @@
 						}
 					});
 				} );		
+				
+			}
+			
+			jQuery(document).ready(function() {
+				// when the page first comes up, check for a logged in user
+				checkLogin();
+
+				// Set up the click handler for scannerlogcomment entries
+				shownotes();
 			});
 
 
-			function notessuccess(responseXML, statusText, xhr, form) {
-//				alert('notes success: ' + statusText);
-				processNotes(responseXML);
-				jQuery.modal.close();
-			}
 			
 			
 
