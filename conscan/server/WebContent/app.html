@@ -65,6 +65,28 @@
 				</table>
 			</form>
 		</div>
+		<div class="hidden wideborder curvedblock" id="notesdialog">
+			<div class="errormsg"></div>
+			<form id="notesdialogform">
+				<table class="noborder">
+					<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>		
+					<tbody>
+					<tr>
+						<td>notes:</td>
+						<td><input type="text" name="notes" id="idinputnotes"></input></td>
+					</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="loginsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
 		<div class="hidden wideborder curvedblock" id="adddialog">
 			<div class="errormsg"></div>
 			<form id="adddialogform">
@@ -130,12 +152,12 @@
 				});
 			}
 			
-			function customize(field, table, objects) {
+			function customize(oDataTable, table) {
 				if ("scannerlog" == table.name)
-					customizeScannerLog(field, table, objects);
+					customizeScannerLog(oDataTable, table);
 			}
 			
-			function customizeScannerLog(field, table, objects) {
+			function customizeScannerLog(oDataTable, table) {
 				// Add controls for scannerlog notes
 				var nCloneTh = document.createElement( 'th' );
 				var nCloneTd = document.createElement( 'td' );
@@ -146,7 +168,11 @@
 				} );
 	
 				$('#example tbody tr').each( function () {
+					var object = oDataTable.fnGetData(this);
+					nCloneTd.innerHTML = '<img id="' + object[0] + '" src="images/details_open.png" /><span id="' + object[0] + '" />';
 					this.appendChild(  nCloneTd.cloneNode( true ));
+//					alert("customize: " + object[0]);  // 0 - scanner log comment GUID
+
 				} );
 			}			
 			
@@ -220,9 +246,9 @@
 						"aoColumns": tablecolumns,
 						"bAutoWidth": false
 				};
-				jQuery('#example').dataTable(options);
+				var oDataTable = jQuery('#example').dataTable(options);
 
-				customize(field, table, objects);				
+				customize(oDataTable, table);				
 			}
 			
 			function getItemList(item) {
@@ -349,6 +375,16 @@
 				getItemList(menuitem);
 			}
 
+			function noteserror(responseXML, statusText, xhr, form) {
+				if (204 == responseXML.status) {
+					seterrormsg('Problem processing notes');
+				}
+				else {
+					alert('notes error: ' + statusText + "-" + xhr.responseText);
+				}
+			}
+			
+			
 			function onshowlogin() {
 				// prepare Options Object
 				var options = {
@@ -362,6 +398,7 @@
 				// pass options to ajaxForm
 				jQuery('#logindialogform').ajaxForm(options);
 			}
+
 			
 			function populateAddItemForm(name) {
 				jQuery('#adddialogtitle').html('New ' + name);
@@ -383,6 +420,10 @@
 				}
 			}
 
+			function processNotes(xml) {
+//				alert("processNotes()");
+			}
+			
 			function processUser(xml) {
 				var firstName;
 				var lastName;
@@ -445,10 +486,48 @@
 				});
 			}
 
+			
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
+				
+				$('#example tbody td img').live('click', function () {
+					var strScannerLogId = jQuery(this).attr('id');
+					
+					jQuery("#notesdialog").modal({
+						opacity:70,
+						overlayCss: {
+							backgroundColor:"#EEEEEE"
+						},
+						onShow: function (dialog) {
+							var modal = this;
+							jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
+
+							// prepare Options Object
+							var options = {
+								url: 'scannerlogcomment',
+								type: 'POST',
+								dataType: 'xml',
+								success: notessuccess,
+								error: noteserror
+							};
+
+							// pass options to ajaxForm
+							jQuery('#notesdialogform').ajaxForm(options);
+						}
+					});
+				} );		
 			});
+
+
+			function notessuccess(responseXML, statusText, xhr, form) {
+//				alert('notes success: ' + statusText);
+				processNotes(responseXML);
+				jQuery.modal.close();
+			}
+			
+			
+
 			</script>
 	</body>
 </html>
