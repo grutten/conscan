@@ -169,10 +169,8 @@
 	
 				$('#example tbody tr').each( function () {
 					var object = oDataTable.fnGetData(this);
-					nCloneTd.innerHTML = '<img id="' + object[0] + '" src="images/details_open.png" /><span id="' + object[0] + '" />';
+					nCloneTd.innerHTML = '<img id="' + object[0] + '" src="images/details_open.png" /><span id="notes-' + object[0] + '" />';
 					this.appendChild(  nCloneTd.cloneNode( true ));
-//					alert("customize: " + object[0]);  // 0 - scanner log comment GUID
-
 				} );
 			}			
 			
@@ -384,12 +382,6 @@
 				}
 			}
 			
-			function notessuccess(responseXML, statusText, xhr, form) {
-//				alert('notes success: ' + statusText);
-				processNotes(responseXML);
-				jQuery.modal.close();
-			}
-			
 			function onshowlogin() {
 				// prepare Options Object
 				var options = {
@@ -425,8 +417,24 @@
 				}
 			}
 
-			function processNotes(xml) {
-//				alert("processNotes()");
+			function processNotes(responseXML, statusText, xhr, form) {
+				var strScannerLogId;
+				var strComment;
+				
+				jQuery(responseXML).find("field").each(function() {
+					if (jQuery(this).attr('name') == "scannerlogid")
+						strScannerLogId = jQuery(this).text();
+					else if (jQuery(this).attr('name') == "comment")
+						strComment = jQuery(this).text();
+				});
+
+				// Display the note that was just persisted
+				var strSpanId = "span#notes-" + strScannerLogId;
+				jQuery(strSpanId).html(strComment);
+				
+				// Close the layer
+				jQuery.modal.close();
+
 			}
 			
 			function processUser(xml) {
@@ -509,7 +517,7 @@
 								url: 'scannerlogcomment',
 								type: 'POST',
 								dataType: 'xml',
-								success: notessuccess,
+								success: processNotes,
 								error: noteserror
 							};
 
