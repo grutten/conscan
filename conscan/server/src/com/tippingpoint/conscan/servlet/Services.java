@@ -1,14 +1,20 @@
 package com.tippingpoint.conscan.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -148,6 +154,7 @@ public abstract class Services extends HttpServlet {
 		return listElements;
 	}
 	
+	
 	/**
 	 * This method breaks down the string used to identify the object.
 	 * 
@@ -170,6 +177,29 @@ public abstract class Services extends HttpServlet {
 		return listElements;
 	}
 
+	/**
+	 * This method parses the payload as parameters.
+	 * 
+	 * @param request HttpServletRequest representing the request.
+	 * @throws IOException
+	 */
+	protected Map<String, String> getParameterMap(final HttpServletRequest request) throws IOException {
+		final Map<String, String> mapParameters = new HashMap<String, String>();
+
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+
+		String strLine = null;
+
+		do {
+			strLine = reader.readLine();
+			if (strLine != null) {
+				parseLine(strLine, mapParameters);
+			}
+		} while (strLine != null);
+
+		return mapParameters;
+	}
+	
 	/**
 	 * This method inserts a single record into the table.
 	 * 
@@ -198,6 +228,40 @@ public abstract class Services extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
+	/**
+	 * This method parses a set of name value pairs from the line. The line is assumed to be in the form:
+	 * name1=value1&name2=value2...
+	 * 
+	 * @param strLine String containing the name value pairs.
+	 * @param mapParameters Map where the parameters will be stored.
+	 */
+	protected void parseLine(final String strLine, final Map<String, String> mapParameters) {
+		if (strLine != null && strLine.length() > 0) {
+			final StringTokenizer tokenizer = new StringTokenizer(strLine, "&");
+			while (tokenizer.hasMoreTokens()) {
+				final String strToken = tokenizer.nextToken();
+				if (StringUtils.isNotEmpty(strToken)) {
+					final int nIndex = strToken.indexOf('=');
+					if (nIndex > -1) {
+						final String strName = strToken.substring(0, nIndex);
+						String strValue = null;
+
+						if (nIndex < strToken.length() - 1) {
+							try {
+								strValue = URLDecoder.decode(strToken.substring(nIndex + 1), "UTF-8");
+							}
+							catch (final UnsupportedEncodingException e) {
+								// should never happen
+							}
+						}
+
+						mapParameters.put(strName, strValue);
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * This method returns and XML string representing the exception.
 	 * 
