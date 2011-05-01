@@ -69,7 +69,7 @@
 			<div class="errormsg"></div>
 			<form id="notesdialogform">
 				<table class="noborder">
-					<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>		
+					<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>
 					<tbody>
 					<tr>
 						<td>notes:</td>
@@ -117,10 +117,10 @@
 			jQuery('span.linkable').live('click', showadditem);
 			var strFkTableNameValue = "empty";
 
-			
+
 			function additem(dialog) {
 				var name = jQuery('input[name="addname"]:hidden').val();
-				
+
 				// prepare Options Object
 				var options = {
 					url: name,
@@ -142,7 +142,7 @@
 			function addJsonAccepts(req) {
 				req.setRequestHeader("Accept", "application/json");
 			}
-			
+
 			function checkLogin() {
 				jQuery.ajax({
 					url: 'user',
@@ -151,29 +151,29 @@
 					error: showlogin
 				});
 			}
-			
+
 			function customize(oDataTable, table) {
 				if ("scannerlog" == table.name)
 					customizeScannerLog(oDataTable, table);
 			}
-			
+
 			function customizeScannerLog(oDataTable, table) {
 				// Add controls for scannerlog notes
 				var nCloneTh = document.createElement( 'th' );
 				var nCloneTd = document.createElement( 'td' );
 				nCloneTd.innerHTML = '<img src="images/details_open.png" /><span id="idSpanNotes" />';
 				nCloneTd.className = "center";
-				$('#example thead tr').each( function () {
+				jQuery('#example thead tr').each( function () {
 					this.appendChild( nCloneTh.cloneNode(true));
 				} );
-	
-				$('#example tbody tr').each( function () {
+
+				jQuery('#example tbody tr').each( function () {
 					var object = oDataTable.fnGetData(this);
 					nCloneTd.innerHTML = '<img id="' + object[0] + '" src="images/details_open.png" /><span id="notes-' + object[0] + '" />';
 					this.appendChild(  nCloneTd.cloneNode( true ));
 				} );
-			}			
-			
+			}
+
 			function display(table, object) {
 				var strHtml = '';
 
@@ -200,7 +200,7 @@
 
 				displayTable("div#fieldcontent", columns.table, responseObj.objects);
 			}
-			
+
 			function displayTable(field, table, objects) {
 				var tablecolumns = getTableColumns(table);
 				var data = new Array();
@@ -213,7 +213,7 @@
 
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
-						
+
 						// check for an idRefs and replace foreign key with the value
 						// from the 'name' field of the record associated with the
 						// foreign key.
@@ -246,9 +246,9 @@
 				};
 				var oDataTable = jQuery('#example').dataTable(options);
 
-				customize(oDataTable, table);				
+				customize(oDataTable, table);
 			}
-			
+
 			function getItemList(item) {
 				// set the title of the field to the same as the menu item
 				jQuery('#fieldtitle').html(item + ' <span class="curvedblocksmall linkable shrink" type="' + item + '">+ Add</span>');
@@ -289,10 +289,10 @@
 
 				return objectoptions[name];
 			}
-			
+
 			function getrow(column) {
 				var row;
-				
+
 				if (column.type != "id" && column.type != 'date') {
 					row = jQuery(document.createElement('tr'));
 
@@ -311,7 +311,7 @@
 						input.attr('type', 'text');
 					}
 					inputCell.append(input);
-				} 
+				}
 
 				return row;
 			}
@@ -322,7 +322,7 @@
 				// find the column definitions
 				for (index in table.column) {
 					var column = table.column[index];
-					
+
 					if (column.type == "id") {
 						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
 					} else if (column.type == "password" || column.name == "password") {
@@ -331,10 +331,10 @@
 						tablecolumns[index] = {"sTitle": column.name }
 					}
 				}
-				
+
 				return tablecolumns;
 			}
-			
+
 			function loginerror(responseXML, statusText, xhr, form) {
 				if (204 == responseXML.status) {
 					seterrormsg('Invalid login. Please try again.');
@@ -364,7 +364,7 @@
 					}
 				});
 			}
-			
+
 			function menuitemclick(event) {
 				var menuitem = event.target.innerHTML;
 
@@ -381,7 +381,7 @@
 					alert('notes error: ' + statusText + "-" + xhr.responseText);
 				}
 			}
-			
+
 			function onshowlogin() {
 				// prepare Options Object
 				var options = {
@@ -396,7 +396,6 @@
 				jQuery('#logindialogform').ajaxForm(options);
 			}
 
-			
 			function populateAddItemForm(name) {
 				jQuery('#adddialogtitle').html('New ' + name);
 				jQuery('input[name="addname"]:hidden').attr('value', name);
@@ -420,7 +419,7 @@
 			function processNotes(responseXML, statusText, xhr, form) {
 				var strScannerLogId;
 				var strComment;
-				
+
 				jQuery(responseXML).find("field").each(function() {
 					if (jQuery(this).attr('name') == "scannerlogid")
 						strScannerLogId = jQuery(this).text();
@@ -431,12 +430,11 @@
 				// Display the note that was just persisted
 				var strSpanId = "span#notes-" + strScannerLogId;
 				jQuery(strSpanId).html(strComment);
-				
+
 				// Close the layer
 				jQuery.modal.close();
-
 			}
-			
+
 			function processUser(xml) {
 				var firstName;
 				var lastName;
@@ -500,9 +498,9 @@
 			}
 
 			function shownotes() {
-				$('#example tbody td img').live('click', function () {
+				jQuery('#example tbody td img').live('click', function () {
 					var strScannerLogId = jQuery(this).attr('id');
-					
+
 					jQuery("#notesdialog").modal({
 						opacity:70,
 						overlayCss: {
@@ -525,10 +523,10 @@
 							jQuery('#notesdialogform').ajaxForm(options);
 						}
 					});
-				} );		
-				
+				} );
+
 			}
-			
+
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
@@ -536,11 +534,6 @@
 				// Set up the click handler for scannerlogcomment entries
 				shownotes();
 			});
-
-
-			
-			
-
-			</script>
+		</script>
 	</body>
 </html>
