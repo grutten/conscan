@@ -26,12 +26,7 @@ public class Data implements DataInterface {
 			m_xmlreader.setContentHandler(saxHandler);
 			m_xmlreader.setErrorHandler(saxHandler);
 			FileReader reader = new FileReader(strFilename);
-			
-			if (reader == null)
-				System.out.println("XML configuration file missing.");
-
 			m_xmlreader.parse(new InputSource(reader));
-			
 		}
 		catch (Exception e) {
 			System.out.println("Failed to create XMLReader" + e.toString());

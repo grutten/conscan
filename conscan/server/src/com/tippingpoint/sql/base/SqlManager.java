@@ -113,7 +113,6 @@ public abstract class SqlManager {
 	 * @throws DatabaseException
 	 * @throws SqlBaseException
 	 */
-	@SuppressWarnings("null")
 	public void execute(final Command sqlCommand, final Connection conn, final SqlResultAction action)
 			throws SqlManagerException, SqlBuilderException, SqlExecutionException, DatabaseException {
 		SqlExecution sqlExecution = null;
