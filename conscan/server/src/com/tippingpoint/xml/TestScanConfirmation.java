@@ -30,7 +30,7 @@ public class TestScanConfirmation extends TestCase {
 
 		final String strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\log20111212956.xml";
 		final Data d2 = new Data(strConfigFile);
-
+		assertNotNull(d2);
 	}
 
 	/**
