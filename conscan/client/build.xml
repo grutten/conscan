@@ -1,0 +1,27 @@
+<project default="buildjar">
+	<target name="buildjar" depends="buildcompile">
+		<jar destfile="client.jar" basedir="classes">
+			<manifest>
+				<attribute name="Main-Class" value="post" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="buildcompile">
+		<mkdir dir="classes"/>
+		  <path id="lib.path.ref">
+		    <fileset dir="lib" includes="*.jar"/>
+		  </path>
+
+		<javac srcdir="." destdir="classes">
+		    <classpath>
+		        <fileset dir ="lib" >
+					<include name="**/*.jar" />		        
+				</fileset>
+			</classpath>
+
+		</javac>
+	</target>
+	
+	
+</project>
