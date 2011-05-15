@@ -5,9 +5,9 @@
 				<attribute name="Main-Class" value="com.tippingpoint.handheld.ui.Application" />
 			</manifest>
 		</jar>
-		<copy file="handheld.jar" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/>
+		<copy file="handheld.jar" todir="C:/Documents and Settings/Owner/My Documents/CN3B36220927180 My Documents"/>
 <!--		<copy file="xml/handheld.xml" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/> -->
-		<copy file="xml/scanner.xml" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/>
+		<copy file="xml/scanner.xml" todir="C:/Documents and Settings/Owner/My Documents/CN3B36220927180 My Documents"/>
 	</target>
 	
 	<target name="buildcompile">
