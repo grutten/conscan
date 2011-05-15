@@ -22,16 +22,20 @@ public class post {
             System.exit(1);
         }
 
-        
-        for (int i = 0; i < 33; ++i) {
+        int i = 1;
+        while (i > 0) {
         	processDir(args);
 			Thread.sleep(2000);
 			System.out.println("counter: " + Integer.valueOf(i));
+			++i;
         }
     }
     
     private static void processDir(String[] args) throws Exception {
-        File dir = new File("/Users/mgee/workspaces/wkconscan/client/xml");
+    	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
+    	//String strPathToMonitor = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
+    	String strPathToMonitor = args[0];
+        File dir = new File(strPathToMonitor);
 
         String[] children = dir.list();
         if (children == null) {
@@ -40,13 +44,14 @@ public class post {
         else {
             for (int i=0; i<children.length; i++) {
                 // Get filename of file or directory
-                String filename = "/Users/mgee/workspaces/wkconscan/client/xml/" + children[i];
-                System.out.println("processing: " + filename);
-                
-                postIt(filename);
-                
-                File f = new File(filename);
-                f.delete();
+                String filename = strPathToMonitor + "\\" + children[i];
+                if (filename.indexOf("log") > 0) {
+                    System.out.println("processing: " + filename);
+	                postIt(filename);
+	                
+	                File f = new File(filename);
+	                f.delete();
+                }
             }
         }
     }
