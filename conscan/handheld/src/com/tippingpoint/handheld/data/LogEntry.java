@@ -27,7 +27,7 @@ public class LogEntry {
         	Integer.toString(c.get(Calendar.SECOND));
 
         try {
-        	m_logOutputStream = new FileWriter("\\My Documents\\log" + strFilename + ".xml");
+        	m_logOutputStream = new FileWriter("\\My Documents\\_log" + strFilename + ".xml");
         	
         	if (m_logOutputStream != null)
         		// NOTE: because the handheld is not designed to recognize when
