@@ -1,7 +1,6 @@
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -60,7 +59,7 @@ public class post {
             	
                 // Get filename of file or directory
                 String strSrcFilenameWPath = strPathToMonitor + strPathSeparator + strSrcFilename;
-                if (strSrcFilenameWPath.indexOf("log") > 0) {
+                if (strSrcFilenameWPath.indexOf("_log") > 0) {
                 	String strDestFilename = strSrcFilename.substring(1);
                     String strDestFilenameWPath = strPathToMonitor + strPathSeparator + strDestFilename;
                 	
