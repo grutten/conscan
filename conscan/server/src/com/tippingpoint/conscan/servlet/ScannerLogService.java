@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -17,7 +16,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.xml.Data;
 
@@ -31,7 +29,7 @@ public class ScannerLogService extends BaseTableService {
 	public ScannerLogService() {
 		super("scannerlog");
 	}
-	
+
 	/**
 	 * This method performs the post action.
 	 * 
@@ -50,7 +48,7 @@ public class ScannerLogService extends BaseTableService {
 				final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
 
 				out.println("<objects>");
-				
+
 				final FileItemIterator iter = upload.getItemIterator(request);
 				while (iter.hasNext()) {
 					final FileItemStream fileItemStream = iter.next();
@@ -65,18 +63,18 @@ public class ScannerLogService extends BaseTableService {
 								" detected.");
 
 						final BufferedReader readerData = new BufferedReader(new InputStreamReader(stream));
-						Data dataTippingPointServer = new Data(readerData);
-						
-						ArrayList<BusinessObject> arr = dataTippingPointServer.get(); 
-						
-						Iterator<BusinessObject> iterBusinessObject = arr.iterator();
+						final Data dataTippingPointServer = new Data(readerData);
+
+						final ArrayList<BusinessObject> arr = dataTippingPointServer.get();
+
+						final Iterator<BusinessObject> iterBusinessObject = arr.iterator();
 						while (iterBusinessObject.hasNext()) {
-							BusinessObject currBusinessObject = iterBusinessObject.next();
+							final BusinessObject currBusinessObject = iterBusinessObject.next();
 							writeObject(out, currBusinessObject, false);
 						}
 					}
 				}
-				
+
 				out.println("</objects>");
 
 			}

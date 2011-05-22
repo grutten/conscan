@@ -121,12 +121,12 @@ public final class Startup extends Services {
 
 				writer.write(XmlUtilities.open(TAG_OBJECT, new NameValuePair(ATTRIBUTE_NAME, "service")));
 
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "path"), localService
-						.getPath()));
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "method"), localService
-						.getMethod()));
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "description"), localService
-						.getDescription()));
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "path"),
+						localService.getPath()));
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "method"),
+						localService.getMethod()));
+				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "description"),
+						localService.getDescription()));
 
 				writer.write(XmlUtilities.close(TAG_OBJECT));
 			}

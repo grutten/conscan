@@ -97,15 +97,17 @@ public class BaseTableService extends Services {
 		// check that we have a file upload request
 		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart) {
-			ServletInputStream inputStream = request.getInputStream();
+			final ServletInputStream inputStream = request.getInputStream();
 			final BufferedReader readerData = new BufferedReader(new InputStreamReader(inputStream));
-			Data dataTippingPointServer = new Data(readerData);
-	
+			final Data dataTippingPointServer = new Data(readerData);
+
 			// TODO: figure out how to get the Data object to work without an instance
 			// so the following code can be removed.
-			if (dataTippingPointServer.getObjectName().equalsIgnoreCase("asdf"))
+			if (dataTippingPointServer.getObjectName().equalsIgnoreCase("asdf")) {
 				m_log.debug("table: " + dataTippingPointServer.getObjectName());
-		} else {
+			}
+		}
+		else {
 			m_log.debug("Post: " + m_strTableName);
 
 			try {
@@ -137,8 +139,8 @@ public class BaseTableService extends Services {
 				processException(response, e);
 			}
 		}
-	}	
-	
+	}
+
 	/**
 	 * This method returns the passed in object.
 	 * 
@@ -195,7 +197,8 @@ public class BaseTableService extends Services {
 						break;
 					}
 				}
-			} else {
+			}
+			else {
 				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 		}

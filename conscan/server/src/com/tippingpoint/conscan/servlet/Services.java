@@ -153,8 +153,7 @@ public abstract class Services extends HttpServlet {
 
 		return listElements;
 	}
-	
-	
+
 	/**
 	 * This method breaks down the string used to identify the object.
 	 * 
@@ -199,7 +198,7 @@ public abstract class Services extends HttpServlet {
 
 		return mapParameters;
 	}
-	
+
 	/**
 	 * This method inserts a single record into the table.
 	 * 
@@ -261,7 +260,7 @@ public abstract class Services extends HttpServlet {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method returns and XML string representing the exception.
 	 * 
@@ -332,8 +331,8 @@ public abstract class Services extends HttpServlet {
 					final FieldValue fieldValue = iterValues.next();
 					if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
 						writer.write(XmlUtilities.tag(TAG_FIELD,
-								new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()), XmlUtilities
-										.getValue(fieldValue.getValue())));
+								new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
+								XmlUtilities.getValue(fieldValue.getValue())));
 					}
 				}
 			}
@@ -345,9 +344,7 @@ public abstract class Services extends HttpServlet {
 						final List<BusinessObject> listRelatedObjects =
 							businessObject.getReleatedObjects(strRelatedName);
 						if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
-							writer
-									.write(XmlUtilities.open(TAG_LIST,
-											new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
+							writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
 							for (final BusinessObject businessRelatedObject : listRelatedObjects) {
 								writeObject(writer, businessRelatedObject, false);
 							}

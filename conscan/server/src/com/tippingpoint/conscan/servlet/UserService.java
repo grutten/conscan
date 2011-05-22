@@ -136,7 +136,6 @@ public class UserService extends Services {
 		return foundCookie;
 	}
 
-
 	/**
 	 * This method returns the user for the given parameters.
 	 * 
