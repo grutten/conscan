@@ -195,6 +195,8 @@ public class BaseTableService extends Services {
 						break;
 					}
 				}
+			} else {
+				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 		}
 	}
