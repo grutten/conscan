@@ -486,8 +486,8 @@
 			}
 
 			function showdeleteitem() {
-				var x = jQuery(this);
-				alert('showdeleteitem' + x.attr('class'));
+				var id = findIdForRow(jQuery(this).parents('tr'));
+				alert("showdeleteitem: " + id);
 			}
 			
 			function showlogin() {
@@ -504,7 +504,6 @@
 			}
 
 			function shownotes() {
-				//var strScannerLogId = jQuery(this).attr('id');
 				var strScannerLogId = findIdForRow(jQuery(this).parents('tr'));
 
 				jQuery("#notesdialog").modal({
@@ -532,7 +531,8 @@
 			}
 
 			function showupdateitem() {
-				alert("showupdateitem");
+				var id = findIdForRow(jQuery(this).parents('tr'));
+				alert("showupdateitem: " + id);
 			}
 			
 			jQuery(document).ready(function() {
