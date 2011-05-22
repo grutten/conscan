@@ -116,7 +116,6 @@
 			jQuery('#logoutlink').live('click', logout);
 			jQuery('div.menu .linkable').live('click', menuitemclick);
 			jQuery('span.linkable').live('click', showadditem);
-			jQuery('#example tbody td img').live('click', shownotes);
 			jQuery('span.ui-icon-pencil').live('click', shownotes);
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
@@ -156,36 +155,6 @@
 				});
 			}
 
-			function customize(oDataTable, table) {
-				var primarykey = table.primarykey;
-				if (typeof(primarykey) != 'undefined') {
-					var keyColumn = primarykey.column[0];
-					var keyName = keyColumn.name;
-
-					// alert('key column = ' + keyName);
-				}
-
-				if ("scannerlog" == table.name)
-					customizeScannerLog(oDataTable, table);
-			}
-
-			function customizeScannerLog(oDataTable, table) {
-				// Add controls for scannerlog notes
-				var nCloneTh = document.createElement( 'th' );
-				var nCloneTd = document.createElement( 'td' );
-				nCloneTd.innerHTML = '<img src="images/details_open.png" /><span id="idSpanNotes" />';
-				nCloneTd.className = "center";
-				jQuery('#example thead tr').each( function () {
-					this.appendChild( nCloneTh.cloneNode(true));
-				} );
-
-				jQuery('#example tbody tr').each( function () {
-					var object = oDataTable.fnGetData(this);
-					nCloneTd.innerHTML = '<span class="ui-icon ui-icon-pencil"></span><img id="' + object[0] + '" src="images/details_open.png" /><span id="notes-' + object[0] + '" />';
-					this.appendChild(  nCloneTd.cloneNode( true ));
-				} );
-			}
-
 			function display(table, object) {
 				var strHtml = '';
 
@@ -216,9 +185,15 @@
 				for (index in objects) {
 					var object = objects[index];
 					var dataObject = new Array();
-					data[index] = dataObject;
+					data.push(dataObject);
+					
+					var id = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
+					
+					if (typeof(table.primarykeycolumn) != 'undefined') {
+						id += '<span class="hidden identifier">' + object[table.primarykeycolumn] + '</span>';
+					}
 
-					dataObject[0] = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
+					dataObject.push(id);
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
 
@@ -237,10 +212,14 @@
 								url: strUrl,
 								success: replaceGuidWithMeaningfulString
 							});
-							dataObject[parseInt(indexColumn) + 1] = strFkTableNameValue;
+							dataObject.push(strFkTableNameValue);
 						}
 						else
-							dataObject[parseInt(indexColumn) + 1] = object[column.name];
+							dataObject.push(object[column.name]);
+					}
+					
+					if ("scannerlog" == table.name) {
+						dataObject.push('<span class="ui-icon ui-icon-pencil"></span>');
 					}
 				}
 
@@ -253,8 +232,10 @@
 						"bAutoWidth": false
 				};
 				var oDataTable = jQuery('#example').dataTable(options);
+			}
 
-				customize(oDataTable, table);
+			function findIdForRow(tr) {
+				return jQuery(tr).find('span.identifier').text();
 			}
 
 			function getItemList(item) {
@@ -326,7 +307,7 @@
 
 			function getTableColumns(table) {
 				var tablecolumns = new Array();
-				tablecolumns[0] = {"sTitle": "", "bSortable": false, "sWidth": "40px"};
+				tablecolumns.push({"sTitle": "", "bSortable": false, "sWidth": "40px"});
 
 				// find the column definitions
 				for (index in table.column) {
@@ -341,7 +322,11 @@
 						definition = {"sTitle": column.name }
 					}
 
-					tablecolumns[parseInt(index) + 1] = definition;
+					tablecolumns.push(definition);
+				}
+				
+				if ("scannerlog" == table.name) {
+					tablecolumns.push({"sTitle": "", "bSortable": false});
 				}
 
 				return tablecolumns;
@@ -420,7 +405,7 @@
 
 				// find the column definitions
 				for (index in table.column) {
-					row = getrow(lumn[index]);
+					row = getrow(table.column[index]);
 
 					if (typeof(row) != 'undefined') {
 						body.append(row);
@@ -441,6 +426,10 @@
 
 				// Display the note that was just persisted
 				var strSpanId = "span#notes-" + strScannerLogId;
+				var row = jQuery("span.identifier:contains('" + strScannerLogId +"')").parents('tr');
+				if (typeof(row) != 'undefined') {
+					jQuery(row).find('td:last').append(strComment);
+				}
 				jQuery(strSpanId).html(strComment);
 
 				// Close the layer
@@ -515,7 +504,8 @@
 			}
 
 			function shownotes() {
-				var strScannerLogId = jQuery(this).attr('id');
+				//var strScannerLogId = jQuery(this).attr('id');
+				var strScannerLogId = findIdForRow(jQuery(this).parents('tr'));
 
 				jQuery("#notesdialog").modal({
 					opacity:70,
@@ -548,9 +538,6 @@
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
-
-				// Set up the click handler for scannerlogcomment entries
-				//shownotes();
 			});
 		</script>
 	</body>

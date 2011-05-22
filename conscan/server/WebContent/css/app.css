@@ -122,3 +122,7 @@ table.dataTables_content {
 .informational {
 	font-style: italic;
 }
+
+.hidden {
+	display: none;
+}

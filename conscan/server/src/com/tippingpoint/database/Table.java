@@ -296,6 +296,10 @@ public class Table extends Element {
 
 			if (m_constraintPrimaryKey != null) {
 				m_constraintPrimaryKey.writeXml(writer);
+				
+				if (hasIdPrimaryKey()) {
+					writer.append(XmlUtilities.tag("primarykeycolumn", (NameValuePair)null, getPrimaryKeyColumn().getName()));
+				}
 			}
 
 			if (m_constraintLogicalKey != null) {

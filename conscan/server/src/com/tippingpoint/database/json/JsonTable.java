@@ -63,6 +63,10 @@ public class JsonTable {
 				final JsonConstraint jsonConstraint = new JsonConstraint(m_table.getPrimaryKey());
 
 				objTableContents.put("primarykey", jsonConstraint);
+
+				if (m_table.hasIdPrimaryKey()) {
+					objTableContents.put("primarykeycolumn", m_table.getPrimaryKeyColumn().getName());
+				}
 			}
 
 			if (m_table.getLogicalKey() != null) {
