@@ -5,6 +5,7 @@
 		<title>ConScan</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<link type="text/css" rel="stylesheet" href="css/app.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
 		<!--
 		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
 		 -->
@@ -68,8 +69,8 @@
 		<div class="hidden wideborder curvedblock" id="notesdialog">
 			<div class="errormsg"></div>
 			<form id="notesdialogform">
+				<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>
 				<table class="noborder">
-					<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>
 					<tbody>
 					<tr>
 						<td>notes:</td>
@@ -115,8 +116,11 @@
 			jQuery('#logoutlink').live('click', logout);
 			jQuery('div.menu .linkable').live('click', menuitemclick);
 			jQuery('span.linkable').live('click', showadditem);
+			jQuery('#example tbody td img').live('click', shownotes);
+			jQuery('span.ui-icon-pencil').live('click', shownotes);
+			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
+			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
 			var strFkTableNameValue = "empty";
-
 
 			function additem(dialog) {
 				var name = jQuery('input[name="addname"]:hidden').val();
@@ -153,6 +157,14 @@
 			}
 
 			function customize(oDataTable, table) {
+				var primarykey = table.primarykey;
+				if (typeof(primarykey) != 'undefined') {
+					var keyColumn = primarykey.column[0];
+					var keyName = keyColumn.name;
+
+					// alert('key column = ' + keyName);
+				}
+
 				if ("scannerlog" == table.name)
 					customizeScannerLog(oDataTable, table);
 			}
@@ -169,7 +181,7 @@
 
 				jQuery('#example tbody tr').each( function () {
 					var object = oDataTable.fnGetData(this);
-					nCloneTd.innerHTML = '<img id="' + object[0] + '" src="images/details_open.png" /><span id="notes-' + object[0] + '" />';
+					nCloneTd.innerHTML = '<span class="ui-icon ui-icon-pencil"></span><img id="' + object[0] + '" src="images/details_open.png" /><span id="notes-' + object[0] + '" />';
 					this.appendChild(  nCloneTd.cloneNode( true ));
 				} );
 			}
@@ -187,18 +199,13 @@
 			}
 
 			function displaylist(responseObj, statusText, xhr) {
-				var columns = getobjectoptions(responseObj.name);
+				if (xhr.status == 200) {
+					var columns = getobjectoptions(responseObj.name);
 
-				// alert('Options for: ' + columns.table.name);
-
-				//var strHtml = '';
-				//for (index in responseObj.objects) {
-				//	var object = responseObj.objects[index];
-				//	strHtml += display(columns.table, object);
-				//}
-				//jQuery('div#fieldcontent').html(strHtml);
-
-				displayTable("div#fieldcontent", columns.table, responseObj.objects);
+					displayTable("div#fieldcontent", columns.table, responseObj.objects);
+				} else {
+					jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
+				}
 			}
 
 			function displayTable(field, table, objects) {
@@ -211,6 +218,7 @@
 					var dataObject = new Array();
 					data[index] = dataObject;
 
+					dataObject[0] = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
 					for (indexColumn in table.column) {
 						var column = table.column[indexColumn];
 
@@ -229,10 +237,10 @@
 								url: strUrl,
 								success: replaceGuidWithMeaningfulString
 							});
-							dataObject[indexColumn] = strFkTableNameValue;
+							dataObject[parseInt(indexColumn) + 1] = strFkTableNameValue;
 						}
 						else
-							dataObject[indexColumn] = object[column.name];
+							dataObject[parseInt(indexColumn) + 1] = object[column.name];
 					}
 				}
 
@@ -318,18 +326,22 @@
 
 			function getTableColumns(table) {
 				var tablecolumns = new Array();
+				tablecolumns[0] = {"sTitle": "", "bSortable": false, "sWidth": "40px"};
 
 				// find the column definitions
 				for (index in table.column) {
 					var column = table.column[index];
+					var definition;
 
 					if (column.type == "id") {
-						tablecolumns[index] = {"sTitle": column.name, "bVisible": false }
+						definition = {"sTitle": column.name, "bVisible": false }
 					} else if (column.type == "password" || column.name == "password") {
-						tablecolumns[index] = {"sTitle": column.name, fnRender: renderPassword }
+						definition = {"sTitle": column.name, fnRender: renderPassword }
 					} else {
-						tablecolumns[index] = {"sTitle": column.name }
+						definition = {"sTitle": column.name }
 					}
+
+					tablecolumns[parseInt(index) + 1] = definition;
 				}
 
 				return tablecolumns;
@@ -408,7 +420,7 @@
 
 				// find the column definitions
 				for (index in table.column) {
-					row = getrow(table.column[index]);
+					row = getrow(lumn[index]);
 
 					if (typeof(row) != 'undefined') {
 						body.append(row);
@@ -484,6 +496,11 @@
 				});
 			}
 
+			function showdeleteitem() {
+				var x = jQuery(this);
+				alert('showdeleteitem' + x.attr('class'));
+			}
+			
 			function showlogin() {
 				jQuery("#logindialog").modal({
 					opacity:70,
@@ -498,41 +515,42 @@
 			}
 
 			function shownotes() {
-				jQuery('#example tbody td img').live('click', function () {
-					var strScannerLogId = jQuery(this).attr('id');
+				var strScannerLogId = jQuery(this).attr('id');
 
-					jQuery("#notesdialog").modal({
-						opacity:70,
-						overlayCss: {
-							backgroundColor:"#EEEEEE"
-						},
-						onShow: function (dialog) {
-							var modal = this;
-							jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
+				jQuery("#notesdialog").modal({
+					opacity:70,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					onShow: function (dialog) {
+						var modal = this;
+						jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
 
-							// prepare Options Object
-							var options = {
-								url: 'scannerlogcomment',
-								type: 'POST',
-								dataType: 'xml',
-								success: processNotes,
-								error: noteserror
-							};
+						// prepare Options Object
+						var options = {
+							url: 'scannerlogcomment',
+							type: 'POST',
+							dataType: 'xml',
+							success: processNotes,
+							error: noteserror
+						};
 
-							// pass options to ajaxForm
-							jQuery('#notesdialogform').ajaxForm(options);
-						}
-					});
-				} );
-
+						// pass options to ajaxForm
+						jQuery('#notesdialogform').ajaxForm(options);
+					}
+				});
 			}
 
+			function showupdateitem() {
+				alert("showupdateitem");
+			}
+			
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
 
 				// Set up the click handler for scannerlogcomment entries
-				shownotes();
+				//shownotes();
 			});
 		</script>
 	</body>

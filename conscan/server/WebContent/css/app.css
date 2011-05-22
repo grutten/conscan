@@ -118,3 +118,7 @@ table.dataTables_content {
 .shrink {
 	font-size: smaller;
 }
+
+.informational {
+	font-style: italic;
+}
