@@ -1,0 +1,1 @@
+jarsigner -keystore scannerOptions client.jar jdc
