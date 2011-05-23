@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<jnlp spec="1.0+" codebase="http://localhost:8080/server/" href="scannerOptions.jnlp">
+	<information>
+		<title>Jnlp Testing</title>
+		<vendor>YONG MOOK KIM</vendor>
+		<homepage href="http://localhost:8080/server/" />
+		<description>Testing Testing</description>
+	</information>
+	<security>
+		<all-permissions/>
+	</security>
+	<resources>
+		<j2se version="1.6+" />
+		<jar href="client.jar" />
+		<jar href="clientlib/commons-logging-1.1.1.jar" />
+		<jar href="clientlib/httpclient-4.1.1.jar" />
+		<jar href="clientlib/httpcore-4.1.jar" />
+		<jar href="clientlib/httpmime-4.1.1.jar" />
+	</resources>
+	<application-desc main-class="com.tippingpoint.scannerOptions" />
+</jnlp>
