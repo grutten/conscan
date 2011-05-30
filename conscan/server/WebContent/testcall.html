@@ -40,6 +40,14 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Return Type:</td>
+								<td>
+									<input type="radio" name="returntype" value="xml">XML<br/>
+									<input type="radio" name="returntype" value="json">JSON<br/>
+									<input type="radio" name="returntype" value="" checked>Unspecified
+								</td>
+							</tr>
+							<tr>
 								<td colspan="2"><span class="ui-icon ui-icon-circle-arrow-e"></span></td>
 							</tr>
 						</table>
@@ -69,7 +77,7 @@
 	</body>
 	<script type="text/javascript">
 		var baseurl = '';
-		
+
 		jQuery('.ui-icon-circle-arrow-e').live('click', testcall);
 		jQuery('#errorcontinue').live('click', function() {
 			jQuery.unblockUI();
@@ -97,7 +105,7 @@
 			if (nSlashIndex > 0) {
 				path = path.substr(1, nSlashIndex);
 			}
-			
+
 			url += '/' + path;
 
 			//alert('URL: ' + url);
@@ -111,10 +119,11 @@
 		function testcall() {
 			jQuery('#message').html('');
 			jQuery('#results').html('');
-			
+
 			var url = jQuery('input[name=url]').val();
 			if (url.length > 0) {
 				var method = jQuery('select[name=action]').val();
+				var datatype = jQuery("input[@name=returntype]:checked").val();
 
 				jQuery('#message').html('Calling ' + url + ' (' + method + ')');
 
@@ -122,7 +131,7 @@
 				jQuery.ajax({
 					type: method,
 					url: url,
-					dataType: "xml",
+					dataType: datatype,
 					success: function(data, textStatus, XMLHttpRequest) {
 						showresults(data, textStatus, XMLHttpRequest);
 						jQuery.unblockUI();
@@ -137,20 +146,17 @@
 
 		function showresults(data, textStatus, XMLHttpRequest) {
 			var results = "";
-
-			// alert('Showing ' + data.contentType); 
-			if (XMLHttpRequest.responseXML != undefined) {
-				results += "<pre>";
-
+			
+			// alert('Showing ' + data.contentType);
+			results += "<pre>";
+			if (XMLHttpRequest.responseXML != null) {
 				jQuery(XMLHttpRequest.responseXML).children(':first-child').each(function() {
 					results += shownode(this, 1);
 				});
-
-				results += "</pre>";
-
 			} else {
 				results += XMLHttpRequest.responseText;
 			}
+			results += "</pre>";
 
 			jQuery('#results').html(results);
 		}
@@ -161,15 +167,15 @@
 			if (node.nodeType == 3) {
 				results += jQuery.trim(node.nodeValue);
 			}
-			else { 
+			else {
 				results += '\n' + prefix(nLevel) + '&lt;' + node.nodeName;
-	
+
 				if (node.attributes != null && node.attributes.length > 0) {
 					for (var nIndex = 0; nIndex < node.attributes.length; ++nIndex) {
 						results += ' ' + node.attributes.item(nIndex).nodeName + '="' + node.attributes.item(nIndex).value + '"';
 					}
 				}
-	
+
 				if (node.childNodes.length > 0) {
 					results +=  '&gt;';
 					for (var nIndex = 0; nIndex < node.childNodes.length; ++nIndex) {
@@ -209,7 +215,7 @@
 				}
 			}
 
-			return prefix;				
+			return prefix;
 		}
 
 		function getAvailableServices(url) {

@@ -3,7 +3,7 @@
  */
 function showerror(xhr, status, error) {
 	// alert('Showing error.');
-	if (error.length > 0) {
+	if (typeof(error) != "undefined" && error.length > 0) {
 		if (xhr.status == 200) {
 			jQuery('#errortitle').html('Error interpreting response.');
 			jQuery('#errormessage').html(error);
