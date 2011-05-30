@@ -240,16 +240,6 @@ public class Data implements DataInterface{
 	private Location getLocationByBarcode(String strBarcode) { return (Location)getLocations().get(strBarcode); }
 	
 	private Offender getOffenderByBarcode(String strBarcode) { return (Offender)getOffenders().get(strBarcode); }
-	
-
-	class IntegerComparator implements Comparator {
-        public int compare(Object o1,Object o2)
-        {
-        	Integer i1 = (Integer)o1;
-        	Integer i2 = (Integer)o2;
-            return i1.compareTo(i2);
-        }
-    }
 	 
 	private void populateLookupMaps() {
 		// Define the indexes
@@ -317,5 +307,14 @@ public class Data implements DataInterface{
 	}
 	
 	private void setFeedback(String strFeedback) { m_strFeedback = strFeedback; }
+
+	class IntegerComparator implements Comparator {
+        public int compare(Object o1,Object o2)
+        {
+        	Integer i1 = (Integer)o1;
+        	Integer i2 = (Integer)o2;
+            return i1.compareTo(i2);
+        }
+    }
 	
 }
