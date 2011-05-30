@@ -218,6 +218,22 @@ public class Data implements DataInterface{
 		m_listScannablesForLogging.add(s);
 	}
 	
+	private void applyDisplayOrder(ComplianceConfiguration complianceconfig) {
+		ArrayList arrComplianceValues = (ArrayList)complianceconfig.getValues();
+		Iterator i = arrComplianceValues.iterator();
+		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
+		while (i.hasNext()) {
+			ComplianceValue compliancevalue = (ComplianceValue)i.next();
+			tm.put(new Integer(compliancevalue.getDisplayOrder()), compliancevalue);
+		}
+		i = tm.values().iterator();
+		arrComplianceValues.clear();
+		while (i.hasNext()) {
+			ComplianceValue compliancevalue = (ComplianceValue)i.next();
+			arrComplianceValues.add(compliancevalue);		// use: display/combo
+		}
+	}
+	
 	/**
 	 * Destroys temporary data in the scannable list (e.g. compliance control)
 	 */
@@ -253,7 +269,7 @@ public class Data implements DataInterface{
 		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
 		ArrayList arrActivity = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY);
 		Iterator i = arrActivity.iterator();
-		TreeMap tm = new TreeMap(new IntegerComparator());
+		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
 		while (i.hasNext()) {
 			Activity activity = (Activity)i.next();
 			tm.put(new Integer(activity.getDisplayOrder()), activity);
@@ -263,8 +279,8 @@ public class Data implements DataInterface{
 		arrActivity.clear();
 		while (i.hasNext()) {
 			Activity activity = (Activity)i.next();
-			mapCurr.put(activity.getName(), activity);
-			arrActivity.add(activity);
+			mapCurr.put(activity.getName(), activity);  // use: lookup
+			arrActivity.add(activity);					// use: display/combo
 		}
 		System.out.println("Index Created: ACTIVITY");
 		
@@ -275,6 +291,7 @@ public class Data implements DataInterface{
 		while (i.hasNext()) {
 			ComplianceConfiguration configuration = (ComplianceConfiguration)i.next();
 			mapCurr.put(configuration.getComplianceId(), configuration);
+			applyDisplayOrder(configuration);
 		}
 		System.out.println("Index Created: COMPLIANCE");
 		
