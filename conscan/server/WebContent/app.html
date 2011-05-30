@@ -91,7 +91,7 @@
 		<div class="hidden wideborder curvedblock" id="adddialog">
 			<div class="errormsg"></div>
 			<form id="adddialogform">
-				<input type="hidden" name="addname" value=""/>
+				<input type="hidden" name="typename" value=""/>
 				<table class="noborder">
 					<thead>
 						<tr>
@@ -122,7 +122,7 @@
 			var strFkTableNameValue = "empty";
 
 			function additem(dialog) {
-				var name = jQuery('input[name="addname"]:hidden').val();
+				var name = jQuery('input[name="typename"]:hidden').val();
 
 				// prepare Options Object
 				var options = {
@@ -186,9 +186,9 @@
 					var object = objects[index];
 					var dataObject = new Array();
 					data.push(dataObject);
-					
+
 					var id = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
-					
+
 					if (typeof(table.primarykeycolumn) != 'undefined') {
 						id += '<span class="hidden identifier">' + object[table.primarykeycolumn] + '</span>';
 					}
@@ -217,7 +217,7 @@
 						else
 							dataObject.push(object[column.name]);
 					}
-					
+
 					if ("scannerlog" == table.name) {
 						dataObject.push('<span class="ui-icon ui-icon-pencil"></span>');
 					}
@@ -234,8 +234,32 @@
 				var oDataTable = jQuery('#example').dataTable(options);
 			}
 
+			function findCurrentType() {
+				return jQuery('span[type]').attr('type');
+			}
+
 			function findIdForRow(tr) {
 				return jQuery(tr).find('span.identifier').text();
+			}
+			
+			function getItem(item, id) {
+				var item;
+				
+				jQuery.ajax({
+					async: false,
+					type: 'GET',
+					url: item + '/' + id,
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
+					success: function(responseObj, statusText, xhr, form) {
+						item = responseObj;
+					},
+					error: function(responseObj, statusText, xhr, form) {
+						alert('Item ' + item + ' with id '+ id + ' error: ' + statusText);
+					}
+				});
+				
+				return item;
 			}
 
 			function getItemList(item) {
@@ -324,7 +348,7 @@
 
 					tablecolumns.push(definition);
 				}
-				
+
 				if ("scannerlog" == table.name) {
 					tablecolumns.push({"sTitle": "", "bSortable": false});
 				}
@@ -393,9 +417,14 @@
 				jQuery('#logindialogform').ajaxForm(options);
 			}
 
-			function populateAddItemForm(name) {
-				jQuery('#adddialogtitle').html('New ' + name);
-				jQuery('input[name="addname"]:hidden').attr('value', name);
+			function populateAddItemForm(name, object) {
+				var title = 'New ';
+				if (typeof(object) != 'undefined') {
+					title = 'Update ';
+				}
+
+				jQuery('#adddialogtitle').html(title + name);
+				jQuery('input[name="typename"]:hidden').attr('value', name);
 
 				var body = jQuery("tbody#adddialogbody");
 				body.empty();
@@ -489,7 +518,7 @@
 				var id = findIdForRow(jQuery(this).parents('tr'));
 				alert("showdeleteitem: " + id);
 			}
-			
+
 			function showlogin() {
 				jQuery("#logindialog").modal({
 					opacity:70,
@@ -533,8 +562,25 @@
 			function showupdateitem() {
 				var id = findIdForRow(jQuery(this).parents('tr'));
 				alert("showupdateitem: " + id);
+
+				var name = findCurrentType();
+				alert("showupdateitem: " + name);
+				
+				var item = getItem(name, id);
+				
+				populateAddItemForm(name);
+				jQuery("#adddialog").modal({
+					opacity:80,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					containerCss: {
+						backgroundColor:"#EEEEEE",
+					},
+					onShow: additem
+				});
 			}
-			
+
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
