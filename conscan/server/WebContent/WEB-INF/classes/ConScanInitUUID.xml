@@ -14,6 +14,7 @@
 			</table>
 		</column>
 		<column name="isdefault">true</column>
+		<column name="displayorder">1</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">06c4e615-1afd-4f68-9d9c-78067da11f71</column>
@@ -24,6 +25,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">2</column>
 	</item>
 	<item name="compliance">
 		<column name="complianceid">32adac8e-5051-42b9-b606-a7cd7ebf7cf7</column>
@@ -38,6 +40,7 @@
 			</table>
 		</column>
 		<column name="isdefault">true</column>
+		<column name="displayorder">1</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">0f9a5fc4-a4a8-4b3b-bf59-982963f9d466</column>
@@ -48,36 +51,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">7066132a-5962-4852-bcf4-c874a55a7584</column>
-		<column name="value">paint</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">workorder</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">8ae3891e-e63e-491b-9f71-a844158fa61a</column>
-		<column name="value">lights</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">workorder</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">96664c21-a7a1-44be-92a7-c5f06a408625</column>
-		<column name="value">sinks/toilets/showers</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">workorder</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
+		<column name="displayorder">2</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">0f714d33-664e-498f-8b53-184d236a5bdf</column>
@@ -88,26 +62,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">686f3338-9346-44dd-bf6a-41c3b6fb420a</column>
-		<column name="value">hot water</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">workorder</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">3128710c-7f4d-48ee-9e89-0ffdd8ebd6cb</column>
-		<column name="value">heat/air cond</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">workorder</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
+		<column name="displayorder">3</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">d27422a4-559a-4944-9a19-5720991319d4</column>
@@ -118,6 +73,51 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">4</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">3128710c-7f4d-48ee-9e89-0ffdd8ebd6cb</column>
+		<column name="value">heat/air cond</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">5</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">686f3338-9346-44dd-bf6a-41c3b6fb420a</column>
+		<column name="value">hot water</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">6</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">8ae3891e-e63e-491b-9f71-a844158fa61a</column>
+		<column name="value">lights</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">7</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">7066132a-5962-4852-bcf4-c874a55a7584</column>
+		<column name="value">paint</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">8</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">b455561e-2303-40ea-9f84-0abcd4f2b8ea</column>
@@ -128,6 +128,18 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">9</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">96664c21-a7a1-44be-92a7-c5f06a408625</column>
+		<column name="value">sinks/toilets/showers</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">workorder</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">10</column>
 	</item>
 
 
@@ -145,6 +157,7 @@
 			</table>
 		</column>
 		<column name="isdefault">true</column>
+		<column name="displayorder">1</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">6e286b85-8c21-454c-b504-fd56e4542ba0</column>
@@ -155,6 +168,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">2</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">3eae311e-207a-4a7d-a5d4-43647f30873d</column>
@@ -165,6 +179,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">3</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">8334edfd-3d72-4d26-9fc7-f22f33692ebf</column>
@@ -175,6 +190,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">4</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">a1ae4efe-e0f7-4950-85b5-53d2b4f5a178</column>
@@ -185,26 +201,7 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">c45a746e-1466-4b06-891b-a4b16a11bb3d</column>
-		<column name="value">smoking materials</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">cellsearch</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
-	</item>
-	<item name="compliancevalue">
-		<column name="compliancevalueid">5198d4b7-dc90-46e7-b8e9-230cb1222500</column>
-		<column name="value">weapon</column>
-		<column name="complianceid" value="referenced">
-			<table name="compliance">
-				<column name="name">cellsearch</column>
-			</table>
-		</column>
-		<column name="isdefault">false</column>
+		<column name="displayorder">5</column>
 	</item>
 	<item name="compliancevalue">
 		<column name="compliancevalueid">37a9a269-3291-455d-98a5-0e1e4da4f243</column>
@@ -215,6 +212,29 @@
 			</table>
 		</column>
 		<column name="isdefault">false</column>
+		<column name="displayorder">6</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">c45a746e-1466-4b06-891b-a4b16a11bb3d</column>
+		<column name="value">smoking materials</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">7</column>
+	</item>
+	<item name="compliancevalue">
+		<column name="compliancevalueid">5198d4b7-dc90-46e7-b8e9-230cb1222500</column>
+		<column name="value">weapon</column>
+		<column name="complianceid" value="referenced">
+			<table name="compliance">
+				<column name="name">cellsearch</column>
+			</table>
+		</column>
+		<column name="isdefault">false</column>
+		<column name="displayorder">8</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">ab096e74-45d0-41ce-a2a0-acedf48f63a7</column>
