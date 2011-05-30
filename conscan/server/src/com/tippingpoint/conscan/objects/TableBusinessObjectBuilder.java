@@ -39,8 +39,13 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	 */
 	@Override
 	public BusinessObject get(final Object objId) throws SqlBaseException {
+		BusinessObject businessObject = null;
 		final Map<String, FieldValue> mapValues = m_tablePersistence.get(objId);
-		return get(mapValues);
+		if (mapValues != null) {
+			businessObject = get(mapValues);
+		}
+
+		return businessObject;
 	}
 
 	/**
@@ -60,6 +65,7 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 * @throws SqlBaseException
 	 */
+	@Override
 	public List<BusinessObject> getAll(final List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
 		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAll(listCommonValues);

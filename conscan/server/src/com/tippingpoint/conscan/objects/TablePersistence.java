@@ -98,7 +98,7 @@ public class TablePersistence implements Persistence {
 	 * @throws SqlBaseException
 	 */
 	public Map<String, FieldValue> get(final Object objId) throws SqlBaseException {
-		final Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
+		Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
 
 		mapValues.put(m_PrimaryKeyColumn.getName(), new FieldValue(m_PrimaryKeyColumn.getName(), objId));
 
@@ -115,7 +115,7 @@ public class TablePersistence implements Persistence {
 			// populate the insert statement with the parameters from the map
 			setValues(sqlQueryById, mapValues);
 
-			// execute the insert
+			// execute the query
 			rs = sqlQueryById.executeQuery(conn);
 			if (rs.next()) {
 				final Iterator<Column> iterColumns = sqlQueryById.getColumnMap();
@@ -124,10 +124,13 @@ public class TablePersistence implements Persistence {
 					while (iterColumns.hasNext()) {
 						final Column column = iterColumns.next();
 
-						mapValues.put(column.getName(), new FieldValue(column.getName(), column.getType().getResult(rs,
-								nIndex++)));
+						mapValues.put(column.getName(),
+								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++)));
 					}
 				}
+			}
+			else {
+				mapValues = null;
 			}
 		}
 		catch (final SQLException e) {
@@ -146,6 +149,7 @@ public class TablePersistence implements Persistence {
 	 * @param listCommonValues List containing the values that will be common to all the objects..
 	 * @throws SqlBaseException
 	 */
+	@Override
 	public List<Map<String, FieldValue>> getAll(final List<FieldValue> listCommonValues) throws SqlBaseException {
 		final List<Map<String, FieldValue>> listValues = new ArrayList<Map<String, FieldValue>>();
 
@@ -174,8 +178,8 @@ public class TablePersistence implements Persistence {
 					while (iterColumns.hasNext()) {
 						final Column column = iterColumns.next();
 
-						mapValues.put(column.getName(), new FieldValue(column.getName(), column.getType().getResult(rs,
-								nIndex++)));
+						mapValues.put(column.getName(),
+								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++)));
 					}
 				}
 			}
@@ -201,6 +205,7 @@ public class TablePersistence implements Persistence {
 	/**
 	 * This method returns the name of the identifier field, if available.
 	 */
+	@Override
 	public String getIdentifierName() {
 		return m_PrimaryKeyColumn != null ? m_PrimaryKeyColumn.getName() : null;
 	}
@@ -208,6 +213,7 @@ public class TablePersistence implements Persistence {
 	/**
 	 * This method returns a list of business object names that are related to this object.
 	 */
+	@Override
 	public List<String> getRelatedNames() {
 		List<String> listRelatedNames = null;
 
@@ -230,6 +236,7 @@ public class TablePersistence implements Persistence {
 	 * @param mapValues Map of values used to persist the object.
 	 * @throws SqlBaseException
 	 */
+	@Override
 	public List<BusinessObject> getReleatedObjects(final String strRelatedName, final Map<String, FieldValue> mapValues)
 			throws SqlBaseException {
 		List<BusinessObject> listReleatedObjects = null;
@@ -320,6 +327,7 @@ public class TablePersistence implements Persistence {
 	 * @throws SqlManagerException
 	 * @throws SqlExecutionException
 	 */
+	@Override
 	public void save(final Map<String, FieldValue> mapValues) throws SqlExecutionException, SqlManagerException,
 			SqlBuilderException {
 		if (m_PrimaryKeyColumn != null) {

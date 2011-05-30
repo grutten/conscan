@@ -46,7 +46,7 @@ import com.tippingpoint.utilities.XmlUtilities;
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
-	protected static final String ATTRIBUTE_NAME = "name";
+	public static final String ATTRIBUTE_NAME = "name";
 
 	protected static final String METHOD_DELETE = "DELETE";
 	protected static final String METHOD_GET = "GET";
@@ -59,7 +59,7 @@ public abstract class Services extends HttpServlet {
 	protected static MimeType MIME_JSON;
 	protected static MimeType MIME_XML;
 
-	protected static final String TAG_FIELD = "field";
+	public static final String TAG_FIELD = "field";
 	protected static final String TAG_LIST = "list";
 	protected static final String TAG_OBJECT = "object";
 
