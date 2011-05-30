@@ -25,7 +25,7 @@ public class scannerOptions extends Applet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String m_strIpAddress = "192.168.1.108";
+	private String m_strIpAddress = "192.168.1.69";
 	
 	/**
 	 * arg0 - ipAddress e.g. "192.168.1.108"
@@ -54,7 +54,7 @@ public class scannerOptions extends Applet {
     }
 
     public void paint(Graphics g) {
-    	retrieveXml(m_strIpAddress);
+    	retrieveXml(getIpAddress());
     	g.drawString("generating scanner.xml", 50, 25);
     	
     }    
@@ -75,7 +75,7 @@ public class scannerOptions extends Applet {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-            outstreamXml = new FileOutputStream("scanner.xml");
+            outstreamXml = new FileOutputStream("c:/Documents and Settings/Owner/My Documents/CN3B36220927180 My Documents/scanner.xml");
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
