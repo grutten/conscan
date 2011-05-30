@@ -50,6 +50,7 @@
 		<column name="complianceid" type="idref"/>
 		<column name="scantype" type="integer"/>
 		<column name="compliancetype" type="integer"/>
+		<column name="displayorder" type="integer"/>
 		<constraint name="pk_activity" type="primary">
 			<column name="activityid"/>
 		</constraint>

@@ -226,6 +226,7 @@
 		</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">1</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">bd87ee36-e674-448b-9078-6e9a47e21cf9</column>
@@ -237,6 +238,7 @@
 		</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">2</column>
+		<column name="displayorder">2</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">57ad96c7-d625-43dd-b5c5-9cfd1a7b029b</column>
@@ -248,6 +250,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">3</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">de3b9fd5-4e60-4a61-999f-5925e41c3d31</column>
@@ -259,6 +262,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">4</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">cba1a5ae-ec37-49cf-980b-e016e8d13548</column>
@@ -270,6 +274,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">5</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">cc59086e-f4ec-482f-ac25-03bfa2a1a534</column>
@@ -281,6 +286,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">6</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">f3671a9c-77cf-4536-8aaa-b067bc997c2a</column>
@@ -292,6 +298,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">7</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">4e470de6-5508-47b8-a79b-93285f36328f</column>
@@ -303,6 +310,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">8</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">8dca9577-368a-468d-a68d-b2b79b6088e0</column>
@@ -314,6 +322,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">9</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">5915a21b-c544-40d2-8811-ba4039acf0a3</column>
@@ -325,6 +334,7 @@
 		</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
+		<column name="displayorder">10</column>
 	</item>
 	<item name="activity">
 		<column name="activityid">1ba98b73-20df-43f1-b9d2-61c6c8ebc29c</column>
@@ -336,5 +346,6 @@
 		</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">2</column>
+		<column name="displayorder">11</column>
 	</item>
 </data>
