@@ -2,11 +2,9 @@ package com.tippingpoint.conscan.objects.json;
 
 import java.util.Date;
 import java.util.Iterator;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.FieldValue;
-import com.tippingpoint.conscan.servlet.Services;
 import com.tippingpoint.database.Id;
 
 /**
@@ -32,35 +30,19 @@ public class JsonBusinessObject {
 	public JSONObject get() {
 		final JSONObject jsonObject = new JSONObject();
 
-		jsonObject.put(Services.ATTRIBUTE_NAME, m_boValue.getType());
-
-		final FieldValue fvIdentifier = m_boValue.getIdentifierField();
-		if (fvIdentifier != null) {
-			jsonObject.put(fvIdentifier.getName(), getObject(fvIdentifier.getValue()));
-		}
-
-		final JSONArray values = new JSONArray();
+		jsonObject.put("type", m_boValue.getType());
 
 		final Iterator<FieldValue> iterValues = m_boValue.getValues();
 		if (iterValues != null && iterValues.hasNext()) {
-			jsonObject.put(Services.TAG_FIELD, values);
-
 			while (iterValues.hasNext()) {
 				final FieldValue fieldValue = iterValues.next();
-				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
-					final JSONObject jsonFieldObject = new JSONObject();
-
-					jsonFieldObject.put(Services.ATTRIBUTE_NAME, fieldValue.getName());
-					jsonFieldObject.put(VALUE_NAME, getObject(fieldValue.getValue()));
-
-					values.add(jsonFieldObject);
-				}
+				jsonObject.put(fieldValue.getName(), getObject(fieldValue.getValue()));
 			}
 		}
 
 		return jsonObject;
 	}
-	
+
 	/**
 	 * This method returns an object value suitable for the JSON value object.
 	 */
@@ -71,7 +53,7 @@ public class JsonBusinessObject {
 		else if (objValue instanceof Date) {
 			objValue = objValue.toString();
 		}
-		
+
 		return objValue;
 	}
 }

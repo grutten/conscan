@@ -32,7 +32,7 @@ public class TestJsonBusinessObject {
 		Assert.assertNotNull(jsonBusinessObject);
 		Assert.assertNotNull(jsonBusinessObject.get());
 		Assert.assertEquals(
-				"{\"field\":[{\"name\":\"field1\",\"value\":\"abc\"},{\"name\":\"field2\",\"value\":\"bcd\"},{\"name\":\"datevalue\",\"value\":\"Tue Jan 13 12:38:31 PST 1970\"},{\"name\":\"idvalue\",\"value\":\"2222\"}],\"name\":\"test\",\"testid\":\"1234567890\"}",
+				"{\"field2\":\"bcd\",\"idvalue\":\"2222\",\"datevalue\":\"Tue Jan 13 12:38:31 PST 1970\",\"testid\":\"1234567890\",\"field1\":\"abc\",\"type\":\"test\"}",
 				jsonBusinessObject.get().toJSONString());
 	}
 
