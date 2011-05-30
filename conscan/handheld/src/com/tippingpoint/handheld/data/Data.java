@@ -2,9 +2,12 @@ package com.tippingpoint.handheld.data;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -15,8 +18,8 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
 public class Data implements DataInterface{
 	protected static final String INDEX_ACTIVITY = "activity";
 	protected static final String INDEX_COMPLIANCE = "compliance";
-	protected static final String INDEX_LOCATION = "1location";
-	protected static final String INDEX_LOCATIONBYOFFENDER = "qwer";  // MAP workaround
+	protected static final String INDEX_LOCATION = "location";
+	protected static final String INDEX_LOCATIONBYOFFENDER = "offenderloc";  // MAP workaround
 	protected static final String INDEX_OFFENDER = "offender";
 
 	XMLReader m_xmlreader;
@@ -238,6 +241,16 @@ public class Data implements DataInterface{
 	
 	private Offender getOffenderByBarcode(String strBarcode) { return (Offender)getOffenders().get(strBarcode); }
 	
+
+	class IntegerComparator implements Comparator {
+        public int compare(Object o1,Object o2)
+        {
+        	Integer i1 = (Integer)o1;
+        	Integer i2 = (Integer)o2;
+            return i1.compareTo(i2);
+        }
+    }
+	 
 	private void populateLookupMaps() {
 		// Define the indexes
 		m_hashLookup.put(INDEX_ACTIVITY, new HashMap());
@@ -250,12 +263,21 @@ public class Data implements DataInterface{
 		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
 		ArrayList arrActivity = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY);
 		Iterator i = arrActivity.iterator();
+		TreeMap tm = new TreeMap(new IntegerComparator());
+		while (i.hasNext()) {
+			Activity activity = (Activity)i.next();
+			tm.put(new Integer(activity.getDisplayOrder()), activity);
+		}
+		Collection c = tm.values();
+		i = c.iterator();
+		arrActivity.clear();
 		while (i.hasNext()) {
 			Activity activity = (Activity)i.next();
 			mapCurr.put(activity.getName(), activity);
+			arrActivity.add(activity);
 		}
 		System.out.println("Index Created: ACTIVITY");
-
+		
 		// Populate the compliance index
 		mapCurr = (HashMap)m_hashLookup.get(INDEX_COMPLIANCE);
 		ArrayList arrCompliance = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_COMPLIANCE);
