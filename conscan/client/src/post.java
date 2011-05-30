@@ -28,7 +28,7 @@ public class post {
         int i = 1;
         while (i > 0) {
         	processDir(args);
-			Thread.sleep(2000);
+			Thread.sleep(4000);
 			System.out.println("counter: " + Integer.valueOf(i));
 			++i;
         }

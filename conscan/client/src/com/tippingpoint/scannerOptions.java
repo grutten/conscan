@@ -25,7 +25,7 @@ public class scannerOptions extends Applet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String m_strIpAddress = "192.168.1.69";
+	private String m_strIpAddress = "192.168.1.108";
 	
 	/**
 	 * arg0 - ipAddress e.g. "192.168.1.108"
@@ -36,9 +36,6 @@ public class scannerOptions extends Applet {
 		  Frame frame = new Frame("CheckMate");
 		  frame.setSize(400,200);
 		  scannerOptions app = new scannerOptions();
-		  
-		  if (args[0] != null)
-			  app.setIpAddress(args[0]);
 		  
 		  frame.add(app);
 		  frame.setVisible(true);
@@ -67,7 +64,9 @@ public class scannerOptions extends Applet {
         HttpClient httpclient = new DefaultHttpClient();
         FileOutputStream outstreamXml = null;
         try {
-            HttpOptions httpOptions = new HttpOptions("http://" + strIpAddress + ":8080/server/scanner");
+        	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
+        	System.out.println("scannerOptions IPAddress: " + strUrl);
+            HttpOptions httpOptions = new HttpOptions(strUrl);
 
             System.out.println("executing request " + httpOptions.getURI());
 
@@ -75,7 +74,7 @@ public class scannerOptions extends Applet {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-            outstreamXml = new FileOutputStream("c:/Documents and Settings/Owner/My Documents/CN3B36220927180 My Documents/scanner.xml");
+            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
