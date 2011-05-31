@@ -218,19 +218,28 @@ public class Data implements DataInterface{
 		m_listScannablesForLogging.add(s);
 	}
 	
-	private void applyDisplayOrder(ComplianceConfiguration complianceconfig) {
-		ArrayList arrComplianceValues = (ArrayList)complianceconfig.getValues();
-		Iterator i = arrComplianceValues.iterator();
+	/**
+	 * For tables that contain a DisplayOrder column, this method will order
+	 * the objects in order.  This method assumes unique values for DisplayOrder.
+	 * As an example, the compliance value table contains values for multiple
+	 * compliance configurations, thus there can be duplicate values for
+	 * DisplayOrder.  However, the intent of this method is that it would be
+	 * used to order only those compliance values for a single compiance
+	 * configuration in which case all the DisplayOrder values would be unique.
+	 * @param complianceconfig
+	 */
+	private void applyDisplayOrder(ArrayList arrObjects) {
+		Iterator i = arrObjects.iterator();
 		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
 		while (i.hasNext()) {
 			ComplianceValue compliancevalue = (ComplianceValue)i.next();
 			tm.put(new Integer(compliancevalue.getDisplayOrder()), compliancevalue);
 		}
 		i = tm.values().iterator();
-		arrComplianceValues.clear();
+		arrObjects.clear();
 		while (i.hasNext()) {
 			ComplianceValue compliancevalue = (ComplianceValue)i.next();
-			arrComplianceValues.add(compliancevalue);		// use: display/combo
+			arrObjects.add(compliancevalue);		// use: display/combo
 		}
 	}
 	
