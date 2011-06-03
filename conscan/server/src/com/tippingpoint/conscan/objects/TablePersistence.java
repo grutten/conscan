@@ -70,7 +70,7 @@ public class TablePersistence implements Persistence {
 				m_listFields.add(column.getName());
 
 				if ("created".equalsIgnoreCase(column.getName())) {
-					m_listRules.add(new NowDataRule(column.getName()));
+					m_listRules.add(new NowDataRule(column.getName(), false));
 				}
 				else if ("modified".equalsIgnoreCase(column.getName())) {
 					m_listRules.add(new NowDataRule(column.getName()));

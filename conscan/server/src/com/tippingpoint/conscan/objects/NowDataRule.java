@@ -9,12 +9,23 @@ import java.util.Map;
 public final class NowDataRule implements DataRule {
 	/** This member holds the name of the field to populate. */
 	private final String m_strName;
+	
+	/** This member holds the flag indicating that the value should always be updated. */
+	private final boolean m_bForce;
 
 	/**
 	 * This method constructs a new rule for the named data value.
 	 */
 	public NowDataRule(final String strName) {
+		this(strName, true);
+	}
+
+	/**
+	 * This method constructs a new rule for the named data value.
+	 */
+	public NowDataRule(final String strName, boolean bForce) {
 		m_strName = strName;
+		m_bForce = bForce;
 	}
 
 	/**
@@ -28,7 +39,7 @@ public final class NowDataRule implements DataRule {
 			mapValues.put(m_strName, fieldValue);
 		}
 
-		if (fieldValue.getValue() == null) {
+		if (fieldValue.getValue() == null || m_bForce) {
 			fieldValue.setValue(new Date());
 		}
 	}

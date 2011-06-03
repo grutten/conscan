@@ -92,6 +92,7 @@
 			<div class="errormsg"></div>
 			<form id="adddialogform">
 				<input type="hidden" name="typename" value=""/>
+				<input type="hidden" name="itemid" value=""/>
 				<table class="noborder">
 					<thead>
 						<tr>
@@ -121,22 +122,40 @@
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
 			var strFkTableNameValue = "empty";
 
-			function additem(dialog) {
+			function addOrUpdateItem(dialog) {
 				var name = jQuery('input[name="typename"]:hidden').val();
-
-				// prepare Options Object
-				var options = {
-					url: name,
-					type: 'POST',
-					success: function(responseXML, statusText, xhr, form) {
-						//alert('Success: ' + statusText);
-						getItemList(name);
-						jQuery.modal.close();
-					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Error: ' + statusText);
-					}
-				};
+				var id = jQuery('input[name="itemidentifier"]:hidden').val();
+				
+				var options;
+				if (typeof id == 'string' && id.length > 0) {
+					// prepare Options Object
+					options = {
+						url: 'rest/' + name + '/' + id,
+						type: 'PUT',
+						success: function(responseXML, statusText, xhr, form) {
+							//alert('Success: ' + statusText);
+							getItemList(name);
+							jQuery.modal.close();
+						},
+						error: function(responseXML, statusText, xhr, form) {
+							alert('Error: ' + statusText);
+						}
+					};
+				} else {
+					// prepare Options Object
+					options = {
+						url: name,
+						type: 'POST',
+						success: function(responseXML, statusText, xhr, form) {
+							//alert('Success: ' + statusText);
+							getItemList(name);
+							jQuery.modal.close();
+						},
+						error: function(responseXML, statusText, xhr, form) {
+							alert('Error: ' + statusText);
+						}
+					};
+				}
 
 				// pass options to ajaxForm
 				jQuery('#adddialogform').ajaxForm(options);
@@ -153,6 +172,16 @@
 					success: processUser,
 					error: showlogin
 				});
+			}
+
+			function createInput(type, name, value) {
+				var input = jQuery(document.createElement('input'));
+
+				input.attr('name', name);
+				input.attr('type', type);
+				input.attr('value', value);
+				
+				return input;
 			}
 
 			function display(table, object) {
@@ -189,7 +218,7 @@
 
 					var id = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
 
-					if (typeof(table.primarykeycolumn) != 'undefined') {
+					if (typeof table.primarykeycolumn != 'undefined') {
 						id += '<span class="hidden identifier">' + object[table.primarykeycolumn] + '</span>';
 					}
 
@@ -248,7 +277,7 @@
 				jQuery.ajax({
 					async: false,
 					type: 'GET',
-					url: item + '/' + id,
+					url: 'rest/' + item + '/' + id,
 					datatype: 'json',
 					beforeSend: addJsonAccepts,
 					success: function(responseObj, statusText, xhr, form) {
@@ -283,7 +312,7 @@
 			function getobjectoptions(name) {
 				var options = objectoptions[name];
 
-				if (typeof(options) == 'undefined') {
+				if (typeof options == 'undefined') {
 					jQuery.ajax({
 						type: 'OPTIONS',
 						url: 'database/' + name,
@@ -303,7 +332,7 @@
 				return objectoptions[name];
 			}
 
-			function getrow(column) {
+			function getrow(column, object) {
 				var row;
 
 				if (column.type != "id" && column.type != 'date') {
@@ -314,21 +343,26 @@
 					labelCell.text(column.name + ':');
 					var inputCell = jQuery(document.createElement('td'));
 					row.append(inputCell);
-					var input = jQuery(document.createElement('input'));
 
-					input.attr('name', column.name);
-					// set the type of input
+					var inputType = 'text';
+					var inputValue;
 					if (column.type == "password" || column.name == "password") {
-						input.attr('type', 'password');
+						inputType = 'password';
 					} else {
-						input.attr('type', 'text');
+						if (typeof object != 'undefined') {
+							//alert('value: ' + object[column.name]);
+							inputValue = object[column.name];
+						}
 					}
+
+					var input = createInput(inputType, column.name, inputValue);
+					
 					inputCell.append(input);
 				}
 
 				return row;
 			}
-
+			
 			function getTableColumns(table) {
 				var tablecolumns = new Array();
 				tablecolumns.push({"sTitle": "", "bSortable": false, "sWidth": "40px"});
@@ -419,7 +453,7 @@
 
 			function populateAddItemForm(name, object) {
 				var title = 'New ';
-				if (typeof(object) != 'undefined') {
+				if (typeof object != 'undefined') {
 					title = 'Update ';
 				}
 
@@ -431,12 +465,19 @@
 
 				var columns = getobjectoptions(name);
 				var table = columns.table;
+				
+				if (typeof object != 'undefined') {
+					if (typeof table.primarykeycolumn != 'undefined') {
+						var input = createInput('hidden', 'itemidentifier', object[table.primarykeycolumn]);
+						body.append(input);
+					}
+				}
 
 				// find the column definitions
 				for (index in table.column) {
-					row = getrow(table.column[index]);
+					row = getrow(table.column[index], object);
 
-					if (typeof(row) != 'undefined') {
+					if (typeof row != 'undefined') {
 						body.append(row);
 					}
 				}
@@ -456,7 +497,7 @@
 				// Display the note that was just persisted
 				var strSpanId = "span#notes-" + strScannerLogId;
 				var row = jQuery("span.identifier:contains('" + strScannerLogId +"')").parents('tr');
-				if (typeof(row) != 'undefined') {
+				if (typeof row != 'undefined') {
 					jQuery(row).find('td:last').append(strComment);
 				}
 				jQuery(strSpanId).html(strComment);
@@ -510,7 +551,7 @@
 					containerCss: {
 						backgroundColor:"#EEEEEE",
 					},
-					onShow: additem
+					onShow: addOrUpdateItem
 				});
 			}
 
@@ -561,14 +602,14 @@
 
 			function showupdateitem() {
 				var id = findIdForRow(jQuery(this).parents('tr'));
-				alert("showupdateitem: " + id);
+				//alert("showupdateitem: " + id);
 
 				var name = findCurrentType();
-				alert("showupdateitem: " + name);
+				//alert("showupdateitem: " + name);
 				
 				var item = getItem(name, id);
 				
-				populateAddItemForm(name);
+				populateAddItemForm(name, item);
 				jQuery("#adddialog").modal({
 					opacity:80,
 					overlayCss: {
@@ -577,7 +618,7 @@
 					containerCss: {
 						backgroundColor:"#EEEEEE",
 					},
-					onShow: additem
+					onShow: addOrUpdateItem
 				});
 			}
 
