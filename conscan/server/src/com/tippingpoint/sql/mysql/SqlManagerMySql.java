@@ -9,7 +9,7 @@ import com.tippingpoint.sql.base.SqlManager;
 
 public class SqlManagerMySql extends SqlManager {
 	/**
-	 * This method constructs a new SQL Server builder.
+	 * This method constructs a new MySQL builder.
 	 */
 	public SqlManagerMySql(final IdFactory idFactory) {
 		super(idFactory);

@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.database.DatabaseElementException;
 import com.tippingpoint.database.DatabaseException;
+import com.tippingpoint.database.IdAutoFactory;
 import com.tippingpoint.database.IdFactory;
 import com.tippingpoint.database.IdGuidFactory;
 import com.tippingpoint.database.Schema;
@@ -141,6 +142,15 @@ public final class ConnectionManager {
 	}
 
 	/**
+	 * This method sets the id factory to that passed in.
+	 * 
+	 * @param idFactory IdFactory to be used with this connection manager.
+	 */
+	public void setIdFactory(final IdFactory idFactory) {
+		m_idFactory = idFactory;
+	}
+
+	/**
 	 * This method sets the schema associated with the connections associated with this manager.
 	 */
 	public void setSchema(final Schema schema) {
@@ -159,10 +169,10 @@ public final class ConnectionManager {
 		}
 
 		if (bUseAutoIncrement) {
-			m_idFactory = new IdGuidFactory();
+			setIdFactory(new IdAutoFactory());
 		}
 		else {
-			m_idFactory = new IdGuidFactory();
+			setIdFactory(new IdGuidFactory());
 		}
 	}
 

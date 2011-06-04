@@ -3,6 +3,7 @@ package com.tippingpoint.sql;
 import java.io.StringReader;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.IdAutoFactory;
+import com.tippingpoint.database.IdFactory;
 import com.tippingpoint.database.IdGuidFactory;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
@@ -115,10 +116,9 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlQuery3.add(tableUserActivity);
 			sqlQuery3.add(tableActivity, true);
 
-			check(
-					"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-							+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
-							+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
+					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
 					sqlManager, sqlQuery3);
 
 			// test many to many with non-specified tables
@@ -130,10 +130,9 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlQuery4.add(tableDemographic, true);
 			sqlQuery4.add(tableActivity, true);
 
-			check(
-					"SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-							+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
-							+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
+					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
+					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
 					sqlManager, sqlQuery4);
 		}
 		catch (final SqlManagerException e) {
@@ -147,17 +146,13 @@ public final class TestSqlBuilder extends TestCommonCase {
 	}
 
 	/**
-	 * This method tests the GUID version of the identities.
-	 */
-	public void testGuidIdentities() {
-
-	}
-
-	/**
 	 * This method tests MySQL Server specific SQL statements.
 	 */
 	public void testMySqlServer() {
-		final SqlManager sqlManager = new SqlManagerMySql(new IdAutoFactory());
+		setIdFactory(new IdAutoFactory());
+
+		final SqlManager sqlManager =
+			new SqlManagerMySql(ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory());
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -229,7 +224,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests MySQL Server specific SQL statements.
 	 */
 	public void testMySqlServerGuid() {
-		final SqlManager sqlManager = new SqlManagerMySql(new IdGuidFactory());
+		final SqlManager sqlManager = new SqlManagerMySql(setIdFactory(new IdGuidFactory()));
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -301,7 +296,10 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests SQL Server specific SQL statements.
 	 */
 	public void testSqlServer() {
-		final SqlManager sqlManager = new SqlManagerSqlServer(new IdAutoFactory());
+		setIdFactory(new IdAutoFactory());
+
+		final SqlManager sqlManager =
+			new SqlManagerSqlServer(ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory());
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -373,7 +371,7 @@ public final class TestSqlBuilder extends TestCommonCase {
 	 * This method tests SQL Server specific SQL statements.
 	 */
 	public void testSqlServerGuid() {
-		final SqlManager sqlManager = new SqlManagerSqlServer(new IdGuidFactory());
+		final SqlManager sqlManager = new SqlManagerSqlServer(setIdFactory(new IdGuidFactory()));
 		assertNotNull(sqlManager);
 
 		// test creating a table
@@ -465,5 +463,18 @@ public final class TestSqlBuilder extends TestCommonCase {
 		assertNotNull(execution);
 
 		assertEquals(strSql, execution.getSql());
+	}
+
+	/**
+	 * This method sets the default id factory.
+	 * 
+	 * @return
+	 */
+	private IdFactory setIdFactory(final IdFactory idFactory) {
+		assertNotNull(idFactory);
+
+		ConnectionManagerFactory.getFactory().getDefaultManager().setIdFactory(idFactory);
+
+		return idFactory;
 	}
 }

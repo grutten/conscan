@@ -25,6 +25,14 @@ public abstract class ColumnType {
 	public abstract int getJdbcType();
 
 	/**
+	 * This returns the length associated with the type.
+	 */
+	public int getLength() {
+		// default is to associated the length with the particular column
+		return -1;
+	}
+
+	/**
 	 * This method returns an object that represents the value found in the result set.
 	 * 
 	 * @throws SQLException
@@ -50,6 +58,14 @@ public abstract class ColumnType {
 	 */
 	public boolean idDerived() {
 		return false; // default is that the column type is not derived
+	}
+
+	/**
+	 * This method returns if the type defines the length of the field.
+	 */
+	public boolean isLengthSetByType() {
+		// default is to associated the length with the particular column
+		return false;
 	}
 
 	/**

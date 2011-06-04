@@ -14,6 +14,29 @@ abstract class ColumnTypeIdBase extends ColumnTypeIdentifierBase {
 	}
 
 	/**
+	 * This returns the length associated with the type.
+	 */
+	@Override
+	public int getLength() {
+		int nLength = -1;
+		final IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+		if (idFactory.hasLength()) {
+			nLength = idFactory.getLength();
+		}
+
+		return nLength;
+	}
+
+	/**
+	 * This method returns if the type defines the length of the field.
+	 */
+	@Override
+	public boolean isLengthSetByType() {
+		final IdFactory idFactory = ConnectionManagerFactory.getFactory().getDefaultManager().getIdFactory();
+		return idFactory.hasLength();
+	}
+
+	/**
 	 * This method gives a changes for the type to set any restrictions on the column type.
 	 * 
 	 * @param columnDefinition ColumnDefinition being defined by this type.

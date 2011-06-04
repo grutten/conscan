@@ -80,6 +80,7 @@ public class ColumnDefinition extends Element implements Column {
 	 * 
 	 * @return Returns the fully qualified name.
 	 */
+	@Override
 	public String getFQName() {
 		final StringBuilder strBuffer = new StringBuilder();
 		if (getTable() != null) {
@@ -93,12 +94,19 @@ public class ColumnDefinition extends Element implements Column {
 	 * @return Returns the length.
 	 */
 	public int getLength() {
-		return m_nLength;
+		int nLength = m_nLength;
+
+		if (m_type.hasLength() && m_type.isLengthSetByType()) {
+			nLength = m_type.getLength();
+		}
+
+		return nLength;
 	}
 
 	/**
 	 * This method returns the table for which this column is a part of.
 	 */
+	@Override
 	public Table getTable() {
 		return m_parentTable != null ? m_parentTable.get() : null;
 	}
@@ -106,6 +114,7 @@ public class ColumnDefinition extends Element implements Column {
 	/**
 	 * @return Returns the type.
 	 */
+	@Override
 	public ColumnType getType() {
 		return m_type;
 	}
