@@ -10,6 +10,13 @@ import com.tippingpoint.sql.SqlBaseException;
  */
 public interface Persistence {
 	/**
+	 * This method deletes the object.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	void delete(Map<String, FieldValue> m_mapValues) throws SqlBaseException;
+
+	/**
 	 * This method returns a collection of objects representing all of the objects of this type.
 	 * 
 	 * @param listCommonValues List containing the values that will be common to all the objects..

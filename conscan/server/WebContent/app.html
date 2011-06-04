@@ -112,6 +112,18 @@
 				</table>
 			</form>
 		</div>
+		<div class="hidden wideborder curvedblock" id="questiondialog">
+			<div class="msg"></div>
+			<form id="questiondialogform">
+				<input type="hidden" name="typename" value=""/>
+				<input type="hidden" name="itemid" value=""/>
+				<div id="questiondialogbody"></div>
+				<div class="right">
+					<input type="submit" value="Yes" class="addsubmit"></input>
+					<input type="reset" value="No" class="simplemodal-close"></input>
+				</div>
+			</form>
+		</div>
 		<script type="text/javascript">
 			jQuery('#loginlink').live('click', showlogin);
 			jQuery('#logoutlink').live('click', logout);
@@ -123,42 +135,33 @@
 			var strFkTableNameValue = "empty";
 
 			function addOrUpdateItem(dialog) {
-				var name = jQuery('input[name="typename"]:hidden').val();
-				var id = jQuery('input[name="itemidentifier"]:hidden').val();
-				
-				var options;
+				var dialog = jQuery('form#adddialogform');
+				var name = dialog.find('input[name="typename"]:hidden').val();
+				var id = dialog.find('input[name="itemidentifier"]:hidden').val();
+
+				var type = 'POST';
+				var url = 'rest/' + name;
 				if (typeof id == 'string' && id.length > 0) {
-					// prepare Options Object
-					options = {
-						url: 'rest/' + name + '/' + id,
-						type: 'PUT',
-						success: function(responseXML, statusText, xhr, form) {
-							//alert('Success: ' + statusText);
-							getItemList(name);
-							jQuery.modal.close();
-						},
-						error: function(responseXML, statusText, xhr, form) {
-							alert('Error: ' + statusText);
-						}
-					};
-				} else {
-					// prepare Options Object
-					options = {
-						url: name,
-						type: 'POST',
-						success: function(responseXML, statusText, xhr, form) {
-							//alert('Success: ' + statusText);
-							getItemList(name);
-							jQuery.modal.close();
-						},
-						error: function(responseXML, statusText, xhr, form) {
-							alert('Error: ' + statusText);
-						}
-					};
+					type = 'PUT';
+					url = url + '/' + id;
 				}
 
+				// prepare Options Object
+				var options = {
+					url: url,
+					type: type,
+					success: function(responseXML, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						getItemList(name);
+						jQuery.modal.close();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
 				// pass options to ajaxForm
-				jQuery('#adddialogform').ajaxForm(options);
+				dialog.ajaxForm(options);
 			}
 
 			function addJsonAccepts(req) {
@@ -180,8 +183,31 @@
 				input.attr('name', name);
 				input.attr('type', type);
 				input.attr('value', value);
-				
+
 				return input;
+			}
+
+			function deleteItem(dialog) {
+				var dialog = jQuery('form#questiondialogform');
+				var name = dialog.find('input[name="typename"]:hidden').val();
+				var id = dialog.find('input[name="itemidentifier"]:hidden').val();
+
+				// prepare Options Object
+				var options = {
+					url: 'rest/' + name + '/' + id,
+					type: 'DELETE',
+					success: function(responseXML, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						getItemList(name);
+						jQuery.modal.close();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
+				// pass options to ajaxForm
+				dialog.ajaxForm(options);
 			}
 
 			function display(table, object) {
@@ -270,10 +296,24 @@
 			function findIdForRow(tr) {
 				return jQuery(tr).find('span.identifier').text();
 			}
-			
+
+			function getDisplay(name, object) {
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				var display = "";
+				if ('staff' == name) {
+					display = object.firstname + " " + object.lastname;
+				} else {
+					display = "object of type " + name;
+				}
+
+				return display;
+			}
+
 			function getItem(item, id) {
 				var item;
-				
+
 				jQuery.ajax({
 					async: false,
 					type: 'GET',
@@ -287,7 +327,7 @@
 						alert('Item ' + item + ' with id '+ id + ' error: ' + statusText);
 					}
 				});
-				
+
 				return item;
 			}
 
@@ -356,13 +396,13 @@
 					}
 
 					var input = createInput(inputType, column.name, inputValue);
-					
+
 					inputCell.append(input);
 				}
 
 				return row;
 			}
-			
+
 			function getTableColumns(table) {
 				var tablecolumns = new Array();
 				tablecolumns.push({"sTitle": "", "bSortable": false, "sWidth": "40px"});
@@ -465,7 +505,7 @@
 
 				var columns = getobjectoptions(name);
 				var table = columns.table;
-				
+
 				if (typeof object != 'undefined') {
 					if (typeof table.primarykeycolumn != 'undefined') {
 						var input = createInput('hidden', 'itemidentifier', object[table.primarykeycolumn]);
@@ -481,6 +521,25 @@
 						body.append(row);
 					}
 				}
+			}
+
+			function populateDeleteItemForm(name, object) {
+				jQuery('input[name="typename"]:hidden').attr('value', name);
+
+				var body = jQuery("#questiondialogbody");
+				body.empty();
+
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				if (typeof object != 'undefined') {
+					if (typeof table.primarykeycolumn != 'undefined') {
+						var input = createInput('hidden', 'itemidentifier', object[table.primarykeycolumn]);
+						body.append(input);
+					}
+				}
+
+				body.append('Are you sure you want to delete ' + getDisplay(name, object) + '?');
 			}
 
 			function processNotes(responseXML, statusText, xhr, form) {
@@ -557,7 +616,24 @@
 
 			function showdeleteitem() {
 				var id = findIdForRow(jQuery(this).parents('tr'));
-				alert("showdeleteitem: " + id);
+				//alert("showdeleteitem: " + id);
+
+				var name = findCurrentType();
+				//alert("showdeleteitem: " + name);
+
+				var item = getItem(name, id);
+
+				populateDeleteItemForm(name, item);
+				jQuery("#questiondialog").modal({
+					opacity:80,
+					overlayCss: {
+						backgroundColor:"#EEEEEE"
+					},
+					containerCss: {
+						backgroundColor:"#EEEEEE",
+					},
+					onShow: deleteItem
+				});
 			}
 
 			function showlogin() {
@@ -606,9 +682,9 @@
 
 				var name = findCurrentType();
 				//alert("showupdateitem: " + name);
-				
+
 				var item = getItem(name, id);
-				
+
 				populateAddItemForm(name, item);
 				jQuery("#adddialog").modal({
 					opacity:80,

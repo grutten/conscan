@@ -9,6 +9,13 @@ import com.tippingpoint.sql.SqlBaseException;
  */
 public interface BusinessObject {
 	/**
+	 * This method removes the object from the persistence layer.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	void delete() throws SqlBaseException;
+
+	/**
 	 * This method returns a list of all the named elements of the business object.
 	 */
 	Iterator<String> getFields();

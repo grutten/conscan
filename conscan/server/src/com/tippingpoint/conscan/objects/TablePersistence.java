@@ -13,6 +13,7 @@ import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ForeignKey;
 import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.IdFactory;
+import com.tippingpoint.database.PrimaryKeyConstraint;
 import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
 import com.tippingpoint.sql.ConnectionManager;
@@ -21,6 +22,7 @@ import com.tippingpoint.sql.Operation;
 import com.tippingpoint.sql.ParameterizedValue;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
+import com.tippingpoint.sql.SqlDelete;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
 import com.tippingpoint.sql.SqlManagerException;
@@ -41,6 +43,9 @@ public class TablePersistence implements Persistence {
 
 	/** This member holds the id column for the table. */
 	private Column m_PrimaryKeyColumn;
+
+	/** This member holds the SQL used to generate a delete statement, based on primary key. */
+	private SqlDelete m_sqlDelete;
 
 	/** This member holds the SQL used to generate an insert statement. */
 	private SqlInsert m_sqlInsert;
@@ -89,7 +94,37 @@ public class TablePersistence implements Persistence {
 
 		generateInsert();
 		generateUpdate();
+		generateDelete();
 		generateQueryById();
+	}
+
+	/**
+	 * This method deletes the object.
+	 * @throws SqlBaseException 
+	 */
+	@Override
+	public void delete(final Map<String, FieldValue> mapValues) throws SqlBaseException {
+		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
+		Connection conn = null;
+		SqlExecution sqlDelete = null;
+
+		try {
+			conn = manager.getConnection();
+			sqlDelete = manager.getSqlManager().getExecution(m_sqlDelete);
+
+			// populate the delete statement with the parameters from the map
+			setValues(sqlDelete, mapValues);
+
+			// execute the update
+			sqlDelete.executeUpdate(conn);
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException("Error updating into table.", e);
+		}
+		finally {
+			ConnectionManager.close(conn, sqlDelete, null);
+		}
 	}
 
 	/**
@@ -389,6 +424,36 @@ public class TablePersistence implements Persistence {
 				dataRule.apply(mapValues);
 			}
 		}
+	}
+
+	/**
+	 * This method generates the statement for the delete of this table.
+	 */
+	private void generateDelete() {
+		final SqlDelete sqlDelete = new SqlDelete(m_table);
+
+		final PrimaryKeyConstraint primaryKey = m_table.getPrimaryKey();
+		if (primaryKey != null) {
+			final Iterator<Column> iterColumns = primaryKey.getColumns();
+
+			// loop through all the columns to put into the statement
+			while (iterColumns.hasNext()) {
+				final Column column = iterColumns.next();
+				
+				sqlDelete.add(new ValueCondition(column, Operation.EQUALS, null));
+			}
+		} else {
+			final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
+
+			// loop through all the columns to put into the statement
+			while (iterColumns.hasNext()) {
+				final Column column = iterColumns.next();
+				
+				sqlDelete.add(new ValueCondition(column, Operation.EQUALS, null));
+			}
+		}
+
+		m_sqlDelete = sqlDelete;
 	}
 
 	/**

@@ -90,5 +90,11 @@ public class TestJsonBusinessObject {
 		public void save(final Map<String, FieldValue> mapValues) throws SqlBaseException {
 			// don't save anything since this is just simulating persistence
 		}
+
+		@Override
+		public void delete(Map<String, FieldValue> m_mapValues) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

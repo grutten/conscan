@@ -37,6 +37,15 @@ public abstract class BusinessObjectImpl implements BusinessObject {
 	}
 
 	/**
+	 * This method removes the object from the persistence layer.
+	 * @throws SqlBaseException 
+	 */
+	@Override
+	public final void delete() throws SqlBaseException {
+		m_persistence.delete(m_mapValues);
+	}
+
+	/**
 	 * This method returns a list of all the named elements of the business object.
 	 */
 	@Override
