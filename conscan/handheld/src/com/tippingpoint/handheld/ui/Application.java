@@ -33,7 +33,7 @@ public class Application extends Frame {
     	
    		DataInterface  d = null;
     	if (!bEnvironmentIsHandheld) {    	
-        	strConfigFile = "g:\\wkspc\\conscan\\handheld\\xml\\scanner.xml";
+        	strConfigFile = "xml\\scanner.xml";
     	    Data d2 = new Data(strConfigFile);
     	    System.out.println(d2.toString());
     	} 

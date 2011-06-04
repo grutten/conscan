@@ -226,20 +226,20 @@ public class Data implements DataInterface{
 	 * DisplayOrder.  However, the intent of this method is that it would be
 	 * used to order only those compliance values for a single compiance
 	 * configuration in which case all the DisplayOrder values would be unique.
-	 * @param complianceconfig
+	 * @param arrObjects is an ArrayList<DisplayOrderInterface>
 	 */
 	private void applyDisplayOrder(ArrayList arrObjects) {
 		Iterator i = arrObjects.iterator();
 		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
 		while (i.hasNext()) {
-			ComplianceValue compliancevalue = (ComplianceValue)i.next();
-			tm.put(new Integer(compliancevalue.getDisplayOrder()), compliancevalue);
+			DisplayOrderInterface displayOrderObject = (DisplayOrderInterface)i.next();
+			tm.put(new Integer(displayOrderObject.getDisplayOrder()), displayOrderObject);
 		}
 		i = tm.values().iterator();
 		arrObjects.clear();
 		while (i.hasNext()) {
-			ComplianceValue compliancevalue = (ComplianceValue)i.next();
-			arrObjects.add(compliancevalue);		// use: display/combo
+			DisplayOrderInterface displayOrderObject = (DisplayOrderInterface)i.next();
+			arrObjects.add(displayOrderObject);		// use: display/combo
 		}
 	}
 	
@@ -278,19 +278,11 @@ public class Data implements DataInterface{
 		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
 		ArrayList arrActivity = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY);
 		Iterator i = arrActivity.iterator();
-		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
 		while (i.hasNext()) {
 			Activity activity = (Activity)i.next();
-			tm.put(new Integer(activity.getDisplayOrder()), activity);
+			mapCurr.put(activity.getName(), activity);
 		}
-		Collection c = tm.values();
-		i = c.iterator();
-		arrActivity.clear();
-		while (i.hasNext()) {
-			Activity activity = (Activity)i.next();
-			mapCurr.put(activity.getName(), activity);  // use: lookup
-			arrActivity.add(activity);					// use: display/combo
-		}
+		applyDisplayOrder(arrActivity);
 		System.out.println("Index Created: ACTIVITY");
 		
 		// Populate the compliance index
@@ -300,7 +292,7 @@ public class Data implements DataInterface{
 		while (i.hasNext()) {
 			ComplianceConfiguration configuration = (ComplianceConfiguration)i.next();
 			mapCurr.put(configuration.getComplianceId(), configuration);
-			applyDisplayOrder(configuration);
+			applyDisplayOrder(configuration.getValues());
 		}
 		System.out.println("Index Created: COMPLIANCE");
 		

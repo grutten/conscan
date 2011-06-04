@@ -1,6 +1,6 @@
 package com.tippingpoint.handheld.data;
 
-public class Activity {
+public class Activity implements DisplayOrderInterface {
 	private static final String SCANTYPE_OFFENDER = "1";
 	private static final String SCANTYPE_CELL = "2";
 	private static final String COMPLIANCETYPE_OFFENDER = "1";

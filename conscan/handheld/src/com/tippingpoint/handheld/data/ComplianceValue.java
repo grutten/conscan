@@ -1,6 +1,6 @@
 package com.tippingpoint.handheld.data;
 
-public class ComplianceValue {
+public class ComplianceValue implements DisplayOrderInterface {
 	private String m_strComplianceValueId;
 	
 	private String m_strComplianceId;
