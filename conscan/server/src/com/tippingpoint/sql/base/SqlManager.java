@@ -28,6 +28,7 @@ import com.tippingpoint.sql.SqlAlter;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.sql.SqlBuilderException;
 import com.tippingpoint.sql.SqlCreate;
+import com.tippingpoint.sql.SqlDelete;
 import com.tippingpoint.sql.SqlDrop;
 import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.sql.SqlInsert;
@@ -90,6 +91,7 @@ public abstract class SqlManager {
 		register(new SqlQueryExecutionFactory(), SqlQuery.class);
 		register(new SqlInsertExecutionFactory(), SqlInsert.class);
 		register(new SqlUpdateExecutionFactory(), SqlUpdate.class);
+		register(new SqlDeleteExecutionFactory(), SqlDelete.class);
 
 		registerType("varchar", ColumnTypeString.TYPE);
 		registerType("nvarchar", ColumnTypeString.TYPE);

@@ -116,10 +116,10 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlQuery3.add(tableUserActivity);
 			sqlQuery3.add(tableActivity, true);
 
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, useractivity, activity "
-					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
-					sqlManager, sqlQuery3);
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, "
+					+ "activity.activityid, activity.title, activity.description, activity.creation, "
+					+ "activity.lastmodified FROM demographic, useractivity, activity WHERE demographic.userid = "
+					+ "useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager, sqlQuery3);
 
 			// test many to many with non-specified tables
 			final SqlQuery sqlQuery4 = new SqlQuery();
@@ -130,10 +130,26 @@ public final class TestSqlBuilder extends TestCommonCase {
 			sqlQuery4.add(tableDemographic, true);
 			sqlQuery4.add(tableActivity, true);
 
-			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, activity.activityid, activity.title, "
-					+ "activity.description, activity.creation, activity.lastmodified FROM demographic, activity, useractivity "
-					+ "WHERE demographic.userid = useractivity.userid AND activity.activityid = useractivity.activityid",
-					sqlManager, sqlQuery4);
+			check("SELECT demographic.userid, demographic.firstName, demographic.lastName, demographic.creation, "
+					+ "activity.activityid, activity.title, activity.description, activity.creation, "
+					+ "activity.lastmodified FROM demographic, activity, useractivity WHERE demographic.userid = "
+					+ "useractivity.userid AND activity.activityid = useractivity.activityid", sqlManager, sqlQuery4);
+
+			final SqlDelete sqlDelete = new SqlDelete(tableDemographic);
+			assertNotNull(sqlDelete);
+
+			check("DELETE FROM demographic", sqlManager, sqlDelete);
+
+			sqlDelete.add(new ValueCondition(tableDemographic.getColumn("userid"), Operation.EQUALS, "newuser"));
+
+			check("DELETE FROM demographic WHERE demographic.userid = ?", sqlManager, sqlDelete);
+
+			sqlDelete.add(new ValueCondition(tableDemographic.getColumn("firstName"), Operation.EQUALS, "John"));
+			sqlDelete.add(new ValueCondition(tableDemographic.getColumn("lastName"), Operation.EQUALS, "Doe"));
+
+			check("DELETE FROM demographic WHERE demographic.userid = ? AND demographic.firstName = ? AND "
+					+ "demographic.lastName = ?", sqlManager, sqlDelete);
+
 		}
 		catch (final SqlManagerException e) {
 			e.printStackTrace();
