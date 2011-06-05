@@ -491,6 +491,10 @@
 				jQuery('#logindialogform').ajaxForm(options);
 			}
 
+			function open_win() {
+				window.open("http://192.168.1.69:8080/server/scannerOptions.jnlp");
+			}
+			
 			function populateAddItemForm(name, object) {
 				var title = 'New ';
 				if (typeof object != 'undefined') {
@@ -701,6 +705,9 @@
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
+				
+				// Start the JNLP application for pulling/pushing handheld data
+				open_win();
 			});
 		</script>
 	</body>
