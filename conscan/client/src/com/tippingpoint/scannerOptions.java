@@ -25,7 +25,7 @@ public class scannerOptions extends Applet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String m_strIpAddress = "192.168.1.108";
+	private String m_strIpAddress = "192.168.1.102";
 	
 	/**
 	 * arg0 - ipAddress e.g. "192.168.1.108"
@@ -64,7 +64,7 @@ public class scannerOptions extends Applet {
         HttpClient httpclient = new DefaultHttpClient();
         FileOutputStream outstreamXml = null;
         try {
-        	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
+        	String strUrl = "http://localhost:8080/conscan/scanner";
         	System.out.println("scannerOptions IPAddress: " + strUrl);
             HttpOptions httpOptions = new HttpOptions(strUrl);
 
@@ -74,7 +74,8 @@ public class scannerOptions extends Applet {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
+            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {

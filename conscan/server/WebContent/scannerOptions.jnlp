@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<jnlp spec="1.0+" codebase="http://192.168.1.108:8080/server/" href="scannerOptions.jnlp">
+<jnlp spec="1.0+" codebase="http://localhost:8080/conscan/" href="scannerOptions.jnlp">
 	<information>
 		<title>Jnlp Testing</title>
 		<vendor>CheckMate</vendor>
-		<homepage href="http://192.168.1.108:8080/server/" />
+		<homepage href="http://localhost:8080/conscan/" />
 		<description>Testing: ConScan</description>
 	</information>
 	<security>
