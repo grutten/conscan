@@ -1,10 +1,19 @@
 package com.tippingpoint;
 
 import java.applet.Applet;
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Panel;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -27,7 +36,7 @@ import org.apache.http.util.EntityUtils;
 /**
  * Example how to use unbuffered chunk-encoded POST request.
  */
-public class scannerOptions extends Applet {
+public class scannerOptions extends Frame {
 
 	/**
 	 * This Applet serves 2 purposes: 1) it provides a way for a client workstation
@@ -37,7 +46,6 @@ public class scannerOptions extends Applet {
 	private static final long serialVersionUID = -3581240315115581119L;
 
 //	private String m_strIpAddress = "192.168.1.102";
-	private static Thread m_threadPolling;
 	private String m_strIpAddress = "192.168.1.69";
 	private static boolean m_bKeepRunning = true;
 	
@@ -74,15 +82,46 @@ public class scannerOptions extends Applet {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		  scannerOptions app = new scannerOptions();
+		// UI - display the simple user interface
+		scannerOptions objScannerOptions = new scannerOptions();
+		Frame frame = objScannerOptions.setupFrame();
+ 		frame.setVisible(true);
 
-
-		  Frame frame = new Frame("CheckMate");
-		  frame.setSize(400,200);
+		// background thread - fire it up
+		PostData pdThread = new PostData("PollAndPost");
+		pdThread.start();
+	}
 		  
-		  frame.add(app);
-		  frame.setVisible(true);
-		  frame.addWindowListener(new WindowAdapter(){
+
+    public void setIpAddress(String strIpAddress) {
+    	m_strIpAddress = strIpAddress;
+    }
+    
+    private Frame setupFrame() {
+    	// FRAME
+    	Frame frame = new Frame("ConScan - Handheld");
+       	frame.setLayout(new BorderLayout());
+		frame.setSize(300,100);
+        
+        // BUTTON
+	    Button buttonOptionScanner = new Button("GET Scanner Data from Server");
+	    buttonOptionScanner.setSize(100, 50);
+	    ActionListener buttonListenerOptionScanner = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	retrieveXml(getIpAddress());
+            	System.out.println("button pressed");
+            }
+        };
+        buttonOptionScanner.addActionListener(buttonListenerOptionScanner);
+	    
+	    // PANEL
+        Panel panelMain = new Panel();
+        panelMain.setLayout(new GridBagLayout());
+	    panelMain.add(buttonOptionScanner);
+
+        frame.add(panelMain, BorderLayout.NORTH);
+
+		frame.addWindowListener(new WindowAdapter(){
 			  public void windowClosing(WindowEvent e){
 				  m_bKeepRunning = false;
 				  
@@ -96,25 +135,11 @@ public class scannerOptions extends Applet {
 				  
 				  System.exit(0);
 		      }
-		   });
-	
-		  PostData pdThread = new PostData("asdf");
-		  pdThread.start();
-	}
-		  
-    public String getIpAddress() {
-    	return m_strIpAddress;
-    }
+		});
 
-    public void paint(Graphics g) {
-   		retrieveXml(getIpAddress());
-    	g.drawString("GET scanner.xml   Sun 2:02 PM", 50, 25);
-    	
-    }    
-
-    public void setIpAddress(String strIpAddress) {
-    	m_strIpAddress = strIpAddress;
+		  return frame;
     }
+    
     /**
      * This method copies the source file to the destination file and adds
      * a closing </objects> tag to the destination file in the process.
@@ -171,6 +196,10 @@ public class scannerOptions extends Applet {
      
     }
 
+    private String getIpAddress() {
+    	return m_strIpAddress;
+    }
+    
     private static void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
