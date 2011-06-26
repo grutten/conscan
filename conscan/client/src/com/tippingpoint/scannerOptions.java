@@ -39,6 +39,35 @@ public class scannerOptions extends Applet {
 //	private String m_strIpAddress = "192.168.1.102";
 	private static Thread m_threadPolling;
 	private String m_strIpAddress = "192.168.1.69";
+	private static boolean m_bKeepRunning = true;
+	
+	public static class PostData extends Thread {
+		public PostData(String str) {
+			super(str);
+		}
+		
+		public void run() {
+			int i = 1;
+			while (m_bKeepRunning && i > 0) {
+				try {
+					Thread.sleep(3000);
+				} 
+				catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        	try {
+					processDir();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("counter: " + Integer.valueOf(i++));
+			}
+			System.out.println("STOPPING thread");
+
+		}
+	}
 	
 	/**
 	 * arg0 - ipAddress e.g. "192.168.1.108"
@@ -55,56 +84,31 @@ public class scannerOptions extends Applet {
 		  frame.setVisible(true);
 		  frame.addWindowListener(new WindowAdapter(){
 			  public void windowClosing(WindowEvent e){
-//				  m_threadPolling.interrupt();
+				  m_bKeepRunning = false;
+				  
+				  try {
+					  Thread.sleep(1500);
+				  } 
+				  catch (InterruptedException e1) {
+					  // TODO Auto-generated catch block
+					  e1.printStackTrace();
+				  }
+				  
 				  System.exit(0);
 		      }
 		   });
-//		  startPollingThread();
 	
+		  PostData pdThread = new PostData("asdf");
+		  pdThread.start();
 	}
 		  
-	private static void startPollingThread() {
-		m_threadPolling = new Thread() {
-			public void run() {
-				EventQueue.invokeLater(monitorDirectory);
-			}
-		};
-		
-		m_threadPolling.start();
-		
-	}
-	
-	// POLL directory - POST of handheld data
-	private static Runnable monitorDirectory = new Runnable() {
-		public void run () {
-		
-			int i = 1;
-			while (i > 0) {
-				try {
-					Thread.sleep(3000);
-				} 
-				catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        	try {
-					processDir();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("counter: " + Integer.valueOf(i++));
-			}
-		}	
-	};
-	
     public String getIpAddress() {
     	return m_strIpAddress;
     }
 
     public void paint(Graphics g) {
    		retrieveXml(getIpAddress());
-    	g.drawString("GET scanner.xml   Sat 2:37 PM", 50, 25);
+    	g.drawString("GET scanner.xml   Sun 1:49 PM", 50, 25);
     	
     }    
 
@@ -127,8 +131,9 @@ public class scannerOptions extends Applet {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-//            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
-            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
+            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("MGGscanner.xml");
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
@@ -251,8 +256,8 @@ public class scannerOptions extends Applet {
     private static void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
-            HttpPost httppost = new HttpPost("http://localhost:8080" +
-                    "/server/scannerlog");
+//            HttpPost httppost = new HttpPost("http://localhost:8080" + "/server/scannerlog");
+            HttpPost httppost = new HttpPost("http://192.168.1.69:8080" + "/server/scannerlog");
 
             FileBody bin = new FileBody(new File(strFilenameWPath));
             StringBody comment = new StringBody("A binary file of some kind");
