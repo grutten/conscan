@@ -45,8 +45,7 @@ public class scannerOptions extends Frame {
 	 */
 	private static final long serialVersionUID = -3581240315115581119L;
 
-//	private String m_strIpAddress = "192.168.1.102";
-	private String m_strIpAddress = "192.168.1.69";
+	private String m_strIpAddress = "localhost";
 	private static boolean m_bKeepRunning = true;
 	
 	public static class PostData extends Thread {
@@ -277,7 +276,6 @@ public class scannerOptions extends Frame {
         FileOutputStream outstreamXml = null;
         try {
         	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
-//        	String strUrl = "http://localhost:8080/conscan/scanner";
         	System.out.println("scannerOptions IPAddress: " + strUrl);
             HttpOptions httpOptions = new HttpOptions(strUrl);
 
@@ -287,9 +285,9 @@ public class scannerOptions extends Frame {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
-//            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
-//            outstreamXml = new FileOutputStream("MGGscanner.xml");
+//            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
+            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("MGGscanner.xml");  // MAC
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
