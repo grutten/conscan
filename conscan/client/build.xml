@@ -5,6 +5,14 @@
 				<attribute name="Main-Class" value="post" />
 			</manifest>
 		</jar>
+		<signjar destDir="." alias="conscan" keystore="scannerOptions"
+    			storepass="1asdfasdf" preservelastmodified="true">
+  			<path>
+    			<fileset dir="." includes="**/client.jar" />
+  			</path>
+  			<flattenmapper />
+		</signjar>
+		<copy file="client.jar" todir="../server/WebContent"/>
 	</target>
 	
 	<target name="buildcompile">
