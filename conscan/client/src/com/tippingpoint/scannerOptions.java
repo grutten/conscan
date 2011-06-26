@@ -108,95 +108,13 @@ public class scannerOptions extends Applet {
 
     public void paint(Graphics g) {
    		retrieveXml(getIpAddress());
-    	g.drawString("GET scanner.xml   Sun 1:49 PM", 50, 25);
+    	g.drawString("GET scanner.xml   Sun 2:02 PM", 50, 25);
     	
     }    
 
     public void setIpAddress(String strIpAddress) {
     	m_strIpAddress = strIpAddress;
     }
-
-    private static void retrieveXml(String strIpAddress) {
-        HttpClient httpclient = new DefaultHttpClient();
-        FileOutputStream outstreamXml = null;
-        try {
-        	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
-//        	String strUrl = "http://localhost:8080/conscan/scanner";
-        	System.out.println("scannerOptions IPAddress: " + strUrl);
-            HttpOptions httpOptions = new HttpOptions(strUrl);
-
-            System.out.println("executing request " + httpOptions.getURI());
-
-            // Create a response handler
-            HttpResponse response = httpclient.execute(httpOptions);
-            HttpEntity resEntity = response.getEntity();
-            
-            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
-//            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
-//            outstreamXml = new FileOutputStream("MGGscanner.xml");
-            resEntity.writeTo(outstreamXml);
-            
-        } catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-        finally {
-        	if (outstreamXml != null) {
-        		try {
-        			outstreamXml.close();
-        		}
-        		catch (IOException e) {
-        			; // eat
-        		}
-        	}
-            try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
-        }
-    }
-    
-    // *** Polling logic
-    private static void processDir() throws Exception {
-    	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
-    	String strPathToMonitor = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
-//    	String strPathToMonitor = args[0];
-        File dir = new File(strPathToMonitor);
-
-        String[] children = dir.list();
-        if (children == null) {
-            // Either dir does not exist or is not a directory
-        } 
-        else {
-        	String strPathSeparator = "\\";  // Windows separator
-            for (int i=0; i<children.length; i++) {
-            	String strSrcFilename = children[i];
-            	
-            	// Determine if this is Windows or Apple
-            	if (i == 0) {
-            		File f = new File(strPathToMonitor + strPathSeparator + strSrcFilename);
-            	
-            		if (!f.exists())
-            			strPathSeparator = "/";  // Apple OS X separator
-            	}
-            	
-                // Get filename of file or directory
-                String strSrcFilenameWPath = strPathToMonitor + strPathSeparator + strSrcFilename;
-                if (strSrcFilenameWPath.indexOf("_log") > 0) {
-                	String strDestFilename = strSrcFilename.substring(1);
-                    String strDestFilenameWPath = strPathToMonitor + strPathSeparator + strDestFilename;
-                	
-                    System.out.println("processing: " + strSrcFilenameWPath);
-                    addClosingXmlTag(strDestFilenameWPath, strSrcFilenameWPath);
-	                postIt(strDestFilenameWPath);
-	                
-	                File f = new File(strDestFilenameWPath);
-	                f.delete();
-                }
-            }
-        }
-    }
-
     /**
      * This method copies the source file to the destination file and adds
      * a closing </objects> tag to the destination file in the process.
@@ -252,7 +170,7 @@ public class scannerOptions extends Applet {
 
      
     }
-    
+
     private static void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
@@ -282,7 +200,87 @@ public class scannerOptions extends Applet {
             try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
         }
     }
-        
+ 
     
+    // *** Polling logic
+    private static void processDir() throws Exception {
+    	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
+    	String strPathToMonitor = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
+//    	String strPathToMonitor = args[0];
+        File dir = new File(strPathToMonitor);
 
+        String[] children = dir.list();
+        if (children == null) {
+            // Either dir does not exist or is not a directory
+        } 
+        else {
+        	String strPathSeparator = "\\";  // Windows separator
+            for (int i=0; i<children.length; i++) {
+            	String strSrcFilename = children[i];
+            	
+            	// Determine if this is Windows or Apple
+            	if (i == 0) {
+            		File f = new File(strPathToMonitor + strPathSeparator + strSrcFilename);
+            	
+            		if (!f.exists())
+            			strPathSeparator = "/";  // Apple OS X separator
+            	}
+            	
+                // Get filename of file or directory
+                String strSrcFilenameWPath = strPathToMonitor + strPathSeparator + strSrcFilename;
+                if (strSrcFilenameWPath.indexOf("_log") > 0) {
+                	String strDestFilename = strSrcFilename.substring(1);
+                    String strDestFilenameWPath = strPathToMonitor + strPathSeparator + strDestFilename;
+                	
+                    System.out.println("processing: " + strSrcFilenameWPath);
+                    addClosingXmlTag(strDestFilenameWPath, strSrcFilenameWPath);
+	                postIt(strDestFilenameWPath);
+	                
+	                File f = new File(strDestFilenameWPath);
+	                f.delete();
+                }
+            }
+        }
+    }
+
+    private static void retrieveXml(String strIpAddress) {
+        HttpClient httpclient = new DefaultHttpClient();
+        FileOutputStream outstreamXml = null;
+        try {
+        	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
+//        	String strUrl = "http://localhost:8080/conscan/scanner";
+        	System.out.println("scannerOptions IPAddress: " + strUrl);
+            HttpOptions httpOptions = new HttpOptions(strUrl);
+
+            System.out.println("executing request " + httpOptions.getURI());
+
+            // Create a response handler
+            HttpResponse response = httpclient.execute(httpOptions);
+            HttpEntity resEntity = response.getEntity();
+            
+            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
+//            outstreamXml = new FileOutputStream("MGGscanner.xml");
+            resEntity.writeTo(outstreamXml);
+            
+        } catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        finally {
+        	if (outstreamXml != null) {
+        		try {
+        			outstreamXml.close();
+        		}
+        		catch (IOException e) {
+        			; // eat
+        		}
+        	}
+            try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
+        }
+    }
+    
 }
