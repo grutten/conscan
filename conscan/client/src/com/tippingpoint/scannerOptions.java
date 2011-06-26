@@ -1,17 +1,10 @@
 package com.tippingpoint;
 
-import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Button;
-import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Panel;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -39,45 +32,27 @@ import org.apache.http.util.EntityUtils;
 public class scannerOptions extends Frame {
 
 	/**
-	 * This Applet serves 2 purposes: 1) it provides a way for a client workstation
+	 * This Application serves 2 purposes: 1) it provides a way for a client workstation
 	 * to GET ScannerOptions data from the server and 2) polls a directory for data
-	 * from the handheld to POST to the server.
+	 * from the handheld for POSTing to the the server.
 	 */
 	private static final long serialVersionUID = -3581240315115581119L;
 
 	private String m_strIpAddress = "localhost";
+//	private String m_strIpAddress = "192.168.1.69";
+	
+	private String m_strAppName = "conscan";
+//	private String m_strAppName = "server";
+	
+	private String m_strClientScannerOPTIONSXmlPath = "C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml";
+//	private String m_strClientScannerOPTIONSXmlPath = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml";
+//  private String m_strClientScannerOPTIONSXmlPath = "MGGscanner.xml";  // MAC
+	
 	private static boolean m_bKeepRunning = true;
 	
-	public static class PostData extends Thread {
-		public PostData(String str) {
-			super(str);
-		}
-		
-		public void run() {
-			int i = 1;
-			while (m_bKeepRunning && i > 0) {
-				try {
-					Thread.sleep(3000);
-				} 
-				catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        	try {
-					processDir();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("counter: " + Integer.valueOf(i++));
-			}
-			System.out.println("STOPPING thread");
-
-		}
-	}
 	
 	/**
-	 * arg0 - ipAddress e.g. "192.168.1.108"
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args){
@@ -90,54 +65,11 @@ public class scannerOptions extends Frame {
 		PostData pdThread = new PostData("PollAndPost");
 		pdThread.start();
 	}
-		  
 
     public void setIpAddress(String strIpAddress) {
     	m_strIpAddress = strIpAddress;
     }
     
-    private Frame setupFrame() {
-    	// FRAME
-    	Frame frame = new Frame("ConScan - Handheld");
-       	frame.setLayout(new BorderLayout());
-		frame.setSize(300,100);
-        
-        // BUTTON
-	    Button buttonOptionScanner = new Button("GET Scanner Data from Server");
-	    buttonOptionScanner.setSize(100, 50);
-	    ActionListener buttonListenerOptionScanner = new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-            	retrieveXml(getIpAddress());
-            	System.out.println("button pressed");
-            }
-        };
-        buttonOptionScanner.addActionListener(buttonListenerOptionScanner);
-	    
-	    // PANEL
-        Panel panelMain = new Panel();
-        panelMain.setLayout(new GridBagLayout());
-	    panelMain.add(buttonOptionScanner);
-
-        frame.add(panelMain, BorderLayout.NORTH);
-
-		frame.addWindowListener(new WindowAdapter(){
-			  public void windowClosing(WindowEvent e){
-				  m_bKeepRunning = false;
-				  
-				  try {
-					  Thread.sleep(1500);
-				  } 
-				  catch (InterruptedException e1) {
-					  // TODO Auto-generated catch block
-					  e1.printStackTrace();
-				  }
-				  
-				  System.exit(0);
-		      }
-		});
-
-		  return frame;
-    }
     
     /**
      * This method copies the source file to the destination file and adds
@@ -195,15 +127,22 @@ public class scannerOptions extends Frame {
      
     }
 
+    private String getAppName() {
+    	return m_strAppName;
+    }
+    
     private String getIpAddress() {
     	return m_strIpAddress;
     }
     
-    private static void postIt(String strFilenameWPath) throws Exception {
+    private String getClientScannerOPTIONSXmlPath() {
+    	return m_strClientScannerOPTIONSXmlPath;
+    }
+    
+    private void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
-//            HttpPost httppost = new HttpPost("http://localhost:8080" + "/server/scannerlog");
-            HttpPost httppost = new HttpPost("http://192.168.1.69:8080" + "/server/scannerlog");
+            HttpPost httppost = new HttpPost("http://" + getIpAddress() + ":8080" + "/" + getAppName() + "/scannerlog");
 
             FileBody bin = new FileBody(new File(strFilenameWPath));
             StringBody comment = new StringBody("A binary file of some kind");
@@ -231,10 +170,9 @@ public class scannerOptions extends Frame {
  
     
     // *** Polling logic
-    private static void processDir() throws Exception {
+    private void processDir() throws Exception {
     	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
     	String strPathToMonitor = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
-//    	String strPathToMonitor = args[0];
         File dir = new File(strPathToMonitor);
 
         String[] children = dir.list();
@@ -271,7 +209,7 @@ public class scannerOptions extends Frame {
         }
     }
 
-    private static void retrieveXml(String strIpAddress) {
+    private void retrieveXml(String strIpAddress) {
         HttpClient httpclient = new DefaultHttpClient();
         FileOutputStream outstreamXml = null;
         try {
@@ -285,9 +223,7 @@ public class scannerOptions extends Frame {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-//            outstreamXml = new FileOutputStream("c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml");
-            outstreamXml = new FileOutputStream("C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml");
-//            outstreamXml = new FileOutputStream("MGGscanner.xml");  // MAC
+            outstreamXml = new FileOutputStream(getClientScannerOPTIONSXmlPath());
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
@@ -309,5 +245,77 @@ public class scannerOptions extends Frame {
             try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
         }
     }
+ 
+    private Frame setupFrame() {
+    	// FRAME
+    	Frame frame = new Frame("ConScan - Handheld");
+       	frame.setLayout(new BorderLayout());
+		frame.setSize(300,100);
+        
+        // BUTTON
+	    Button buttonOptionScanner = new Button("GET Scanner Data from Server");
+	    buttonOptionScanner.setSize(100, 50);
+	    ActionListener buttonListenerOptionScanner = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+    			scannerOptions objScannerOptions = new scannerOptions();			
+    			objScannerOptions.retrieveXml(getIpAddress());
+            }
+        };
+        buttonOptionScanner.addActionListener(buttonListenerOptionScanner);
+	    
+	    // PANEL
+        Panel panelMain = new Panel();
+        panelMain.setLayout(new GridBagLayout());
+	    panelMain.add(buttonOptionScanner);
+
+        frame.add(panelMain, BorderLayout.NORTH);
+
+        // LISTENER for quitting
+		frame.addWindowListener(new WindowAdapter(){
+			  public void windowClosing(WindowEvent e){
+				  m_bKeepRunning = false;
+				  
+				  try {
+					  Thread.sleep(1500);
+				  } 
+				  catch (InterruptedException e1) {
+					  // TODO Auto-generated catch block
+					  e1.printStackTrace();
+				  }
+				  
+				  System.exit(0);
+		      }
+		});
+
+		return frame;
+    }
     
+	private static class PostData extends Thread {
+		public PostData(String str) {
+			super(str);
+		}
+		
+		public void run() {
+			scannerOptions objScannerOptions = new scannerOptions();			
+			int i = 1;
+			while (m_bKeepRunning && i > 0) {
+				try {
+					Thread.sleep(3000);
+				} 
+				catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        	try {
+	        		objScannerOptions.processDir();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("counter: " + Integer.valueOf(i++));
+			}
+			System.out.println("STOPPING thread");
+
+		}
+	}
 }
