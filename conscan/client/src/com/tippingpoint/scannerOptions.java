@@ -44,7 +44,7 @@ public class scannerOptions extends Frame {
 	private String m_strAppName = "conscan";
 //	private String m_strAppName = "server";
 	
-	private String m_strClientScannerOPTIONSXmlPath = "C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\scanner.xml";
+	private String m_strClientScannerOPTIONSXmlPath = "C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\";
 //	private String m_strClientScannerOPTIONSXmlPath = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\scanner.xml";
 //  private String m_strClientScannerOPTIONSXmlPath = "MGGscanner.xml";  // MAC
 	
@@ -172,7 +172,7 @@ public class scannerOptions extends Frame {
     // *** Polling logic
     private void processDir() throws Exception {
     	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
-    	String strPathToMonitor = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
+    	String strPathToMonitor = getClientScannerOPTIONSXmlPath();
         File dir = new File(strPathToMonitor);
 
         String[] children = dir.list();
@@ -223,7 +223,7 @@ public class scannerOptions extends Frame {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
             
-            outstreamXml = new FileOutputStream(getClientScannerOPTIONSXmlPath());
+            outstreamXml = new FileOutputStream(getClientScannerOPTIONSXmlPath() + "scanner.xml");
             resEntity.writeTo(outstreamXml);
             
         } catch (ClientProtocolException e) {
@@ -312,7 +312,6 @@ public class scannerOptions extends Frame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("counter: " + Integer.valueOf(i++));
 			}
 			System.out.println("STOPPING thread");
 
