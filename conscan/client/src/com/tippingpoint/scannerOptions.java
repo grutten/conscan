@@ -213,7 +213,7 @@ public class scannerOptions extends Frame {
         HttpClient httpclient = new DefaultHttpClient();
         FileOutputStream outstreamXml = null;
         try {
-        	String strUrl = "http://" + strIpAddress + ":8080/server/scanner";
+        	String strUrl = "http://" + strIpAddress + ":8080/" + getAppName() + "/scanner";
         	System.out.println("scannerOptions IPAddress: " + strUrl);
             HttpOptions httpOptions = new HttpOptions(strUrl);
 
