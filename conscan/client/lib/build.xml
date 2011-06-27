@@ -1,0 +1,16 @@
+<project default="buildjar">
+	<target name="buildjar" >
+		<signjar destDir="." alias="conscan" keystore="scannerOptions"
+    			storepass="1asdfasdf" preservelastmodified="true">
+  			<path>
+    			<fileset dir="." includes="**/*.jar" />
+  			</path>
+  			<flattenmapper />
+		</signjar>
+		<copy todir="../../server/WebContent/clientlib">
+		    <fileset dir=".">
+		      <include name="**/*.jar"/>
+		    </fileset>
+		</copy>
+	</target>
+</project>
