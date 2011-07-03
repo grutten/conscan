@@ -1,6 +1,5 @@
 package com.tippingpoint.version;
 
 public class HandheldVersion {
-	public static String VERSIONSTRING = "r00283";
-
+	public static String VERSIONSTRING = "r00304";
 }
