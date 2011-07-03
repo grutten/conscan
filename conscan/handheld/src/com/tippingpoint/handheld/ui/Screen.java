@@ -40,7 +40,7 @@ public class Screen extends Frame {
     // Button names
     static final String BUTTON_ACTIVITY = "Activity";
     static final String BUTTON_DETAIL = "Detail";
-    static final String BUTTON_EXIT = "Exit";
+    static final String BUTTON_DOCK = "Dock";
     static final String BUTTON_NEXT = "Next >>";
     static final String BUTTON_PREV = "<< Prev";
     static final String BUTTON_RECORD = "Record";
@@ -52,7 +52,7 @@ public class Screen extends Frame {
     static final String CHOICE_UNSELECTED = "--";
     
     // Controls
-    protected Button m_buttonExit;
+    protected Button m_buttonDock;
     protected Button m_buttonGoActivity;
     protected Button m_buttonGoDetail;
     protected Button m_buttonRecord;
@@ -67,7 +67,7 @@ public class Screen extends Frame {
     protected Button m_buttonNext;
     
     // Listeners
-    protected ActionListener m_buttonListenerExit;
+    protected ActionListener m_buttonListenerDock;
     protected ActionListener m_buttonListenerGoActivity;
     protected ActionListener m_buttonListenerGoDetail;
     protected ActionListener m_buttonListenerGoOffenderReplacement;
@@ -80,6 +80,7 @@ public class Screen extends Frame {
     static final int SCREEN_STATE_PLACEHOLDER = 2;
     static final int SCREEN_STATE_DETAIL = 3;
     static final int SCREEN_STATE_FIND_OFFENDER = 4;
+    static final int SCREEN_STATE_DOCK = 5;
     
     protected int m_screenState;
 
@@ -139,6 +140,7 @@ public class Screen extends Frame {
     }
     protected void drawActivityScreen() { /**/ }
     protected void drawDetailScreen()  { /**/ }
+    protected void drawDockScreen() { /**/ }
     protected void drawFindOffenderScreen() { /**/ }
     
     // Special methods using for doing screen captures for demos

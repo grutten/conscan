@@ -45,8 +45,8 @@ public class ScreenLayout extends ScreenListeners {
         m_buttonGoActivity = new Button(BUTTON_ACTIVITY);
         m_buttonGoActivity.addActionListener(getGoActivityButtonListener());
 
-        m_buttonExit = new Button(BUTTON_EXIT);
-        m_buttonExit.addActionListener(getExitButtonListener());
+        m_buttonDock = new Button(BUTTON_DOCK);
+        m_buttonDock.addActionListener(getDockButtonListener());
         
         m_buttonGoDetail = new Button(BUTTON_DETAIL);
         m_buttonGoDetail.addActionListener(getGoDetailButtonListener());
@@ -231,7 +231,7 @@ public class ScreenLayout extends ScreenListeners {
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
 	    }
-        m_panelBottom.add(m_buttonExit);
+        m_panelBottom.add(m_buttonDock);
         
 //        addField(p, m_panelBottom, 0, nRow, 1, 1, GridBagConstraints.SOUTHWEST);
     }

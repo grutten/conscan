@@ -19,6 +19,11 @@ import com.tippingpoint.handheld.data.Scannable;
 
 public class ScreenListeners extends Screen implements BarcodeReadListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3820130245162337695L;
+
 	ScreenListeners(boolean bIsRunningOnHandheld) {
 		super();
 		
@@ -78,8 +83,8 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     	return m_choiceListenerActivity;
     }
 
-    public ActionListener getExitButtonListener() {
-    	return m_buttonListenerExit;
+    public ActionListener getDockButtonListener() {
+    	return m_buttonListenerDock;
     }
     
     public ActionListener getGoActivityButtonListener() {
@@ -155,11 +160,11 @@ System.out.println("Detail Button - not implemented yet");
             }
         };
         
-        m_buttonListenerExit = new ActionListener() {
+        m_buttonListenerDock = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 String action = ae.getActionCommand();
                 
-                if (action.equals(BUTTON_EXIT)) {
+                if (action.equals(BUTTON_DOCK)) {
             		if (m_bcRdr != null)
             			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
             		setVisible(false);
