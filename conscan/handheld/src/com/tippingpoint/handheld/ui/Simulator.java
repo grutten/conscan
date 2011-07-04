@@ -9,7 +9,6 @@ import java.awt.Panel;
 import java.awt.event.ActionListener;
 
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.LegacyData;
 
 public class Simulator extends ScreenLayout {
 	

@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 
 import com.intermec.datacollection.BarcodeReader;
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.LegacyData;
 import com.tippingpoint.version.HandheldVersion;
 
 public class Screen extends Frame {

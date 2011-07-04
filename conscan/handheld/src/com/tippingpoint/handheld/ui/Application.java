@@ -4,7 +4,6 @@ import java.awt.Frame;
 
 import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.LegacyData;
 
 public class Application extends Frame {
 	static final long serialVersionUID = -1;
@@ -42,7 +41,6 @@ public class Application extends Frame {
     	    System.out.println(d2.toString());
     	}
     	else {
-//    		d = new LegacyData(strConfigFile);
     		d = new Data(strConfigFile);
     		
         	Screen mainFrame = null;

@@ -19,7 +19,6 @@ import com.tippingpoint.handheld.data.Activity;
 import com.tippingpoint.handheld.data.ComplianceConfiguration;
 import com.tippingpoint.handheld.data.ComplianceValue;
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.LegacyData;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
