@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -169,7 +170,13 @@ System.out.println("Detail Button - not implemented yet");
             			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
             		setVisible(false);
             		dispose(); // Dispose the frame
-            		System.exit(0);
+//            		System.exit(0);
+            		try {
+						getData().getLogEntry().close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                     
                 } 
                 else {

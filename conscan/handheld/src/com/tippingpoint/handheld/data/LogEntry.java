@@ -16,28 +16,13 @@ public class LogEntry {
 	private FileWriter m_logOutputStream;
 	
 	LogEntry() {
-		Calendar c = Calendar.getInstance();
-		
-		// format - yyyymmdd24mmss
-        String strFilename = Integer.toString(c.get(Calendar.YEAR)) +
-        	Integer.toString(c.get(Calendar.MONTH) + 1) + 
-        	Integer.toString(c.get(Calendar.DATE)) + 
-        	Integer.toString(c.get(Calendar.HOUR_OF_DAY)) +
-        	Integer.toString(c.get(Calendar.MINUTE)) + 
-        	Integer.toString(c.get(Calendar.SECOND));
-
-        try {
-        	m_logOutputStream = new FileWriter("\\My Documents\\_log" + strFilename + ".xml");
-        	
-        	if (m_logOutputStream != null)
-        		// NOTE: because the handheld is not designed to recognize when
-        		// this file is complete, the server must provide the closing 
-        		// </objects> tag
-        		m_logOutputStream.write("<objects>\n");
-        }
-        catch (Exception e) {
-        	// TODO: eat the file exception
-        }
+		if (m_logOutputStream == null)
+			try {
+				create();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	public Activity getActivity() { return m_activity; }
@@ -67,6 +52,31 @@ public class LogEntry {
 		m_strDateCreated = null;
 		
 	}
+
+	public void close() throws IOException {
+		if (m_logOutputStream != null)
+			m_logOutputStream.close();
+	}
+	
+	public void create() throws IOException {
+		Calendar c = Calendar.getInstance();
+		
+		// format - yyyymmdd24mmss
+        String strFilename = Integer.toString(c.get(Calendar.YEAR)) +
+        	Integer.toString(c.get(Calendar.MONTH) + 1) + 
+        	Integer.toString(c.get(Calendar.DATE)) + 
+        	Integer.toString(c.get(Calendar.HOUR_OF_DAY)) +
+        	Integer.toString(c.get(Calendar.MINUTE)) + 
+        	Integer.toString(c.get(Calendar.SECOND));
+
+        	m_logOutputStream = new FileWriter("\\My Documents\\_log" + strFilename + ".xml");
+        	
+        	if (m_logOutputStream != null)
+        		// NOTE: because the handheld is not designed to recognize when
+        		// this file is complete, the server must provide the closing 
+        		// </objects> tag
+       		m_logOutputStream.write("<objects>\n");
+	}
 	
 	public void write() throws IOException {
 		m_logOutputStream.write("<object name='scannerlog'>\n");
@@ -81,6 +91,7 @@ public class LogEntry {
 		m_logOutputStream.write("</object>\n");
 		m_logOutputStream.flush(); 
 	}
+	
 	
 	private  void writeTag(String strTagName, String strValue) throws IOException {
 		m_logOutputStream.write("\t<field name='" + strTagName + "'>" + strValue + "</field>\n");
