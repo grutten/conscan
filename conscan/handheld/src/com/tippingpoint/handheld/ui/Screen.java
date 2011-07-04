@@ -75,8 +75,14 @@ public class Screen extends Frame {
     protected ActionListener m_buttonListenerScanIndicator;
     protected ItemListener m_choiceListenerActivity;
     
-    protected enum ScreenState {ACTIVITY, PLACEHOLDER, DETAIL, FIND_OFFENDER, DOCK}
-    protected ScreenState m_screenState;
+    // State
+    static final int SCREEN_STATE_ACTIVITY = 1;
+    static final int SCREEN_STATE_PLACEHOLDER = 2;
+    static final int SCREEN_STATE_DETAIL = 3;
+    static final int SCREEN_STATE_FIND_OFFENDER = 4;
+    static final int SCREEN_STATE_DOCK = 5;
+    
+    protected int m_screenState;
 
     // provides access to data configuration
     private DataInterface m_data;
@@ -84,7 +90,7 @@ public class Screen extends Frame {
 	Screen() {
     	super("TPSS v " + HandheldVersion.VERSIONSTRING);
     	
-    	m_screenState = ScreenState.ACTIVITY;
+    	m_screenState = SCREEN_STATE_ACTIVITY;
     	
     	setupListeners();
 	}
