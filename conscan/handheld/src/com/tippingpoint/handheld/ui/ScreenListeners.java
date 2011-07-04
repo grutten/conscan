@@ -69,7 +69,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 				respondToScanEvent();
 				System.out.println("barcode scanned: " + sNewData);
 				
-				if (m_screenState == SCREEN_STATE_FIND_OFFENDER)
+				if (m_screenState == ScreenState.FIND_OFFENDER)
 					drawFindOffenderScreen();
 				else
 					drawActivityScreen();

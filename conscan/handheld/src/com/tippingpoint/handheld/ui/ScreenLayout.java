@@ -24,6 +24,7 @@ import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
 import com.tippingpoint.handheld.data.Scannable;
+import com.tippingpoint.handheld.ui.Screen.ScreenState;
 
 public class ScreenLayout extends ScreenListeners {
 	/**
@@ -81,7 +82,7 @@ public class ScreenLayout extends ScreenListeners {
 	}
 
 	protected void drawActivityScreen() {
-		m_screenState = SCREEN_STATE_ACTIVITY;
+		m_screenState = ScreenState.ACTIVITY;
 
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity activity = findActivity(strSelection); 
@@ -148,7 +149,7 @@ public class ScreenLayout extends ScreenListeners {
 	}
 
     protected void drawDetailScreen() {
-        m_screenState = SCREEN_STATE_DETAIL;
+        m_screenState = ScreenState.DETAIL;
     	
         // Toolbar Panel
 		m_panelBodyDetail.removeAll();
@@ -171,7 +172,7 @@ public class ScreenLayout extends ScreenListeners {
     }
 
 	protected void drawFindOffenderScreen() {
-		m_screenState = SCREEN_STATE_FIND_OFFENDER;
+		m_screenState = ScreenState.FIND_OFFENDER;
 
 		m_panelBodyActivity.removeAll();
 		addBodyPanel(m_panelBodyActivity, BorderLayout.NORTH);
@@ -214,17 +215,17 @@ public class ScreenLayout extends ScreenListeners {
     	m_panelBottom.removeAll();
     	
         switch (m_screenState) {
-	        case SCREEN_STATE_DETAIL:
+	        case DETAIL:
 	        	m_panelBottom.add(m_buttonGoActivity);
 	        	m_panelBottom.add(m_buttonPrev);
 	        	m_panelBottom.add(m_buttonNext);
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
-	        case SCREEN_STATE_FIND_OFFENDER:
+	        case FIND_OFFENDER:
 	        	m_panelBottom.add(m_buttonReplace);
 	        	m_panelBottom.add(m_buttonGoActivity);
 	        	break;
-	        case SCREEN_STATE_ACTIVITY:
+	        case ACTIVITY:
 	        default:
 	            m_panelBottom.add(m_buttonRecord);
 	            m_panelBottom.add(m_buttonGoDetail);
