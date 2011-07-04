@@ -47,6 +47,7 @@ public class Screen extends Frame {
     static final String BUTTON_REPLACE = "Replace";
     static final String BUTTON_SCANOFFENDER = "Scan Offender";
     static final String BUTTON_SCANCELL = "Scan Cell";
+    static final String BUTTON_START = "Start";
     
     // Special string values
     static final String CHOICE_UNSELECTED = "--";
@@ -58,6 +59,7 @@ public class Screen extends Frame {
     protected Button m_buttonRecord;
     protected Button m_buttonReplace;
     protected Button m_buttonScanIndicator;
+    protected Button m_buttonStart;
     protected Choice m_choiceActivity = new Choice();  // instantiate here so that selection will persist
     protected Label m_labelBarcode = new Label("<scan>");
     protected Label m_labelFeedback = new Label("");
@@ -73,6 +75,7 @@ public class Screen extends Frame {
     protected ActionListener m_buttonListenerGoOffenderReplacement;
     protected ActionListener m_buttonListenerRecord;
     protected ActionListener m_buttonListenerScanIndicator;
+    protected ActionListener m_buttonListenerStart;
     protected ItemListener m_choiceListenerActivity;
     
     // State

@@ -18,7 +18,7 @@ public class LogEntry {
 	LogEntry() {
 		if (m_logOutputStream == null)
 			try {
-				create();
+				initialize();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -58,7 +58,7 @@ public class LogEntry {
 			m_logOutputStream.close();
 	}
 	
-	public void create() throws IOException {
+	public void initialize() throws IOException {
 		Calendar c = Calendar.getInstance();
 		
 		// format - yyyymmdd24mmss

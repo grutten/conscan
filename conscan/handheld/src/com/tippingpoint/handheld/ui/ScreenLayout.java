@@ -63,6 +63,9 @@ public class ScreenLayout extends ScreenListeners {
         m_buttonScanIndicator = new Button("Offender");
         m_buttonScanIndicator.addActionListener(getScanIndicatorButtonListener());
         
+        m_buttonStart = new Button(BUTTON_START);
+        m_buttonStart.addActionListener(getStartButtonListener());
+
         m_panelBodyActivity = new Panel();
         m_panelBodyDetail = new Panel();
         m_panelBottom = new Panel();
@@ -170,6 +173,21 @@ public class ScreenLayout extends ScreenListeners {
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
 
+    protected void drawDockScreen() {
+        m_screenState = SCREEN_STATE_DOCK;
+    	
+        // Toolbar Panel
+		m_panelBodyDetail.removeAll();
+    	
+        // DOCK message(s)
+        LogEntry logEntry = getData().getLogEntry();
+        int nRow = 0;
+        addLabel(m_panelBodyDetail, new Label("Scanner ready to be DOCKED"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
+
+    	drawButtons(m_panelBodyDetail, nRow);
+    	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
+    }
+    
 	protected void drawFindOffenderScreen() {
 		m_screenState = SCREEN_STATE_FIND_OFFENDER;
 
@@ -219,19 +237,24 @@ public class ScreenLayout extends ScreenListeners {
 	        	m_panelBottom.add(m_buttonPrev);
 	        	m_panelBottom.add(m_buttonNext);
 //	        	m_panelBottom.add(m_buttonGoHistory);
+	            m_panelBottom.add(m_buttonDock);
+	        	break;
+	        case SCREEN_STATE_DOCK:
+	        	m_panelBottom.add(m_buttonStart);
 	        	break;
 	        case SCREEN_STATE_FIND_OFFENDER:
 	        	m_panelBottom.add(m_buttonReplace);
 	        	m_panelBottom.add(m_buttonGoActivity);
+	            m_panelBottom.add(m_buttonDock);
 	        	break;
 	        case SCREEN_STATE_ACTIVITY:
 	        default:
 	            m_panelBottom.add(m_buttonRecord);
 	            m_panelBottom.add(m_buttonGoDetail);
 //	        	m_panelBottom.add(m_buttonGoHistory);
+	            m_panelBottom.add(m_buttonDock);
 	        	break;
 	    }
-        m_panelBottom.add(m_buttonDock);
         
 //        addField(p, m_panelBottom, 0, nRow, 1, 1, GridBagConstraints.SOUTHWEST);
     }

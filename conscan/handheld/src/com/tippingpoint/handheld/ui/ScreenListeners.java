@@ -107,6 +107,10 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     public ActionListener getScanIndicatorButtonListener() {
     	return m_buttonListenerScanIndicator;
     }
+
+    public ActionListener getStartButtonListener() {
+    	return m_buttonListenerStart;
+    }
     
     protected Activity findActivity(String strActivity) {
     	Iterator iActivities = getData().getActivities().iterator();
@@ -173,6 +177,8 @@ System.out.println("Detail Button - not implemented yet");
 //            		System.exit(0);
             		try {
 						getData().getLogEntry().close();
+						drawDockScreen();
+						setVisible(true);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -193,6 +199,21 @@ System.out.println("Detail Button - not implemented yet");
             }
         };
         
+        m_buttonListenerStart = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                System.out.println("Start pressed");
+                
+                try {
+					getData().getLogEntry().initialize();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                drawActivityScreen();
+                setVisible(true);
+            }
+        };
+
         m_buttonListenerRecord = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 String action = ae.getActionCommand();
