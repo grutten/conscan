@@ -8,6 +8,7 @@ public interface DataInterface {
 
 	public ArrayList addList(String strKeyName, ArrayList arrList);
 	public void addObject(String strName, Object obj);
+	public void clear();
 	public ArrayList createList(String strKeyName);
 	public String getBarcode();
 	public HashMap getCompliance();
@@ -17,6 +18,7 @@ public interface DataInterface {
 	public LogEntry getLogEntry();
 	public HashMap getOffenders();
 	public ArrayList getScannables();
+	public void parse(String strFilename);
 	public Object popObject();
 	public ArrayList populateScannables(String strBarcode, Activity activity);
 	public void reset();

@@ -13,6 +13,8 @@ import java.util.Iterator;
 import com.intermec.datacollection.*;
 import com.tippingpoint.handheld.data.Activity;
 import com.tippingpoint.handheld.data.ComplianceValue;
+import com.tippingpoint.handheld.data.Data;
+import com.tippingpoint.handheld.data.DataInterface;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
@@ -170,10 +172,10 @@ System.out.println("Detail Button - not implemented yet");
                 String action = ae.getActionCommand();
                 
                 if (action.equals(BUTTON_DOCK)) {
-            		if (m_bcRdr != null)
-            			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
-            		setVisible(false);
-            		dispose(); // Dispose the frame
+//            		if (m_bcRdr != null)
+//            			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
+//            		setVisible(false);
+//            		dispose(); // Dispose the frame
 //            		System.exit(0);
             		try {
 						getData().getLogEntry().close();
@@ -204,6 +206,13 @@ System.out.println("Detail Button - not implemented yet");
                 System.out.println("Start pressed");
                 
                 try {
+                	// Re-parse the XML from the server
+                	DataInterface d = getData();
+                	d.clear();
+                	d.parse("My Documents\\scanner.xml");  // TODO: maintainability
+                	
+                	// Create new XML file - this file gets
+                	// posted to the server
 					getData().getLogEntry().initialize();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

@@ -38,10 +38,32 @@ public class Data implements DataInterface{
 	private LogEntry m_log = new LogEntry();
 	
 	public Data(String strFilename) {
+		parse(strFilename);
+	}
+	
+	public void clear() {
+		HashMap hm = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
+		hm.clear();
+		hm = (HashMap)m_hashLookup.get(INDEX_COMPLIANCE);
+		hm.clear();
+		hm = (HashMap)m_hashLookup.get(INDEX_LOCATION);
+		hm.clear();
+		hm = (HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER);
+		hm.clear();
+		hm = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
+		hm.clear();
+		
+		m_hashLookup.clear();
+		m_hashRoot.clear();
+		m_stackCurrObj.clear();
+		
+		
+	}
+	
+	public void parse(String strFilename) {
 		try {
 			// The current object is the root hash map
 			m_stackCurrObj.push(m_hashRoot);
-			
 			m_xmlreader = XMLReaderFactory.createXMLReader();
 			SaxBaseHandler saxHandler = new HandheldXmlHandler(null, m_xmlreader, this);
 			
@@ -55,6 +77,7 @@ public class Data implements DataInterface{
 				System.out.println("XML configuration file missing.");
 				
 			m_xmlreader.parse(new InputSource(reader));
+			reader.close();
 			populateLookupMaps();
 		}
 		catch (Exception e) {

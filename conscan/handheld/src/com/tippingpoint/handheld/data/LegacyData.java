@@ -51,7 +51,9 @@ public class LegacyData implements DataInterface {
 		}
 		System.out.println("done loading configuration.");
 	}
-
+	
+	public void clear() { /* not implemented */ } 
+	
 	public ArrayList getActivities() { return m_listActivities; }
 	public HashMap getOffenders() { return m_hashOffenderByBarcode; }
 	public String getBarcode() { return m_strCurrentBarcode; }
@@ -65,7 +67,7 @@ public class LegacyData implements DataInterface {
 
 	public ArrayList getScannables() { return m_listScannablesForLogging; }
 	
-	
+	public void parse(String strFilename) { /* not implemented */ }
 	/**
 	 * This method resets state to the beginning.  It is typically called after
 	 * a successful record operation.
