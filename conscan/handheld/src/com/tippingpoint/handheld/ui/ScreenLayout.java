@@ -179,7 +179,6 @@ public class ScreenLayout extends ScreenListeners {
 		m_panelBodyDetail.removeAll();
     	
         // DOCK message(s)
-        LogEntry logEntry = getData().getLogEntry();
         int nRow = 0;
         addLabel(m_panelBodyDetail, new Label("Scanner ready to be DOCKED"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 

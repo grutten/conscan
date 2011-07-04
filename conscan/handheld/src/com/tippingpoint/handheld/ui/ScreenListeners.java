@@ -13,7 +13,6 @@ import java.util.Iterator;
 import com.intermec.datacollection.*;
 import com.tippingpoint.handheld.data.Activity;
 import com.tippingpoint.handheld.data.ComplianceValue;
-import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
 import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
@@ -323,7 +322,7 @@ System.out.println("Detail Button - not implemented yet");
 		
 		
 		try {
-			Thread.currentThread().sleep(250);
+			Thread.sleep(250);
 		}
 		catch (Exception e) {
 			// eat it

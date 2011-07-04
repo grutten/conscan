@@ -4,6 +4,11 @@ import java.awt.Choice;
 import java.util.HashMap;
 
 public class DataChoice extends Choice {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3230350381145401277L;
+	
 	private HashMap m_hashItems = new HashMap();
 	
 	public DataChoice() {

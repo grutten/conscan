@@ -12,6 +12,11 @@ import com.tippingpoint.handheld.data.DataInterface;
 
 public class Simulator extends ScreenLayout {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 149027602440647456L;
+
 	protected Choice m_choiceBarcode;
 	
     protected ActionListener m_buttonListenerGoScan;
