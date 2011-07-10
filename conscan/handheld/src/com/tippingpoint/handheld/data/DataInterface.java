@@ -18,7 +18,7 @@ public interface DataInterface {
 	public LogEntry getLogEntry();
 	public HashMap getOffenders();
 	public ArrayList getScannables();
-	public void parse(String strFilename);
+	public void parse();
 	public Object popObject();
 	public ArrayList populateScannables(String strBarcode, Activity activity);
 	public void reset();

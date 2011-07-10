@@ -32,12 +32,14 @@ public class Data implements DataInterface{
 	private ArrayList m_listScannablesForLogging = new ArrayList();  // Array of type Scannable
 	private String m_strCurrentBarcode;
 	private String m_strFeedback;
+	private String m_strScannerXmlPath;
 	
 	// Persistence
 	private LogEntry m_log = new LogEntry();
 	
 	public Data(String strFilename) {
-		parse(strFilename);
+		m_strScannerXmlPath = strFilename;
+		parse();
 	}
 	
 	public void clear() {
@@ -59,7 +61,7 @@ public class Data implements DataInterface{
 		
 	}
 	
-	public void parse(String strFilename) {
+	public void parse() {
 		try {
 			// The current object is the root hash map
 			m_stackCurrObj.push(m_hashRoot);
@@ -68,7 +70,7 @@ public class Data implements DataInterface{
 			
 			m_xmlreader.setContentHandler(saxHandler);
 			m_xmlreader.setErrorHandler(saxHandler);
-			FileReader reader = new FileReader(strFilename);
+			FileReader reader = new FileReader(m_strScannerXmlPath);
 			// TODO: there is a null pointer exception during startup if the
 			// path to the XML config is incorrect in the .LNK shortcut file.
 			// The 'reader' is not the culprit since this println is not in the output.
@@ -255,7 +257,11 @@ public class Data implements DataInterface{
 		TreeMap tm = new TreeMap(new IntegerComparator());	// use: sort on display order
 		while (i.hasNext()) {
 			DisplayOrderInterface displayOrderObject = (DisplayOrderInterface)i.next();
-			tm.put(new Integer(displayOrderObject.getDisplayOrder()), displayOrderObject);
+			String strDisplayOrder = displayOrderObject.getDisplayOrder();
+			if (strDisplayOrder != null)
+				tm.put(new Integer(strDisplayOrder), displayOrderObject);
+			else
+				System.out.println("applyDisplayOrder() - getDisplayOrder() returned null");
 		}
 		i = tm.values().iterator();
 		arrObjects.clear();
