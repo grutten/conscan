@@ -42,7 +42,7 @@ public class LogEntry {
 	public void setStaffId(String strStaffId) { m_strStaffId = strStaffId; }
 
 	
-	public void clean() {
+	public void clear() {
 		m_activity = null;
 		m_location = null;
 		m_offender = null;

@@ -35,7 +35,7 @@ public class ScreenLayout extends ScreenListeners {
 		
         setData(d);
         
-        populateActivities(m_choiceActivity, getData().getActivities());
+//        populateActivities(m_choiceActivity, getData().getActivities());
         m_choiceActivity.addItemListener(getActivityChoiceListener());
 
         // NOTE: the listener that responds to a scan event populates the
@@ -97,6 +97,8 @@ public class ScreenLayout extends ScreenListeners {
         int nRow = 0;
         
         // Activity
+        m_choiceActivity.removeAll();
+        populateActivities(m_choiceActivity, getData().getActivities());
         addLabel(m_panelBodyActivity, new Label("Activity"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 		addField(m_panelBodyActivity, m_choiceActivity, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         

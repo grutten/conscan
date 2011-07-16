@@ -43,14 +43,33 @@ public class Data implements DataInterface{
 	}
 	
 	public void clear() {
+		// Activities
 		HashMap hm = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
 		hm.clear();
+		
+		// ComplianceConfigurations
 		hm = (HashMap)m_hashLookup.get(INDEX_COMPLIANCE);
+		Iterator i = hm.values().iterator();
+		while(i.hasNext()) {
+			ComplianceConfiguration cc = (ComplianceConfiguration)i.next();
+			cc.clear();
+		}
 		hm.clear();
+		
+		// Locations
 		hm = (HashMap)m_hashLookup.get(INDEX_LOCATION);
+		i = hm.values().iterator();
+		while(i.hasNext()) {
+			Location loc = (Location)i.next();
+			loc.clear();
+		}
 		hm.clear();
+		
+		// Locations found by offender
 		hm = (HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER);
 		hm.clear();
+		
+		// Offenders
 		hm = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
 		hm.clear();
 		

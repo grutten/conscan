@@ -177,7 +177,10 @@ System.out.println("Detail Button - not implemented yet");
 //            		dispose(); // Dispose the frame
 //            		System.exit(0);
             		try {
-						getData().getLogEntry().close();
+                    	DataInterface d = getData();
+						d.getLogEntry().close();
+                    	d.clear();
+
 						drawDockScreen();
 						setVisible(true);
 					} catch (IOException e) {
@@ -207,12 +210,12 @@ System.out.println("Detail Button - not implemented yet");
                 try {
                 	// Re-parse the XML from the server
                 	DataInterface d = getData();
-                	d.clear();
-                	d.parse("My Documents\\scanner.xml");  // TODO: maintainability
+//                	d.clear();
+                	d.parse();
                 	
                 	// Create new XML file - this file gets
                 	// posted to the server
-					getData().getLogEntry().initialize();
+					d.getLogEntry().initialize();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -328,7 +331,7 @@ System.out.println("Detail Button - not implemented yet");
 			// eat it
 		}
 
-		logEntry.clean();
+		logEntry.clear();
 		getData().reset();
 		
 		// go back to the activity screen for another scan

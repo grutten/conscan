@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 //import java.util.ArrayList;
 
-public class Location {
+public class Location implements PojoInterface {
 	private String m_strLocationId;
 	private String m_strName;
 	private String m_strBarcode;
 	private ArrayList m_listOffenders;
+	
+	public void clear() {
+		m_listOffenders.clear();
+	}
 	
 	public String getBarcode() { return m_strBarcode; }
 	public String getLocationId() { return m_strLocationId; }
