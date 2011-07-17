@@ -210,7 +210,6 @@ System.out.println("Detail Button - not implemented yet");
                 try {
                 	// Re-parse the XML from the server
                 	DataInterface d = getData();
-//                	d.clear();
                 	d.parse();
                 	
                 	// Create new XML file - this file gets
@@ -220,6 +219,7 @@ System.out.println("Detail Button - not implemented yet");
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				refreshActivityList();
                 drawActivityScreen();
                 setVisible(true);
             }

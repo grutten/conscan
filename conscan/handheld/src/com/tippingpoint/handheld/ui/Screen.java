@@ -144,6 +144,7 @@ public class Screen extends Frame {
     protected void drawDetailScreen()  { /**/ }
     protected void drawDockScreen() { /**/ }
     protected void drawFindOffenderScreen() { /**/ }
+    protected void refreshActivityList() { /**/ }
     
     // Special methods using for doing screen captures for demos
     public void drawSecurityCheck() { /**/ }
