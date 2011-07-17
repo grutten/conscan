@@ -142,7 +142,8 @@ public class Screen extends Frame {
     }
     protected void drawActivityScreen() { /**/ }
     protected void drawDetailScreen()  { /**/ }
-    protected void drawDockScreen() { /**/ }
+    protected void drawDockScreen(String strMessage) { /**/ }
+    protected void drawDockScreen(String strMessage, boolean bShowButtons) { /**/ }
     protected void drawFindOffenderScreen() { /**/ }
     protected void refreshActivityList() { /**/ }
     

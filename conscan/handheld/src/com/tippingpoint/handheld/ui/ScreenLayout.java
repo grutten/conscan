@@ -172,7 +172,11 @@ public class ScreenLayout extends ScreenListeners {
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
 
-    protected void drawDockScreen() {
+    protected void drawDockScreen(String strMessage) {
+    	drawDockScreen(strMessage, false);
+    }
+    
+    protected void drawDockScreen(String strMessage, boolean bShowButtons) {
         m_screenState = SCREEN_STATE_DOCK;
     	
         // Toolbar Panel
@@ -180,9 +184,11 @@ public class ScreenLayout extends ScreenListeners {
     	
         // DOCK message(s)
         int nRow = 0;
-        addLabel(m_panelBodyDetail, new Label("Scanner ready to be DOCKED"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
+        addLabel(m_panelBodyDetail, new Label(strMessage), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 
-    	drawButtons(m_panelBodyDetail, nRow);
+        if (bShowButtons)
+        	drawButtons(m_panelBodyDetail, nRow);
+        
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
     

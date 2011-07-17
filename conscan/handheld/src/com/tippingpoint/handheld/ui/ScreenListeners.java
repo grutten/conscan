@@ -181,7 +181,7 @@ System.out.println("Detail Button - not implemented yet");
 						d.getLogEntry().close();
                     	d.clear();
 
-						drawDockScreen();
+						drawDockScreen("Scanner ready to be DOCKED", true);
 						setVisible(true);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -206,6 +206,7 @@ System.out.println("Detail Button - not implemented yet");
         m_buttonListenerStart = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 System.out.println("Start pressed");
+                drawDockScreen("loading...");
                 
                 try {
                 	// Re-parse the XML from the server
