@@ -1,20 +1,21 @@
 package com.tippingpoint.util.xml;
 
 import java.io.CharArrayWriter;
+
+import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class SaxBaseHandler extends DefaultHandler {
 	
-	private boolean m_bLoggingEnabled = false;
+	private boolean m_bLoggingEnabled = true;
 	private SaxBaseHandler m_ParentHandler;
 	private XMLReader m_xmlReader;
 
 	protected static final String VALUE_DEFAULT_TRUE = "true";
 	protected static final String VALUE_DEFAULT_FALSE = "false";
 	
-	
-	protected String m_strCurrentTagValue;
+	private StringBuilder m_sbBody = new StringBuilder();
 	
 	public SaxBaseHandler(SaxBaseHandler parentHandler, XMLReader reader) {
 		super();
@@ -24,10 +25,12 @@ public class SaxBaseHandler extends DefaultHandler {
 	}
 	
     public void characters (char ch[], int start, int length) {
-    	CharArrayWriter writer = new CharArrayWriter();
-    	writer.write(ch, start, length);
-    	m_strCurrentTagValue = writer.toString();
+    	m_sbBody.append(ch, start, length);
     }	
+    
+    public String getCurrentTagValue() {
+    	return m_sbBody.toString();
+    }
     
 	public SaxBaseHandler getParentHandler() { return m_ParentHandler; }
 
@@ -49,6 +52,10 @@ public class SaxBaseHandler extends DefaultHandler {
     	handheldLog("Start document");
     }
 	
+    public void startElement (String uri, String name, String qName, Attributes attrs) {
+    	m_sbBody.delete(0, m_sbBody.length());
+    }
+    
 	protected void handheldLog(String str) { if (m_bLoggingEnabled) System.out.println(str); }
 	
 	

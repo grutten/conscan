@@ -52,8 +52,8 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	public void endElement (String uri, String name, String qName) {
 		// always pop the current object unless it's a field!!!
     	if (TAG_FIELD.equalsIgnoreCase(qName)) {
-    		setField(m_strCurrentFieldName, m_strCurrentTagValue);
-    		logEndElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + m_strCurrentTagValue);
+    		setField(m_strCurrentFieldName, getCurrentTagValue());
+    		logEndElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + getCurrentTagValue());
     	}
     	else if (!TAG_FIELD.equalsIgnoreCase(qName)) {
 			Object o = getData().popObject();
@@ -63,6 +63,8 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	}
 	
     public void startElement (String uri, String name, String qName, Attributes attrs) {
+    	super.startElement(uri, name, qName, attrs);
+    	
     	String strCurrObjName = attrs.getValue("name");
     	String strCurrObjAttr = attrs.getValue("name") + "id";
     	String strCurrObjValue = attrs.getValue(strCurrObjAttr);
