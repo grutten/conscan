@@ -1,7 +1,5 @@
 package com.tippingpoint.util.xml;
 
-import java.io.CharArrayWriter;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -15,7 +13,7 @@ public class SaxBaseHandler extends DefaultHandler {
 	protected static final String VALUE_DEFAULT_TRUE = "true";
 	protected static final String VALUE_DEFAULT_FALSE = "false";
 	
-	private StringBuilder m_sbBody = new StringBuilder();
+	private StringBuffer m_sbBody = new StringBuffer();
 	
 	public SaxBaseHandler(SaxBaseHandler parentHandler, XMLReader reader) {
 		super();
