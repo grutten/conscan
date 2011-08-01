@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="securitycheck" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Title" class="java.lang.String"/>
+	<parameter name="PrintedBy" class="java.lang.String"/>
+	<parameter name="PrintedDate" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     offender."firstname",
+     offender."lastname",
+     activity."name",
+     scannerlog."created",
+     offender."bookingnumber"
+FROM
+     "scannerlog" scannerlog INNER JOIN "activity" activity ON scannerlog."activityid" = activity."activityid"
+     INNER JOIN "offender" offender ON scannerlog."offenderid" = offender."offenderid"]]>
+	</queryString>
+	<field name="firstname" class="java.lang.String"/>
+	<field name="lastname" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="created" class="java.sql.Timestamp"/>
+	<field name="bookingnumber" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="752" height="79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{Title}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="83" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="0" width="752" height="34"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="10" y="0" width="752" height="34"/>
+				<textElement verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Security Check Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="40" width="60" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Printed By:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="40" width="246" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{PrintedBy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="56" width="60" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Print Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="76" y="56" width="245" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{PrintedDate}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="78" width="732" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="0" width="100" height="16"/>
+				<textElement/>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="18" width="100" height="16"/>
+				<textElement/>
+				<text><![CDATA[Booking Number]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="36" width="732" height="1"/>
+				<graphicElement>
+					<pen lineColor="#3366FF"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="300" y="0" width="100" height="16"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Scan Time]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{firstname} + " " + $F{lastname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="0" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{created}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="18" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bookingnumber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="454" y="2" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Page]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="554" y="2" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="667" y="2" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="654" y="2" width="13" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[of]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

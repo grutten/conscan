@@ -10,6 +10,12 @@ h1 {
 		font-family: sans-serif;
 }
 
+div.login {
+	float: right;
+	margin-right: 2em;
+}
+
+
 div.main {
 	border: 2px #24AFF0 solid;
 	margin: 5px;
@@ -51,6 +57,9 @@ div.clear {
 }
 
 div.menu {
+	border-right: solid thin #24AFF0;
+	height: 100%;
+	width: 8em;
 	float: left;
 }
 
@@ -80,13 +89,13 @@ div.field {
 	
 }
 
-.linkable {
+.linkable, .report {
 	background-color: #ECECEC;
 	text-align: center;
 	cursor: pointer;
 }
 
-.linkable:hover {
+.linkable:hover, .report:hover {
 	background-color: #CCCCCC;
 }
 
@@ -125,4 +134,17 @@ table.dataTables_content {
 
 .hidden {
 	display: none;
+}
+
+.ui-icon {
+	float: right;
+	cursor: pointer;
+}
+
+table thead tr {
+	background-color: lightgray;
+}
+
+thead td {
+	vertical-align: middle;
 }
