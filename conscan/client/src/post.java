@@ -133,7 +133,7 @@ public class post {
     private static void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
-            HttpPost httppost = new HttpPost("http://localhost:8080" +
+            HttpPost httppost = new HttpPost("http://192.168.1.69:8080" +
                     "/server/scannerlog");
 
             FileBody bin = new FileBody(new File(strFilenameWPath));
