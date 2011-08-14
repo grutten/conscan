@@ -9,6 +9,7 @@ public class ColumnTypeConverter implements Converter {
 	/**
 	 * This method converts a string representation of a column type to a class instance.
 	 */
+	@SuppressWarnings("rawtypes")
 	public Object convert(final Class clsType, final Object objValue) {
 		Object objConverted = null;
 

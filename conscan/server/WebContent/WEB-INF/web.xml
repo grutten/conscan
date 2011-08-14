@@ -136,7 +136,7 @@
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>com.tippingpoint.conscan.servlet</param-value>
+      <param-value>com.tippingpoint.conscan.servlet;com.tippingpoint.conscan.reports</param-value>
     </init-param>
   </servlet>
  
