@@ -9,9 +9,9 @@
 		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
 		<!--
-		<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		 -->
-		<script type="text/javascript" src="js/jquery-1.6.1.js"></script>
+		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
@@ -509,7 +509,7 @@
 			function open_win() {
 				window.open("scannerOptions.jnlp");
 			}
-			
+
 			function populateAddItemForm(name, object) {
 				var title = 'New ';
 				if (typeof object != 'undefined') {
@@ -622,12 +622,12 @@
 
 				// get the item list based on the menu item
 				reportitem = reportitem.toLowerCase();
-				
+
 				// set the title of the field to the same as the report
 				jQuery('#fieldtitle').html(reportitem);
-				
+
 				jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
-				
+
 				// set the title of the field to the same as the menu item
 				jQuery('#fieldtitle').html(reportitem);
 
@@ -746,7 +746,7 @@
 			jQuery(document).ready(function() {
 				// when the page first comes up, check for a logged in user
 				checkLogin();
-				
+
 				// Start the JNLP application for pulling/pushing handheld data
 				open_win();
 			});
