@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+
 import com.intermec.datacollection.*;
 import com.tippingpoint.handheld.data.Activity;
 import com.tippingpoint.handheld.data.ComplianceValue;
@@ -269,7 +271,7 @@ System.out.println("Detail Button - not implemented yet");
 		try {  // wraps the write of the log entry
 	        while (i.hasNext()) {
 	            Date d = new Date();
-	            logEntry.setDateCreated(d.toString());
+	            logEntry.setDateCreated(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(d));
 	            
 	        	// TODO: this may need to persist 2 offenders for the detail screen.
 	        	// What does that mean for the detail screen?  Does it matter what
