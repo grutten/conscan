@@ -48,20 +48,21 @@ import com.tippingpoint.utilities.XmlUtilities;
 public abstract class Services extends HttpServlet {
 	public static final String ATTRIBUTE_NAME = "name";
 
+	public static final String TAG_FIELD = "field";
+	public static final String TAG_OBJECT = "object";
+
 	protected static final String METHOD_DELETE = "DELETE";
 	protected static final String METHOD_GET = "GET";
-
 	protected static final String METHOD_HEAD = "HEAD";
 	protected static final String METHOD_OPTIONS = "OPTIONS";
 	protected static final String METHOD_POST = "POST";
 	protected static final String METHOD_PUT = "PUT";
+
 	protected static MimeType MIME_ALL;
 	protected static MimeType MIME_JSON;
 	protected static MimeType MIME_XML;
 
-	public static final String TAG_FIELD = "field";
 	protected static final String TAG_LIST = "list";
-	protected static final String TAG_OBJECT = "object";
 
 	private static Log m_log = LogFactory.getLog(Services.class);
 

@@ -3,9 +3,13 @@ package com.tippingpoint.database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.sql.Command;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 
@@ -16,6 +20,8 @@ public final class DataConversion {
 	/** This member holds the conversion map. */
 	private static Map<Class<? extends ColumnType>, ColumnTypeConversion> m_conversions =
 		new HashMap<Class<? extends ColumnType>, ColumnTypeConversion>();
+
+	private static Log m_log = LogFactory.getLog(DataConversion.class);
 
 	/**
 	 * This method converts the object to an object acceptable to be placed as a parameter in a SQL statement. Default
@@ -224,8 +230,21 @@ public final class DataConversion {
 		 * This method converts the object to an object acceptable to be placed as a parameter in a SQL statement.
 		 */
 		@Override
-		public Object convertToSqlObject(final Object objValue) {
+		public Object convertToSqlObject(Object objValue) {
 			Object objReturnValue = null;
+
+			if (objValue instanceof String) {
+				// attempt to perform a conversion
+				try {
+					final Calendar x = DatatypeConverter.parseDateTime((String)objValue);
+					if (x != null) {
+						objValue = x.getTime();
+					}
+				}
+				catch (final IllegalArgumentException e) {
+					m_log.error("Could not parse '" + objValue + "' as a date.", e);
+				}
+			}
 
 			if (objValue instanceof Date) {
 				objReturnValue = new Timestamp(((Date)objValue).getTime());
