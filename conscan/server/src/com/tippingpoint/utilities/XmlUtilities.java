@@ -32,7 +32,8 @@ public class XmlUtilities {
 
 		if (objValue != null) {
 			if (objValue instanceof Date) {
-				strValue = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format((Date)objValue);
+				// strValue = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format((Date)objValue);
+				strValue = DateFormatUtils.ISO_DATETIME_FORMAT.format((Date)objValue);
 			}
 			else {
 				strValue = objValue.toString();
