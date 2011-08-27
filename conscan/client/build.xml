@@ -1,11 +1,35 @@
-<project default="buildjar">
-	<target name="buildjar" depends="buildcompile">
+<project default="all">
+
+	<path id= "svnant.classpath" >
+    	 <fileset dir= "./libsvn" >
+        	 <include name= "*.jar" />
+	     </fileset>
+	</path>
+
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" /> 
+
+	<target name="all" depends="verifykeystore">
+		<antcall target="displaykeystoremessage" />
+		<antcall target="executebuild" />
+	</target>
+
+	<target name="displaykeystoremessage" unless="keystoreexists">
+		<echo message="Use the keytool to generate a keystore named, 'clientKeystore'" />
+	</target>
+	
+	<target name="executebuild" if="keystoreexists">
+		<antcall target="buildjar" />
+	</target>
+	
+	<target name="buildjar" depends="clean, revertjars, buildcompile">
 		<jar destfile="client.jar" basedir="classes">
 			<manifest>
 				<attribute name="Main-Class" value="post" />
 			</manifest>
 		</jar>
-		<signjar destDir="." alias="conscan" keystore="scannerOptions"
+		
+		<!-- client - sign the jar, thencopy to the server -->
+		<signjar destDir="." alias="conscan" keystore="clientKeystore"
     			storepass="1asdfasdf" preservelastmodified="true">
   			<path>
     			<fileset dir="." includes="**/client.jar" />
@@ -13,6 +37,20 @@
   			<flattenmapper />
 		</signjar>
 		<copy file="client.jar" todir="../server/WebContent"/>
+		
+		<!-- 3rd party jars - sign the jars, then copy them to the server -->
+		<signjar destDir="./lib" alias="conscan" keystore="clientKeystore"
+    			storepass="1asdfasdf" preservelastmodified="true">
+  			<path>
+    			<fileset dir="./lib" includes="**/*.jar" />
+  			</path>
+  			<flattenmapper />
+		</signjar>
+		<copy todir="../server/WebContent/clientlib">
+		    <fileset dir="./lib">
+		      <include name="**/*.jar"/>
+		    </fileset>
+		</copy>
 	</target>
 	
 	<target name="buildcompile">
@@ -31,5 +69,20 @@
 		</javac>
 	</target>
 	
+	<target name="clean">
+		<delete>
+			<fileset dir="../server/WebContent/clientlib" includes="**/*.jar" />
+		</delete>
+	</target>
+	
+	<target name="revertjars">
+	    <svn svnkit="false" javahl="false">
+	    	<revert dir="lib" />
+		</svn>
+	</target>
+
+	<target name="verifykeystore">
+		<available file="clientKeystore" property="keystoreexists" value="true" />
+	</target>
 	
 </project>
