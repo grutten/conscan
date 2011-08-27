@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
@@ -40,6 +42,10 @@ public class UserService extends Services {
 			cookie.setMaxAge(0);
 
 			response.addCookie(cookie);
+			
+			// remove authentication object from session
+			request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
+
 		}
 	}
 
@@ -105,6 +111,10 @@ public class UserService extends Services {
 						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
 						cookie.setMaxAge(-1); // set it as a session cookie
 						response.addCookie(cookie);
+						
+						// Add session object
+						HttpSession session = request.getSession();
+						session.setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, Long.valueOf(session.getLastAccessedTime()));
 					}
 				}
 				else {
