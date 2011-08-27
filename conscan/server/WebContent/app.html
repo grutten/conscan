@@ -15,6 +15,8 @@
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.datepicker.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -284,6 +286,27 @@
 							});
 							dataObject.push(strFkTableNameValue);
 						}
+						else if ("date" == column.type) {
+							dateValue = '';
+							value = object[column.name];
+
+							// value = '2011-08-20T22:52:08'
+							if (value.length > 0) {
+								parts = value.split('T', 2);
+
+								if (parts.length > 0) {
+									date = jQuery.datepicker.parseDate("yy-mm-dd", parts[0]);
+
+									dateValue += jQuery.datepicker.formatDate("mm/dd/yy", date);
+								}
+
+								if (parts.length > 1) {
+									dateValue += ' ' + parts[1];
+								}
+							}
+
+							dataObject.push(dateValue);
+						}
 						else
 							dataObject.push(object[column.name]);
 					}
@@ -294,14 +317,14 @@
 				}
 
 				// add a blank table first
-				jQuery(field).html('<table class="dataTables_content noborder" id="example"></table>');
+				jQuery(field).html('<table class="dataTables_content noborder" id="aDataTable"></table>');
 				// use the tool to load that table
 				var options = {
 						"aaData": data,
 						"aoColumns": tablecolumns,
 						"bAutoWidth": false
 				};
-				var oDataTable = jQuery('#example').dataTable(options);
+				var oDataTable = jQuery('#aDataTable').dataTable(options);
 			}
 
 			function findCurrentType() {
@@ -628,9 +651,10 @@
 
 				jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
 
-				// set the title of the field to the same as the menu item
-				jQuery('#fieldtitle').html(reportitem);
+				//doreport(reportitem);
+			}
 
+			function doreport(reportitem) {
 				//alert('getItemList: ' + reportitem);
 				jQuery.ajax({
 					type: 'GET',
