@@ -15,8 +15,11 @@
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
-		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
-		<script type="text/javascript" src="js/jquery.ui.datepicker.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script>
+		<!-- 
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
+		 -->
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -141,6 +144,8 @@
 			jQuery('span.ui-icon-pencil').live('click', shownotes);
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
+			jQuery('input.timestamp').live('focus', function() {alert('hi');});
+			
 			var strFkTableNameValue = "empty";
 
 			function addOrUpdateItem(dialog) {
@@ -641,17 +646,68 @@
 			}
 
 			function reportitemclick(event) {
-				var reportitem = event.target.innerHTML;
+				var report = event.target.innerHTML;
 
 				// get the item list based on the menu item
-				reportitem = reportitem.toLowerCase();
+				report = report.toLowerCase();
 
 				// set the title of the field to the same as the report
-				jQuery('#fieldtitle').html(reportitem);
+				jQuery('#fieldtitle').html(report);
 
-				jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
+				doreportoptions(report, 'div#fieldcontent');
+				
+				//jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
 
-				//doreport(reportitem);
+				//doreport(report);
+			}
+			
+			function datetimepicker(name) {
+				input = jQuery('input[name="' + option.name + '"]');
+				input.datetimepicker();
+			}
+			
+			function doreportoptions(report, fieldcontent) {
+				html = '';
+				
+				var reportoptions = new Array();
+				
+				reportoptions[0] = new Object();
+				reportoptions[0].type = 'timestamp';
+				reportoptions[0].name = 'start';
+				
+				reportoptions[1] = new Object();
+				reportoptions[1].type = 'timestamp';
+				reportoptions[1].name = 'end';
+				
+				// replace the contents with the new table
+				body = jQuery(fieldcontent);
+				body.empty();
+				
+				table = jQuery(document.createElement('table'));
+				body.append(table);
+				
+				for (index in reportoptions) {
+					option = reportoptions[index];
+					
+					row = jQuery(document.createElement('tr'));
+					table.append(row);
+
+					var labelCell = jQuery(document.createElement('td'));
+					row.append(labelCell);
+					labelCell.text(option.name + ':');
+					var inputCell = jQuery(document.createElement('td'));
+					row.append(inputCell);
+
+					var inputType = 'text';
+					var inputValue;
+					var input = createInput(inputType, option.name, inputValue);
+
+					inputCell.append(input);
+
+					if ('timestamp' == option.type) {
+						datetimepicker(option.name);
+					}					
+				}
 			}
 
 			function doreport(reportitem) {
