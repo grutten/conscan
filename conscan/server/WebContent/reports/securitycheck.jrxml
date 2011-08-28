@@ -6,6 +6,12 @@
 	<parameter name="Title" class="java.lang.String"/>
 	<parameter name="PrintedBy" class="java.lang.String"/>
 	<parameter name="PrintedDate" class="java.lang.String"/>
+	<parameter name="StartDate" class="java.util.Date">
+		<parameterDescription><![CDATA[Beginning bound scan dates.]]></parameterDescription>
+	</parameter>
+	<parameter name="EndDate" class="java.util.Date">
+		<parameterDescription><![CDATA[Ending bound scan dates.]]></parameterDescription>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT
      offender."firstname",
@@ -15,7 +21,8 @@
      offender."bookingnumber"
 FROM
      "scannerlog" scannerlog INNER JOIN "activity" activity ON scannerlog."activityid" = activity."activityid"
-     INNER JOIN "offender" offender ON scannerlog."offenderid" = offender."offenderid"]]>
+     INNER JOIN "offender" offender ON scannerlog."offenderid" = offender."offenderid"
+WHERE scannerlog."created" > $P{StartDate}]]>
 	</queryString>
 	<field name="firstname" class="java.lang.String"/>
 	<field name="lastname" class="java.lang.String"/>
@@ -30,12 +37,12 @@ FROM
 			<textField>
 				<reportElement x="0" y="0" width="752" height="79"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{Title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{Title}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="83" splitType="Stretch">
+		<band height="95" splitType="Stretch">
 			<rectangle radius="10">
 				<reportElement x="0" y="0" width="752" height="34"/>
 			</rectangle>
@@ -47,35 +54,47 @@ FROM
 				<text><![CDATA[Security Check Report]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="40" width="60" height="14"/>
+				<reportElement x="10" y="40" width="70" height="14"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[Printed By:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="75" y="40" width="246" height="14"/>
+				<reportElement x="84" y="40" width="500" height="14"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{PrintedBy}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{PrintedBy}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="56" width="60" height="14"/>
+				<reportElement x="10" y="56" width="70" height="14"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[Print Date:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="76" y="56" width="245" height="14"/>
+				<reportElement x="84" y="56" width="500" height="14"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{PrintedDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{PrintedDate}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="10" y="78" width="732" height="1"/>
+				<reportElement x="10" y="90" width="732" height="1"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Double" lineColor="#000000"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement x="10" y="72" width="70" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Date Range:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="84" y="72" width="500" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{StartDate} + " to " + $P{EndDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -110,17 +129,17 @@ FROM
 			<textField>
 				<reportElement x="10" y="0" width="100" height="16"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{firstname} + " " + $F{lastname}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{firstname} + " " + $F{lastname}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="MM/dd/yyyy HH:mm:ss" isBlankWhenNull="true">
 				<reportElement x="300" y="0" width="100" height="16"/>
 				<textElement/>
-				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{created}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="20" y="18" width="100" height="16"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{bookingnumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{bookingnumber}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -134,12 +153,12 @@ FROM
 			<textField>
 				<reportElement x="554" y="2" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="667" y="2" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="654" y="2" width="13" height="20"/>

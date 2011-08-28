@@ -31,17 +31,17 @@ public abstract class ReportBase {
 	 */
 	protected class ReportOutput implements StreamingOutput {
 		/** This member holds the name of the file. */
-		private File m_fileReport;
-		
+		private final File m_fileReport;
+
 		/** This method holds the parameters needed to complete the report. */
-		private Map<String, Object> m_mapParameters;
+		private final Map<String, Object> m_mapParameters;
 
 		/**
 		 * This method constructs the report generator for the named report.
 		 * 
 		 * @param strReportName String containing the name of the report.
 		 */
-		public ReportOutput(final String strReportName, Map<String, Object> mapParameters) {
+		public ReportOutput(final String strReportName, final Map<String, Object> mapParameters) {
 			m_fileReport = new File(context.getRealPath("reports/" + strReportName));
 
 			if (!m_fileReport.exists()) {
@@ -49,7 +49,7 @@ public abstract class ReportBase {
 			}
 
 			System.out.println("File: " + m_fileReport.getAbsolutePath());
-			
+
 			m_mapParameters = mapParameters;
 		}
 
@@ -62,7 +62,7 @@ public abstract class ReportBase {
 				final JasperReport jasperReport = (JasperReport)JRLoader.loadObject(m_fileReport.getPath());
 
 				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-				Connection connection = manager.getConnection();
+				final Connection connection = manager.getConnection();
 
 				final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, m_mapParameters, connection);
 
@@ -72,10 +72,11 @@ public abstract class ReportBase {
 
 				exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
-				
-				String strContextPath = context.getContextPath();
-				
-				exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, strContextPath + "/reports/securitycheck.html_files/");
+
+				final String strContextPath = context.getContextPath();
+
+				exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, strContextPath +
+						"/reports/securitycheck.html_files/");
 				exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, false);
 
 				exporter.exportReport();
@@ -83,7 +84,7 @@ public abstract class ReportBase {
 			catch (final JRException e) {
 				throw new IllegalStateException(e);
 			}
-			catch (SQLException e) {
+			catch (final SQLException e) {
 				throw new IllegalStateException(e);
 			}
 		}
