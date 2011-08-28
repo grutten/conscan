@@ -8,7 +8,9 @@
 
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" /> 
 
-	<target name="all" depends="verifykeystore">
+	<target name="all">
+		<available file="clientKeystore" property="keystoreexists" value="true" />
+		
 		<antcall target="displaykeystoremessage" />
 		<antcall target="executebuild" />
 	</target>
@@ -81,8 +83,4 @@
 		</svn>
 	</target>
 
-	<target name="verifykeystore">
-		<available file="clientKeystore" property="keystoreexists" value="true" />
-	</target>
-	
 </project>
