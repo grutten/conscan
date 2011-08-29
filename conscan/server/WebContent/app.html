@@ -708,6 +708,14 @@
 						datetimepicker(option.name);
 					}					
 				}
+				
+				row = jQuery(document.createElement('tr'));
+				table.append(row);
+				
+				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
+				row.append(submitCell);
+				
+				submitCell.html('<span class="curvedblocksmall linkable">show</span><span class="curvedblocksmall linkable">download</span>');
 			}
 
 			function doreport(reportitem) {
