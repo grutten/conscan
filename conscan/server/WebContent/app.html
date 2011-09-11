@@ -3,25 +3,17 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>ConScan</title>
-		<!--
-		<link type="text/css" rel="stylesheet" href="css/conscan.css">
-		 -->
+		<!-- <link type="text/css" rel="stylesheet" href="css/conscan.css"> -->
 		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
-		<!--
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		 -->
+		<!-- <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>  -->
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
 		<script type="text/javascript" src="js/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.1.8.1.min.js"></script>
-		<!-- 
-		<script type="text/javascript" src="js/jquery.dataTables.1.8.1.js"></script>
-		 -->
+		<!-- <script type="text/javascript" src="js/jquery.dataTables.1.8.1.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
-		<!-- 
-		<script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script>
-		 -->
+		<!-- <script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 	</head>
 	<body>
@@ -147,9 +139,11 @@
 			jQuery('span.ui-icon-pencil').live('click', shownotes);
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
+			jQuery('span.reportable').live('click', showreport);
 			jQuery('input.timestamp').live('focus', function() {alert('hi');});
-			
+
 			var strFkTableNameValue = "empty";
+			var objectoptions = new Object();
 
 			function addOrUpdateItem(dialog) {
 				var dialog = jQuery('form#adddialogform');
@@ -204,6 +198,11 @@
 				return input;
 			}
 
+			function datetimepicker(name) {
+				input = jQuery('input[name="' + option.name + '"]');
+				input.datetimepicker();
+			}
+
 			function deleteItem(dialog) {
 				var dialog = jQuery('form#questiondialogform');
 				var name = dialog.find('input[name="typename"]:hidden').val();
@@ -255,6 +254,48 @@
 				} else {
 					jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
 				}
+			}
+
+			function displayreportoptions(reportoptions, statusText, xhr, form) {
+				// replace the contents with the new table
+				body = jQuery("div#fieldcontent");
+				body.empty();
+
+				table = jQuery(document.createElement('table'));
+				body.append(table);
+
+				if (typeof reportoptions != 'undefined') {
+					for (index in reportoptions) {
+						option = reportoptions[index];
+
+						row = jQuery(document.createElement('tr'));
+						table.append(row);
+
+						var labelCell = jQuery(document.createElement('td'));
+						row.append(labelCell);
+						labelCell.text(option.name + ':');
+						var inputCell = jQuery(document.createElement('td'));
+						row.append(inputCell);
+
+						var inputType = 'text';
+						var inputValue;
+						var input = createInput(inputType, option.name, inputValue);
+
+						inputCell.append(input);
+
+						if ('timestamp' == option.type) {
+							datetimepicker(option.name);
+						}
+					}
+				}
+
+				row = jQuery(document.createElement('tr'));
+				table.append(row);
+
+				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
+				row.append(submitCell);
+
+				submitCell.html('<span class="curvedblocksmall reportable" report="' + report + '">show</span><span class="curvedblocksmall reportable" report="' + report + '">download</span>');
 			}
 
 			function displayTable(field, table, objects) {
@@ -335,6 +376,32 @@
 				var oDataTable = jQuery('#aDataTable').dataTable(options);
 			}
 
+			function doreport(reportitem) {
+				//alert('getItemList: ' + reportitem);
+				jQuery.ajax({
+					type: 'GET',
+					url: 'rest/reports/' + reportitem,
+					datatype: 'html',
+					success: displayreport,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + reportitem + ' error: ' + statusText);
+					}
+				});
+			}
+
+			function doreportoptions(report, fieldcontent) {
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'rest/report/' + report,
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
+					success: displayreportoptions,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + report + ' error: ' + statusText);
+					}
+				});
+			}
+
 			function findCurrentType() {
 				return jQuery('span[type]').attr('type');
 			}
@@ -394,7 +461,6 @@
 				});
 			}
 
-			var objectoptions = new Object();
 			function getobjectoptions(name) {
 				var options = objectoptions[name];
 
@@ -537,7 +603,7 @@
 				jQuery('#logindialogform').ajaxForm(options);
 			}
 
-			function open_win() {
+			function openWin() {
 				window.open("scannerOptions.jnlp");
 			}
 
@@ -658,80 +724,10 @@
 				jQuery('#fieldtitle').html(report);
 
 				doreportoptions(report, 'div#fieldcontent');
-				
+
 				//jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
 
 				//doreport(report);
-			}
-			
-			function datetimepicker(name) {
-				input = jQuery('input[name="' + option.name + '"]');
-				input.datetimepicker();
-			}
-			
-			function doreportoptions(report, fieldcontent) {
-				html = '';
-				
-				var reportoptions = new Array();
-				
-				reportoptions[0] = new Object();
-				reportoptions[0].type = 'timestamp';
-				reportoptions[0].name = 'start';
-				
-				reportoptions[1] = new Object();
-				reportoptions[1].type = 'timestamp';
-				reportoptions[1].name = 'end';
-				
-				// replace the contents with the new table
-				body = jQuery(fieldcontent);
-				body.empty();
-				
-				table = jQuery(document.createElement('table'));
-				body.append(table);
-				
-				for (index in reportoptions) {
-					option = reportoptions[index];
-					
-					row = jQuery(document.createElement('tr'));
-					table.append(row);
-
-					var labelCell = jQuery(document.createElement('td'));
-					row.append(labelCell);
-					labelCell.text(option.name + ':');
-					var inputCell = jQuery(document.createElement('td'));
-					row.append(inputCell);
-
-					var inputType = 'text';
-					var inputValue;
-					var input = createInput(inputType, option.name, inputValue);
-
-					inputCell.append(input);
-
-					if ('timestamp' == option.type) {
-						datetimepicker(option.name);
-					}					
-				}
-				
-				row = jQuery(document.createElement('tr'));
-				table.append(row);
-				
-				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
-				row.append(submitCell);
-				
-				submitCell.html('<span class="curvedblocksmall linkable">show</span><span class="curvedblocksmall linkable">download</span>');
-			}
-
-			function doreport(reportitem) {
-				//alert('getItemList: ' + reportitem);
-				jQuery.ajax({
-					type: 'GET',
-					url: 'rest/reports/' + reportitem,
-					datatype: 'html',
-					success: displayreport,
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Item ' + reportitem + ' error: ' + statusText);
-					}
-				});
 			}
 
 			function showadditem(event) {
@@ -839,7 +835,7 @@
 				checkLogin();
 
 				// Start the JNLP application for pulling/pushing handheld data
-				open_win();
+				openWin();
 			});
 		</script>
 	</body>
