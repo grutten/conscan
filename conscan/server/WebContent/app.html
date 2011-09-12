@@ -291,14 +291,14 @@
 					url: 'rest/report/' + reportname,
 					type: 'GET',
 					beforeSubmit: function(arr, $form, options) {
-						alert('before submit');
+						// alert('before submit');
 						var results = jQuery("div#reportresults");
 						options.target = results;
 						results.html('<span class="informational">Retrieving report</span>');
 					},
 					target: jQuery("div#reportresults"),
 					success: function(responseXML, statusText, xhr, form) {
-						alert('Success: ' + statusText);
+						// alert('Success: ' + statusText);
 					},
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Error: ' + statusText);
