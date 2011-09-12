@@ -9,7 +9,7 @@
 		<!-- <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>  -->
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
-		<script type="text/javascript" src="js/jquery.form.js"></script>
+		<script type="text/javascript" src="js/jquery.form.2.84.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.1.8.1.min.js"></script>
 		<!-- <script type="text/javascript" src="js/jquery.dataTables.1.8.1.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
@@ -139,7 +139,7 @@
 			jQuery('span.ui-icon-pencil').live('click', shownotes);
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
-			jQuery('span.reportable').live('click', showreport);
+			jQuery('span.report').live('click', showreport);
 			jQuery('input.timestamp').live('focus', function() {alert('hi');});
 
 			var strFkTableNameValue = "empty";
@@ -256,20 +256,66 @@
 				}
 			}
 
-			function displayreportoptions(reportoptions, statusText, xhr, form) {
+			function displayreportdefinition(reportdefinition, statusText, xhr, form) {
 				// replace the contents with the new table
 				body = jQuery("div#fieldcontent");
 				body.empty();
+				
+				form = jQuery(document.createElement('form'));
+				body.append(form);
 
 				table = jQuery(document.createElement('table'));
-				body.append(table);
+				form.append(table);
 
+				reportname = '';
+
+				if (typeof reportdefinition != 'undefined') {
+					reportname = reportdefinition.name;
+
+					displayreportoptions(reportdefinition.options, table);
+				}
+
+				row = jQuery(document.createElement('tr'));
+				table.append(row);
+
+				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
+				row.append(submitCell);
+
+				submitCell.html('<input type=submit class="curvedblocksmall report" report="' + reportname + '" value="show"/><input type=submit class="curvedblocksmall report" report="' + reportname + '" value="download"/>');
+				
+				body.append('<hr/>');
+				body.append('<div id="reportresults"></div>');
+				
+				// prepare Options Object
+				var options = {
+					url: 'rest/report/' + reportname,
+					type: 'GET',
+					beforeSubmit: function(arr, $form, options) {
+						alert('before submit');
+						var results = jQuery("div#reportresults");
+						options.target = results;
+						results.html('<span class="informational">Retrieving report</span>');
+					},
+					target: jQuery("div#reportresults"),
+					success: function(responseXML, statusText, xhr, form) {
+						alert('Success: ' + statusText);
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
+				// pass options to ajaxForm
+				form.ajaxForm(options);
+			}
+			
+			function displayreportoptions(reportoptions, parent) {
 				if (typeof reportoptions != 'undefined') {
 					for (index in reportoptions) {
 						option = reportoptions[index];
 
 						row = jQuery(document.createElement('tr'));
-						table.append(row);
+						parent.append(row);
 
 						var labelCell = jQuery(document.createElement('td'));
 						row.append(labelCell);
@@ -288,14 +334,8 @@
 						}
 					}
 				}
-
-				row = jQuery(document.createElement('tr'));
-				table.append(row);
-
-				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
-				row.append(submitCell);
-
-				submitCell.html('<span class="curvedblocksmall reportable" report="' + report + '">show</span><span class="curvedblocksmall reportable" report="' + report + '">download</span>');
+				
+				return row;
 			}
 
 			function displayTable(field, table, objects) {
@@ -395,7 +435,7 @@
 					url: 'rest/report/' + report,
 					datatype: 'json',
 					beforeSend: addJsonAccepts,
-					success: displayreportoptions,
+					success: displayreportdefinition,
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Item ' + report + ' error: ' + statusText);
 					}
@@ -806,6 +846,13 @@
 						jQuery('#notesdialogform').ajaxForm(options);
 					}
 				});
+			}
+
+			function showreport(event) {
+				var action = jQuery(event.target).text().toLowerCase();
+				var name = event.target.attributes['report'].value;
+				
+				alert("Show report: " + action + " " + name);
 			}
 
 			function showupdateitem() {

@@ -5,7 +5,9 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="Title" class="java.lang.String"/>
 	<parameter name="PrintedBy" class="java.lang.String"/>
-	<parameter name="PrintedDate" class="java.lang.String"/>
+	<parameter name="PrintedDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new java.util.Date()]]></defaultValueExpression>
+	</parameter>
 	<parameter name="StartDate" class="java.util.Date">
 		<parameterDescription><![CDATA[Beginning bound scan dates.]]></parameterDescription>
 	</parameter>
@@ -70,7 +72,7 @@ WHERE scannerlog."created" > $P{StartDate}]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[Print Date:]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="MM/dd/yyyy HH:mm:ss">
 				<reportElement x="84" y="56" width="500" height="14"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -88,7 +90,7 @@ WHERE scannerlog."created" > $P{StartDate}]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<text><![CDATA[Date Range:]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="MM/dd/yyyy HH:mm:ss">
 				<reportElement x="84" y="72" width="500" height="14"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
