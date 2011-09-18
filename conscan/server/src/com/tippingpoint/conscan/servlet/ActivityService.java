@@ -8,7 +8,7 @@ import com.sun.jersey.spi.resource.Singleton;
  */
 @Singleton
 @Path("/activity")
-public class ActivityService extends Service {
+public class ActivityService extends ServiceBase {
 	/**
 	 * This method constructs a new service.
 	 */

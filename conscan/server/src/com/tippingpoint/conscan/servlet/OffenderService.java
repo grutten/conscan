@@ -8,7 +8,7 @@ import com.sun.jersey.spi.resource.Singleton;
  */
 @Singleton
 @Path("/offender")
-public class OffenderService extends Service {
+public class OffenderService extends ServiceBase {
 	/**
 	 * This method constructs a new service.
 	 */

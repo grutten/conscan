@@ -8,7 +8,7 @@ import com.sun.jersey.spi.resource.Singleton;
  */
 @Singleton
 @Path("/location")
-public class LocationService extends Service {
+public class LocationService extends ServiceBase {
 	/**
 	 * This method constructs a new service.
 	 */

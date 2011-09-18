@@ -25,7 +25,7 @@ import com.tippingpoint.sql.SqlBaseException;
 /**
  * This class is the base class for all rest services.
  */
-public abstract class Service {
+public abstract class ServiceBase {
 	/** This member holds the name of the business object type. */
 	private String m_strBusinessObjectType;
 
@@ -33,7 +33,7 @@ public abstract class Service {
 	 * THis method constructs a new service for the given business object type. 
 	 * @param strBusinessObjectType String containing the business object type.
 	 */
-	public Service(String strBusinessObjectType) {
+	public ServiceBase(String strBusinessObjectType) {
 		m_strBusinessObjectType = strBusinessObjectType;
 	}
 
