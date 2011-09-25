@@ -112,27 +112,27 @@ public final class Startup extends Services {
 	protected void doOptions(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
 
-		writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, "service")));
+		writer.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "service")));
 
 		final Iterator<LocalService> iterServices = m_mapServices.iterator();
 		if (iterServices != null && iterServices.hasNext()) {
 			while (iterServices.hasNext()) {
 				final LocalService localService = iterServices.next();
 
-				writer.write(XmlUtilities.open(TAG_OBJECT, new NameValuePair(ATTRIBUTE_NAME, "service")));
+				writer.write(XmlUtilities.open(XmlTags.TAG_OBJECT, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "service")));
 
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "path"),
+				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "path"),
 						localService.getPath()));
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "method"),
+				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "method"),
 						localService.getMethod()));
-				writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, "description"),
+				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "description"),
 						localService.getDescription()));
 
-				writer.write(XmlUtilities.close(TAG_OBJECT));
+				writer.write(XmlUtilities.close(XmlTags.TAG_OBJECT));
 			}
 		}
 
-		writer.write(XmlUtilities.close(TAG_LIST));
+		writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
 	}
 
 	/**

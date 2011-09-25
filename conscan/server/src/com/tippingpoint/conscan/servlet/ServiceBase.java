@@ -1,7 +1,19 @@
 package com.tippingpoint.conscan.servlet;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,21 +23,36 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.FieldValue;
+import com.tippingpoint.conscan.objects.JsonBusinessObjectList;
 import com.tippingpoint.conscan.objects.json.JsonBusinessObject;
+//import com.tippingpoint.conscan.servlet.Services.MimeTypeComparator;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.utilities.NameValuePair;
+import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is the base class for all rest services.
  */
 public abstract class ServiceBase {
+	@Context
+	protected ServletContext context;
+
 	/** This member holds the name of the business object type. */
 	private String m_strBusinessObjectType;
 
@@ -99,6 +126,29 @@ public abstract class ServiceBase {
 	}
 
 	/**
+	 * This method returns a collection of objects.
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public StreamingOutput getJsonObjects() {
+		
+		// TODO: the code from BaseTableService.writeObjects() also set
+		// the respose status and contenttype.  Does JAX-rs do that for me?
+		return new ServiceOutputJson(m_strBusinessObjectType.toString());
+	}
+
+	/**
+	 * This method returns a collection of objects.
+	 */
+/*	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public StreamingOutput getXmlObjects() {
+		return new ServiceOutputXml(m_strBusinessObjectType.toString());
+	}
+*/	
+	
+	/**
 	 * This method updates the staff object.
 	 * 
 	 * @throws SqlBaseException
@@ -163,4 +213,89 @@ public abstract class ServiceBase {
 		// save the business object
 		businessObject.save();
 	}
+
+	/**
+	 * This class is used generate the output of the business object.  The specific
+	 * format is deferred to child classes.
+	 */
+	protected class ServiceOutput implements StreamingOutput {
+		protected String m_strObjectName;
+		
+		/**
+		 * This method constructs the stream object used for rendering web pages.
+		 * @param strObjetName
+		 */
+		public ServiceOutput(String strObjectName) {
+			m_strObjectName = strObjectName;
+		}
+		
+		@Override
+		public void write(final OutputStream out) {
+			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(m_strObjectName);
+			if (builder != null) {
+				try {
+					final List<BusinessObject> listObjects = builder.getAll();
+					if (listObjects != null && !listObjects.isEmpty()) 
+						writeObjects(out, listObjects);
+				}
+				catch (SqlBaseException e){
+					throw new IllegalStateException(e);
+				}
+			}
+		}
+		
+		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
+			// child class must override this method.
+		}
+	}
+	
+	/**
+	 * This class is used to generate the output of the business object as JSON.
+	 */
+	protected class ServiceOutputJson extends ServiceOutput implements StreamingOutput {
+		public ServiceOutputJson(String strObjectName) {
+			super(strObjectName);
+		}
+
+		@Override
+		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
+			final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
+			try {
+				out.write(jsonObjects.get().toString().getBytes());
+			}
+			catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+	}
+	
+	
+	/**
+	 * This class is used to generate the output of the business object as XML.
+	 */
+	protected class ServiceOutputXml extends ServiceOutput implements StreamingOutput {
+		public ServiceOutputXml(final String strObjectName) {
+			super(strObjectName);
+		}
+
+		@Override
+		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
+			final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
+			try {
+				out.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0)
+					.getType())).getBytes());
+				
+/*  SEE Services.writeObject()
+				for (final BusinessObject businessObject : listObjects) {
+					writeObject(out, businessObject, false);
+				}
+*/
+				out.write(XmlUtilities.close(XmlTags.TAG_LIST).getBytes());
+			}
+			catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+	}
+	
 }

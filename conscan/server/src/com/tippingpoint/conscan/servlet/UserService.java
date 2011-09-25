@@ -35,6 +35,9 @@ public class UserService extends Services {
 	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		m_log.debug("Delete");
 
+		// remove authentication object from session
+		request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
+
 		// find the cookie to get the logged in user
 		final Cookie cookie = getCookie(request);
 		if (cookie != null) {
@@ -42,10 +45,6 @@ public class UserService extends Services {
 			cookie.setMaxAge(0);
 
 			response.addCookie(cookie);
-			
-			// remove authentication object from session
-			request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
-
 		}
 	}
 
@@ -108,13 +107,13 @@ public class UserService extends Services {
 					writeObject(out, boUser, false);
 					final FieldValue fieldEmail = boUser.getValue("email");
 					if (fieldEmail != null) {
-						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
-						cookie.setMaxAge(-1); // set it as a session cookie
-						response.addCookie(cookie);
-						
 						// Add session object
 						HttpSession session = request.getSession();
 						session.setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, Long.valueOf(session.getLastAccessedTime()));
+
+						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
+						cookie.setMaxAge(-1); // set it as a session cookie
+						response.addCookie(cookie);
 					}
 				}
 				else {

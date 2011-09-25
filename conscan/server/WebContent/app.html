@@ -487,17 +487,17 @@
 			function getItemList(item) {
 				// set the title of the field to the same as the menu item
 				jQuery('#fieldtitle').html(item + ' <span class="curvedblocksmall linkable shrink" type="' + item + '">+ Add</span>');
-
-				//alert('getItemList: ' + item);
+				var strUrl = 'rest/' + item;
 				jQuery.ajax({
 					type: 'GET',
-					url: item,
+					url: strUrl,
 					datatype: 'json',
 					beforeSend: addJsonAccepts,
 					success: displaylist,
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Item ' + item + ' error: ' + statusText);
+					error: function(jqXHR, statusText, errorThrown) {
+						checkLogin();						
 					}
+				
 				});
 			}
 

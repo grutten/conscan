@@ -184,18 +184,6 @@ public class BaseTableService extends Services {
 						jsonObjects.get().writeJSONString(out);
 						break;
 					}
-					else if (MIME_XML.match(mimeType)) {
-						final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
-						out.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0)
-								.getType())));
-
-						for (final BusinessObject businessObject : listObjects) {
-							writeObject(out, businessObject, false);
-						}
-
-						out.write(XmlUtilities.close(TAG_LIST));
-						break;
-					}
 				}
 			}
 			else {

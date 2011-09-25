@@ -46,11 +46,6 @@ import com.tippingpoint.utilities.XmlUtilities;
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
-	public static final String ATTRIBUTE_NAME = "name";
-
-	public static final String TAG_FIELD = "field";
-	public static final String TAG_OBJECT = "object";
-
 	protected static final String METHOD_DELETE = "DELETE";
 	protected static final String METHOD_GET = "GET";
 	protected static final String METHOD_HEAD = "HEAD";
@@ -61,8 +56,6 @@ public abstract class Services extends HttpServlet {
 	protected static MimeType MIME_ALL;
 	protected static MimeType MIME_JSON;
 	protected static MimeType MIME_XML;
-
-	protected static final String TAG_LIST = "list";
 
 	private static Log m_log = LogFactory.getLog(Services.class);
 
@@ -316,7 +309,7 @@ public abstract class Services extends HttpServlet {
 		if (businessObject != null) {
 			final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
-			listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
+			listAttributes.add(new NameValuePair(XmlTags.ATTRIBUTE_NAME, businessObject.getType()));
 
 			final FieldValue fvIdentifier = businessObject.getIdentifierField();
 			if (fvIdentifier != null) {
@@ -324,15 +317,15 @@ public abstract class Services extends HttpServlet {
 						.getValue())));
 			}
 
-			writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
+			writer.write(XmlUtilities.open(XmlTags.TAG_OBJECT, listAttributes));
 
 			final Iterator<FieldValue> iterValues = businessObject.getValues();
 			if (iterValues != null && iterValues.hasNext()) {
 				while (iterValues.hasNext()) {
 					final FieldValue fieldValue = iterValues.next();
 					if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
-						writer.write(XmlUtilities.tag(TAG_FIELD,
-								new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
+						writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD,
+								new NameValuePair(XmlTags.ATTRIBUTE_NAME, fieldValue.getName()),
 								XmlUtilities.getValue(fieldValue.getValue())));
 					}
 				}
@@ -345,21 +338,21 @@ public abstract class Services extends HttpServlet {
 						final List<BusinessObject> listRelatedObjects =
 							businessObject.getReleatedObjects(strRelatedName);
 						if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
-							writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, strRelatedName)));
+							writer.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, strRelatedName)));
 							for (final BusinessObject businessRelatedObject : listRelatedObjects) {
 								writeObject(writer, businessRelatedObject, false);
 							}
 
-							writer.write(XmlUtilities.close(TAG_LIST));
+							writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
 						}
 					}
 				}
 			}
 
-			writer.write(XmlUtilities.close(TAG_OBJECT));
+			writer.write(XmlUtilities.close(XmlTags.TAG_OBJECT));
 		}
 		else {
-			writer.write(XmlUtilities.tag(TAG_OBJECT));
+			writer.write(XmlUtilities.tag(XmlTags.TAG_OBJECT));
 		}
 	}
 
@@ -376,7 +369,7 @@ public abstract class Services extends HttpServlet {
 			throws IOException, SqlBaseException {
 		final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
 
-		listAttributes.add(new NameValuePair(ATTRIBUTE_NAME, businessObject.getType()));
+		listAttributes.add(new NameValuePair(XmlTags.ATTRIBUTE_NAME, businessObject.getType()));
 
 		final FieldValue fvIdentifier = businessObject.getIdentifierField();
 		if (fvIdentifier != null) {
@@ -384,14 +377,14 @@ public abstract class Services extends HttpServlet {
 					.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier.getValue())));
 		}
 
-		writer.write(XmlUtilities.open(TAG_OBJECT, listAttributes));
+		writer.write(XmlUtilities.open(XmlTags.TAG_OBJECT, listAttributes));
 
 		final Iterator<FieldValue> iterValues = businessObject.getValues();
 		if (iterValues != null && iterValues.hasNext()) {
 			while (iterValues.hasNext()) {
 				final FieldValue fieldValue = iterValues.next();
 				if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
-					writer.write(XmlUtilities.tag(TAG_FIELD, new NameValuePair(ATTRIBUTE_NAME, fieldValue.getName()),
+					writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, fieldValue.getName()),
 							XmlUtilities.getValue(fieldValue.getValue())));
 				}
 			}
@@ -400,17 +393,17 @@ public abstract class Services extends HttpServlet {
 		if (StringUtils.isNotBlank(strObjectChildName)) {
 			final List<BusinessObject> listRelatedObjects = businessObject.getReleatedObjects(strObjectChildName);
 			if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
-				writer.write(XmlUtilities.open(TAG_LIST, new NameValuePair(ATTRIBUTE_NAME, listRelatedObjects.get(0)
+				writer.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, listRelatedObjects.get(0)
 						.getType())));
 				for (final BusinessObject businessRelatedObject : listRelatedObjects) {
 					writeObject(writer, businessRelatedObject, false);
 				}
 
-				writer.write(XmlUtilities.close(TAG_LIST));
+				writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
 			}
 		}
 
-		writer.write(XmlUtilities.close(TAG_OBJECT));
+		writer.write(XmlUtilities.close(XmlTags.TAG_OBJECT));
 	}
 
 	/**
@@ -428,14 +421,14 @@ public abstract class Services extends HttpServlet {
 		if (builder != null) {
 			final List<BusinessObject> listObjects = builder.getAll();
 			if (listObjects != null && !listObjects.isEmpty()) {
-				writer.write(XmlUtilities.open(TAG_LIST,
-						new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
+				writer.write(XmlUtilities.open(XmlTags.TAG_LIST,
+						new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0).getType())));
 
 				for (final BusinessObject businessObject : listObjects) {
 					writeObject(writer, businessObject, bDeep);
 				}
 
-				writer.write(XmlUtilities.close(TAG_LIST));
+				writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
 			}
 		}
 	}
@@ -455,14 +448,14 @@ public abstract class Services extends HttpServlet {
 		if (builder != null) {
 			final List<BusinessObject> listObjects = builder.getAll();
 			if (listObjects != null && !listObjects.isEmpty()) {
-				writer.write(XmlUtilities.open(TAG_LIST,
-						new NameValuePair(ATTRIBUTE_NAME, listObjects.get(0).getType())));
+				writer.write(XmlUtilities.open(XmlTags.TAG_LIST,
+						new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0).getType())));
 
 				for (final BusinessObject businessObject : listObjects) {
 					writeObject(writer, businessObject, strObjectChildName);
 				}
 
-				writer.write(XmlUtilities.close(TAG_LIST));
+				writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
 			}
 		}
 	}
