@@ -8,6 +8,7 @@ import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.servlet.Services;
+import com.tippingpoint.conscan.servlet.XmlTags;
 import com.tippingpoint.sql.SqlBaseException;
 
 public class GenericXmlHandler extends SaxBaseHandler {
@@ -24,7 +25,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 
 	@Override
 	public void endElement(final String uri, final String name, final String qName) {
-		if (Services.TAG_FIELD.equals(qName)) {
+		if (XmlTags.TAG_FIELD.equals(qName)) {
 			m_log.debug("Field : " + m_strCurrentFieldName + " - " + m_strCurrentTagValue);
 			if (m_objCurrentObject != null) {
 				m_objCurrentObject.setValue(m_strCurrentFieldName, m_strCurrentTagValue);
@@ -35,7 +36,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 				m_log.debug("Unexpected null object in GenericXmlHandler - field:" + m_strCurrentTagValue);
 			}
 		}
-		else if (Services.TAG_OBJECT.equals(qName)) {
+		else if (XmlTags.TAG_OBJECT.equals(qName)) {
 			if (m_objCurrentObject != null) {
 				try {
 					m_objCurrentObject.save();
@@ -58,7 +59,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 	public void startElement(final String uri, final String name, final String qName, final Attributes attrs) {
 		final String strCurrObjName = attrs.getValue("name");
 
-		if (Services.TAG_OBJECT.equals(qName)) {
+		if (XmlTags.TAG_OBJECT.equals(qName)) {
 			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strCurrObjName);
 
 			if (builder == null) {
@@ -76,7 +77,7 @@ public class GenericXmlHandler extends SaxBaseHandler {
 				}
 			}
 		}
-		else if (Services.TAG_FIELD.equals(qName)) {
+		else if (XmlTags.TAG_FIELD.equals(qName)) {
 			m_strCurrentFieldName = strCurrObjName;
 		}
 	}

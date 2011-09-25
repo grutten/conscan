@@ -1,19 +1,10 @@
 package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,12 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-
-import net.sf.jasperreports.engine.export.JRHtmlExporter;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
@@ -41,7 +26,6 @@ import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.FieldValue;
 import com.tippingpoint.conscan.objects.JsonBusinessObjectList;
 import com.tippingpoint.conscan.objects.json.JsonBusinessObject;
-//import com.tippingpoint.conscan.servlet.Services.MimeTypeComparator;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
