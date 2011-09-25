@@ -70,7 +70,7 @@ public class ReportsService {
 		@Override
 		public void write(final OutputStream out) {
 			try {
-				final JasperReport jasperReport = (JasperReport)JRLoader.loadObject(m_fileReport.getPath());
+				final JasperReport jasperReport = (JasperReport)JRLoader.loadObject(m_fileReport);
 
 				final Map<String, Object> parameters = new HashMap<String, Object>();
 				parameters.put("ReportTitle", "Address Report");

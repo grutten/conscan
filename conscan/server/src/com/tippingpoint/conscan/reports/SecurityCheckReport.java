@@ -29,6 +29,13 @@ public class SecurityCheckReport extends ReportBase {
 	private static final String PARAM_START_DATE = "StartDate";
 	private static final String PARAM_TITLE = "Title";
 
+	/**
+	 * This method constructs a new named report.
+	 */
+	public SecurityCheckReport() {
+		super("securitycheck.jrxml");
+	}
+
 	@SuppressWarnings("unchecked")
 	@OPTIONS
 	@Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +76,22 @@ public class SecurityCheckReport extends ReportBase {
 		mapParameters.put(PARAM_PRINTED_BY, "William Rosewood");
 		mapParameters.put(PARAM_PRINTED_DATE, new Date());
 
-		return new ReportOutput("securitycheck.jasper", mapParameters);
+		return generateReportStreamHtml(mapParameters);
+	}
+
+	@GET
+	@Produces("application/pdf")
+	public StreamingOutput securityPdf(@QueryParam(PARAM_START_DATE) final String strStartDate,
+			@QueryParam(PARAM_END_DATE) final String strEndDate) {
+		final Map<String, Object> mapParameters = new HashMap<String, Object>();
+
+		mapParameters.put(PARAM_START_DATE, getDate(strStartDate));
+		mapParameters.put(PARAM_END_DATE, getDate(strEndDate));
+		mapParameters.put(PARAM_TITLE, "Local County Sherriff's Department");
+		mapParameters.put(PARAM_PRINTED_BY, "William Rosewood");
+		mapParameters.put(PARAM_PRINTED_DATE, new Date());
+
+		return generateReportStreamPdf(mapParameters);
 	}
 
 	private Date getDate(final String strValue) {

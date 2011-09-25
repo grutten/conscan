@@ -9,7 +9,7 @@
 		<!-- <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>  -->
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
-		<script type="text/javascript" src="js/jquery.form.2.84.js"></script>
+		<script type="text/javascript" src="js/jquery.form.2.85.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.1.8.1.min.js"></script>
 		<!-- <script type="text/javascript" src="js/jquery.dataTables.1.8.1.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
@@ -179,6 +179,10 @@
 				req.setRequestHeader("Accept", "application/json");
 			}
 
+			function addPdfAccepts(req) {
+				req.setRequestHeader("Accept", "application/pdf");
+			}
+
 			function checkLogin() {
 				jQuery.ajax({
 					url: 'user',
@@ -260,7 +264,7 @@
 				// replace the contents with the new table
 				body = jQuery("div#fieldcontent");
 				body.empty();
-				
+
 				form = jQuery(document.createElement('form'));
 				body.append(form);
 
@@ -281,24 +285,33 @@
 				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
 				row.append(submitCell);
 
-				submitCell.html('<input type=submit class="curvedblocksmall report" report="' + reportname + '" value="show"/><input type=submit class="curvedblocksmall report" report="' + reportname + '" value="download"/>');
-				
+				submitCell.html('<input type=submit name="display" value="show" class="curvedblocksmall report" report="' + reportname + '"/><input type=submit name="display" value="download" class="curvedblocksmall report" report="' + reportname + '"/>');
+
 				body.append('<hr/>');
 				body.append('<div id="reportresults"></div>');
-				
+
 				// prepare Options Object
 				var options = {
 					url: 'rest/report/' + reportname,
 					type: 'GET',
 					beforeSubmit: function(arr, $form, options) {
-						// alert('before submit');
+						var button = findValue(arr, "display");
+						alert('before submit ' + button);
+						
 						var results = jQuery("div#reportresults");
-						options.target = results;
-						results.html('<span class="informational">Retrieving report</span>');
+						if ("show" == button) {
+							options.target = results;
+							results.html('<span class="informational">Retrieving report</span>');
+						}
+						else {
+							options.beforeSend = addPdfAccepts
+							results.html('<span class="informational">Retrieving report PDF</span>');
+						}
 					},
-					target: jQuery("div#reportresults"),
-					success: function(responseXML, statusText, xhr, form) {
-						// alert('Success: ' + statusText);
+					success: function(response, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						pdfwindow = window.open("", "_blank", "menubar=1");
+						pdfwindow.document.write(response);
 					},
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Error: ' + statusText);
@@ -309,6 +322,18 @@
 				form.ajaxForm(options);
 			}
 			
+			function findValue(arr, name) {
+				var value;
+				if (typeof arr != 'undefined') {
+					for (index in arr) {
+						if (arr[index].name == name) {
+							value = arr[index].value;
+						} 
+					}
+				}
+				return value;
+			}
+
 			function displayreportoptions(reportoptions, parent) {
 				if (typeof reportoptions != 'undefined') {
 					for (index in reportoptions) {
@@ -334,7 +359,7 @@
 						}
 					}
 				}
-				
+
 				return row;
 			}
 
@@ -851,7 +876,7 @@
 			function showreport(event) {
 				var action = jQuery(event.target).text().toLowerCase();
 				var name = event.target.attributes['report'].value;
-				
+
 				alert("Show report: " + action + " " + name);
 			}
 
