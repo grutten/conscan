@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.tippingpoint.utilities.StringProperties;
+import com.tippingpoint.utilities.SystemProperties;
+
 public class AuthenticationFilter implements Filter {
 
 	public static final String AUTH_OBJECT_NAME = "auth";
@@ -34,7 +37,10 @@ public class AuthenticationFilter implements Filter {
 	    	Long lTimeLastAccessed = (Long)session.getAttribute(AUTH_OBJECT_NAME);
 	    	if (lTimeLastAccessed != null) {
 	    		long lElapsedTime = currTime - lTimeLastAccessed.longValue();
-	    		if (lElapsedTime > 300000) {// TODO: properties files
+	    		StringProperties sp = SystemProperties.getSystemProperties().getStringProperties();
+	    		String strTimeout = sp.getValue("authentication.timeout.minutes");
+	    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60 * 1000;
+	    		if (lElapsedTime > intAuthTimeout) {
 	    			session.setAttribute(AUTH_OBJECT_NAME, null);
 	    			System.out.println("EXPIRED AUTH OBJECT: " + session.getId());
 	    			HttpServletResponse httpResponse = (HttpServletResponse)response;

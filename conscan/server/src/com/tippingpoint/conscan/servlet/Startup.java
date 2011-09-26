@@ -26,6 +26,7 @@ import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlBaseException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.StringProperties;
+import com.tippingpoint.utilities.SystemProperties;
 import com.tippingpoint.utilities.XmlUtilities;
 
 /**
@@ -49,7 +50,7 @@ public final class Startup extends Services {
 	public void init(final ServletConfig config) throws ServletException {
 		super.init(config);
 
-		final StringProperties properties = getProperties();
+		final StringProperties properties = SystemProperties.getSystemProperties().getStringProperties();
 
 		final ConnectionManagerFactory factory = ConnectionManagerFactory.getFactory();
 		if (factory.getDefaultManager() == null) {
@@ -133,27 +134,6 @@ public final class Startup extends Services {
 		}
 
 		writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
-	}
-
-	/**
-	 * This method returns the properties for the application.
-	 */
-	private StringProperties getProperties() {
-		final InputStream inputStream =
-			getClass().getClassLoader().getResourceAsStream(APPLICATION_NAME + ".properties");
-
-		final Properties properties = new Properties();
-		try {
-			properties.load(inputStream);
-		}
-		catch (final FileNotFoundException e) {
-			m_log.error("Exception reading application properties", e);
-		}
-		catch (final IOException e) {
-			m_log.error("I/O Exception reading application properties", e);
-		}
-
-		return new StringProperties(properties);
 	}
 
 	static {
