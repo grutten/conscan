@@ -140,6 +140,7 @@
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
 
+			var newBrowserOptions = "resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no";
 			var strFkTableNameValue = "empty";
 			var objectoptions = new Object();
 
@@ -298,18 +299,25 @@
 
 						var results = jQuery("div#reportresults");
 						if ("show" == button) {
-							options.target = results;
+							//options.target = results;
 							results.html('<span class="informational">Retrieving report</span>');
 						}
 						else {
 							options.beforeSend = addPdfAccepts
+							var queryString = $form.formSerialize(); 
 							results.html('<span class="informational">Retrieving report PDF</span>');
+							pdfwindow = window.open(options.url + '/report.pdf?' + queryString, "_blank", newBrowserOptions);
+
+							return false; // prevent normal form submission
 						}
 					},
 					success: function(response, statusText, xhr, form) {
 						//alert('Success: ' + statusText);
-						pdfwindow = window.open("", "_blank", "menubar=1");
+						pdfwindow = window.open("", "_blank", newBrowserOptions);
 						pdfwindow.document.write(response);
+						
+						var results = jQuery("div#reportresults");
+						results.html('<span class="informational">Please see report window.</span>');
 					},
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Error: ' + statusText);

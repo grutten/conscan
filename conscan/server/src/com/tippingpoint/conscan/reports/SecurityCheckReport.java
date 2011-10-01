@@ -81,6 +81,7 @@ public class SecurityCheckReport extends ReportBase {
 
 	@GET
 	@Produces("application/pdf")
+	@Path("{report}.pdf")
 	public StreamingOutput securityPdf(@QueryParam(PARAM_START_DATE) final String strStartDate,
 			@QueryParam(PARAM_END_DATE) final String strEndDate) {
 		final Map<String, Object> mapParameters = new HashMap<String, Object>();
