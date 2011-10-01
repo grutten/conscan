@@ -139,8 +139,6 @@
 			jQuery('span.ui-icon-pencil').live('click', shownotes);
 			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
 			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
-			jQuery('span.report').live('click', showreport);
-			jQuery('input.timestamp').live('focus', function() {alert('hi');});
 
 			var strFkTableNameValue = "empty";
 			var objectoptions = new Object();
@@ -296,8 +294,8 @@
 					type: 'GET',
 					beforeSubmit: function(arr, $form, options) {
 						var button = findValue(arr, "display");
-						alert('before submit ' + button);
-						
+						//alert('before submit ' + button);
+
 						var results = jQuery("div#reportresults");
 						if ("show" == button) {
 							options.target = results;
@@ -320,18 +318,6 @@
 
 				// pass options to ajaxForm
 				form.ajaxForm(options);
-			}
-			
-			function findValue(arr, name) {
-				var value;
-				if (typeof arr != 'undefined') {
-					for (index in arr) {
-						if (arr[index].name == name) {
-							value = arr[index].value;
-						} 
-					}
-				}
-				return value;
 			}
 
 			function displayreportoptions(reportoptions, parent) {
@@ -475,6 +461,18 @@
 				return jQuery(tr).find('span.identifier').text();
 			}
 
+			function findValue(arr, name) {
+				var value;
+				if (typeof arr != 'undefined') {
+					for (index in arr) {
+						if (arr[index].name == name) {
+							value = arr[index].value;
+						}
+					}
+				}
+				return value;
+			}
+
 			function getDisplay(name, object) {
 				var columns = getobjectoptions(name);
 				var table = columns.table;
@@ -520,9 +518,9 @@
 					beforeSend: addJsonAccepts,
 					success: displaylist,
 					error: function(jqXHR, statusText, errorThrown) {
-						checkLogin();						
+						checkLogin();
 					}
-				
+
 				});
 			}
 
@@ -617,7 +615,7 @@
 			}
 
 			function loginsuccess(responseXML, statusText, xhr, form) {
-//				alert('login success: ' + statusText);
+				//alert('login success: ' + statusText);
 				processUser(responseXML);
 				jQuery.modal.close();
 			}
@@ -789,10 +787,6 @@
 				jQuery('#fieldtitle').html(report);
 
 				doreportoptions(report, 'div#fieldcontent');
-
-				//jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
-
-				//doreport(report);
 			}
 
 			function showadditem(event) {
@@ -871,13 +865,6 @@
 						jQuery('#notesdialogform').ajaxForm(options);
 					}
 				});
-			}
-
-			function showreport(event) {
-				var action = jQuery(event.target).text().toLowerCase();
-				var name = event.target.attributes['report'].value;
-
-				alert("Show report: " + action + " " + name);
 			}
 
 			function showupdateitem() {
