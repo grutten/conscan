@@ -10,3 +10,12 @@ The .settings\ must look similar to:
         <property name="context-root" value="conscan"/>
         <property name="java-output-path" value="/conscan/build/classes"/>
     </wb-module>
+
+    
+TODO:
+
+- Add close on the edit/update dialog.
+- Add drop down for those items that are relationships.
+- Add confirm password.
+- Report: date format in date range.
+- Report: page format

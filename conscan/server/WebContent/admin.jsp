@@ -15,8 +15,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>ConScan Administration</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
 		<script type="text/javascript" src="js/ajaxupload.js"></script>
 	</head>
 	<body>
