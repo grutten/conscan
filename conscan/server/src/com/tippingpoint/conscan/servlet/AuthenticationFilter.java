@@ -16,13 +16,12 @@ import com.tippingpoint.utilities.StringProperties;
 import com.tippingpoint.utilities.SystemProperties;
 
 public class AuthenticationFilter implements Filter {
-
 	public static final String AUTH_OBJECT_NAME = "auth";
+	public static final String DEFAULT_TIMEOUT = "5";
 	
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -39,8 +38,8 @@ public class AuthenticationFilter implements Filter {
 	    		long lElapsedTime = currTime - lTimeLastAccessed.longValue();
 	    		StringProperties sp = SystemProperties.getSystemProperties().getStringProperties();
 	    		String strTimeout = sp.getValue("authentication.timeout.minutes");
-	    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60 * 1000;
-	    		int intCookieTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60;
+	    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? DEFAULT_TIMEOUT : strTimeout).intValue() * 60 * 1000;
+	    		int intCookieTimeout = Integer.valueOf(strTimeout == null ? DEFAULT_TIMEOUT : strTimeout).intValue() * 60;
 	    		if (lElapsedTime > intAuthTimeout) {
 	    			session.setAttribute(AUTH_OBJECT_NAME, null);
 	    			System.out.println("EXPIRED AUTH OBJECT: " + session.getId());
@@ -79,5 +78,4 @@ public class AuthenticationFilter implements Filter {
 		// TODO Auto-generated method stub
 
 	}
-
 }
