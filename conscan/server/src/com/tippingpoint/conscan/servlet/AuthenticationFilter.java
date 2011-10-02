@@ -40,6 +40,7 @@ public class AuthenticationFilter implements Filter {
 	    		StringProperties sp = SystemProperties.getSystemProperties().getStringProperties();
 	    		String strTimeout = sp.getValue("authentication.timeout.minutes");
 	    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60 * 1000;
+	    		int intCookieTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60;
 	    		if (lElapsedTime > intAuthTimeout) {
 	    			session.setAttribute(AUTH_OBJECT_NAME, null);
 	    			System.out.println("EXPIRED AUTH OBJECT: " + session.getId());
@@ -48,19 +49,25 @@ public class AuthenticationFilter implements Filter {
 	    				httpResponse.sendError(401);
 	    			}
 	    		}
-	    		else { 
+	    		else {
+	    			HttpServletResponse httpResponse = (HttpServletResponse)response;
+	    			if (httpResponse != null)
+	    				UserService.setCookieExpiration(httpRequest, httpResponse, intCookieTimeout);
+	    			
 	    			session.setAttribute(AUTH_OBJECT_NAME, System.currentTimeMillis());
+	    			
 	    			System.out.println("AUTH object: " + lTimeLastAccessed.toString() + " sessionId: "  + session.getId());
 	    		    chain.doFilter(request, response);
 	    		}
 	    	}
 	    	else {
 	    		System.out.println("NO AUTH OBJECT: " + session.getId());
-	    		
     			HttpServletResponse httpResponse = (HttpServletResponse)response;
-    			if (httpResponse != null) 
-    				httpResponse.sendError(401);
-    			
+    			if (httpResponse != null) { 
+    				UserService.setCookieExpiration(httpRequest, httpResponse, 0);
+					httpResponse.sendError(401);
+    			}
+	    	
 	    		System.out.println("DONE 401: " + session.getId());
 	    	}
 	    }

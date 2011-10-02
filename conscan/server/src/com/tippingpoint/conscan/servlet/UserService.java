@@ -17,6 +17,8 @@ import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.FieldValue;
 import com.tippingpoint.sql.SqlBaseException;
+import com.tippingpoint.utilities.StringProperties;
+import com.tippingpoint.utilities.SystemProperties;
 
 /**
  * This class is serves information pertaining to the current user.
@@ -26,6 +28,17 @@ public class UserService extends Services {
 	private static Log m_log = LogFactory.getLog(UserService.class);
 	private static final long serialVersionUID = 2641405874048058605L;
 
+	public static void setCookieExpiration(final HttpServletRequest request, final HttpServletResponse response, int nExpirationInSeconds) {
+		// find the cookie to get the logged in user
+		final Cookie cookie = getCookie(request);
+		if (cookie != null) {
+			// kill the cookie
+			cookie.setMaxAge(0);
+
+			response.addCookie(cookie);
+		}
+	}
+	
 	/**
 	 * This method executes the delete command; which is used to log a user out of the system.
 	 * 
@@ -38,14 +51,7 @@ public class UserService extends Services {
 		// remove authentication object from session
 		request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
 
-		// find the cookie to get the logged in user
-		final Cookie cookie = getCookie(request);
-		if (cookie != null) {
-			// kill the cookie
-			cookie.setMaxAge(0);
-
-			response.addCookie(cookie);
-		}
+		setCookieExpiration(request, response, 0);
 	}
 
 	/**
@@ -111,8 +117,12 @@ public class UserService extends Services {
 						HttpSession session = request.getSession();
 						session.setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, Long.valueOf(session.getLastAccessedTime()));
 
+			    		StringProperties sp = SystemProperties.getSystemProperties().getStringProperties();
+			    		String strTimeout = sp.getValue("authentication.timeout.minutes");
+			    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60;
+						
 						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
-						cookie.setMaxAge(-1); // set it as a session cookie
+						cookie.setMaxAge(intAuthTimeout); // set it as a session cookie
 						response.addCookie(cookie);
 					}
 				}
@@ -129,7 +139,7 @@ public class UserService extends Services {
 	/**
 	 * This method returns the user cookie from the request.
 	 */
-	private Cookie getCookie(final HttpServletRequest request) {
+	private static Cookie getCookie(final HttpServletRequest request) {
 		Cookie foundCookie = null;
 
 		final Cookie[] aCookies = request.getCookies();
