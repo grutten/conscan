@@ -18,15 +18,15 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
-     offender."firstname",
-     offender."lastname",
-     activity."name",
-     scannerlog."created",
-     offender."bookingnumber"
+     offender.firstname,
+     offender.lastname,
+     activity.name,
+     scannerlog.created,
+     offender.bookingnumber
 FROM
-     "scannerlog" scannerlog INNER JOIN "activity" activity ON scannerlog."activityid" = activity."activityid"
-     INNER JOIN "offender" offender ON scannerlog."offenderid" = offender."offenderid"
-WHERE scannerlog."created" > $P{StartDate}]]>
+     scannerlog scannerlog INNER JOIN activity activity ON scannerlog.activityid = activity.activityid
+     INNER JOIN offender offender ON scannerlog.offenderid = offender.offenderid
+WHERE scannerlog.created > $P{StartDate}]]>
 	</queryString>
 	<field name="firstname" class="java.lang.String"/>
 	<field name="lastname" class="java.lang.String"/>

@@ -7,7 +7,6 @@ import org.xml.sax.XMLReader;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
-import com.tippingpoint.conscan.servlet.Services;
 import com.tippingpoint.conscan.servlet.XmlTags;
 import com.tippingpoint.sql.SqlBaseException;
 
