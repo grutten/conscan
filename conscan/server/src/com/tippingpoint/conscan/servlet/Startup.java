@@ -145,7 +145,7 @@ public final class Startup extends Services {
 		Startup.register(Location.class, METHOD_GET, null);
 		Startup.register(Offender.class, METHOD_GET, null);
 		Startup.register(Staff.class, METHOD_GET, null);
-		Startup.register(ScannerLogService.class, METHOD_POST, null);
+		Startup.register(ScannerLog.class, METHOD_GET, null);
 		Startup.register(UserService.class, METHOD_GET, null);
 	}
 

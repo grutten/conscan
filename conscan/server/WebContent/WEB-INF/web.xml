@@ -114,7 +114,7 @@
 
   <servlet>
     <servlet-name>ScannerLog</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLogService</servlet-class>
+    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLog</servlet-class>
   </servlet>
   
   <servlet-mapping>
