@@ -134,7 +134,7 @@
 
   <servlet>
     <servlet-name>User</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.UserService</servlet-class>
+    <servlet-class>com.tippingpoint.conscan.servlet.User</servlet-class>
   </servlet>
   
   <servlet-mapping>

@@ -51,7 +51,7 @@ public class AuthenticationFilter implements Filter {
 	    		else {
 	    			HttpServletResponse httpResponse = (HttpServletResponse)response;
 	    			if (httpResponse != null)
-	    				UserService.setCookieExpiration(httpRequest, httpResponse, intCookieTimeout);
+	    				User.setCookieExpiration(httpRequest, httpResponse, intCookieTimeout);
 	    			
 	    			session.setAttribute(AUTH_OBJECT_NAME, System.currentTimeMillis());
 	    			
@@ -63,7 +63,7 @@ public class AuthenticationFilter implements Filter {
 	    		System.out.println("NO AUTH OBJECT: " + session.getId());
     			HttpServletResponse httpResponse = (HttpServletResponse)response;
     			if (httpResponse != null) { 
-    				UserService.setCookieExpiration(httpRequest, httpResponse, 0);
+    				User.setCookieExpiration(httpRequest, httpResponse, 0);
 					httpResponse.sendError(401);
     			}
 	    	

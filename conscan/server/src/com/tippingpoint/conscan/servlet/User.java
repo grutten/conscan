@@ -23,9 +23,9 @@ import com.tippingpoint.utilities.SystemProperties;
 /**
  * This class is serves information pertaining to the current user.
  */
-public class UserService extends Services {
+public class User extends Services {
 	private static final String COOKIE_NAME = "user";
-	private static Log m_log = LogFactory.getLog(UserService.class);
+	private static Log m_log = LogFactory.getLog(User.class);
 	private static final long serialVersionUID = 2641405874048058605L;
 
 	public static void setCookieExpiration(final HttpServletRequest request, final HttpServletResponse response, int nExpirationInSeconds) {
