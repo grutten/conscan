@@ -17,6 +17,6 @@ TODO:
 - Add close on the edit/update dialog.
 - Add drop down for those items that are relationships.
 - Add confirm password.
-- Report: date format in date range.
-- Report: page format
+(r369) - Report: date format in date range.
+(r369) - Report: page format
 - Add wait indicator
