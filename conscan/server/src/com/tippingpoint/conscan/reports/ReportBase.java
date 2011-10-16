@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -128,6 +132,23 @@ public abstract class ReportBase {
 		if (m_fileReport == null) {
 			compileReport();
 		}
+	}
+
+	protected Date getDate(final String strValue) {
+		Date dtValue = null;
+	
+		if (strValue != null && strValue.length() > 0) {
+			// sample date: 09/01/2011 00:00
+			final DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+			try {
+				dtValue = df.parse(strValue);
+			}
+			catch (final ParseException e) {
+				dtValue = new Date(); // default to now
+			}
+		}
+	
+		return dtValue;
 	}
 
 	/**

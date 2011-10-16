@@ -18,8 +18,8 @@ import com.sun.jersey.spi.resource.Singleton;
  * This class generates the security check report.
  */
 @Singleton
-@Path("/report/security")
-public class SecurityCheckReport extends ReportBase {
+@Path("/report/activity")
+public class ActivityReport extends ReportBase {
 	private static final String PARAM_END_DATE = "EndDate";
 	private static final String PARAM_PRINTED_BY = "PrintedBy";
 	private static final String PARAM_PRINTED_DATE = "PrintedDate";
@@ -29,8 +29,8 @@ public class SecurityCheckReport extends ReportBase {
 	/**
 	 * This method constructs a new named report.
 	 */
-	public SecurityCheckReport() {
-		super("securitycheck.jrxml");
+	public ActivityReport() {
+		super("activity.jrxml");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -39,7 +39,7 @@ public class SecurityCheckReport extends ReportBase {
 	public String reportoptions() {
 		final JSONObject definition = new JSONObject();
 
-		definition.put("name", "security");
+		definition.put("name", "activity");
 
 		final JSONArray options = new JSONArray();
 		definition.put("options", options);
@@ -63,7 +63,7 @@ public class SecurityCheckReport extends ReportBase {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public StreamingOutput security(@QueryParam(PARAM_START_DATE) final String strStartDate,
+	public StreamingOutput report(@QueryParam(PARAM_START_DATE) final String strStartDate,
 			@QueryParam(PARAM_END_DATE) final String strEndDate) {
 		final Map<String, Object> mapParameters = new HashMap<String, Object>();
 
@@ -79,7 +79,7 @@ public class SecurityCheckReport extends ReportBase {
 	@GET
 	@Produces("application/pdf")
 	@Path("{report}.pdf")
-	public StreamingOutput securityPdf(@QueryParam(PARAM_START_DATE) final String strStartDate,
+	public StreamingOutput reportPdf(@QueryParam(PARAM_START_DATE) final String strStartDate,
 			@QueryParam(PARAM_END_DATE) final String strEndDate) {
 		final Map<String, Object> mapParameters = new HashMap<String, Object>();
 
