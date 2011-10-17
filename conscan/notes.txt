@@ -19,4 +19,4 @@ TODO:
 - Add confirm password.
 (r369) - Report: date format in date range.
 (r369) - Report: page format
-- Add wait indicator
+(r371) - Add wait indicator

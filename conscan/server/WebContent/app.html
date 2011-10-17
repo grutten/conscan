@@ -15,6 +15,7 @@
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
 		<!-- <script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -103,7 +104,7 @@
 				<table class="noborder">
 					<thead>
 						<tr>
-							<td colspan="2"  id="adddialogtitle"></td>
+							<td colspan="2" id="adddialogtitle" class="curvedblocksmall"></td>
 						</tr>
 					</thead>
 					<tbody id="adddialogbody">
@@ -175,12 +176,22 @@
 				dialog.ajaxForm(options);
 			}
 
-			function addJsonAccepts(req) {
-				req.setRequestHeader("Accept", "application/json");
+			function addJsonAccepts(request) {
+				request.setRequestHeader("Accept", "application/json");
 			}
 
-			function addPdfAccepts(req) {
-				req.setRequestHeader("Accept", "application/pdf");
+			function addPdfAccepts(request) {
+				request.setRequestHeader("Accept", "application/pdf");
+			}
+
+			function ajaxComplete() {
+				//alert("In ajaxStop");
+				jQuery.unblockUI();
+			}
+
+			function ajaxStart() {
+				//alert("In ajaxStart");
+				jQuery.blockUI();
 			}
 
 			function checkLogin() {
@@ -305,7 +316,7 @@
 						}
 						else {
 							options.beforeSend = addPdfAccepts
-							var queryString = $form.formSerialize(); 
+							var queryString = $form.formSerialize();
 							results.html('<span class="informational">Retrieving report PDF</span>');
 							pdfwindow = window.open(options.url + '/report.pdf?' + queryString, "_blank", newBrowserOptions);
 
@@ -316,7 +327,7 @@
 						//alert('Success: ' + statusText);
 						pdfwindow = window.open("", "_blank", newBrowserOptions);
 						pdfwindow.document.write(response);
-						
+
 						var results = jQuery("div#reportresults");
 						results.html('<span class="informational">Please see report window.</span>');
 					},
@@ -429,15 +440,15 @@
 				jQuery(field).html('<table class="dataTables_content noborder" id="aDataTable"></table>');
 				// use the tool to load that table
 				var options = {
-						"aaData": data,
-						"aoColumns": tablecolumns,
-						"bAutoWidth": false
+					"aaData": data,
+					"aoColumns": tablecolumns,
+					"bAutoWidth": false
 				};
 				var oDataTable = jQuery('#aDataTable').dataTable(options);
 			}
 
 			function doreport(reportitem) {
-				//alert('getItemList: ' + reportitem);
+				//alert('doreport: ' + reportitem);
 				jQuery.ajax({
 					type: 'GET',
 					url: 'rest/reports/' + reportitem,
@@ -454,11 +465,15 @@
 					type: 'OPTIONS',
 					url: 'rest/report/' + report,
 					datatype: 'json',
-					beforeSend: addJsonAccepts,
+					beforeSend: function(request, settings) {
+						ajaxStart();
+						addJsonAccepts(request);
+					},
 					success: displayreportdefinition,
 					error: function(responseXML, statusText, xhr, form) {
 						alert('Item ' + report + ' error: ' + statusText);
-					}
+					},
+					complete: ajaxComplete
 				});
 			}
 
@@ -524,12 +539,15 @@
 					type: 'GET',
 					url: strUrl,
 					datatype: 'json',
-					beforeSend: addJsonAccepts,
+					beforeSend: function(request, settings) {
+						ajaxStart();
+						addJsonAccepts(request);
+					},
 					success: displaylist,
 					error: function(jqXHR, statusText, errorThrown) {
 						checkLogin();
-					}
-
+					},
+					complete: ajaxComplete
 				});
 			}
 
@@ -800,16 +818,9 @@
 
 			function showadditem(event) {
 				var name = event.target.attributes['type'].value;
-				//alert("Ping: " + name);
+
 				populateAddItemForm(name);
 				jQuery("#adddialog").modal({
-					opacity:80,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					containerCss: {
-						backgroundColor:"#EEEEEE",
-					},
 					onShow: addOrUpdateItem
 				});
 			}
@@ -825,27 +836,13 @@
 
 				populateDeleteItemForm(name, item);
 				jQuery("#questiondialog").modal({
-					opacity:80,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					containerCss: {
-						backgroundColor:"#EEEEEE",
-					},
 					onShow: deleteItem
 				});
 			}
 
 			function showlogin() {
 				jQuery("#logindialog").modal({
-					opacity:70,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					containerCss: {
-						backgroundColor:"#EEEEEE",
-					},
-					onShow: onshowlogin
+					onShow: onshowlogin,
 				});
 			}
 
@@ -853,10 +850,6 @@
 				var strScannerLogId = findIdForRow(jQuery(this).parents('tr'));
 
 				jQuery("#notesdialog").modal({
-					opacity:70,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
 					onShow: function (dialog) {
 						var modal = this;
 						jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
@@ -887,18 +880,27 @@
 
 				populateAddItemForm(name, item);
 				jQuery("#adddialog").modal({
-					opacity:80,
-					overlayCss: {
-						backgroundColor:"#EEEEEE"
-					},
-					containerCss: {
-						backgroundColor:"#EEEEEE",
-					},
 					onShow: addOrUpdateItem
 				});
 			}
 
+			function setUIDefaults() {
+				jQuery.blockUI.defaults.message = '<h2>Loading</h2>';
+				jQuery.blockUI.defaults.blockMsgClass = "curvedblock";
+				jQuery.blockUI.defaults.overlayCSS.backgroundColor = "#EEEEEE";
+				jQuery.blockUI.defaults.overlayCSS.opacity = 0.80;
+				jQuery.modal.defaults.opacity = 80;
+				jQuery.modal.defaults.overlayCss = {
+						backgroundColor:"#EEEEEE"
+				};
+				jQuery.modal.defaults.containerCss = {
+						backgroundColor:"#EEEEEE"
+				};
+			}
+
 			jQuery(document).ready(function() {
+				setUIDefaults();
+
 				// when the page first comes up, check for a logged in user
 				checkLogin();
 
