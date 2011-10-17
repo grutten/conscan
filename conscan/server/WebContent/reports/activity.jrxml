@@ -46,14 +46,6 @@ WHERE scannerlog.created > $P{StartDate}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{Title}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="652" y="0" width="56" height="79"/>
-				<imageExpression><![CDATA["C:\\TPSS\\conscan\\server\\WebContent\\images\\badge.jpg"]]></imageExpression>
-			</image>
-			<image>
-				<reportElement x="26" y="0" width="81" height="79"/>
-				<imageExpression><![CDATA["C:\\TPSS\\conscan\\server\\WebContent\\images\\oc logo small.jpg"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
