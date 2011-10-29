@@ -14,7 +14,7 @@ The .settings\ must look similar to:
     
 TODO:
 
-- Add close on the edit/update dialog.
+(r372) - Add close on the edit/update dialog.
 - Add drop down for those items that are relationships.
 - Add confirm password.
 (r369) - Report: date format in date range.
