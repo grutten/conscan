@@ -1,1 +1,0 @@
-java post -classpath"classes;.\\lib"
