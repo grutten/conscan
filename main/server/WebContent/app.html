@@ -1,0 +1,913 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>ConScan</title>
+		<!-- <link type="text/css" rel="stylesheet" href="css/conscan.css"> -->
+		<link type="text/css" rel="stylesheet" href="css/app.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<!-- <script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>  -->
+		<script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+		<script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery.form.2.85.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.1.8.2.min.js"></script>
+		<!-- <script type="text/javascript" src="js/jquery.dataTables.1.8.2.js"></script> -->
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
+		<!-- <script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script> -->
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
+	</head>
+	<body>
+		<h1>ConScan</h1>
+		<div class="login">
+			<span id="loginlink">Login</span>
+			<span id="logout">&nbsp;|&nbsp;<span id="logoutlink" class="clickablelink">Logout</span></span>
+		</div>
+		<div class="main curvedblock">
+			<div class="menu">
+				<h3>Menu</h3>
+				<ul>
+					<li class="curvedblocksmall linkable">staff</li>
+					<li class="curvedblocksmall linkable">compliance</li>
+					<li class="curvedblocksmall linkable">activity</li>
+					<li class="curvedblocksmall linkable">location</li>
+					<li class="curvedblocksmall linkable">offender</li>
+					<li class="curvedblocksmall linkable">scannerlog</li>
+				</ul>
+				<h3>Report</h3>
+				<ul>
+					<li class="curvedblocksmall report">activity</li>
+					<li class="curvedblocksmall report">security</li>
+				</ul>
+			</div>
+			<div class="field">
+				<h3 id="fieldtitle">ConScan</h3>
+				<div id="fieldcontent"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="footer">
+			&copy; 2011 Tipping Point Software Solutions
+		</div>
+		<div class="hidden wideborder curvedblock" id="logindialog">
+			<div class="errormsg"></div>
+			<form id="logindialogform">
+				<table class="noborder">
+					<tbody>
+					<tr>
+						<td>User:</td>
+						<td><input type="text" name="user"></input></td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td><input type="password" name="password"></input></td>
+					</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="loginsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+		<div class="hidden wideborder curvedblock" id="notesdialog">
+			<div class="errormsg"></div>
+			<form id="notesdialogform">
+				<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>
+				<table class="noborder">
+					<tbody>
+					<tr>
+						<td>notes:</td>
+						<td><input type="text" name="notes" id="idinputnotes"></input></td>
+					</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="loginsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+		<div class="hidden wideborder curvedblock" id="adddialog">
+			<div class="errormsg"></div>
+			<form id="adddialogform">
+				<input type="hidden" name="typename" value=""/>
+				<input type="hidden" name="itemid" value=""/>
+				<table class="noborder">
+					<thead>
+						<tr>
+							<td colspan="2" id="adddialogtitle" class="curvedblocksmall"></td>
+						</tr>
+					</thead>
+					<tbody id="adddialogbody">
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<input type="reset" value="Clear"></input>
+								<input type="submit" value="Submit" class="addsubmit"></input>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+		<div class="hidden wideborder curvedblock" id="questiondialog">
+			<div class="msg"></div>
+			<form id="questiondialogform">
+				<input type="hidden" name="typename" value=""/>
+				<input type="hidden" name="itemid" value=""/>
+				<div id="questiondialogbody"></div>
+				<div class="right">
+					<input type="submit" value="Yes" class="addsubmit"></input>
+					<input type="reset" value="No" class="simplemodal-close"></input>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			jQuery('#loginlink').live('click', showlogin);
+			jQuery('#logoutlink').live('click', logout);
+			jQuery('div.menu .linkable').live('click', menuitemclick);
+			jQuery('div.menu .report').live('click', reportitemclick);
+			jQuery('span.linkable').live('click', showadditem);
+			jQuery('span.ui-icon-pencil').live('click', shownotes);
+			jQuery('span.ui-icon-trash').live('click', showdeleteitem);
+			jQuery('span.ui-icon-wrench').live('click', showupdateitem);
+
+			var newBrowserOptions = "resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no";
+			var strFkTableNameValue = "empty";
+			var objectoptions = new Object();
+
+			function addOrUpdateItem(dialog) {
+				var dialog = jQuery('form#adddialogform');
+				var name = dialog.find('input[name="typename"]:hidden').val();
+				var id = dialog.find('input[name="itemidentifier"]:hidden').val();
+
+				var type = 'POST';
+				var url = 'rest/' + name;
+				if (typeof id == 'string' && id.length > 0) {
+					type = 'PUT';
+					url = url + '/' + id;
+				}
+
+				// prepare Options Object
+				var options = {
+					url: url,
+					type: type,
+					success: function(responseXML, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						getItemList(name);
+						jQuery.modal.close();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
+				// pass options to ajaxForm
+				dialog.ajaxForm(options);
+			}
+
+			function addJsonAccepts(request) {
+				request.setRequestHeader("Accept", "application/json");
+			}
+
+			function addPdfAccepts(request) {
+				request.setRequestHeader("Accept", "application/pdf");
+			}
+
+			function ajaxComplete() {
+				//alert("In ajaxStop");
+				jQuery.unblockUI();
+			}
+
+			function ajaxStart() {
+				//alert("In ajaxStart");
+				jQuery.blockUI();
+			}
+
+			function checkLogin() {
+				jQuery.ajax({
+					url: 'user',
+					type: 'GET',
+					success: processUser,
+					error: showlogin
+				});
+			}
+
+			function createInput(type, name, value) {
+				var input = jQuery(document.createElement('input'));
+
+				input.attr('name', name);
+				input.attr('type', type);
+				input.attr('value', value);
+
+				return input;
+			}
+
+			function datetimepicker(name) {
+				input = jQuery('input[name="' + option.name + '"]');
+				input.datetimepicker();
+			}
+
+			function deleteItem(dialog) {
+				var dialog = jQuery('form#questiondialogform');
+				var name = dialog.find('input[name="typename"]:hidden').val();
+				var id = dialog.find('input[name="itemidentifier"]:hidden').val();
+
+				// prepare Options Object
+				var options = {
+					url: 'rest/' + name + '/' + id,
+					type: 'DELETE',
+					success: function(responseXML, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						getItemList(name);
+						jQuery.modal.close();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
+				// pass options to ajaxForm
+				dialog.ajaxForm(options);
+			}
+
+			function display(table, object) {
+				var strHtml = '';
+
+				for (index in table.column) {
+					var column = table.column[index];
+
+					strHtml += column.name + '=' + object[column.name] + '<br/>';
+				}
+
+				return strHtml;
+			}
+
+			function displaylist(responseObj, statusText, xhr) {
+				if (xhr.status == 200) {
+					var columns = getobjectoptions(responseObj.name);
+
+					displayTable("div#fieldcontent", columns.table, responseObj.objects);
+				} else {
+					jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
+				}
+			}
+
+			function displayreport(response, statusText, xhr) {
+				if (xhr.status == 200) {
+					jQuery('div#fieldcontent').html(response);
+				} else {
+					jQuery('div#fieldcontent').html('<span class="informational">No content available</span>');
+				}
+			}
+
+			function displayreportdefinition(reportdefinition, statusText, xhr, form) {
+				// replace the contents with the new table
+				body = jQuery("div#fieldcontent");
+				body.empty();
+
+				form = jQuery(document.createElement('form'));
+				body.append(form);
+
+				table = jQuery(document.createElement('table'));
+				form.append(table);
+
+				reportname = '';
+
+				if (typeof reportdefinition != 'undefined') {
+					reportname = reportdefinition.name;
+
+					displayreportoptions(reportdefinition.options, table);
+				}
+
+				row = jQuery(document.createElement('tr'));
+				table.append(row);
+
+				var submitCell = jQuery(document.createElement('td')).attr('colspan', '2');
+				row.append(submitCell);
+
+				submitCell.html('<input type=submit name="display" value="show" class="curvedblocksmall report" report="' + reportname + '"/><input type=submit name="display" value="download" class="curvedblocksmall report" report="' + reportname + '"/>');
+
+				body.append('<hr/>');
+				body.append('<div id="reportresults"></div>');
+
+				// prepare Options Object
+				var options = {
+					url: 'rest/report/' + reportname,
+					type: 'GET',
+					beforeSubmit: function(arr, $form, options) {
+						var button = findValue(arr, "display");
+						//alert('before submit ' + button);
+
+						var results = jQuery("div#reportresults");
+						if ("show" == button) {
+							//options.target = results;
+							results.html('<span class="informational">Retrieving report</span>');
+						}
+						else {
+							options.beforeSend = addPdfAccepts
+							var queryString = $form.formSerialize();
+							results.html('<span class="informational">Retrieving report PDF</span>');
+							pdfwindow = window.open(options.url + '/report.pdf?' + queryString, "_blank", newBrowserOptions);
+
+							return false; // prevent normal form submission
+						}
+					},
+					success: function(response, statusText, xhr, form) {
+						//alert('Success: ' + statusText);
+						pdfwindow = window.open("", "_blank", newBrowserOptions);
+						pdfwindow.document.write(response);
+
+						var results = jQuery("div#reportresults");
+						results.html('<span class="informational">Please see report window.</span>');
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Error: ' + statusText);
+					}
+				};
+
+				// pass options to ajaxForm
+				form.ajaxForm(options);
+			}
+
+			function displayreportoptions(reportoptions, parent) {
+				if (typeof reportoptions != 'undefined') {
+					for (index in reportoptions) {
+						option = reportoptions[index];
+
+						row = jQuery(document.createElement('tr'));
+						parent.append(row);
+
+						var labelCell = jQuery(document.createElement('td'));
+						row.append(labelCell);
+						labelCell.text(option.name + ':');
+						var inputCell = jQuery(document.createElement('td'));
+						row.append(inputCell);
+
+						var inputType = 'text';
+						var inputValue;
+						var input = createInput(inputType, option.name, inputValue);
+
+						inputCell.append(input);
+
+						if ('timestamp' == option.type) {
+							datetimepicker(option.name);
+						}
+					}
+				}
+
+				return row;
+			}
+
+			function displayTable(field, table, objects) {
+				var tablecolumns = getTableColumns(table);
+				var data = new Array();
+
+				// loop through all the objects
+				for (index in objects) {
+					var object = objects[index];
+					var dataObject = new Array();
+					data.push(dataObject);
+
+					var id = '<span class="ui-icon ui-icon-trash"></span>&nbsp;<span class="ui-icon ui-icon-wrench"></span>';
+
+					if (typeof table.primarykeycolumn != 'undefined') {
+						id += '<span class="hidden identifier">' + object[table.primarykeycolumn] + '</span>';
+					}
+
+					dataObject.push(id);
+					for (indexColumn in table.column) {
+						var column = table.column[indexColumn];
+
+						// check for an idRefs and replace foreign key with the value
+						// from the 'name' field of the record associated with the
+						// foreign key.
+						if ("idref" == column.type) {
+							var strGuid = object[column.name];
+							var nTokenLocation = column.name.indexOf("id");
+							var strFkTable = column.name.substring(0, nTokenLocation);
+							var strUrl = strFkTable + '/' + strGuid;
+
+							jQuery.ajax({
+								async: false,
+								type: 'GET',
+								url: strUrl,
+								success: replaceGuidWithMeaningfulString
+							});
+							dataObject.push(strFkTableNameValue);
+						}
+						else if ("date" == column.type) {
+							dateValue = '';
+							value = object[column.name];
+
+							// value = '2011-08-20T22:52:08'
+							if (value.length > 0) {
+								parts = value.split('T', 2);
+
+								if (parts.length > 0) {
+									date = jQuery.datepicker.parseDate("yy-mm-dd", parts[0]);
+
+									dateValue += jQuery.datepicker.formatDate("mm/dd/yy", date);
+								}
+
+								if (parts.length > 1) {
+									dateValue += ' ' + parts[1];
+								}
+							}
+
+							dataObject.push(dateValue);
+						}
+						else
+							dataObject.push(object[column.name]);
+					}
+
+					if ("scannerlog" == table.name) {
+						dataObject.push('<span class="ui-icon ui-icon-pencil"></span>');
+					}
+				}
+
+				// add a blank table first
+				jQuery(field).html('<table class="dataTables_content noborder" id="aDataTable"></table>');
+				// use the tool to load that table
+				var options = {
+					"aaData": data,
+					"aoColumns": tablecolumns,
+					"bAutoWidth": false
+				};
+				var oDataTable = jQuery('#aDataTable').dataTable(options);
+			}
+
+			function doreport(reportitem) {
+				//alert('doreport: ' + reportitem);
+				jQuery.ajax({
+					type: 'GET',
+					url: 'rest/reports/' + reportitem,
+					datatype: 'html',
+					success: displayreport,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + reportitem + ' error: ' + statusText);
+					}
+				});
+			}
+
+			function doreportoptions(report, fieldcontent) {
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'rest/report/' + report,
+					datatype: 'json',
+					beforeSend: function(request, settings) {
+						ajaxStart();
+						addJsonAccepts(request);
+					},
+					success: displayreportdefinition,
+					error: function(responseXML, statusText, xhr, form) {
+						alert('Item ' + report + ' error: ' + statusText);
+					},
+					complete: ajaxComplete
+				});
+			}
+
+			function findCurrentType() {
+				return jQuery('span[type]').attr('type');
+			}
+
+			function findIdForRow(tr) {
+				return jQuery(tr).find('span.identifier').text();
+			}
+
+			function findValue(arr, name) {
+				var value;
+				if (typeof arr != 'undefined') {
+					for (index in arr) {
+						if (arr[index].name == name) {
+							value = arr[index].value;
+						}
+					}
+				}
+				return value;
+			}
+
+			function getDisplay(name, object) {
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				var display = "";
+				if ('staff' == name) {
+					display = object.firstname + " " + object.lastname;
+				} else {
+					display = "object of type " + name;
+				}
+
+				return display;
+			}
+
+			function getItem(item, id) {
+				var item;
+
+				jQuery.ajax({
+					async: false,
+					type: 'GET',
+					url: 'rest/' + item + '/' + id,
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
+					success: function(responseObj, statusText, xhr, form) {
+						item = responseObj;
+					},
+					error: function(responseObj, statusText, xhr, form) {
+						alert('Item ' + item + ' with id '+ id + ' error: ' + statusText);
+					}
+				});
+
+				return item;
+			}
+
+			function getItemList(item) {
+				// set the title of the field to the same as the menu item
+				jQuery('#fieldtitle').html(item + ' <span class="curvedblocksmall linkable shrink" type="' + item + '">+ Add</span>');
+				var strUrl = 'rest/' + item;
+				jQuery.ajax({
+					type: 'GET',
+					url: strUrl,
+					datatype: 'json',
+					beforeSend: function(request, settings) {
+						ajaxStart();
+						addJsonAccepts(request);
+					},
+					success: displaylist,
+					error: function(jqXHR, statusText, errorThrown) {
+						checkLogin();
+					},
+					complete: ajaxComplete
+				});
+			}
+
+			function getobjectoptions(name) {
+				var options = objectoptions[name];
+
+				if (typeof options == 'undefined') {
+					jQuery.ajax({
+						type: 'OPTIONS',
+						url: 'database/' + name,
+						datatype: 'json',
+						async: false,
+						beforeSend: addJsonAccepts,
+						success: function(responseObj) {
+							//alert('Retrieved options for ' + responseObj.table.name);
+							objectoptions[name] = responseObj;
+						},
+						error: function(responseXML, statusText, xhr, form) {
+							alert('Error getting options for ' + name + ': ' + statusText);
+						}
+					});
+				}
+
+				return objectoptions[name];
+			}
+
+			function getrow(column, object) {
+				var row;
+
+				if (column.type != "id" && column.type != 'date') {
+					row = jQuery(document.createElement('tr'));
+
+					var labelCell = jQuery(document.createElement('td'));
+					row.append(labelCell);
+					labelCell.text(column.name + ':');
+					var inputCell = jQuery(document.createElement('td'));
+					row.append(inputCell);
+
+					var inputType = 'text';
+					var inputValue;
+					if (column.type == "password" || column.name == "password") {
+						inputType = 'password';
+					} else {
+						if (typeof object != 'undefined') {
+							//alert('value: ' + object[column.name]);
+							inputValue = object[column.name];
+						}
+					}
+
+					var input = createInput(inputType, column.name, inputValue);
+
+					inputCell.append(input);
+				}
+
+				return row;
+			}
+
+			function getTableColumns(table) {
+				var tablecolumns = new Array();
+				tablecolumns.push({"sTitle": "", "bSortable": false, "sWidth": "40px"});
+
+				// find the column definitions
+				for (index in table.column) {
+					var column = table.column[index];
+					var definition;
+
+					if (column.type == "id") {
+						definition = {"sTitle": column.name, "bVisible": false }
+					} else if (column.type == "password" || column.name == "password") {
+						definition = {"sTitle": column.name, fnRender: renderPassword }
+					} else {
+						definition = {"sTitle": column.name }
+					}
+
+					tablecolumns.push(definition);
+				}
+
+				if ("scannerlog" == table.name) {
+					tablecolumns.push({"sTitle": "", "bSortable": false});
+				}
+
+				return tablecolumns;
+			}
+
+			function loginerror(responseXML, statusText, xhr, form) {
+				if (204 == responseXML.status) {
+					seterrormsg('Invalid login. Please try again.');
+				}
+				else {
+					alert('login error: ' + statusText + "-" + xhr.responseText);
+				}
+			}
+
+			function loginsuccess(responseXML, statusText, xhr, form) {
+				//alert('login success: ' + statusText);
+				processUser(responseXML);
+				jQuery.modal.close();
+			}
+
+			function logout() {
+				jQuery.ajax({
+					url: 'user',
+					type: 'DELETE',
+					success: function() {
+						jQuery('span#loginlink').html('No User');
+
+						checkLogin();
+					},
+					error: function(responseXML, statusText, xhr, form) {
+						alert('logout error: ' + statusText);
+					}
+				});
+			}
+
+			function menuitemclick(event) {
+				var menuitem = event.target.innerHTML;
+
+				// get the item list based on the menu item
+				menuitem = menuitem.toLowerCase();
+				getItemList(menuitem);
+			}
+
+			function noteserror(responseXML, statusText, xhr, form) {
+				if (204 == responseXML.status) {
+					seterrormsg('Problem processing notes');
+				}
+				else {
+					alert('notes error: ' + statusText + "-" + xhr.responseText);
+				}
+			}
+
+			function onshowlogin() {
+				// prepare Options Object
+				var options = {
+					url: 'user',
+					type: 'PUT',
+					dataType: 'xml',
+					success: loginsuccess,
+					error: loginerror
+				};
+
+				// pass options to ajaxForm
+				jQuery('#logindialogform').ajaxForm(options);
+			}
+
+			function openWin() {
+				window.open("scannerOptions.jnlp");
+			}
+
+			function populateAddItemForm(name, object) {
+				var title = 'New ';
+				if (typeof object != 'undefined') {
+					title = 'Update ';
+				}
+
+				jQuery('#adddialogtitle').html(title + name);
+				jQuery('input[name="typename"]:hidden').attr('value', name);
+
+				var body = jQuery("tbody#adddialogbody");
+				body.empty();
+
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				if (typeof object != 'undefined') {
+					if (typeof table.primarykeycolumn != 'undefined') {
+						var input = createInput('hidden', 'itemidentifier', object[table.primarykeycolumn]);
+						body.append(input);
+					}
+				}
+
+				// find the column definitions
+				for (index in table.column) {
+					row = getrow(table.column[index], object);
+
+					if (typeof row != 'undefined') {
+						body.append(row);
+					}
+				}
+			}
+
+			function populateDeleteItemForm(name, object) {
+				jQuery('input[name="typename"]:hidden').attr('value', name);
+
+				var body = jQuery("#questiondialogbody");
+				body.empty();
+
+				var columns = getobjectoptions(name);
+				var table = columns.table;
+
+				if (typeof object != 'undefined') {
+					if (typeof table.primarykeycolumn != 'undefined') {
+						var input = createInput('hidden', 'itemidentifier', object[table.primarykeycolumn]);
+						body.append(input);
+					}
+				}
+
+				body.append('Are you sure you want to delete ' + getDisplay(name, object) + '?');
+			}
+
+			function processNotes(responseXML, statusText, xhr, form) {
+				var strScannerLogId;
+				var strComment;
+
+				jQuery(responseXML).find("field").each(function() {
+					if (jQuery(this).attr('name') == "scannerlogid")
+						strScannerLogId = jQuery(this).text();
+					else if (jQuery(this).attr('name') == "comment")
+						strComment = jQuery(this).text();
+				});
+
+				// Display the note that was just persisted
+				var strSpanId = "span#notes-" + strScannerLogId;
+				var row = jQuery("span.identifier:contains('" + strScannerLogId +"')").parents('tr');
+				if (typeof row != 'undefined') {
+					jQuery(row).find('td:last').append(strComment);
+				}
+				jQuery(strSpanId).html(strComment);
+
+				// Close the layer
+				jQuery.modal.close();
+			}
+
+			function processUser(xml) {
+				var firstName;
+				var lastName;
+
+				jQuery(xml).find("field").each(function() {
+					if (jQuery(this).attr('name') == "firstname") {
+						firstName = jQuery(this).text();
+					} else if (jQuery(this).attr('name') == "lastname") {
+						lastName = jQuery(this).text();
+					}
+				});
+
+				jQuery('span#loginlink').html(firstName + ' ' + lastName);
+			}
+
+			function renderPassword(obj) {
+				return "****";
+			}
+
+			function replaceGuidWithMeaningfulString(data) {
+				strFkTableNameValue = "";
+				jQuery(data).find('object').each(function() {
+					if ("staff" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='lastname']").text();
+					else if ("compliancevalue" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='value']").text();
+					else if ("offender" == jQuery(this).attr("name"))
+						strFkTableNameValue = jQuery(this).children("field[name='lastname']").text();
+					else
+						strFkTableNameValue = jQuery(this).children("field[name='name']").text();
+				});
+			}
+
+			function reportitemclick(event) {
+				var report = event.target.innerHTML;
+
+				// get the item list based on the menu item
+				report = report.toLowerCase();
+
+				// set the title of the field to the same as the report
+				jQuery('#fieldtitle').html(report);
+
+				doreportoptions(report, 'div#fieldcontent');
+			}
+
+			function showadditem(event) {
+				var name = event.target.attributes['type'].value;
+
+				populateAddItemForm(name);
+				jQuery("#adddialog").modal({
+					onShow: addOrUpdateItem
+				});
+			}
+
+			function showdeleteitem() {
+				var id = findIdForRow(jQuery(this).parents('tr'));
+				//alert("showdeleteitem: " + id);
+
+				var name = findCurrentType();
+				//alert("showdeleteitem: " + name);
+
+				var item = getItem(name, id);
+
+				populateDeleteItemForm(name, item);
+				jQuery("#questiondialog").modal({
+					onShow: deleteItem
+				});
+			}
+
+			function showlogin() {
+				jQuery("#logindialog").modal({
+					close: false,
+					onShow: onshowlogin
+				});
+			}
+
+			function shownotes() {
+				var strScannerLogId = findIdForRow(jQuery(this).parents('tr'));
+
+				jQuery("#notesdialog").modal({
+					onShow: function (dialog) {
+						var modal = this;
+						jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
+
+						// prepare Options Object
+						var options = {
+							url: 'scannerlogcomment',
+							type: 'POST',
+							dataType: 'xml',
+							success: processNotes,
+							error: noteserror
+						};
+
+						// pass options to ajaxForm
+						jQuery('#notesdialogform').ajaxForm(options);
+					}
+				});
+			}
+
+			function showupdateitem() {
+				var id = findIdForRow(jQuery(this).parents('tr'));
+				//alert("showupdateitem: " + id);
+
+				var name = findCurrentType();
+				//alert("showupdateitem: " + name);
+
+				var item = getItem(name, id);
+
+				populateAddItemForm(name, item);
+				jQuery("#adddialog").modal({
+					onShow: addOrUpdateItem
+				});
+			}
+
+			function setUIDefaults() {
+				jQuery.blockUI.defaults.message = '<h2>Loading</h2>';
+				jQuery.blockUI.defaults.blockMsgClass = "curvedblock";
+				jQuery.blockUI.defaults.overlayCSS.backgroundColor = "#EEEEEE";
+				jQuery.blockUI.defaults.overlayCSS.opacity = 0.80;
+				jQuery.modal.defaults.opacity = 80;
+				jQuery.modal.defaults.overlayCss = {
+						backgroundColor:"#EEEEEE"
+				};
+				jQuery.modal.defaults.containerCss = {
+						backgroundColor:"#EEEEEE"
+				};
+			}
+
+			jQuery(document).ready(function() {
+				setUIDefaults();
+
+				// when the page first comes up, check for a logged in user
+				checkLogin();
+
+				// Start the JNLP application for pulling/pushing handheld data
+				openWin();
+			});
+		</script>
+	</body>
+</html>

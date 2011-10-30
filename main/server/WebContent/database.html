@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Database</title>
+		<link type="text/css" rel="stylesheet" href="css/conscan.css">
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
+		<!-- <script type="text/javascript" src="js/jquery-1.6.4.min.js"></script> -->
+		<script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.button.js"></script>
+		<script type="text/javascript" src="js/ajaxupload.js"></script>
+		<script type="text/javascript" src="js/jquery.form.2.85.js"></script>
+	</head>
+	<body>
+		<h1>Database</h1>
+		<div class="leftmenu">
+			<span>Tables</span>
+			<ul class="tablemenu"></ul>
+			<span id="importupload" class="ui-icon ui-icon-circle-arrow-n"></span>
+		</div>
+		<div class="content">
+			<span id="contenttitle">&nbsp;</span>
+			<div class="contentdata"></div>
+		</div>
+		<div id="errordialog" class="hidden">
+			<div id="errortitle" class="erroritem"></div>
+			<div id="errormessage" class="erroritem"></div>
+			<div id="errortrace" class="hidden erroritem"></div>
+			<br/>
+			<div class="erroritem">
+				<input type="button" id="errorcontinue" value="Continue"/>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function showTableData(data) {
+				table = "";
+				table += '<table>';
+
+				jQuery(data).find('columns').each(function() {
+					table += '<thead>';
+					table += '<tr>';
+					table += '<td>&nbsp;</td>';
+					jQuery(this).children('column').each(function() {
+						table += '<td>';
+						table += jQuery(this).attr('name');
+						table += '</td>';
+					});
+					table += '</tr>';
+					table += '</thead>';
+				});
+				table += '  <tbody>';
+				jQuery(data).find('item').each(function() {
+					table += '    <tr>';
+					table += '<td><span class="ui-icon ui-icon-trash"></span></td>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						table += '<td>';
+						table += jQuery(this).text();
+						table += '</td>';
+					});
+
+					table += '    </tr>';
+				});
+				table += '  </tbody>';
+				table += '</table>';
+
+				jQuery('span#contenttitle').html('Data');
+				jQuery('div.contentdata').html(table);
+			}
+
+			function showTableDescription(data) {
+				jQuery(data).find('table').each(function() {
+					tablename = jQuery(this).attr('name');
+
+					table = "";
+					table += '<table>';
+					table += '  <thead>';
+					table += '    <tr>';
+					table += '      <td>';
+					table += '        <a href="javascript: drop(\'' + tablename + '\');">';
+					table += '          <img src="images/delete-icon.png"/>';
+					table += '        </a>';
+					table += '      </td>';
+					table += '      <td colspan="3">' + tablename + '</td>';
+					table += '    </tr>';
+					table += '  </thead>';
+					table += '  <tbody>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						table += '    <tr>';
+						table += '      <td>&nbsp;</td>';
+						table += '      <td>' + jQuery(this).attr('name') + '</td>';
+						table += '      <td>' + jQuery(this).attr('type') + '</td>';
+						table += '      <td>';
+
+						required = jQuery(this).attr('required');
+						if (typeof(required) != 'undefined') {
+							table += required;
+						}
+						else {
+							table += '&nbsp;';
+						}
+						table += '</td>';
+						table += '    </tr>';
+					});
+
+					// add the constraints to the string
+					jQuery(this).children('constraint').each(function() {
+						table += '    <tr>';
+						table += '      <td>';
+						table += '        <a href="javascript: drop(\'' + tablename + '\', \'' + jQuery(this).attr('name') + '\');">';
+						table += '          <img src="images/delete-icon.png"/>';
+						table += '        </a>';
+						table += '      </td>';
+						table += '      <td>' + jQuery(this).attr('name') + '</td>';
+						table += '      <td>' + jQuery(this).attr('type') + '</td>';
+						table += '      <td>';
+						table += '&nbsp;';
+						table += '</td>';
+						table += '    </tr>';
+					});
+
+					table += '  </tbody>';
+					table += '</table>';
+
+					jQuery('span#contenttitle').html('Definition');
+					jQuery('div.contentdata').html(table);
+				});
+			}
+
+			function showTableInsert(data) {
+				jQuery(data).find('table').each(function() {
+					tablename = jQuery(this).attr('name');
+
+					table = "";
+					table += '<form action="database/' + tablename + '" method="POST" id="insertform" name="insertform">';
+					table += '<table>';
+					table += '  <thead>';
+					table += '    <tr>';
+					table += '      <td colspan="2">' + tablename + '</td>';
+					table += '    </tr>';
+					table += '  </thead>';
+					table += '  <tbody>';
+
+					// add the columns to the string
+					jQuery(this).children('column').each(function() {
+						columntype = jQuery(this).attr('type');
+						
+						if ('id' != columntype) {
+							table += '    <tr>';
+							table += '      <td>' + jQuery(this).attr('name') + ' (' + jQuery(this).attr('type') + ')</td>';
+							table += '      <td><input type="text" name="' + jQuery(this).attr('name') + '"/></td>';
+							table += '    </tr>';
+						}
+					});
+
+					table += '  </tbody>';
+					table += '</table>';
+					table += '<input type="submit" value="Submit"/>';
+					table += '</form>';
+
+					jQuery('span#contenttitle').html('Insert');
+					jQuery('div.contentdata').html(table);
+
+					jQuery(document).ready(function() { 
+						// prepare Options Object 
+						var options = { 
+						    success: function() {
+								retrieveTableData(tablename); 
+						    },
+							error: showerror
+						}; 
+
+						// pass options to ajaxForm 
+						jQuery('#insertform').ajaxForm(options);
+					});
+				});
+			}
+
+			function retrieveTableData(table) {
+				jQuery.ajax({
+					type: 'GET',
+					url: 'database/' + table,
+					success: showTableData,
+					error: showerror
+				});
+			}
+
+			function retrieveTableDescription(table) {
+				//alert('Table description for ' + table);
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'database/' + table,
+					success: showTableDescription,
+					error: showerror
+				});
+			}
+
+			function insertTableRow(table) {
+				//alert('Table description for ' + table);
+				jQuery.ajax({
+					type: 'OPTIONS',
+					url: 'database/' + table,
+					success: showTableInsert,
+					error: showerror
+				});
+			}
+
+			function showtables(data) {
+				// alert('Returned: ' + data);
+				tables = '';
+				jQuery(data).find('table').each(function() {
+					tables += '<li class="menuitem">' + jQuery(this).attr('name') + '&nbsp;' +
+							 '<span class="ui-icon ui-icon-circle-plus"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-zoomin"></span>&nbsp;' +
+							 '<span class="ui-icon ui-icon-info"></span>&nbsp;' +
+							 '</li>';
+				});
+				jQuery('ul.tablemenu').append(tables);
+				jQuery('span.ui-icon-zoomin').click(function() {
+					retrieveTableData(jQuery.trim(jQuery(this).parent().text()));
+				});
+				jQuery('span.ui-icon-info').click(function() {
+					retrieveTableDescription(jQuery.trim(jQuery(this).parent().text()));
+				});
+				jQuery('span.ui-icon-circle-plus').click(function() {
+					insertTableRow(jQuery.trim(jQuery(this).parent().text()));
+				});
+			}
+
+			function loadtables() {
+				jQuery.ajax({
+					type: "OPTIONS",
+					url: "database",
+					dataType: "xml",
+					success: showtables,
+					error: showerror
+				});
+			}
+
+			function drop(table, object) {
+				var url = 'database/' + table;
+				if (typeof object != 'undefined') {
+					url += '/' + object;
+				}
+
+				jQuery.blockUI();
+				jQuery.ajax({
+					type: "DELETE",
+					url: url,
+					success: function() {
+						retrieveTableDescription(table);
+						jQuery.unblockUI();
+					},
+					error: showerror
+				});
+			}
+
+			function droprow(event) {
+				alert('droprow - not implemented');
+			}
+
+			jQuery(document).ready(function() {
+				jQuery('#errorcontinue').click(function() {
+					jQuery.unblockUI();
+				});
+				loadtables();
+
+				new AjaxUpload('importupload', {
+					action: 'database',
+					// Fired before the file is uploaded 
+					// You can return false to cancel upload
+					// @param file basename of uploaded file
+					// @param extension of that file
+					onSubmit: function(file, extension) {
+			            jQuery.blockUI({ message: 'Uploading ' + file}); 
+					},
+					// Fired when file upload is completed
+					// WARNING! DO NOT USE "FALSE" STRING AS A RESPONSE!
+					// @param file basename of uploaded file
+					// @param response server response
+					onComplete: function(file, response) {
+						//alert('complete');
+			            jQuery.unblockUI();
+					}
+				});
+			});
+			jQuery('.ui-icon-trash').live('click', droprow);
+		</script>
+		<script type="text/javascript" src="js/conscan.js"></script>
+	</body>
+</html>
