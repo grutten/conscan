@@ -43,7 +43,7 @@
 		<link>
 			<name>WebContent</name>
 			<type>2</type>
-			<location>/Users/mgee/_wkspcs/wkREFACTOR/conscan/src/main/webapp</location>
+			<locationURI>PROJECT_LOC\src\main\webapp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
