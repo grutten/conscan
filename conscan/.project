@@ -43,7 +43,7 @@
 		<link>
 			<name>WebContent</name>
 			<type>2</type>
-			<locationURI>PROJECT_LOC\src\main\webapp</locationURI>
+			<locationURI>PROJECT_LOC/src/main/webapp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
