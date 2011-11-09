@@ -3,7 +3,6 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>ConScan</title>
-		<!-- <link type="text/css" rel="stylesheet" href="css/conscan.css"> -->
 		<link type="text/css" rel="stylesheet" href="css/app.css">
 		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css">
 		<!-- <script type="text/javascript" src="js/jquery-1.7.min.js"></script>  -->
@@ -14,7 +13,7 @@
 		<!-- <script type="text/javascript" src="js/jquery.dataTables.1.8.2.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-1.8.16.min.js"></script>
 		<!-- <script type="text/javascript" src="js/jquery-ui-1.8.16.js"></script> -->
-		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.0.9.7.js"></script>
 		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
 	</head>
 	<body>
@@ -579,6 +578,22 @@
 			}
 
 			function getrow(column, object) {
+				var rowarray;
+
+				if (column.type != "id" && column.type != 'date') {
+					rowarray = new Array();
+					
+					rowarray[0] = getrowdetails(column, object);
+
+					if (column.type == "password" || column.name == "password") {
+						rowarray[1] = getrowdetails(column, object, "confirm ");
+					}
+				}
+
+				return rowarray;
+			}
+			
+			function getrowdetails(column, object, prefix) {
 				var row;
 
 				if (column.type != "id" && column.type != 'date') {
@@ -586,7 +601,15 @@
 
 					var labelCell = jQuery(document.createElement('td'));
 					row.append(labelCell);
-					labelCell.text(column.name + ':');
+					
+					label = "";
+					if (typeof prefix != 'undefined')
+						label += prefix;
+					
+					label += column.name;
+					label += ':';
+					
+					labelCell.text(label);
 					var inputCell = jQuery(document.createElement('td'));
 					row.append(inputCell);
 
@@ -602,7 +625,6 @@
 					}
 
 					var input = createInput(inputType, column.name, inputValue);
-
 					inputCell.append(input);
 				}
 
@@ -725,10 +747,13 @@
 
 				// find the column definitions
 				for (index in table.column) {
-					row = getrow(table.column[index], object);
+					rowarray = getrow(table.column[index], object);
 
-					if (typeof row != 'undefined') {
-						body.append(row);
+					if (typeof rowarray != 'undefined') {
+						for (rowindex in rowarray) {
+							var row = rowarray[rowindex];
+							body.append(row);
+						}
 					}
 				}
 			}
