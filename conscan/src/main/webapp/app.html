@@ -617,6 +617,8 @@
 					var inputValue;
 					if (column.type == "password" || column.name == "password") {
 						inputType = 'password';
+					} else if (column.type == "idref") {
+						inputValue = "select";
 					} else {
 						if (typeof object != 'undefined') {
 							//alert('value: ' + object[column.name]);
