@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
+import com.tippingpoint.database.ColumnTypeIdReference;
 import com.tippingpoint.database.ForeignKey;
 import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.IdFactory;
@@ -100,7 +101,8 @@ public class TablePersistence implements Persistence {
 
 	/**
 	 * This method deletes the object.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	@Override
 	public void delete(final Map<String, FieldValue> mapValues) throws SqlBaseException {
@@ -160,7 +162,7 @@ public class TablePersistence implements Persistence {
 						final Column column = iterColumns.next();
 
 						mapValues.put(column.getName(),
-								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++)));
+								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++ )));
 					}
 				}
 			}
@@ -214,7 +216,7 @@ public class TablePersistence implements Persistence {
 						final Column column = iterColumns.next();
 
 						mapValues.put(column.getName(),
-								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++)));
+								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++ )));
 					}
 				}
 			}
@@ -246,6 +248,25 @@ public class TablePersistence implements Persistence {
 	}
 
 	/**
+	 * This method returns the name of the object referenced by the name of the field.
+	 * 
+	 * @param strColumnName String containing the name of a referenced field.
+	 */
+	public String getReferencedObjectType(String strColumnName) {
+		String strReferencedObjectType = null;
+
+		Column column = m_table.getColumn(strColumnName);
+		if (column != null && column.getType() instanceof ColumnTypeIdReference) {
+			ForeignKey foreignKey = m_table.getForeignKeyByChild(column);
+			if (foreignKey != null) {
+				strReferencedObjectType = foreignKey.getParentColumn().getTable().getName();
+			}
+		}
+
+		return strReferencedObjectType;
+	}
+
+	/**
 	 * This method returns a list of business object names that are related to this object.
 	 */
 	@Override
@@ -267,16 +288,16 @@ public class TablePersistence implements Persistence {
 	/**
 	 * This method returns a list containing the named related objects.
 	 * 
-	 * @param strRelatedName String containing the name of the related object
+	 * @param strRelatedTableName String containing the name of the related object
 	 * @param mapValues Map of values used to persist the object.
 	 * @throws SqlBaseException
 	 */
 	@Override
-	public List<BusinessObject> getReleatedObjects(final String strRelatedName, final Map<String, FieldValue> mapValues)
-			throws SqlBaseException {
+	public List<BusinessObject> getReleatedObjects(final String strRelatedTableName,
+			final Map<String, FieldValue> mapValues) throws SqlBaseException {
 		List<BusinessObject> listReleatedObjects = null;
 
-		final ForeignKeyConstraint foreignKeyConstraint = getRestraint(strRelatedName);
+		final ForeignKeyConstraint foreignKeyConstraint = getRestraint(strRelatedTableName);
 		if (foreignKeyConstraint != null) {
 			listReleatedObjects = new ArrayList<BusinessObject>();
 
@@ -298,7 +319,7 @@ public class TablePersistence implements Persistence {
 				}
 			}
 
-			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strRelatedName);
+			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(strRelatedTableName);
 			listReleatedObjects = builder.getAll(listValues);
 		}
 
@@ -439,16 +460,17 @@ public class TablePersistence implements Persistence {
 			// loop through all the columns to put into the statement
 			while (iterColumns.hasNext()) {
 				final Column column = iterColumns.next();
-				
+
 				sqlDelete.add(new ValueCondition(column, Operation.EQUALS, null));
 			}
-		} else {
+		}
+		else {
 			final Iterator<ColumnDefinition> iterColumns = m_table.getColumns();
 
 			// loop through all the columns to put into the statement
 			while (iterColumns.hasNext()) {
 				final Column column = iterColumns.next();
-				
+
 				sqlDelete.add(new ValueCondition(column, Operation.EQUALS, null));
 			}
 		}
@@ -561,15 +583,15 @@ public class TablePersistence implements Persistence {
 	/**
 	 * This method returns the first foreign key referencing the named table.
 	 * 
-	 * @param strTableName String containing the foreign key table name.
+	 * @param strRelatedTableName String containing the foreign key table name.
 	 */
-	private ForeignKeyConstraint getRestraint(final String strRelatedName) {
+	private ForeignKeyConstraint getRestraint(final String strRelatedTableName) {
 		ForeignKeyConstraint foundForeignKeyConstraint = null;
 
 		final List<ForeignKeyConstraint> listReferences = m_table.getReferences();
 		if (listReferences != null && !listReferences.isEmpty()) {
 			for (final ForeignKeyConstraint foreignKeyConstraint : listReferences) {
-				if (isRelationship(strRelatedName, foreignKeyConstraint)) {
+				if (isRelationship(strRelatedTableName, foreignKeyConstraint)) {
 					foundForeignKeyConstraint = foreignKeyConstraint;
 					break;
 				}
@@ -582,20 +604,20 @@ public class TablePersistence implements Persistence {
 	/**
 	 * This method returns if the specified foreign key is related to the passed in name.
 	 * 
-	 * @param strRelatedName String containing the name of the related table.
+	 * @param strRelatedTableName String containing the name of the related table.
 	 * @param foreignKeyConstraint ForeignKeyConstraint constraint to check.
 	 */
-	private boolean isRelationship(final String strRelatedName, final ForeignKeyConstraint foreignKeyConstraint) {
+	private boolean isRelationship(final String strRelatedTableName, final ForeignKeyConstraint foreignKeyConstraint) {
 		boolean bFound = false;
 
 		// check to see if the table is simply a child table
 		final Table table = foreignKeyConstraint.getTable();
-		if (strRelatedName.equals(table.getName())) {
+		if (strRelatedTableName.equals(table.getName())) {
 			bFound = true;
 		}
 		else {
 			// check to see if the child table is a mapping table
-			final Table tableRelated = m_table.getSchema().getTable(strRelatedName);
+			final Table tableRelated = m_table.getSchema().getTable(strRelatedTableName);
 			if (tableRelated != null && tableRelated.hasIdPrimaryKey()) {
 				if (table.getForeignKey(tableRelated.getPrimaryKeyColumn()) != null) {
 					bFound = true;

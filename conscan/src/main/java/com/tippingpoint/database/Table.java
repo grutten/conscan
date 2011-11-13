@@ -181,11 +181,11 @@ public class Table extends Element {
 	}
 
 	/**
-	 * This method returns the foreign key associated with the passed on parent column.
+	 * This method returns the foreign key associated with the passed in parent column.
 	 * 
-	 * @param columnParentId Column referring to the parent table.
+	 * @param columnParent Column referring to the parent table.
 	 */
-	public ForeignKey getForeignKey(final Column columnParentId) {
+	public ForeignKey getForeignKey(final Column columnParent) {
 		ForeignKey foundForeignKey = null;
 
 		final Iterator<Constraint> iterConstraints = getConstraints();
@@ -199,7 +199,38 @@ public class Table extends Element {
 						while (iterForeignKeys.hasNext() && foundForeignKey == null) {
 							final ForeignKey foreignKey = (ForeignKey)iterForeignKeys.next();
 
-							if (columnParentId.equals(foreignKey.getParentColumn())) {
+							if (columnParent.equals(foreignKey.getParentColumn())) {
+								foundForeignKey = foreignKey;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return foundForeignKey;
+	}
+
+	/**
+	 * This method returns the foreign key associated with the passed in child column.
+	 * 
+	 * @param columnChild Column referring to the child column.
+	 */
+	public ForeignKey getForeignKeyByChild(final Column columnChild) {
+		ForeignKey foundForeignKey = null;
+
+		final Iterator<Constraint> iterConstraints = getConstraints();
+		if (iterConstraints != null && iterConstraints.hasNext()) {
+			while (iterConstraints.hasNext() && foundForeignKey == null) {
+				final Constraint constraint = iterConstraints.next();
+				if (constraint instanceof ForeignKeyConstraint) {
+					final ForeignKeyConstraint foreignKeyConstraint = (ForeignKeyConstraint)constraint;
+					final Iterator<Column> iterForeignKeys = foreignKeyConstraint.getColumns();
+					if (iterForeignKeys != null && iterForeignKeys.hasNext()) {
+						while (iterForeignKeys.hasNext() && foundForeignKey == null) {
+							final ForeignKey foreignKey = (ForeignKey)iterForeignKeys.next();
+
+							if (columnChild.equals(foreignKey.getChildColumn())) {
 								foundForeignKey = foreignKey;
 							}
 						}

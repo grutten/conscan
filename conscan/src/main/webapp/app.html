@@ -354,9 +354,8 @@
 						var inputCell = jQuery(document.createElement('td'));
 						row.append(inputCell);
 
-						var inputType = 'text';
 						var inputValue;
-						var input = createInput(inputType, option.name, inputValue);
+						var input = createInput('text', option.name, inputValue);
 
 						inputCell.append(input);
 
@@ -577,23 +576,23 @@
 				return objectoptions[name];
 			}
 
-			function getrow(column, object) {
+			function getrow(tableName, column, object) {
 				var rowarray;
 
 				if (column.type != "id" && column.type != 'date') {
 					rowarray = new Array();
 					
-					rowarray[0] = getrowdetails(column, object);
+					rowarray[0] = getrowdetails(tableName, column, object);
 
 					if (column.type == "password" || column.name == "password") {
-						rowarray[1] = getrowdetails(column, object, "confirm ");
+						rowarray[1] = getrowdetails(tableName, column, object, "confirm ");
 					}
 				}
 
 				return rowarray;
 			}
 			
-			function getrowdetails(column, object, prefix) {
+			function getrowdetails(tableName, column, object, prefix) {
 				var row;
 
 				if (column.type != "id" && column.type != 'date') {
@@ -616,18 +615,21 @@
 					var inputType = 'text';
 					var inputValue;
 					if (column.type == "password" || column.name == "password") {
-						inputType = 'password';
+						var input = createInput('password', column.name, inputValue);
+						inputCell.append(input);
 					} else if (column.type == "idref") {
-						inputValue = "select";
-					} else {
+						inputCell.append('<div id="' + tableName + '.' + column.name + '"><span class="informational">Loading</span></div>');
 						if (typeof object != 'undefined') {
-							//alert('value: ' + object[column.name]);
 							inputValue = object[column.name];
 						}
+						loadReferencedValues(tableName, column.name, inputValue);
+					} else {
+						if (typeof object != 'undefined') {
+							inputValue = object[column.name];
+						}
+						var input = createInput('text', column.name, inputValue);
+						inputCell.append(input);
 					}
-
-					var input = createInput(inputType, column.name, inputValue);
-					inputCell.append(input);
 				}
 
 				return row;
@@ -658,6 +660,23 @@
 				}
 
 				return tablecolumns;
+			}
+
+			function loadReferencedValues(tableName, columnName, value) {
+				var strUrl = 'rest/' + tableName + '/' + columnName;
+				jQuery.ajax({
+					type: 'GET',
+					url: strUrl,
+					accepts: "application/json",
+					datatype: 'json',
+					beforeSend: addJsonAccepts,
+					success: function() {
+						alert('loadReferencedValues success');
+					},
+					error: function(jqXHR, statusText, errorThrown) {
+						alert('loadReferencedValues: ' + statusText + ' ' + errorThrown);
+					},
+				});
 			}
 
 			function loginerror(responseXML, statusText, xhr, form) {
@@ -749,7 +768,7 @@
 
 				// find the column definitions
 				for (index in table.column) {
-					rowarray = getrow(table.column[index], object);
+					rowarray = getrow(table.name, table.column[index], object);
 
 					if (typeof rowarray != 'undefined') {
 						for (rowindex in rowarray) {

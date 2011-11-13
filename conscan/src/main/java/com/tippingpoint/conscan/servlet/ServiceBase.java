@@ -108,6 +108,57 @@ public abstract class ServiceBase {
 
 		return strJson;
 	}
+	
+	/**
+	 * This method redirects to the referenced table based on the idref type column. 
+	 */
+	@GET
+	@Path("/{columnName:[a-z]+}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public StreamingOutput getJsonReferenceObject(@PathParam("columnName") final String strColumnName) {
+		// determine if the builder for the local object type is available
+		BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(m_strBusinessObjectType);
+		if (builder == null) {
+			throw new WebApplicationException(Response.Status.BAD_REQUEST);
+		}
+
+		StreamingOutput output = null;
+
+		String strReferencedObjectType = builder.getReferencedObjectType(strColumnName);
+		if (strReferencedObjectType != null) {
+			builder = BusinessObjectBuilderFactory.get().getBuilder(strReferencedObjectType);
+			if (builder == null) {
+				throw new WebApplicationException(Response.Status.BAD_REQUEST);
+			}
+		
+			output = new ServiceOutputJson(strReferencedObjectType);
+		}
+	
+		return output;
+/*		
+		final BusinessObject businessObject = builder.get(strId);
+		if (businessObject == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		return businessObject;
+
+		String strJson = null;
+		final BusinessObject businessObject = getObjectById(strId);
+		if (businessObject != null) {
+			final JsonBusinessObject jsonBusinessObject = new JsonBusinessObject(businessObject);
+
+			final JSONObject jsonObject = jsonBusinessObject.get();
+			if (jsonObject == null) {
+				throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+			}
+
+			strJson = jsonObject.toJSONString();
+		}
+
+		return strJson;
+*/
+	}
 
 	/**
 	 * This method returns a collection of objects.
@@ -202,7 +253,7 @@ public abstract class ServiceBase {
 	 * This class is used generate the output of the business object.  The specific
 	 * format is deferred to child classes.
 	 */
-	protected class ServiceOutput implements StreamingOutput {
+	protected abstract class ServiceOutput implements StreamingOutput {
 		protected String m_strObjectName;
 		
 		/**
@@ -228,9 +279,7 @@ public abstract class ServiceBase {
 			}
 		}
 		
-		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
-			// child class must override this method.
-		}
+		protected abstract void writeObjects(final OutputStream out, final List<BusinessObject> listObjects);
 	}
 	
 	/**
@@ -242,7 +291,7 @@ public abstract class ServiceBase {
 		}
 
 		@Override
-		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
+		protected void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
 			final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
 			try {
 				out.write(jsonObjects.get().toString().getBytes());
@@ -263,7 +312,7 @@ public abstract class ServiceBase {
 		}
 
 		@Override
-		public void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
+		protected void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
 			final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
 			try {
 				out.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0)

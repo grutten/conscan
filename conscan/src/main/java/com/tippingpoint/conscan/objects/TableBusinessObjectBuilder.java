@@ -87,6 +87,17 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	}
 
 	/**
+	 * This method returns the name of the object referenced by the name of the field.
+	 * 
+	 * @param strColumnName String containing the name of a referenced field.
+	 */
+	public String getReferencedObjectType(String strColumnName) {
+		String strReferencedObjectType = m_tablePersistence.getReferencedObjectType(strColumnName);
+
+		return strReferencedObjectType;
+	}
+
+	/**
 	 * This method returns a new object with the given values.
 	 * 
 	 * @param mapValues Map containing the default values of the object.

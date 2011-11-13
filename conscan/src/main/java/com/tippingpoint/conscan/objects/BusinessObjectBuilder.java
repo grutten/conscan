@@ -41,4 +41,11 @@ public interface BusinessObjectBuilder {
 	 * This method returns the name of the object being created. It must be unique in the system.
 	 */
 	String getName();
+
+	/**
+	 * This method returns the name of the object referenced by the name of the field.
+	 * 
+	 * @param strColumnName String containing the name of a referenced field.
+	 */
+	String getReferencedObjectType(String strColumnName);
 }
