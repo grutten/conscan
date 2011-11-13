@@ -1,6 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>com.tippingpoint</groupId>
+    <artifactId>app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent> 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.tp</groupId>
   <artifactId>client</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
@@ -25,51 +29,5 @@
   		<version>4.1.1</version>
   	</dependency>
   </dependencies>
-  <build>
-  	<plugins>
-		<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-dependency-plugin</artifactId>
-	        <version>2.3</version>
-	        <executions>
-	          <execution>
-	            <id>copy-dependencies</id>
-	            <phase>package</phase>
-	            <goals>
-	              <goal>copy-dependencies</goal>
-	            </goals>
-	            <configuration>
-	              <outputDirectory>${project.build.directory}</outputDirectory>
-	              <overWriteReleases>false</overWriteReleases>
-	              <overWriteSnapshots>false</overWriteSnapshots>
-	              <overWriteIfNewer>true</overWriteIfNewer>
-	            </configuration>
-	          </execution>
-	        </executions>
-	    </plugin>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-jarsigner-plugin</artifactId>
-  			<version>1.2</version>
-  			<executions>
-  				<execution>
-  					<id>sign</id>
-  					<goals>
-  						<goal>sign</goal>
-  					</goals>
-  				</execution>
-  			</executions>
-  			<configuration>
-  				<keystore>clientKeystore</keystore>
-  				<alias>conscan</alias>
-  				<storepass>1asdfasdf</storepass>
-  				<keypass>1asdfasdf</keypass>
-  				<archiveDirectory>target</archiveDirectory>
-  				<includes>
-  					<include>*.jar</include>
-  				</includes>
-  			</configuration>
-  		</plugin>
-  	</plugins>
-  </build>
+
 </project>
