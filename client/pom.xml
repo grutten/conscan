@@ -25,4 +25,27 @@
   		<version>4.1.1</version>
   	</dependency>
   </dependencies>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-jarsigner-plugin</artifactId>
+  			<version>1.2</version>
+  			<executions>
+  				<execution>
+  					<id>sign</id>
+  					<goals>
+  						<goal>sign</goal>
+  					</goals>
+  				</execution>
+  			</executions>
+  			<configuration>
+  				<keystore>clientKeystore</keystore>
+  				<alias>conscan</alias>
+  				<storepass>1asdfasdf</storepass>
+  				<keypass>1asdfasdf</keypass>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </build>
 </project>
