@@ -116,45 +116,33 @@
 	  		<version>0.0.1-SNAPSHOT</version>
 	  	</dependency>
 	</dependencies>
-	
 	<build>
-	  <plugins>
-	    <plugin>
-	       <groupId>org.codehaus.mojo</groupId>
-	       <artifactId>webstart-maven-plugin</artifactId>
-	       <version>1.0-alpha-1</version>
-	   </plugin>
-	 </plugins>
-	 <pluginManagement>
-	    <plugins>
-	       <plugin>
-	          <groupId>org.codehaus.mojo</groupId>
-	          <artifactId>webstart-maven-plugin</artifactId>
-	         <!-- do not bind to install phase
-	          <executions>
-	           <execution>
-	             <goals>
-	               <goal>report</goal>
-	             </goals>
-	           </execution>
-	          </executions>
-	          -->
-	        <configuration>
-	           <jnlp>
-	            <mainClass>com.tippingpoint.scannerOptions</mainClass>
-	           </jnlp>
-	          <sign>
-	           <keystore>clientKeystore</keystore>
-	           <keypass>1asdfasdf</keypass>
-	           <storepass>1asdfasdf</storepass>
-	           <storetype>jks</storetype>
-	           <alias>conscan</alias>
-	           <verify>true</verify>
-	         </sign>
-	        <verbose>true</verbose>
-	      </configuration>
-	     </plugin>
-	   </plugins>
-	  </pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>clientKeystore</keystore>
+					<alias>conscan</alias>
+					<storepass>1asdfasdf</storepass>
+					<keypass>1asdfasdf</keypass>
+					<archiveDirectory>target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib</archiveDirectory>
+					<includes>
+						<include>commons-log*.jar</include>
+						<include>http*.jar</include>
+						<include>client*.jar</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
