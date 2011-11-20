@@ -116,57 +116,94 @@
 	  		<version>0.0.1-SNAPSHOT</version>
 	  	</dependency>
 	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-				  <execution>
-				    <id>copy-dependencies</id>
-				    <goals>
-				      <goal>run</goal>
-				    </goals>
-				    <configuration>
-				      <target>
-				        <mkdir dir="target/conscan-0.0.1-SNAPSHOT/clientlib"/>
-				        <copy todir="target/conscan-0.0.1-SNAPSHOT/clientlib">
-				          <fileset dir="target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
-				          	<include name="**/http*.jar" />
-				          </fileset>
-				        </copy>
-				      </target>
-				    </configuration>
-				  </execution>
-				</executions>
+			  <groupId>org.codehaus.mojo.webstart</groupId>
+			  <artifactId>webstart-maven-plugin</artifactId>
+			  <version>1.0-beta-2</version>
+			  <executions>
+			    <execution>
+			      <goals>
+			        <goal>jnlp</goal> <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
+			      </goals>
+			    </execution>
+			  </executions>
+			  <configuration>
+			<outputDirectory>jnlp</outputDirectory>
+			
+			    <!--
+			    Set to true to exclude all transitive dependencies. Default is false.
+			    -->
+			    <excludeTransitive>false</excludeTransitive>
+			
+			    <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
+			    <!--   <libPath>lib</libPath>   -->
+			
+			    <!-- [optional] transitive dependencies filter - if omitted, all transitive dependencies are included -->
+			    <dependencies>
+			      <!-- Note that only groupId and artifactId must be specified here. because of a limitation of the Include/ExcludesArtifactFilter -->
+			      <includes>
+			        <include>commons-logging:commons-logging</include>
+			        <include>org.apache.httpcomponents:httpmime</include>
+			        <include>org.apache.httpcomponents:httpcore</include>
+			        <include>org.apache.httpcomponents:httpclient</include>
+			        <include>com.tippingpoint:client</include>
+			      </includes>
+			      <!-- excludes>
+			        <exclude></exclude>
+			      <excludes-->
+			    </dependencies>
+			
+			    <!--resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory--> <!-- default value -->
+			
+			    <!-- JNLP generation -->
+			    <jnlp>
+			      <!-- default values -->
+			      <inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath>
+			      <inputTemplate>src/main/resources/jnlp/scannerOptions.vm</inputTemplate> <!-- relative to inputTemplateResourcePath -->
+			      <outputFile>scannerOptions2.jnlp</outputFile> <!-- defaults to launch.jnlp -->
+			
+			      <!-- used to automatically identify the jar containing the main class. -->
+			      <!-- this is perhaps going to change -->
+			      <mainClass>com.tippingpoint.scannerOptions</mainClass>
+			    </jnlp>
+			
+			
+			    <!-- SIGNING -->
+			    <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
+			    <sign>
+			      <keystore>clientkeystore</keystore>
+			      <keypass>1asdfasdf</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+			      <storepass>1asdfasdf</storepass> <!-- ${storepass} -->
+			      <!--storetype>fillme</storetype-->
+			      <alias>conscan</alias>
+			
+			      <!--validity>fillme</validity-->
+			
+			      <verify>true</verify> <!-- verify that the signing operation succeeded -->
+			
+			      <!-- KEYSTORE MANAGEMENT -->
+			      <keystoreConfig>
+			        <delete>false</delete> <!-- delete the keystore -->
+			        <gen>false</gen>       <!-- optional shortcut to generate the store. -->
+			      </keystoreConfig>
+			    </sign>
+			
+			    <!-- BUILDING PROCESS -->
+			
+			    <pack200>true</pack200>
+			    <gzip>false</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
+			
+			    <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+			    <outputJarVersions>true</outputJarVersions>
+			
+			    <!--install>false</install--> <!-- not yet supported -->
+			    <verbose>true</verbose>
+			
+			  </configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jarsigner-plugin</artifactId>
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<id>sign</id>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<keystore>clientKeystore</keystore>
-					<alias>conscan</alias>
-					<storepass>1asdfasdf</storepass>
-					<keypass>1asdfasdf</keypass>
-					<archiveDirectory>target/conscan-0.0.1-SNAPSHOT/clientlib</archiveDirectory>
-					<includes>
-						<include>commons-log*.jar</include>
-						<include>http*.jar</include>
-						<include>client*.jar</include>
-					</includes>
-				</configuration>
-			</plugin>
-
-      </plugins>
+    	</plugins>
 	</build>
 </project>
