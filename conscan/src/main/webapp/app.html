@@ -166,8 +166,8 @@
 						getitemlist(name);
 						jQuery.modal.close();
 					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Error: ' + textStatus + ', ' + errorThrown);
 					}
 				};
 
@@ -231,8 +231,8 @@
 						getitemlist(name);
 						jQuery.modal.close();
 					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Error: ' + textStatus + ', ' + errorThrown);
 					}
 				};
 
@@ -331,8 +331,8 @@
 						var results = jQuery("div#reportresults");
 						results.html('<span class="informational">Please see report window.</span>');
 					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Error: ' + textStatus + ', ' + errorThrown);
 					}
 				};
 
@@ -453,8 +453,8 @@
 					url: 'rest/reports/' + reportitem,
 					datatype: 'html',
 					success: displayreport,
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Item ' + reportitem + ' error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Item ' + reportitem + ' error: ' + textStatus + ', ' + errorThrown);
 					}
 				});
 			}
@@ -463,15 +463,14 @@
 				jQuery.ajax({
 					type: 'OPTIONS',
 					url: 'rest/report/' + report,
-					accepts: "application/json",
 					datatype: 'json',
 					beforeSend: function(request, settings) {
 						addJsonAccepts(request);
 						ajaxStart();
 					},
 					success: displayreportdefinition,
-					error: function(responseXML, statusText, xhr, form) {
-						alert('Item ' + report + ' error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Item ' + report + ' error: ' + textStatus + ', ' + errorThrown);
 					},
 					complete: ajaxComplete
 				});
@@ -511,20 +510,20 @@
 				return display;
 			}
 
-			function getitem(item, id) {
+			function getitem(itemType, id) {
 				var item;
 
 				jQuery.ajax({
 					async: false,
 					type: 'GET',
-					url: 'rest/' + item + '/' + id,
-					accepts: "application/json",
+					url: 'rest/' + itemType + '/' + id,
 					datatype: 'json',
+					beforeSend: addJsonAccepts,
 					success: function(responseObj, statusText, xhr, form) {
 						item = responseObj;
 					},
-					error: function(responseObj, statusText, xhr, form) {
-						alert('Item ' + item + ' with id '+ id + ' error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Item ' + itemType + ' with id '+ id + ' error: ' + textStatus + ', ' + errorThrown);
 					}
 				});
 
@@ -538,14 +537,13 @@
 				jQuery.ajax({
 					type: 'GET',
 					url: strUrl,
-					accepts: "application/json",
 					datatype: 'json',
 					beforeSend: function(request, settings) {
 						ajaxStart();
 						addJsonAccepts(request);
 					},
 					success: displaylist,
-					error: function(jqXHR, statusText, errorThrown) {
+					error: function(jqXHR, textStatus, errorThrown) {
 						checkLogin();
 					},
 					complete: ajaxComplete
@@ -559,7 +557,6 @@
 					jQuery.ajax({
 						type: 'OPTIONS',
 						url: 'database/' + name,
-						accepts: "application/json",
 						datatype: 'json',
 						async: false,
 						beforeSend: addJsonAccepts,
@@ -567,8 +564,8 @@
 							//alert('Retrieved options for ' + responseObj.table.name);
 							objectoptions[name] = responseObj;
 						},
-						error: function(responseXML, statusText, xhr, form) {
-							alert('Error getting options for ' + name + ': ' + statusText);
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert('Error getting options for ' + name + ': ' + textStatus + ', ' + errorThrown);
 						}
 					});
 				}
@@ -618,7 +615,7 @@
 						var input = createInput('password', column.name, inputValue);
 						inputCell.append(input);
 					} else if (column.type == "idref") {
-						inputCell.append('<div id="' + tableName + '.' + column.name + '"><span class="informational">Loading</span></div>');
+						inputCell.append('<select id="' + getselectname(tableName, column.name) + '" name="' + column.name + '"><option class="informational">Loading</option></select>');
 						if (typeof object != 'undefined') {
 							inputValue = object[column.name];
 						}
@@ -633,6 +630,10 @@
 				}
 
 				return row;
+			}
+
+			function getselectname(table, column) {
+				return table + '_' + column;
 			}
 
 			function gettablecolumns(table) {
@@ -667,14 +668,62 @@
 				jQuery.ajax({
 					type: 'GET',
 					url: strUrl,
-					accepts: "application/json",
 					datatype: 'json',
 					beforeSend: addJsonAccepts,
-					success: function() {
-						alert('loadReferencedValues success');
+					success: function(responseObj, statusText, xhr, form) {
+						//alert('loadReferencedValues success: ' + responseObj.name);
+
+						var columns = getobjectoptions(responseObj.name);
+						var table = columns.table;
+						var tablecolumns = gettablecolumns(table);
+						var objects = responseObj.objects;
+						var newOptions = new Array();
+
+						// loop through all the objects
+						for (index in objects) {
+							var object = objects[index];
+							var selectvalue = "";
+							var selectdisplay = "";
+
+							// loop through the table columns to see what is in the object, since not all fields may
+							// be there
+							for (indexColumn in table.column) {
+								var column = table.column[indexColumn];
+								
+								// ony look at columns that have a value
+								var objectvalue = object[column.name];
+								if (typeof objectvalue != 'undefined') {
+									if ("id" == column.type) {
+										selectvalue = object[column.name];
+									}
+									else {
+										if (selectdisplay.length > 0) {
+											selectdisplay += " ";
+										}
+										selectdisplay += object[column.name];
+									}
+								}
+							}
+							
+							newOptions.push({'value': selectvalue, 'display': selectdisplay});
+						}
+						
+						var select = jQuery('#' + getselectname(tableName, columnName));
+						if(select.prop) {
+						  var options = select.prop('options');
+						}
+						else {
+						  var options = select.attr('options');
+						}
+						jQuery('option', select).remove();
+						 
+						jQuery.each(newOptions, function(val, newOption) {
+						    options[options.length] = new Option(newOption.display, newOption.value);
+						});
+						select.val(value);
 					},
 					error: function(jqXHR, statusText, errorThrown) {
-						alert('loadReferencedValues: ' + statusText + ' ' + errorThrown);
+						alert('loadReferencedValues: ' + statusText + ' ' + textStatus + ', ' + errorThrown);
 					},
 				});
 			}
@@ -703,8 +752,8 @@
 
 						checkLogin();
 					},
-					error: function(responseXML, statusText, xhr, form) {
-						alert('logout error: ' + statusText);
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('logout error: ' + textStatus + ', ' + errorThrown);
 					}
 				});
 			}
@@ -883,11 +932,12 @@
 				//alert("showdeleteitem: " + name);
 
 				var item = getitem(name, id);
-
-				populatedeleteitemform(name, item);
-				jQuery("#questiondialog").modal({
-					onShow: deleteItem
-				});
+				if (typeof item != 'undefined') {
+					populatedeleteitemform(name, item);
+					jQuery("#questiondialog").modal({
+						onShow: deleteItem
+					});
+				}
 			}
 
 			function showlogin() {
@@ -928,11 +978,12 @@
 				//alert("showupdateitem: " + name);
 
 				var item = getitem(name, id);
-
-				populateadditemform(name, item);
-				jQuery("#adddialog").modal({
-					onShow: addOrUpdateItem
-				});
+				if (typeof item != 'undefined') {
+					populateadditemform(name, item);
+					jQuery("#adddialog").modal({
+						onShow: addOrUpdateItem
+					});
+				}
 			}
 
 			function setuidefaults() {

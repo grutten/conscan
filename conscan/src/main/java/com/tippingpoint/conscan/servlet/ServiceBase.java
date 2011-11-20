@@ -75,7 +75,7 @@ public abstract class ServiceBase {
 	 * @throws SqlBaseException 
 	 */
 	@DELETE
-	@Path("/{id}")
+	@Path("/{id:[a-f0-9\\-]+}")
 	public void deleteObject(@PathParam("id") final String strId) throws SqlBaseException {
 		// get the object by the id
 		final BusinessObject businessObject = getObjectById(strId);
@@ -90,7 +90,7 @@ public abstract class ServiceBase {
 	 * @throws SqlBaseException
 	 */
 	@GET
-	@Path("/{id}")
+	@Path("/{id:[a-f0-9\\-]+}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getJsonObjectById(@PathParam("id") final String strId) throws SqlBaseException {
 		String strJson = null;
@@ -135,29 +135,6 @@ public abstract class ServiceBase {
 		}
 	
 		return output;
-/*		
-		final BusinessObject businessObject = builder.get(strId);
-		if (businessObject == null) {
-			throw new WebApplicationException(Response.Status.NOT_FOUND);
-		}
-
-		return businessObject;
-
-		String strJson = null;
-		final BusinessObject businessObject = getObjectById(strId);
-		if (businessObject != null) {
-			final JsonBusinessObject jsonBusinessObject = new JsonBusinessObject(businessObject);
-
-			final JSONObject jsonObject = jsonBusinessObject.get();
-			if (jsonObject == null) {
-				throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-			}
-
-			strJson = jsonObject.toJSONString();
-		}
-
-		return strJson;
-*/
 	}
 
 	/**
@@ -189,8 +166,7 @@ public abstract class ServiceBase {
 	 * @throws SqlBaseException
 	 */
 	@PUT
-	@Path("/{id}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("/{id:[a-f0-9\\-]+}")
 	public void updateObjectById(@PathParam("id") final String strId, final MultivaluedMap<String, String> mapValues)
 			throws SqlBaseException {
 		// get the object by the id
@@ -330,5 +306,4 @@ public abstract class ServiceBase {
 			}
 		}
 	}
-	
 }

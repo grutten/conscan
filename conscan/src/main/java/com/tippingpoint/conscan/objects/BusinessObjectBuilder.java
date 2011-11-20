@@ -38,6 +38,14 @@ public interface BusinessObjectBuilder {
 	List<BusinessObject> getAll(List<FieldValue> listCommonValues) throws SqlBaseException;
 
 	/**
+	 * This method returns a collection of objects representing all of the objects of this type; only the primary and
+	 * logical keys will be returned.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	List<BusinessObject> getAllForReference() throws SqlBaseException;
+
+	/**
 	 * This method returns the name of the object being created. It must be unique in the system.
 	 */
 	String getName();

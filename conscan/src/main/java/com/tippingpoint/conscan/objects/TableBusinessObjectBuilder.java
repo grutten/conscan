@@ -79,6 +79,24 @@ public class TableBusinessObjectBuilder implements BusinessObjectBuilder {
 	}
 
 	/**
+	 * This method returns a collection of objects representing all of the objects of this type; only the primary and
+	 * logical keys will be returned.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	public List<BusinessObject> getAllForReference() throws SqlBaseException {
+		final List<BusinessObject> listObjects = new ArrayList<BusinessObject>();
+		final List<Map<String, FieldValue>> listValues = m_tablePersistence.getAllForReference();
+		if (listValues != null && !listValues.isEmpty()) {
+			for (final Map<String, FieldValue> mapValues : listValues) {
+				listObjects.add(get(mapValues));
+			}
+		}
+
+		return listObjects;
+	}
+
+	/**
 	 * This method returns a business object instance.
 	 */
 	@Override

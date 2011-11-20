@@ -11,6 +11,7 @@ import java.util.Map;
 import com.tippingpoint.database.Column;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnTypeIdReference;
+import com.tippingpoint.database.Constraint;
 import com.tippingpoint.database.ForeignKey;
 import com.tippingpoint.database.ForeignKeyConstraint;
 import com.tippingpoint.database.IdFactory;
@@ -231,6 +232,55 @@ public class TablePersistence implements Persistence {
 		return listValues;
 	}
 
+	public List<Map<String, FieldValue>> getAllForReference() throws SqlBaseException {
+		final List<Map<String, FieldValue>> listValues = new ArrayList<Map<String, FieldValue>>();
+
+		final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
+
+		Connection conn = null;
+		SqlExecution sql = null;
+		ResultSet rs = null;
+
+		final SqlQuery sqlQuery = new SqlQuery();
+
+		sqlQuery.add(m_table, false);
+
+		addColumns(sqlQuery, m_table.getPrimaryKey());
+		addColumns(sqlQuery, m_table.getLogicalKey());
+
+		try {
+			conn = manager.getConnection();
+			sql = manager.getSqlManager().getExecution(sqlQuery);
+
+			// execute the query
+			rs = sql.executeQuery(conn);
+			while (rs.next()) {
+				final Iterator<Column> iterColumns = sql.getColumnMap();
+				if (iterColumns != null && iterColumns.hasNext()) {
+					final Map<String, FieldValue> mapValues = new LinkedHashMap<String, FieldValue>();
+
+					listValues.add(mapValues);
+
+					int nIndex = 1;
+					while (iterColumns.hasNext()) {
+						final Column column = iterColumns.next();
+
+						mapValues.put(column.getName(),
+								new FieldValue(column.getName(), column.getType().getResult(rs, nIndex++ )));
+					}
+				}
+			}
+		}
+		catch (final SQLException e) {
+			throw new SqlExecutionException("Error reading from table.", e);
+		}
+		finally {
+			ConnectionManager.close(conn, sql, rs);
+		}
+
+		return listValues;
+	}
+
 	/**
 	 * This method returns a list of all the named elements of the business object.
 	 */
@@ -252,12 +302,12 @@ public class TablePersistence implements Persistence {
 	 * 
 	 * @param strColumnName String containing the name of a referenced field.
 	 */
-	public String getReferencedObjectType(String strColumnName) {
+	public String getReferencedObjectType(final String strColumnName) {
 		String strReferencedObjectType = null;
 
-		Column column = m_table.getColumn(strColumnName);
+		final Column column = m_table.getColumn(strColumnName);
 		if (column != null && column.getType() instanceof ColumnTypeIdReference) {
-			ForeignKey foreignKey = m_table.getForeignKeyByChild(column);
+			final ForeignKey foreignKey = m_table.getForeignKeyByChild(column);
 			if (foreignKey != null) {
 				strReferencedObjectType = foreignKey.getParentColumn().getTable().getName();
 			}
@@ -432,6 +482,25 @@ public class TablePersistence implements Persistence {
 		}
 		finally {
 			ConnectionManager.close(conn, sqlUpdate, null);
+		}
+	}
+
+	/**
+	 * This method adds the columns from the constraint to the query.
+	 * 
+	 * @param sqlQuery SqlQuery to be modified.
+	 * @param constraint Constraint whose columns are to be added to the query.
+	 */
+	private void addColumns(final SqlQuery sqlQuery, final Constraint constraint) {
+		if (constraint != null) {
+			final Iterator<Column> iterColumns = constraint.getColumns();
+			if (iterColumns != null) {
+				while (iterColumns.hasNext()) {
+					final Column column = iterColumns.next();
+
+					sqlQuery.add(column);
+				}
+			}
 		}
 	}
 
