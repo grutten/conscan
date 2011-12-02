@@ -34,15 +34,15 @@
 	</target>
 	
 	<target name="signalljars">
-		<mkdir dir="./conscan/target/conscan-0.0.1-SNAPSHOT/clientlib"/>
+		<mkdir dir="./target/conscan-0.0.1-SNAPSHOT/clientlib"/>
 
-		<copy todir="./conscan/target/conscan-0.0.1-SNAPSHOT/clientlib">
-		    <fileset dir="./conscan/target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
+		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
 		      <include name="**/client*.jar"/>
 		    </fileset>
 		</copy>
-		<copy todir="./conscan/target/conscan-0.0.1-SNAPSHOT/clientlib">
-		    <fileset dir="../client/lib">
+		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
 		      <include name="**/http*.jar"/>
 		    </fileset>
 		</copy>
@@ -51,7 +51,7 @@
 		<signjar destDir="./target/conscan-0.0.1-SNAPSHOT/clientlib" alias="conscan" keystore="clientkeystore"
     			storepass="1asdfasdf" preservelastmodified="true">
   			<path>
-    			<fileset dir="./target/conscan-0.0.1-SNAPSHOT/clientlib" includes="**/client.jar" />
+    			<fileset dir="./target/conscan-0.0.1-SNAPSHOT/clientlib" includes="**/*.jar" />
   			</path>
   			<flattenmapper />
 		</signjar>
