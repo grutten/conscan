@@ -8,6 +8,7 @@
   <artifactId>app</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>tpjnlp</module>
     <module>client</module>
     <module>conscan</module>
   </modules>
