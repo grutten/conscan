@@ -34,29 +34,29 @@
 	</target>
 	
 	<target name="signalljars">
-		<mkdir dir="./target/conscan-0.0.1-SNAPSHOT/clientlib"/>
+		<mkdir dir="./src/main/webapp/clientlib"/>
 
-		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		<copy todir="./src/main/webapp/clientlib">
 		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
 		      <include name="**/client*.jar"/>
 		    </fileset>
 		</copy>
-		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		<copy todir="./src/main/webapp/clientlib">
 		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
 		      <include name="**/http*.jar"/>
 		    </fileset>
 		</copy>
-		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		<copy todir="./src/main/webapp/clientlib">
 		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
 		      <include name="**/commons-log*.jar"/>
 		    </fileset>
 		</copy>
 		
 		<!-- client - sign the jar -->
-		<signjar destDir="./target/conscan-0.0.1-SNAPSHOT/clientlib" alias="conscan" keystore="clientkeystore"
+		<signjar destDir="./src/main/webapp/clientlib" alias="conscan" keystore="clientkeystore"
     			storepass="1asdfasdf" preservelastmodified="true">
   			<path>
-    			<fileset dir="./target/conscan-0.0.1-SNAPSHOT/clientlib" includes="**/*.jar" />
+    			<fileset dir="./src/main/webapp/clientlib" includes="**/*.jar" />
   			</path>
   			<flattenmapper />
 		</signjar>
@@ -66,7 +66,7 @@
 	
 	<target name="clean">
 		<delete>
-			<fileset dir="./target/conscan-0.0.1-SNAPSHOT/clientlib" includes="**/*.jar" />
+			<fileset dir="./src/main/webapp/clientlib" includes="**/*.jar" />
 		</delete>
 	</target>
 	
