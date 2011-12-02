@@ -1,0 +1,9 @@
+<pluginMetadata>
+  <mojos>
+    <mojo>
+      <goal>sign</goal>
+      <call>signjars</call>
+      <description>copies jar files from client to conscan, then signs them.</description>
+    </mojo>
+  </mojos>
+</pluginMetadata>
