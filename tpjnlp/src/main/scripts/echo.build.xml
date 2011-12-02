@@ -46,6 +46,11 @@
 		      <include name="**/http*.jar"/>
 		    </fileset>
 		</copy>
+		<copy todir="./target/conscan-0.0.1-SNAPSHOT/clientlib">
+		    <fileset dir="./target/conscan-0.0.1-SNAPSHOT/WEB-INF/lib">
+		      <include name="**/commons-log*.jar"/>
+		    </fileset>
+		</copy>
 		
 		<!-- client - sign the jar -->
 		<signjar destDir="./target/conscan-0.0.1-SNAPSHOT/clientlib" alias="conscan" keystore="clientkeystore"
