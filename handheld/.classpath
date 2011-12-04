@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/Users/mgee/workspaces/wkconscan/handheld/cn3lib/DataCollection.jar"/>
-	<classpathentry kind="lib" path="/Users/mgee/workspaces/wkconscan/handheld/cn3lib/resolver.jar"/>
-	<classpathentry kind="lib" path="/Users/mgee/workspaces/wkconscan/handheld/cn3lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="/Users/mgee/workspaces/wkconscan/handheld/cn3lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="cn3lib/DataCollection.jar"/>
+	<classpathentry kind="lib" path="cn3lib/resolver.jar"/>
+	<classpathentry kind="lib" path="cn3lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="cn3lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
