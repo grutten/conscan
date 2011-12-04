@@ -1,15 +1,7 @@
 <project>
-  <target name="signjars" depends="all">
-    <echo>###### copy jar files from 'client' to 'conscan', then sign the jar files</echo>
-  </target>
-
-	<path id= "svnant.classpath" >
-    	 <fileset dir= "./libsvn" >
-        	 <include name= "*.jar" />
-	     </fileset>
-	</path>
-
-	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" /> 
+	<target name="signjars" depends="all">
+		<echo>copy jar files from 'client' to 'conscan', then sign the jar files</echo>
+	</target>
 
 	<target name="all">
 		<available file="clientkeystore" property="keystoreexists" value="true" />
