@@ -6,7 +6,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class SaxBaseHandler extends DefaultHandler {
 	
-	private boolean m_bLoggingEnabled = true;
+	private boolean m_bLoggingEnabled = false;
 	private SaxBaseHandler m_ParentHandler;
 	private XMLReader m_xmlReader;
 
