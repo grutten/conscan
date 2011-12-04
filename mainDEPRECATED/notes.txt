@@ -1,6 +1,6 @@
 The project must be a dynamic web project.
 
-conscan\server contains the webapp.
+trunk\conscan contains the webapp.
 
 The .settings\ must look similar to:
 
