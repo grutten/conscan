@@ -3,6 +3,7 @@ package com.tippingpoint;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Frame;
+import java.awt.TextField;
 
 import java.awt.Label;
 import java.awt.Panel;
@@ -40,21 +41,30 @@ public class scannerOptions extends Frame {
 	private static final long serialVersionUID = -3581240315115581119L;
 
 	private String m_strIpAddress = "localhost";
-//	private String m_strIpAddress = "192.168.1.69";
+//	private String m_strIpAddress = "192.168.1.110";
 
 	private String m_strAppName = "conscan";
-//	private String m_strAppName = "server";
 
 	private String m_strClientScannerOPTIONSXmlPath = "C:\\Documents and Settings\\Jay\\My Documents\\CN3A00700700729 My Documents\\";
-//	private String m_strClientScannerOPTIONSXmlPath = "c:\\Documents and Settings\\Owner\\My Documents\\CN3B36220927180 My Documents\\";
-//  private String m_strClientScannerOPTIONSXmlPath = "MGGscanner.xml";  // MAC
+//	private String m_strClientScannerOPTIONSXmlPath = "z:\\Documents\\CN3B36220927180 My Documents\\";
+//  private String m_strClientScannerOPTIONSXmlPath = "/Users/mgee";  // MAC
 
 	private static boolean m_bKeepRunning = true;
 
     // LABEL - indicates state
     private static Panel m_panelMain = new Panel();
     private static Label m_labelCurrState = new Label("IDLE");
+    private static TextField m_textDir = new TextField();
 
+    public scannerOptions(String strIpAddress) {
+    	if (strIpAddress!= null)
+    		m_strIpAddress = strIpAddress;
+    }
+    
+    private static String getDirTextfieldValue() {
+    	return m_textDir.getText();
+    }
+    
 	private static void updateCurrStateLabel(String str) {
 		m_labelCurrState.setText(str);
 		m_panelMain.setVisible(true);
@@ -65,20 +75,22 @@ public class scannerOptions extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args){
+		// Check for an over-ridden IP address
+		String strIpAddress = null;
+		if (args.length > 0) {
+			strIpAddress = args[args.length - 1];
+			System.out.println("JNLP <argument>: " + strIpAddress);
+		}
+		
 		// UI - display the simple user interface
-		scannerOptions objScannerOptions = new scannerOptions();
-		Frame frame = objScannerOptions.setupFrame();
+		scannerOptions objScannerOptions = new scannerOptions(strIpAddress);
+ 		Frame frame = objScannerOptions.setupFrame();
  		frame.setVisible(true);
-
+ 		
 		// background thread - fire it up
-		PostData pdThread = new PostData("PollAndPost");
+		PostData pdThread = new PostData("PollAndPost", strIpAddress);
 		pdThread.start();
 	}
-
-    public void setIpAddress(String strIpAddress) {
-    	m_strIpAddress = strIpAddress;
-    }
-
 
     /**
      * This method copies the source file to the destination file and adds
@@ -181,7 +193,7 @@ public class scannerOptions extends Frame {
     // *** Polling logic
     private void processDir() throws Exception {
     	//String strPathToMonitor = "/Users/mgee/workspaces/wkconscan/client/xml/";
-    	String strPathToMonitor = getClientScannerOPTIONSXmlPath();
+    	String strPathToMonitor = m_textDir.getText();
         File dir = new File(strPathToMonitor);
 
         String[] children = dir.list();
@@ -218,11 +230,11 @@ public class scannerOptions extends Frame {
         }
     }
 
-    private void retrieveXml(String strIpAddress) {
+    private void retrieveXml() {
         HttpClient httpclient = new DefaultHttpClient();
         FileOutputStream outstreamXml = null;
         try {
-        	String strUrl = "http://" + strIpAddress + ":8080/" + getAppName() + "/scanner";
+        	String strUrl = "http://" + getIpAddress() + ":8080/" + getAppName() + "/scanner";
         	System.out.println("scannerOptions IPAddress: " + strUrl);
             HttpOptions httpOptions = new HttpOptions(strUrl);
 
@@ -232,7 +244,10 @@ public class scannerOptions extends Frame {
             HttpResponse response = httpclient.execute(httpOptions);
             HttpEntity resEntity = response.getEntity();
 
-            outstreamXml = new FileOutputStream(getClientScannerOPTIONSXmlPath() + "scanner.xml");
+        	String strPathToMonitor = m_textDir.getText();
+           	String strPathSeparator = "\\";  // Windows separator
+            
+            outstreamXml = new FileOutputStream(strPathToMonitor + strPathSeparator + "scanner.xml");
             resEntity.writeTo(outstreamXml);
 
         } catch (ClientProtocolException e) {
@@ -257,27 +272,32 @@ public class scannerOptions extends Frame {
 
     private Frame setupFrame() {
     	// FRAME
-    	Frame frame = new Frame("ConScan - Handheld");
+    	Frame frame = new Frame("ConScan(" + m_strIpAddress+ ") - Handheld");
        	frame.setLayout(new BorderLayout());
-		frame.setSize(300,100);
+		frame.setSize(640,150);
 
         // BUTTON
 	    Button buttonOptionScanner = new Button("GET Scanner Data from Server");
 	    buttonOptionScanner.setSize(200, 50);
 	    ActionListener buttonListenerOptionScanner = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-    			scannerOptions objScannerOptions = new scannerOptions();
+    			scannerOptions objScannerOptions = new scannerOptions(getIpAddress());
     			updateCurrStateLabel("Handheld <- Server");
-    			objScannerOptions.retrieveXml(getIpAddress());
+    			objScannerOptions.retrieveXml();
         		updateCurrStateLabel("IDLE");
             }
         };
         buttonOptionScanner.addActionListener(buttonListenerOptionScanner);
 
+        // Directory for user's handhelddata
+        m_textDir.setText(this.m_strClientScannerOPTIONSXmlPath);
+        
 	    // PANEL
         m_panelMain.setLayout(new BorderLayout());
         m_panelMain.add(m_labelCurrState, BorderLayout.NORTH);
 	    m_panelMain.add(buttonOptionScanner, BorderLayout.SOUTH);
+	    m_panelMain.add(m_textDir, BorderLayout.CENTER);
+	    
 
         frame.add(m_panelMain, BorderLayout.NORTH);
 
@@ -302,12 +322,16 @@ public class scannerOptions extends Frame {
     }
 
 	private static class PostData extends Thread {
-		public PostData(String str) {
+		private String m_strServerIpAddress;
+		
+		public PostData(String str, String strServerIpAddress) {
 			super(str);
+			m_strServerIpAddress = strServerIpAddress;
 		}
 
 		public void run() {
-			scannerOptions objScannerOptions = new scannerOptions();
+			scannerOptions objScannerOptions = new scannerOptions(m_strServerIpAddress);
+			
 			int i = 1;
 			while (m_bKeepRunning && i > 0) {
 				try {
@@ -318,14 +342,30 @@ public class scannerOptions extends Frame {
 					e.printStackTrace();
 				}
 	        	try {
-	        		updateCurrStateLabel("Handheld -> Server");
+	        		updateCurrStateLabel("Handheld -> Server (" + getDirTextfieldValue() + ")");
 	        		objScannerOptions.processDir();
 				}
 				catch (Exception e) {
 					// TODO Auto-generated catch block
+					updateCurrStateLabel("KABOOM!!!" + e.toString());
 					e.printStackTrace();
+					try {
+						Thread.sleep(9000);
+					}
+					catch (InterruptedException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+
 				}
 				finally {
+					try {
+						Thread.sleep(2000);
+					}
+					catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	        		updateCurrStateLabel("IDLE");
 				}
 			}

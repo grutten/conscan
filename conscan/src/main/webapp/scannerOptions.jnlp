@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<jnlp spec="1.0+" codebase="http://localhost:8080/conscan/" href="scannerOptions.jnlp">
+<jnlp spec="1.0+" codebase="http://192.168.1.82:8080/conscan/" href="scannerOptions.jnlp">
 	<information>
 		<title>Jnlp Testing</title>
 		<vendor>CheckMate</vendor>
-		<homepage href="http://localhost:8080/conscan/" />
+		<homepage href="http://192.168.1.82:8080/conscan/" />
 		<description>Testing: ConScan</description>
 	</information>
 	<security>
@@ -17,5 +17,7 @@
 		<jar href="clientlib/httpcore-4.1.jar" />
 		<jar href="clientlib/httpmime-4.1.1.jar" />
 	</resources>
-	<application-desc main-class="com.tippingpoint.scannerOptions" />
+	<application-desc main-class="com.tippingpoint.scannerOptions">
+		<argument>192.168.1.82</argument>
+	</application-desc>	
 </jnlp>
