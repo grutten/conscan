@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Edited by XMLSpy® -->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match="/">
+
+  <data><xsl:text>&#10;</xsl:text>
+      <xsl:for-each select="data/item">
+      <item name="offender">
+       	<column name="offenderid"></column>
+        <column name="firstname"><xsl:value-of select="firstname"/></column>
+        <column name="lastname"><xsl:value-of select="lastname"/></column>
+        <column name="bookingnumber"><xsl:value-of select="bookingnumber"/></column>
+        <column name="barcode"><xsl:value-of select="barcode"/></column>
+      </item><xsl:text>&#10;</xsl:text>
+      </xsl:for-each>
+  </data>
+
+</xsl:template>
+</xsl:stylesheet>
+
