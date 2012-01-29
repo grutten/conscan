@@ -10,16 +10,14 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
 
-
-
   <filter>
         <filter-name>Authentication</filter-name>
         <filter-class>com.tippingpoint.conscan.servlet.AuthenticationFilter</filter-class>
-  </filter>  
+  </filter>
   <filter-mapping>
         <filter-name>Authentication</filter-name>
         <url-pattern>/rest/*</url-pattern>
-  </filter-mapping>    
+  </filter-mapping>
 
   <servlet>
     <servlet-name>Startup</servlet-name>
@@ -36,7 +34,7 @@
     <servlet-name>Activity</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Activity</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Activity</servlet-name>
     <url-pattern>/activity/*</url-pattern>
@@ -46,7 +44,7 @@
     <servlet-name>Database</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Database</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Database</servlet-name>
     <url-pattern>/database/*</url-pattern>
@@ -56,7 +54,7 @@
     <servlet-name>Compliance</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Compliance</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Compliance</servlet-name>
     <url-pattern>/compliance/*</url-pattern>
@@ -66,7 +64,7 @@
     <servlet-name>ComplianceValue</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.ComplianceValue</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>ComplianceValue</servlet-name>
     <url-pattern>/compliancevalue/*</url-pattern>
@@ -76,7 +74,7 @@
     <servlet-name>Location</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Location</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Location</servlet-name>
     <url-pattern>/location/*</url-pattern>
@@ -86,7 +84,7 @@
     <servlet-name>Offender</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Offender</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Offender</servlet-name>
     <url-pattern>/offender/*</url-pattern>
@@ -96,7 +94,7 @@
     <servlet-name>Scanner</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Scanner</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Scanner</servlet-name>
     <url-pattern>/scanner/*</url-pattern>
@@ -106,7 +104,7 @@
     <servlet-name>Staff</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.Staff</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Staff</servlet-name>
     <url-pattern>/staff/*</url-pattern>
@@ -116,7 +114,7 @@
     <servlet-name>ScannerLog</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.ScannerLog</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>ScannerLog</servlet-name>
     <url-pattern>/scannerlog/*</url-pattern>
@@ -126,7 +124,7 @@
     <servlet-name>ScannerLogComment</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.ScannerLogCommentService</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>ScannerLogComment</servlet-name>
     <url-pattern>/scannerlogcomment/*</url-pattern>
@@ -136,12 +134,12 @@
     <servlet-name>User</servlet-name>
     <servlet-class>com.tippingpoint.conscan.servlet.User</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>User</servlet-name>
     <url-pattern>/user/*</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>jersey</servlet-name>
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -150,9 +148,9 @@
       <param-value>com.tippingpoint.conscan.servlet;com.tippingpoint.conscan.reports</param-value>
     </init-param>
   </servlet>
- 
+
   <servlet-mapping>
     <servlet-name>jersey</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
 </web-app>
