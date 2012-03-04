@@ -328,7 +328,7 @@ System.out.println("Detail Button - not implemented yet");
 		
 		
 		try {
-			Thread.sleep(250);
+			Thread.sleep(2000);
 		}
 		catch (Exception e) {
 			// eat it

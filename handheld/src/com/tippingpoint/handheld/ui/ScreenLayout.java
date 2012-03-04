@@ -252,8 +252,8 @@ public class ScreenLayout extends ScreenListeners {
         switch (m_screenState) {
 	        case SCREEN_STATE_DETAIL:
 	        	m_panelBottom.add(m_buttonGoActivity);
-	        	m_panelBottom.add(m_buttonPrev);
-	        	m_panelBottom.add(m_buttonNext);
+//	        	m_panelBottom.add(m_buttonPrev);
+//	        	m_panelBottom.add(m_buttonNext);
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	            m_panelBottom.add(m_buttonDock);
 	        	break;
@@ -268,7 +268,7 @@ public class ScreenLayout extends ScreenListeners {
 	        case SCREEN_STATE_ACTIVITY:
 	        default:
 	            m_panelBottom.add(m_buttonRecord);
-	            m_panelBottom.add(m_buttonGoDetail);
+//	            m_panelBottom.add(m_buttonGoDetail);
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	            m_panelBottom.add(m_buttonDock);
 	        	break;
@@ -293,7 +293,7 @@ public class ScreenLayout extends ScreenListeners {
     	        Button buttonReplaceOffender = new Button(">");
     	        buttonReplaceOffender.setFocusable(false);
     	        buttonReplaceOffender.addActionListener(getGoOffenderReplacementListener());
-    	        addItem(pCompliance, buttonReplaceOffender, 0, 0, 1, 1, 0.0, 0.0, 0, 0, 1, 1, GridBagConstraints.NORTHWEST);
+//    	        addItem(pCompliance, buttonReplaceOffender, 0, 0, 1, 1, 0.0, 0.0, 0, 0, 1, 1, GridBagConstraints.NORTHWEST);
     	        addItem(pCompliance, new Label(strOffender), 1, 0, 1, 1, .95, 0.0, 0, 1, 1, 0, GridBagConstraints.NORTHWEST);
     	        
     	        addItem(m_panelBodyActivity, pCompliance, 0, nRow++, 1, 1, 1.0, 0.0, 0, 15, 0, 15, GridBagConstraints.NORTHWEST);
