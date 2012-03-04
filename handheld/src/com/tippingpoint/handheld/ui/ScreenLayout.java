@@ -46,15 +46,18 @@ public class ScreenLayout extends ScreenListeners {
 
         m_buttonDock = new Button(BUTTON_DOCK);
         m_buttonDock.addActionListener(getDockButtonListener());
+        m_buttonDock.setFocusable(false);
         
         m_buttonGoDetail = new Button(BUTTON_DETAIL);
         m_buttonGoDetail.addActionListener(getGoDetailButtonListener());
+        m_buttonGoDetail.setFocusable(false);
 
         m_buttonNext = new Button(BUTTON_NEXT);
         m_buttonPrev = new Button(BUTTON_PREV);
         
         m_buttonRecord = new Button("Record");
         m_buttonRecord.addActionListener(getRecordButtonListener());
+        m_buttonRecord.setFocusable(false);
         
         m_buttonReplace = new Button(BUTTON_REPLACE);
         // m_buttonReplace.addActionListener()...
@@ -282,6 +285,7 @@ public class ScreenLayout extends ScreenListeners {
 	        if (activity.isCellScan() && activity.isOffenderCompliance()) {
     	        // Render: Compliance button for replacing this offender + combo
     	        Button buttonReplaceOffender = new Button(">");
+    	        buttonReplaceOffender.setFocusable(false);
     	        buttonReplaceOffender.addActionListener(getGoOffenderReplacementListener());
     	        addItem(pCompliance, buttonReplaceOffender, 0, 0, 1, 1, 0.0, 0.0, 0, 0, 1, 1, GridBagConstraints.NORTHWEST);
     	        addItem(pCompliance, new Label(strOffender), 1, 0, 1, 1, .95, 0.0, 0, 1, 1, 0, GridBagConstraints.NORTHWEST);
