@@ -150,8 +150,14 @@ public class ScreenLayout extends ScreenListeners {
         	
 //		drawButtons(m_panelBodyActivity, nRow);
 		drawButtons(null, nRow);
+		
+		// TODO: workaround - removing tab/focus from all of the buttons introduced
+		// a bug where selecting an activity removes focus from the activity/choice
+		// after the screen re-draws itself.  Study the AWT focus sub-system to figure
+		// out what could be causing this.  Here's the band-aid for now:
+		m_choiceActivity.requestFocus();
 	}
-
+ 
     protected void drawDetailScreen() {
         m_screenState = SCREEN_STATE_DETAIL;
     	
