@@ -16,6 +16,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.jnlp.ServiceManager;
+import javax.jnlp.SingleInstanceListener;
+import javax.jnlp.SingleInstanceService;
+import javax.jnlp.UnavailableServiceException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -39,7 +44,7 @@ public class scannerOptions extends Frame {
 	 * from the handheld for POSTing to the the server.
 	 */
 	private static final long serialVersionUID = -3581240315115581119L;
-
+	
 	private String m_strIpAddress = "localhost";
 //	private String m_strIpAddress = "192.168.1.110";
 
@@ -75,21 +80,40 @@ public class scannerOptions extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		// Check for an over-ridden IP address
-		String strIpAddress = null;
-		if (args.length > 0) {
-			strIpAddress = args[args.length - 1];
-			System.out.println("JNLP <argument>: " + strIpAddress);
+		boolean bInstanceAlreadyRunning = false;
+		
+		// Check for other instances
+		String str = "javax.jnlp.SingleInstanceService";
+		SingleInstanceService sis = null;
+		try {
+			sis = (SingleInstanceService)ServiceManager.lookup(str);
+		}
+		catch(UnavailableServiceException e) {
+			// eat for now
+			bInstanceAlreadyRunning = true;
 		}
 		
-		// UI - display the simple user interface
-		scannerOptions objScannerOptions = new scannerOptions(strIpAddress);
- 		Frame frame = objScannerOptions.setupFrame();
- 		frame.setVisible(true);
- 		
-		// background thread - fire it up
-		PostData pdThread = new PostData("PollAndPost", strIpAddress);
-		pdThread.start();
+		if (!bInstanceAlreadyRunning) {
+			SISListener listener = new SISListener();
+			sis.addSingleInstanceListener(listener);
+			
+			
+			// Check for an over-ridden IP address
+			String strIpAddress = null;
+			if (args.length > 0) {
+				strIpAddress = args[args.length - 1];
+				System.out.println("JNLP <argument>: " + strIpAddress);
+			}
+			
+			// UI - display the simple user interface
+			scannerOptions objScannerOptions = new scannerOptions(strIpAddress);
+	 		Frame frame = objScannerOptions.setupFrame();
+	 		frame.setVisible(true);
+	 		
+			// background thread - fire it up
+			PostData pdThread = new PostData("PollAndPost", strIpAddress);
+			pdThread.start();
+		}
 	}
 
     /**
@@ -373,4 +397,11 @@ public class scannerOptions extends Frame {
 
 		}
 	}
+	
+    private static class SISListener implements SingleInstanceListener {
+        public void newActivation(String[] params) {
+            // do nothing
+        }
+    }
+	
 }
