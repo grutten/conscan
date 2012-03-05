@@ -7,14 +7,13 @@ body {
 h1 {
 /*	color: #FFFFFF;*/
 	color: black;
-		font-family: sans-serif;
+	font-family: sans-serif;
 }
 
 div.login {
 	float: right;
 	margin-right: 2em;
 }
-
 
 div.main {
 	border: 2px #24AFF0 solid;
@@ -86,7 +85,6 @@ div.field {
 	-webkit-border-radius: 0.5em;
 	margin: 5px 10px;
 	padding: 0px 10px;
-	
 }
 
 .linkable, .report {
@@ -159,4 +157,41 @@ thead td {
 	top: 5px;
 	right: 5px;
 	cursor: pointer;
+}
+
+.paginate_disabled_previous, .paginate_enabled_previous,
+.paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	float: left;
+	color: #111 !important;
+
+	background-color: #ECECEC;
+	text-align: center;
+	-moz-border-radius: 0.5em;
+	-webkit-border-radius: 0.5em;
+	margin: 5px 10px;
+	padding: 0px 10px;
+}
+
+.paginate_enabled_previous, .paginate_enabled_next {
+	cursor: pointer;
+	*cursor: hand;
+}
+
+.paginate_disabled_previous:hover, .paginate_enabled_previous:hover,
+.paginate_disabled_next:hover, .paginate_enabled_next:hover {
+	text-decoration: none !important;
+}
+
+.paginate_disabled_previous:active, .paginate_enabled_previous:active,
+.paginate_disabled_next:active, .paginate_enabled_next:active {
+	outline: none;
+}
+
+.paginate_disabled_previous, .paginate_disabled_next {
+	color: #666 !important;
+}
+
+.paginate_disabled_next, .paginate_enabled_next {
+	margin-left: 10px;
 }
