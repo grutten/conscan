@@ -132,8 +132,8 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			jQuery('#loginlink').live('click', showLogin);
-			jQuery('#logoutlink').live('click', logout);
+			jQuery(document).on('click', '#loginlink', showLogin);
+			jQuery(document).on('click', '#logoutlink', logout);
 			jQuery('div.menu .linkable').live('click', menuItemClick);
 			jQuery('div.menu .report').live('click', reportItemClick);
 			jQuery('span.linkable').live('click', showAddItem);
