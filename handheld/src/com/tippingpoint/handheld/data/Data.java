@@ -157,6 +157,7 @@ public class Data implements DataInterface{
 	}
 	
 	public String getFeedback() { return m_strFeedback;	}
+	public Location getLocationByOffender(Offender offender) {return (Location)((HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER)).get(offender.getOffenderId()); }
 	public HashMap getLocations() { return (HashMap)m_hashLookup.get(INDEX_LOCATION); }
 	public LogEntry getLogEntry() { return m_log; }
 	public HashMap getOffenders() { return (HashMap)m_hashLookup.get(INDEX_OFFENDER); }
@@ -363,7 +364,7 @@ public class Data implements DataInterface{
 			Iterator iOffender = location.getOffenders().iterator();
 			while (iOffender.hasNext()) {
 				Offender offender = (Offender)iOffender.next();
-				mapLocations.put(offender.getBarcode(), location);
+				mapLocations.put(offender.getOffenderId(), location);
 				mapOffenders.put(offender.getBarcode(), offender);
 			}
 		}

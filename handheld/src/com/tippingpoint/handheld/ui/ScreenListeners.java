@@ -301,9 +301,9 @@ System.out.println("Detail Button - not implemented yet");
 	        		Offender offender = (Offender)scannable.getObject();
 	        		logEntry.setOffender(offender);
 	        		
-	        		// TODO: I think this is the scope where the scan==cell && compliance==offender
-	        		// lands here, so the location is never set in the LogEntry object.
-	        	}
+	        		Location location = getData().getLocationByOffender(offender);
+	        		logEntry.setLocation(location);
+	        		}
 	        	else if (scannable.getObject() instanceof Location) {
 	        		Location location = (Location)scannable.getObject();
 	    			logEntry.setLocation(location);
@@ -315,6 +315,7 @@ System.out.println("Detail Button - not implemented yet");
 	        	else
 	    	        System.out.println("scannable object is not an offender or a location ");
 	        		
+	        	logEntry.setScannedBarcode(getData().getBarcode());	        	
 				logEntry.write();
 	        }
 		}

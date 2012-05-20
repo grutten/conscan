@@ -14,6 +14,7 @@ public interface DataInterface {
 	public HashMap getCompliance();
 	public Object getCurrentObject();
 	public String getFeedback();
+	public Location getLocationByOffender(Offender offender);
 	public HashMap getLocations();
 	public LogEntry getLogEntry();
 	public HashMap getOffenders();

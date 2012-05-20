@@ -12,6 +12,7 @@ public class LogEntry {
 	private String m_strLocationName;
 	private String m_strStaffId;
 	private String m_strDateCreated;
+	private String m_strScannedBarcode;
 	
 	private FileWriter m_logOutputStream;
 	
@@ -31,6 +32,7 @@ public class LogEntry {
 	public Location getLocation() { return m_location; }
 	public Offender getOffender() { return m_offender; }
 	public String getLocationName() { return m_strLocationName; }
+	public String getScannedBarcode() { return m_strScannedBarcode; }
 	public String getStaffId() { return m_strStaffId; }
 	
 	public void setActivity(Activity activity) { m_activity = activity; }
@@ -39,6 +41,7 @@ public class LogEntry {
 	public void setLocation(Location location) { m_location = location; }
 //	public void setLocationName(String strName) { m_strLocationName = strName; }
 	public void setOffender(Offender offender) { m_offender = offender; }
+	public void setScannedBarcode(String strScannedBarcode) { m_strScannedBarcode = strScannedBarcode; }
 	public void setStaffId(String strStaffId) { m_strStaffId = strStaffId; }
 
 	
@@ -82,6 +85,7 @@ public class LogEntry {
 		m_logOutputStream.write("<object name='scannerlog'>\n");
 		writeTag("staffid", "774edfe9-f75f-4a04-b76b-59f22106393b");
 		writeTag("created", getDateCreated());
+		writeTag("barcode", getScannedBarcode());
 		writeTag("activityid", m_activity.getActivityId());
 		if (getOffender() != null)
 			writeTag("offenderid", getOffender().getOffenderId());

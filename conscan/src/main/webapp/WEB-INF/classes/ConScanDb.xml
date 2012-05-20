@@ -116,6 +116,7 @@
 		<column name="locationid" type="idref"/>
 		<column name="offenderid" type="idref"/>
 		<column name="compliancevalueid" type="idref"/>
+		<column name="barcode" type="string" length="32"/>
 		<column name="created" type="date"/>
 		<column name="modified" type="date"/>
 		<constraint name="pk_scannerlog" type="primary">
