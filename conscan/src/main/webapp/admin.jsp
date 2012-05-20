@@ -16,7 +16,7 @@
 		<title>ConScan Administration</title>
 		<link type="text/css" rel="stylesheet" href="css/conscan.css">
 		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery.blockUI.2.39.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.2.42.js"></script>
 		<script type="text/javascript" src="js/ajaxupload.js"></script>
 	</head>
 	<body>
