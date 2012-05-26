@@ -10,8 +10,6 @@
 			</manifest>
 		</jar>
 		<copy file="handheld.jar" todir="${output.dir}"/>
-<!--		<copy file="xml/handheld.xml" todir="C:/Documents and Settings/mgee.CASAVAL/My Documents/CN3B36220927180 My Documents"/> -->
-		<copy file="xml/scanner.xml" todir="${output.dir}"/>
 	</target>
 	
 	<target name="buildcompile">
