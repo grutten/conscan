@@ -134,12 +134,12 @@
 		<script type="text/javascript">
 			jQuery(document).on('click', '#loginlink', showLogin);
 			jQuery(document).on('click', '#logoutlink', logout);
-			jQuery('div.menu .linkable').live('click', menuItemClick);
-			jQuery('div.menu .report').live('click', reportItemClick);
-			jQuery('span.linkable').live('click', showAddItem);
-			jQuery('span.ui-icon-pencil').live('click', showNotes);
-			jQuery('span.ui-icon-trash').live('click', showDeleteItem);
-			jQuery('span.ui-icon-wrench').live('click', showUpdateItem);
+			jQuery(document).on('click', 'div.menu .linkable', menuItemClick);
+			jQuery(document).on('click', 'div.menu .report', reportItemClick);
+			jQuery(document).on('click', 'span.linkable', showAddItem);
+			jQuery(document).on('click', 'span.ui-icon-pencil', showNotes);
+			jQuery(document).on('click', 'span.ui-icon-trash', showDeleteItem);
+			jQuery(document).on('click', 'span.ui-icon-wrench', showUpdateItem);
 
 			var newBrowserOptions = "resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no";
 			var strFkTableNameValue = "empty";
