@@ -59,7 +59,7 @@
 	<item name="offenderlocation">
 		<column name="offenderid" value="referenced">
 			<table name="offender">
-				<column name="bookingnumber">345345345</column>
+				<column name="bookingnumber">P-66796</column>
 			</table>
 		</column>
 		<column name="locationid" value="referenced">
@@ -71,7 +71,7 @@
 	<item name="offenderlocation">
 		<column name="offenderid" value="referenced">
 			<table name="offender">
-				<column name="bookingnumber">123456789</column>
+				<column name="bookingnumber">P-66790</column>
 			</table>
 		</column>
 		<column name="locationid" value="referenced">
@@ -83,7 +83,7 @@
 	<item name="offenderlocation">
 		<column name="offenderid" value="referenced">
 			<table name="offender">
-				<column name="bookingnumber">234567890</column>
+				<column name="bookingnumber">P-66794</column>
 			</table>
 		</column>
 		<column name="locationid" value="referenced">
