@@ -13,6 +13,10 @@
   <filter>
         <filter-name>Authentication</filter-name>
         <filter-class>com.tippingpoint.conscan.servlet.AuthenticationFilter</filter-class>
+        <init-param>
+        	<param-name>excludePatterns</param-name>
+        	<param-value>/dictionary/.*</param-value>
+        </init-param>
   </filter>
   <filter-mapping>
         <filter-name>Authentication</filter-name>
