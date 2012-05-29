@@ -20,6 +20,7 @@ import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
 import com.tippingpoint.handheld.data.Scannable;
+import com.tippingpoint.handheld.data.Util;
 
 public class ScreenListeners extends Screen implements BarcodeReadListener {
 
@@ -116,16 +117,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     }
     
     protected Activity findActivity(String strActivity) {
-    	Iterator iActivities = getData().getActivities().iterator();
-    	Activity searchResult = null;
-    	while (searchResult == null && iActivities.hasNext()) {
-    		Activity currentItem = (Activity)iActivities.next();
-    		if (currentItem != null)
-    			if(currentItem.getName().equalsIgnoreCase(strActivity))
-    				searchResult = currentItem;
-    	}
-    	
-    	return searchResult;
+    	return Util.findActivity(getData(), strActivity);
     }
     
     protected void setupListeners() {
@@ -259,70 +251,8 @@ System.out.println("Detail Button - not implemented yet");
     }
 
     private void addLogEntry() {
-		ArrayList arrScannables = getData().getScannables();
-
-		// persist
-		String strSelection = m_choiceActivity.getSelectedItem();
-		Activity a = findActivity(strSelection); 
-        Iterator i = arrScannables.iterator();
-        LogEntry logEntry = getData().getLogEntry();
-        logEntry.setActivity(a);
-        
-		try {  // wraps the write of the log entry
-	        while (i.hasNext()) {
-	            Date d = new Date();
-	            logEntry.setDateCreated(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(d));
-	            
-	        	// TODO: this may need to persist 2 offenders for the detail screen.
-	        	// What does that mean for the detail screen?  Does it matter what
-	        	// order offenders are persisted when there are 2 or more offenders
-	        	// in one cell?  Probably not, but is something to think about.
-	        	
-	        	// Write: a) offender b) cell + offender c) cell
-	        	Object obj = i.next();
-	        	Scannable scannable = null;
-	        	
-	        	if (obj instanceof Scannable)
-	        		scannable = (Scannable) obj;
-	        	
-	        	// TODO: handle a null scannable.  Figure out a graceful
-	        	// way to display a useable state on the handheld.  Is
-	        	// a null scannable something that is expected to happen?
-	        	// Or is it realy a bug and should never happen?
-	        	
-	    		Object objCompliance = scannable.getComplianceControl().getSelectedItemObject();
-	    		
-	    		if (objCompliance instanceof ComplianceValue) {
-	    			ComplianceValue cv = (ComplianceValue)objCompliance;
-	    			logEntry.setComplianceValue(cv);
-	    		}
-	    		
-	        	if (scannable.getObject() instanceof Offender) {
-	        		Offender offender = (Offender)scannable.getObject();
-	        		logEntry.setOffender(offender);
-	        		
-	        		Location location = getData().getLocationByOffender(offender);
-	        		logEntry.setLocation(location);
-	        		}
-	        	else if (scannable.getObject() instanceof Location) {
-	        		Location location = (Location)scannable.getObject();
-	    			logEntry.setLocation(location);
-	
-	        		if (a.isOffenderCompliance()) {
-	        	        System.out.println("addLogEntry(): UNEXPECTED CONDITION");
-	        		}
-	        	}
-	        	else
-	    	        System.out.println("scannable object is not an offender or a location ");
-	        		
-	        	logEntry.setScannedBarcode(getData().getBarcode());	        	
-				logEntry.write();
-	        }
-		}
-		catch (Exception e) {
-			// TODO: eat exception for now, but what should it do for good?
-		}
-		
+		LogEntry logEntry = Util.addLogEntry(getData(), m_choiceActivity.getSelectedItem());
+    	
 		// show detail briefly
 		drawDetailScreen();
 		setVisible(true);
