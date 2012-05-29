@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="cn3lib/resolver.jar"/>
 	<classpathentry kind="lib" path="cn3lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="cn3lib/xml-apis.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
