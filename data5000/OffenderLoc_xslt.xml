@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Edited by XMLSpy® -->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match="/">
+
+  <data><xsl:text>&#10;</xsl:text>
+      <xsl:for-each select="data/item">
+      <item name="offenderlocation">
+      	<column name="offenderid" value="referenced">
+      		<table name="offender" value="referenced">
+        		<column name="bookingnumber"><xsl:value-of select="bookingnumber"/></column>
+        	</table>
+        </column>
+        <column name="locationid" value="referenced">
+			<table name="location">
+				<column name="lineage">0001.0003</column>
+			</table>
+		</column>
+      </item><xsl:text>&#10;</xsl:text>
+      </xsl:for-each>
+  </data>
+
+</xsl:template>
+</xsl:stylesheet>
+
