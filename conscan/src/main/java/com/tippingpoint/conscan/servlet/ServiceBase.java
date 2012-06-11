@@ -38,13 +38,14 @@ public abstract class ServiceBase {
 	protected ServletContext context;
 
 	/** This member holds the name of the business object type. */
-	private String m_strBusinessObjectType;
+	protected String m_strBusinessObjectType;
 
 	/**
-	 * THis method constructs a new service for the given business object type. 
+	 * THis method constructs a new service for the given business object type.
+	 * 
 	 * @param strBusinessObjectType String containing the business object type.
 	 */
-	public ServiceBase(String strBusinessObjectType) {
+	public ServiceBase(final String strBusinessObjectType) {
 		m_strBusinessObjectType = strBusinessObjectType;
 	}
 
@@ -72,7 +73,8 @@ public abstract class ServiceBase {
 
 	/**
 	 * This method deletes an existing object.
-	 * @throws SqlBaseException 
+	 * 
+	 * @throws SqlBaseException
 	 */
 	@DELETE
 	@Path("/{id:[a-f0-9\\-]+}")
@@ -108,9 +110,21 @@ public abstract class ServiceBase {
 
 		return strJson;
 	}
-	
+
 	/**
-	 * This method redirects to the referenced table based on the idref type column. 
+	 * This method returns a collection of objects.
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public StreamingOutput getJsonObjects() {
+
+		// TODO: the code from BaseTableService.writeObjects() also set
+		// the respose status and contenttype. Does JAX-rs do that for me?
+		return new ServiceOutputJson(m_strBusinessObjectType.toString());
+	}
+
+	/**
+	 * This method redirects to the referenced table based on the idref type column.
 	 */
 	@GET
 	@Path("/{columnName:[a-z]+}")
@@ -124,42 +138,28 @@ public abstract class ServiceBase {
 
 		StreamingOutput output = null;
 
-		String strReferencedObjectType = builder.getReferencedObjectType(strColumnName);
+		final String strReferencedObjectType = builder.getReferencedObjectType(strColumnName);
 		if (strReferencedObjectType != null) {
 			builder = BusinessObjectBuilderFactory.get().getBuilder(strReferencedObjectType);
 			if (builder == null) {
 				throw new WebApplicationException(Response.Status.BAD_REQUEST);
 			}
-		
+
 			output = new ServiceOutputJson(strReferencedObjectType);
 		}
-	
+
 		return output;
 	}
 
 	/**
 	 * This method returns a collection of objects.
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public StreamingOutput getJsonObjects() {
-		
-		// TODO: the code from BaseTableService.writeObjects() also set
-		// the respose status and contenttype.  Does JAX-rs do that for me?
-		return new ServiceOutputJson(m_strBusinessObjectType.toString());
-	}
-
-	/**
-	 * This method returns a collection of objects.
+	/*
+	 * @GET
+	 * @Produces(MediaType.APPLICATION_XML) public StreamingOutput getXmlObjects() { return new
+	 * ServiceOutputXml(m_strBusinessObjectType.toString()); }
 	 */
-/*	
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public StreamingOutput getXmlObjects() {
-		return new ServiceOutputXml(m_strBusinessObjectType.toString());
-	}
-*/	
-	
+
 	/**
 	 * This method updates the staff object.
 	 * 
@@ -226,43 +226,44 @@ public abstract class ServiceBase {
 	}
 
 	/**
-	 * This class is used generate the output of the business object.  The specific
-	 * format is deferred to child classes.
+	 * This class is used generate the output of the business object. The specific format is deferred to child classes.
 	 */
 	protected abstract class ServiceOutput implements StreamingOutput {
 		protected String m_strObjectName;
-		
+
 		/**
 		 * This method constructs the stream object used for rendering web pages.
+		 * 
 		 * @param strObjetName
 		 */
-		public ServiceOutput(String strObjectName) {
+		public ServiceOutput(final String strObjectName) {
 			m_strObjectName = strObjectName;
 		}
-		
+
 		@Override
 		public void write(final OutputStream out) {
 			final BusinessObjectBuilder builder = BusinessObjectBuilderFactory.get().getBuilder(m_strObjectName);
 			if (builder != null) {
 				try {
 					final List<BusinessObject> listObjects = builder.getAll();
-					if (listObjects != null && !listObjects.isEmpty()) 
+					if (listObjects != null && !listObjects.isEmpty()) {
 						writeObjects(out, listObjects);
+					}
 				}
-				catch (SqlBaseException e){
+				catch (final SqlBaseException e) {
 					throw new IllegalStateException(e);
 				}
 			}
 		}
-		
+
 		protected abstract void writeObjects(final OutputStream out, final List<BusinessObject> listObjects);
 	}
-	
+
 	/**
 	 * This class is used to generate the output of the business object as JSON.
 	 */
 	protected class ServiceOutputJson extends ServiceOutput implements StreamingOutput {
-		public ServiceOutputJson(String strObjectName) {
+		public ServiceOutputJson(final String strObjectName) {
 			super(strObjectName);
 		}
 
@@ -272,13 +273,12 @@ public abstract class ServiceBase {
 			try {
 				out.write(jsonObjects.get().toString().getBytes());
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				throw new IllegalStateException(e);
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * This class is used to generate the output of the business object as XML.
 	 */
@@ -291,17 +291,16 @@ public abstract class ServiceBase {
 		protected void writeObjects(final OutputStream out, final List<BusinessObject> listObjects) {
 			final JsonBusinessObjectList jsonObjects = new JsonBusinessObjectList(listObjects);
 			try {
-				out.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0)
-					.getType())).getBytes());
-				
-/*  SEE Services.writeObject()
-				for (final BusinessObject businessObject : listObjects) {
-					writeObject(out, businessObject, false);
-				}
-*/
+				out.write(XmlUtilities.open(XmlTags.TAG_LIST,
+						new NameValuePair(XmlTags.ATTRIBUTE_NAME, listObjects.get(0).getType())).getBytes());
+
+				/*
+				 * SEE Services.writeObject() for (final BusinessObject businessObject : listObjects) { writeObject(out,
+				 * businessObject, false); }
+				 */
 				out.write(XmlUtilities.close(XmlTags.TAG_LIST).getBytes());
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				throw new IllegalStateException(e);
 			}
 		}

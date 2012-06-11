@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+	<item name="dictionary">
+		<column name="term">menu.staff</column>
+		<column name="definition">Staff</column>
+	</item>
+</data>

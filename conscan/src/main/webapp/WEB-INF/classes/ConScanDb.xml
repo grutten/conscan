@@ -171,10 +171,10 @@
 		</constraint>
 	</table>
 	<table name="dictionary">
-		<column name="code" type="string" length="200" required="true"/>
-		<column name="term" type="string" length="200"/>
+		<column name="term" type="string" length="200" required="true"/>
+		<column name="definition" type="string" length="200"/>
 		<constraint name="pk_dictionary" type="primary">
-			<column name="code"/>
+			<column name="term"/>
 		</constraint>
 	</table>
 </schema>
