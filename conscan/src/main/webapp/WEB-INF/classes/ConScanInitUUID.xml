@@ -244,6 +244,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">1</column>
@@ -256,6 +257,7 @@
 				<column name="name">cellsearch</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">2</column>
 		<column name="displayorder">2</column>
@@ -268,6 +270,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">3</column>
@@ -280,6 +283,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">4</column>
@@ -292,6 +296,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">5</column>
@@ -304,6 +309,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">6</column>
@@ -316,6 +322,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">7</column>
@@ -328,6 +335,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">8</column>
@@ -340,6 +348,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">9</column>
@@ -352,6 +361,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">1</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">10</column>
@@ -364,6 +374,7 @@
 				<column name="name">workorder</column>
 			</table>
 		</column>
+		<column name="savetype">2</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">2</column>
 		<column name="displayorder">11</column>

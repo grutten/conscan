@@ -48,6 +48,7 @@
 		<column name="activityid" type="id"/>
 		<column name="name" type="string" length="100" required="true"/>
 		<column name="complianceid" type="idref"/>
+		<column name="savetype" type="integer"/>
 		<column name="scantype" type="integer"/>
 		<column name="compliancetype" type="integer"/>
 		<column name="displayorder" type="integer"/>
