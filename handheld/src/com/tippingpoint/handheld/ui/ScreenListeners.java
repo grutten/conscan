@@ -165,11 +165,6 @@ System.out.println("Detail Button - not implemented yet");
                 String action = ae.getActionCommand();
                 
                 if (action.equals(BUTTON_DOCK)) {
-//            		if (m_bcRdr != null)
-//            			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
-//            		setVisible(false);
-//            		dispose(); // Dispose the frame
-//            		System.exit(0);
             		try {
                     	DataInterface d = getData();
 						d.getLogEntry().close();
@@ -177,9 +172,9 @@ System.out.println("Detail Button - not implemented yet");
 
 						drawDockScreen("Scanner ready to be DOCKED", true);
 						setVisible(true);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} 
+            		catch (IOException e) {
+						Screen.logError(e);
 					}
                     
                 } 
@@ -210,9 +205,9 @@ System.out.println("Detail Button - not implemented yet");
                 	// Create new XML file - this file gets
                 	// posted to the server
 					d.getLogEntry().initialize();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} 
+                catch (IOException e) {
+					Screen.logError(e);
 				}
 				refreshActivityList();
                 drawActivityScreen();

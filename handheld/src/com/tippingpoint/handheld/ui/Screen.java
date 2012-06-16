@@ -155,6 +155,8 @@ public class Screen extends Frame {
     
     protected boolean getIsRunningOnHandheld() { return m_bRunningOnHandheld; }
         
+    protected static void logError(Exception e) { e.printStackTrace(); }
+    
     public void setData(DataInterface d) { m_data = d; }
     
     protected void setupListeners() {
