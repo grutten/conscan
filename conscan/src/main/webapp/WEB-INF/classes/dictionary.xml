@@ -5,4 +5,220 @@
 		<column name="term">menu.staff</column>
 		<column name="definition">Staff</column>
 	</item>
+	<item name="dictionary">
+		<column name="term">menu.compliance</column>
+		<column name="definition">Compliance</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.activity</column>
+		<column name="definition">Activity</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.location</column>
+		<column name="definition">Location</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.offender</column>
+		<column name="definition">Offender</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.scannerlog</column>
+		<column name="definition">Scanner Log</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.activity</column>
+		<column name="definition">Activity</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">menu.security</column>
+		<column name="definition">Security</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.staffid</column>
+		<column name="definition">Staff</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.firstname</column>
+		<column name="definition">First Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.lastname</column>
+		<column name="definition">Last Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.badgenumber</column>
+		<column name="definition">Badge Number</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.email</column>
+		<column name="definition">Email</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.password</column>
+		<column name="definition">Password</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.created</column>
+		<column name="definition">Create Date</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.staff.modified</column>
+		<column name="definition">Modified Date</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliance.complianceid</column>
+		<column name="definition">Compliance</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliance.name</column>
+		<column name="definition">Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliancevalue.compliancevalueid</column>
+		<column name="definition">Compliance Value</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliancevalue.complianceid</column>
+		<column name="definition">Compliance</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliancevalue.value</column>
+		<column name="definition">Value</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliancevalue.isdefault</column>
+		<column name="definition">Is Default?</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.compliancevalue.displayorder</column>
+		<column name="definition">Display Order</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.activityid</column>
+		<column name="definition">Activity</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.name</column>
+		<column name="definition">Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.complianceid</column>
+		<column name="definition">Compliance</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.savetype</column>
+		<column name="definition">Save Type</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.scantype</column>
+		<column name="definition">Scan Type</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.compliancetype</column>
+		<column name="definition">Compliance Type</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.activity.displayorder</column>
+		<column name="definition">Display Order</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.location.locationid</column>
+		<column name="definition">Location</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.location.name</column>
+		<column name="definition">Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.location.barcode</column>
+		<column name="definition">Barcode</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.location.lineage</column>
+		<column name="definition">Lineage</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offender.offenderid</column>
+		<column name="definition">Offender</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offender.firstname</column>
+		<column name="definition">First Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offender.lastname</column>
+		<column name="definition">Last Name</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offender.bookingnumber</column>
+		<column name="definition">Booking</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offender.barcode</column>
+		<column name="definition">Barcode</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offenderlocation.offenderid</column>
+		<column name="definition">Offender</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.offenderlocation.locationid</column>
+		<column name="definition">Location</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.scannerlogid</column>
+		<column name="definition">scannerlogid</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.staffid</column>
+		<column name="definition">Staff</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.activityid</column>
+		<column name="definition">Activity</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.locationid</column>
+		<column name="definition">Location</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.offenderid</column>
+		<column name="definition">Offender</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.compliancevalueid</column>
+		<column name="definition">compliancevalueid</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.barcode</column>
+		<column name="definition">Barcode</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.created</column>
+		<column name="definition">Create Date</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlog.modified</column>
+		<column name="definition">Modified Date</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlogcomment.scannerlogcommentid</column>
+		<column name="definition">scannerlogcommentid</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlogcomment.scannerlogid</column>
+		<column name="definition">scannerlogid</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlogcomment.comment</column>
+		<column name="definition">Comment</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlogcomment.created</column>
+		<column name="definition">Create Date</column>
+	</item>
+	<item name="dictionary">
+		<column name="term">header.scannerlogcomment.modified</column>
+		<column name="definition">Modified Date</column>
+	</item>
 </data>

@@ -27,16 +27,16 @@
 				<h3>Menu</h3>
 				<ul>
 					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.staff">staff</span></li>
-					<li class="curvedblocksmall linkable">compliance</li>
-					<li class="curvedblocksmall linkable">activity</li>
-					<li class="curvedblocksmall linkable">location</li>
-					<li class="curvedblocksmall linkable">offender</li>
-					<li class="curvedblocksmall linkable">scannerlog</li>
+					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.compliance">compliance</span></li>
+					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.activity">activity</span></li>
+					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.location">location</span></li>
+					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.offender">offender</span></li>
+					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.scannerlog">scannerlog</span></li>
 				</ul>
 				<h3>Report</h3>
 				<ul>
-					<li class="curvedblocksmall report">activity</li>
-					<li class="curvedblocksmall report">security</li>
+					<li class="curvedblocksmall report"><span class="lookupterm" term="menu.activity">activity</span></li>
+					<li class="curvedblocksmall report"><span class="lookupterm" term="menu.security">security</span></li>
 				</ul>
 			</div>
 			<div class="field">
@@ -761,14 +761,14 @@
 					term = termObject.text();
 				}
 
-				alert('Replacing term ' + term);
+				// alert('Replacing term ' + term);
 
 				// look up the term in the dictionary
 				var definition = lookupTerm(term);
 
 				// if something was returned, replace the text with the definition
 				if(typeof definition != 'undefined') {
-					alert('definition ' + definition.definition);
+					// alert('definition ' + definition.definition);
 
 					termObject.html(definition.definition);
 				}
