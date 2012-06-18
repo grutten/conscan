@@ -20,6 +20,7 @@ public class Data implements DataInterface{
 	protected static final String INDEX_LOCATION = "location";
 	protected static final String INDEX_LOCATIONBYOFFENDER = "offenderloc";  // MAP workaround
 	protected static final String INDEX_OFFENDER = "offender";
+	protected static final String INDEX_STAFF = "staff";
 
 	XMLReader m_xmlreader;
 
@@ -99,11 +100,11 @@ public class Data implements DataInterface{
 			m_xmlreader.parse(new InputSource(reader));
 			reader.close();
 			populateLookupMaps();
+			System.out.println("done loading configuration.");
 		}
 		catch (Exception e) {
 			System.out.println("Failed to create XMLReader");
 		}
-		System.out.println("done loading configuration.");
 	}
 	
 	/**
@@ -162,6 +163,7 @@ public class Data implements DataInterface{
 	public LogEntry getLogEntry() { return m_log; }
 	public HashMap getOffenders() { return (HashMap)m_hashLookup.get(INDEX_OFFENDER); }
 	public ArrayList getScannables() { return m_listScannablesForLogging; }
+	public HashMap getStaff() { return (HashMap)m_hashLookup.get(INDEX_STAFF); }
 	
 	public Object popObject() {
 		return m_stackCurrObj.pop();
@@ -321,6 +323,7 @@ public class Data implements DataInterface{
 		m_hashLookup.put(INDEX_LOCATION, new HashMap());
 		m_hashLookup.put(INDEX_LOCATIONBYOFFENDER, new HashMap());
 		m_hashLookup.put(INDEX_OFFENDER, new HashMap());
+		m_hashLookup.put(INDEX_STAFF, new HashMap());
 		
 		// Populate the activity index
 		HashMap mapCurr = (HashMap)m_hashLookup.get(INDEX_ACTIVITY);
@@ -370,6 +373,15 @@ public class Data implements DataInterface{
 		}
 		System.out.println("Index Created: LOCATIONBYOFFENDER & OFFENDER");
 		
+		// Populate the staff index
+		mapCurr = (HashMap)m_hashLookup.get(INDEX_STAFF);
+		ArrayList arrStaff = (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_STAFF);
+		i = arrStaff.iterator();
+		while (i.hasNext()) {
+			Staff staff = (Staff)i.next();
+			mapCurr.put(staff.getBadgeNumber(), staff);
+		}
+		System.out.println("Index Created: STAFF");
 	}
 	
 	private void setFeedback(String strFeedback) { m_strFeedback = strFeedback; }

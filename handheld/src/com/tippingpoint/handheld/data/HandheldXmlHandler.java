@@ -34,6 +34,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	protected static final String OBJ_COMPLIANCEVALUE = "compliancevalue";
 	protected static final String OBJ_LOCATION = "location";
 	protected static final String OBJ_OFFENDER = "offender";
+	protected static final String OBJ_STAFF = "staff";
 	
 	protected static final String TAG_CONFIGURATION = "configuration";
 	protected static final String TAG_FIELD = "field";
@@ -133,6 +134,8 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     		object = new ComplianceConfiguration();
     	else if (OBJ_COMPLIANCEVALUE.equalsIgnoreCase(strObjectName))
     		object = new ComplianceValue();
+    	else if (OBJ_STAFF.equalsIgnoreCase(strObjectName))
+    		object = new Staff();
     	
     	return object;
     }

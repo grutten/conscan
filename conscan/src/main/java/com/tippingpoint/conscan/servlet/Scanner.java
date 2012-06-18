@@ -53,6 +53,7 @@ public final class Scanner extends Services {
 		writeObjects(writer, "location", "offender");
 		writeObjects(writer, "compliance", "compliancevalue");
 		writeObjects(writer, "activity", false);
+		writeObjects(writer, "staff", false);
 		writer.write(XmlUtilities.close(TAG_CONFIGURATION));
 	}
 }

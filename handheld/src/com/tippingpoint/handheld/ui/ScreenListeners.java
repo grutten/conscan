@@ -242,6 +242,9 @@ System.out.println("Detail Button - not implemented yet");
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
 		
+		// a staff person is logging in
+		
+		// a staff scanned something
 		getData().populateScannables(strBarcode, a);
     }
 
