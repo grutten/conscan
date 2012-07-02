@@ -10,6 +10,8 @@ public class Util {
 	public static LogEntry addLogEntry(DataInterface data, String strActivity) {
 		ArrayList arrScannables = data.getScannables();
 
+		// TODO: record the staff/person in the log entry
+		
 		// persist
 		Activity a = findActivity(data, strActivity); 
         Iterator i = arrScannables.iterator();

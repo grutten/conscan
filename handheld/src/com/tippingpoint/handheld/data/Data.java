@@ -34,6 +34,7 @@ public class Data implements DataInterface{
 	private String m_strCurrentBarcode;
 	private String m_strFeedback;
 	private String m_strScannerXmlPath;
+	private Staff m_staff;  // when null, show login screen
 	
 	// Persistence
 	private LogEntry m_log = new LogEntry();

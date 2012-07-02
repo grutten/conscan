@@ -167,6 +167,8 @@ System.out.println("Detail Button - not implemented yet");
                 
                 if (action.equals(BUTTON_DOCK)) {
             		try {
+                    	// TODO: UNset data's staff object
+            			
                     	DataInterface d = getData();
 						d.getLogEntry().close();
                     	d.clear();
@@ -199,6 +201,8 @@ System.out.println("Detail Button - not implemented yet");
                 drawDockScreen("loading...");
                 
                 try {
+                	// TODO: set data's staff object
+                	
                 	// Re-parse the XML from the server
                 	DataInterface d = getData();
                 	d.parse();
@@ -245,8 +249,10 @@ System.out.println("Detail Button - not implemented yet");
 		Staff s = getData().getStaffByBarcode(strBarcode);
 		
 		// a staff person is logging in
-		if (s != null)
+		if (s != null) {
 			System.out.println("logging in/out: " + s.getEmail());
+			// Setthe current
+		}
 			
 		// a staff scanned something
 		else
