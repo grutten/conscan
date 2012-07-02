@@ -6,6 +6,7 @@
 		<column name="firstname">Axel</column>
 		<column name="lastname">Foley</column>
 		<column name="badgenumber">12345</column>
+		<column name="barcode">073854016330</column>
 		<column name="email">afoley@jail.com</column>
 		<column name="password">1234</column>
 	</item>
@@ -14,6 +15,7 @@
 		<column name="firstname">William</column>
 		<column name="lastname">Rosewood</column>
 		<column name="badgenumber">23456</column>
+		<column name="barcode">073854016336</column>
 		<column name="email">wrosewood@jail.com</column>
 		<column name="password">1234</column>
 	</item>

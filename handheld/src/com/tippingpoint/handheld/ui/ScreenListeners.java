@@ -20,6 +20,7 @@ import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
 import com.tippingpoint.handheld.data.Offender;
 import com.tippingpoint.handheld.data.Scannable;
+import com.tippingpoint.handheld.data.Staff;
 import com.tippingpoint.handheld.data.Util;
 
 public class ScreenListeners extends Screen implements BarcodeReadListener {
@@ -241,11 +242,15 @@ System.out.println("Detail Button - not implemented yet");
     protected void respondToScanEvent(String strBarcode) {
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
+		Staff s = getData().getStaffByBarcode(strBarcode);
 		
 		// a staff person is logging in
-		
+		if (s != null)
+			System.out.println("logging in/out: " + s.getEmail());
+			
 		// a staff scanned something
-		getData().populateScannables(strBarcode, a);
+		else
+			getData().populateScannables(strBarcode, a);
     }
 
     private void addLogEntry() {

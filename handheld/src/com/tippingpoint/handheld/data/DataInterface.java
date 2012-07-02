@@ -19,6 +19,7 @@ public interface DataInterface {
 	public LogEntry getLogEntry();
 	public HashMap getOffenders();
 	public ArrayList getScannables();
+	public Staff getStaffByBarcode(String strBarcode);
 	public void parse();
 	public Object popObject();
 	public ArrayList populateScannables(String strBarcode, Activity activity);

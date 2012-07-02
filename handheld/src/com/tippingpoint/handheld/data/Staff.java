@@ -5,12 +5,14 @@ public class Staff {
 	private String m_strFirstName;
 	private String m_strLastName;
 	private String m_strBadgeNumber;
+	private String m_strBarcode;
 	private String m_strEmail;
 	private String m_strPassword;
 	private String m_strCreated;
 	private String m_strModified;
 	
 	public String getStaffId() { return m_strStaffId; }
+	public String getBarcode() { return m_strBarcode; }
 	public String getFirstName() { return m_strFirstName; }
 	public String getLastName() { return m_strLastName; }
 	public String getBadgeNumber() { return m_strBadgeNumber; }
@@ -19,6 +21,7 @@ public class Staff {
 	public String getCreated() { return m_strCreated; }
 	public String getModified() { return m_strModified; }
 	
+	public void setBarcode(String strBarcode) { m_strBarcode = strBarcode; }
 	public void setStaffId(String str) { m_strStaffId = str; }
 	public void setFirstName(String str) { m_strFirstName = str; }
 	public void setLastName(String str) { m_strLastName = str; }

@@ -165,6 +165,8 @@ public class Data implements DataInterface{
 	public ArrayList getScannables() { return m_listScannablesForLogging; }
 	public HashMap getStaff() { return (HashMap)m_hashLookup.get(INDEX_STAFF); }
 	
+	public Staff getStaffByBarcode(String strBarcode) { return (Staff)getStaff().get(strBarcode); }
+	
 	public Object popObject() {
 		return m_stackCurrObj.pop();
 	}
@@ -379,7 +381,7 @@ public class Data implements DataInterface{
 		i = arrStaff.iterator();
 		while (i.hasNext()) {
 			Staff staff = (Staff)i.next();
-			mapCurr.put(staff.getBadgeNumber(), staff);
+			mapCurr.put(staff.getBarcode(), staff);
 		}
 		System.out.println("Index Created: STAFF");
 	}

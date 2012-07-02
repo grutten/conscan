@@ -4,6 +4,7 @@ import java.awt.Frame;
 
 import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
+import com.tippingpoint.handheld.data.Staff;
 
 public class Demo extends Frame {
 	static final long serialVersionUID = -1;
@@ -22,24 +23,12 @@ public class Demo extends Frame {
     	
    		DataInterface  d = new Data(strConfigFile);
     	System.out.println("scanner.xml - step complete (may have completed with errors)");
-/*    		
-        	Screen mainFrame = null;
 
-            if (bEnvironmentIsHandheld)
-                mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
-        	else
-                mainFrame = new Simulator(d);
-            
-            
-            mainFrame.draw();
-            if (mainFrame instanceof Simulator) {
-            	mainFrame.drawSecurityCheck();
-//            	mainFrame.drawCellSearch();
-            	if (bEnvironmentIsHandheld) System.out.println("");
-            }
-*/
-    		
+    	String strBarcode = "073854016336";
+		Staff s = d.getStaffByBarcode(strBarcode);
+		System.out.println("staff: " + s.getEmail());
 
+    	
     }
 
 }
