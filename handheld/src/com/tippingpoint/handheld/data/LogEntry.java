@@ -83,7 +83,7 @@ public class LogEntry {
 	
 	public void write() throws IOException {
 		m_logOutputStream.write("<object name='scannerlog'>\n");
-		writeTag("staffid", "774edfe9-f75f-4a04-b76b-59f22106393b");
+		writeTag("staffid", getStaffId());
 		writeTag("created", getDateCreated());
 		writeTag("barcode", getScannedBarcode());
 		writeTag("activityid", m_activity.getActivityId());

@@ -17,6 +17,7 @@ public class Util {
         Iterator i = arrScannables.iterator();
         LogEntry logEntry = data.getLogEntry();
         logEntry.setActivity(a);
+        logEntry.setStaffId(data.getLoggedInStaff().getStaffId());
         
 		try {  // wraps the write of the log entry
 	        while (i.hasNext()) {

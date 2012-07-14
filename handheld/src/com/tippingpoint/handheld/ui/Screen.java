@@ -52,13 +52,11 @@ public class Screen extends Frame {
     static final String CHOICE_UNSELECTED = "--";
     
     // Controls
-    protected Button m_buttonDock;
     protected Button m_buttonGoActivity;
     protected Button m_buttonGoDetail;
     protected Button m_buttonRecord;
     protected Button m_buttonReplace;
     protected Button m_buttonScanIndicator;
-    protected Button m_buttonStart;
     protected Choice m_choiceActivity = new Choice();  // instantiate here so that selection will persist
     protected Label m_labelBarcode = new Label("<scan>");
     protected Label m_labelFeedback = new Label("");
@@ -68,13 +66,11 @@ public class Screen extends Frame {
     protected Button m_buttonNext;
     
     // Listeners
-    protected ActionListener m_buttonListenerDock;
     protected ActionListener m_buttonListenerGoActivity;
     protected ActionListener m_buttonListenerGoDetail;
     protected ActionListener m_buttonListenerGoOffenderReplacement;
     protected ActionListener m_buttonListenerRecord;
     protected ActionListener m_buttonListenerScanIndicator;
-    protected ActionListener m_buttonListenerStart;
     protected ItemListener m_choiceListenerActivity;
     
     // State

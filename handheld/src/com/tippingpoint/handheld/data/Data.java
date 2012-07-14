@@ -14,7 +14,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.tippingpoint.util.xml.SaxBaseHandler;
 
-public class Data implements DataInterface{
+public class Data implements DataInterface {
 	protected static final String INDEX_ACTIVITY = "activity";
 	protected static final String INDEX_COMPLIANCE = "compliance";
 	protected static final String INDEX_LOCATION = "location";
@@ -158,6 +158,7 @@ public class Data implements DataInterface{
 		return m_stackCurrObj.peek();
 	}
 	
+	public Staff getLoggedInStaff() { return m_staff; }
 	public String getFeedback() { return m_strFeedback;	}
 	public Location getLocationByOffender(Offender offender) {return (Location)((HashMap)m_hashLookup.get(INDEX_LOCATIONBYOFFENDER)).get(offender.getOffenderId()); }
 	public HashMap getLocations() { return (HashMap)m_hashLookup.get(INDEX_LOCATION); }
@@ -252,6 +253,8 @@ public class Data implements DataInterface{
 //	public void saveLocation(Location location){ ; /* asdf */ }
 //	public void saveOffender(Offender offender){ ; /* asdf */ }
 	public void setBarcode(String strBarcode){ m_strCurrentBarcode = strBarcode; }
+	public void clearLoggedInStaff() { setLoggedIntStaff(null); }
+	public void setLoggedIntStaff(Staff staff) { m_staff = staff; }
 	
 	private void addScannable(Location l) {
 		Scannable s = new Scannable();

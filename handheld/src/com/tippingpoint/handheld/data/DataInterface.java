@@ -17,6 +17,7 @@ public interface DataInterface {
 	public Location getLocationByOffender(Offender offender);
 	public HashMap getLocations();
 	public LogEntry getLogEntry();
+	public Staff getLoggedInStaff();
 	public HashMap getOffenders();
 	public ArrayList getScannables();
 	public Staff getStaffByBarcode(String strBarcode);
@@ -30,6 +31,8 @@ public interface DataInterface {
 //	public void saveLocation(Location location);
 //	public void saveOffender(Offender offender);
 	public void setBarcode(String strBarcode);
+	public void clearLoggedInStaff();
+	public void setLoggedIntStaff(Staff staff);
 //	public void setFeedback(String strFeedback);
 	
 }
