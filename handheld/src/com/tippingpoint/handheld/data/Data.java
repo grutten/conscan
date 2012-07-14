@@ -164,9 +164,9 @@ public class Data implements DataInterface{
 	public LogEntry getLogEntry() { return m_log; }
 	public HashMap getOffenders() { return (HashMap)m_hashLookup.get(INDEX_OFFENDER); }
 	public ArrayList getScannables() { return m_listScannablesForLogging; }
-	public HashMap getStaff() { return (HashMap)m_hashLookup.get(INDEX_STAFF); }
+	public HashMap getStaffs() { return (HashMap)m_hashLookup.get(INDEX_STAFF); }
 	
-	public Staff getStaffByBarcode(String strBarcode) { return (Staff)getStaff().get(strBarcode); }
+	public Staff getStaffByBarcode(String strBarcode) { return (Staff)getStaffs().get(strBarcode); }
 	
 	public Object popObject() {
 		return m_stackCurrObj.pop();
