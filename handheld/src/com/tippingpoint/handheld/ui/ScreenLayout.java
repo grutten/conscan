@@ -50,6 +50,9 @@ public class ScreenLayout extends ScreenListeners {
         m_buttonNext = new Button(BUTTON_NEXT);
         m_buttonPrev = new Button(BUTTON_PREV);
         
+        m_buttonQuit = new Button(BUTTON_QUIT);
+        m_buttonQuit.addActionListener(getQuitButtonListener());
+        
         m_buttonRecord = new Button("Record");
         m_buttonRecord.addActionListener(getRecordButtonListener());
         m_buttonRecord.setFocusable(false);
@@ -72,7 +75,7 @@ public class ScreenLayout extends ScreenListeners {
 		super.draw();
 
         add(m_panelBottom, BorderLayout.SOUTH);
-		drawDockScreen("DOCK this device or SCAN your badge to login", true);
+		drawDockScreen(true);
 
 		setVisible(true);
 	}
@@ -173,11 +176,11 @@ public class ScreenLayout extends ScreenListeners {
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
 
-    protected void drawDockScreen(String strMessage) {
-    	drawDockScreen(strMessage, false);
+    protected void drawDockScreen() {
+    	drawDockScreen(false);
     }
     
-    protected void drawDockScreen(String strMessage, boolean bShowButtons) {
+    protected void drawDockScreen(boolean bShowButtons) {
         m_screenState = SCREEN_STATE_DOCK;
     	
         // Toolbar Panel
@@ -185,6 +188,7 @@ public class ScreenLayout extends ScreenListeners {
     	
         // DOCK message(s)
         int nRow = 0;
+        final String strMessage = "DOCK this device or SCAN your badge to login";
         addLabel(m_panelBodyDetail, new Label(strMessage), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 
         if (bShowButtons)
@@ -249,6 +253,7 @@ public class ScreenLayout extends ScreenListeners {
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
 	        case SCREEN_STATE_DOCK:
+	        	m_panelBottom.add(m_buttonQuit);
 	        	break;
 	        case SCREEN_STATE_FIND_OFFENDER:
 	        	m_panelBottom.add(m_buttonReplace);

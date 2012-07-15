@@ -32,7 +32,7 @@ public interface DataInterface {
 //	public void saveOffender(Offender offender);
 	public void setBarcode(String strBarcode);
 	public void clearLoggedInStaff();
-	public void setLoggedIntStaff(Staff staff);
+	public void setLoggedInStaff(Staff staff);
 //	public void setFeedback(String strFeedback);
 	
 }

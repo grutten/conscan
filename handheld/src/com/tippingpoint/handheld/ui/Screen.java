@@ -39,14 +39,13 @@ public class Screen extends Frame {
     // Button names
     static final String BUTTON_ACTIVITY = "Activity";
     static final String BUTTON_DETAIL = "Detail";
-    static final String BUTTON_DOCK = "Dock";
     static final String BUTTON_NEXT = "Next >>";
     static final String BUTTON_PREV = "<< Prev";
+    static final String BUTTON_QUIT = "Quit Program";
     static final String BUTTON_RECORD = "Record";
     static final String BUTTON_REPLACE = "Replace";
     static final String BUTTON_SCANOFFENDER = "Scan Offender";
     static final String BUTTON_SCANCELL = "Scan Cell";
-    static final String BUTTON_START = "Start";
     
     // Special string values
     static final String CHOICE_UNSELECTED = "--";
@@ -54,6 +53,7 @@ public class Screen extends Frame {
     // Controls
     protected Button m_buttonGoActivity;
     protected Button m_buttonGoDetail;
+    protected Button m_buttonQuit;
     protected Button m_buttonRecord;
     protected Button m_buttonReplace;
     protected Button m_buttonScanIndicator;
@@ -69,6 +69,7 @@ public class Screen extends Frame {
     protected ActionListener m_buttonListenerGoActivity;
     protected ActionListener m_buttonListenerGoDetail;
     protected ActionListener m_buttonListenerGoOffenderReplacement;
+    protected ActionListener m_buttonListenerQuit;
     protected ActionListener m_buttonListenerRecord;
     protected ActionListener m_buttonListenerScanIndicator;
     protected ItemListener m_choiceListenerActivity;
@@ -138,8 +139,8 @@ public class Screen extends Frame {
     }
     protected void drawActivityScreen() { /**/ }
     protected void drawDetailScreen()  { /**/ }
-    protected void drawDockScreen(String strMessage) { /**/ }
-    protected void drawDockScreen(String strMessage, boolean bShowButtons) { /**/ }
+    protected void drawDockScreen() { /**/ }
+    protected void drawDockScreen(boolean bShowButtons) { /**/ }
     protected void drawFindOffenderScreen() { /**/ }
     protected void refreshActivityList() { /**/ }
     

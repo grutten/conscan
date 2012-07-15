@@ -101,6 +101,10 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
     	return m_buttonListenerGoOffenderReplacement;
     }
     
+    public ActionListener getQuitButtonListener() {
+    	return m_buttonListenerQuit;
+    }
+    
     public ActionListener getRecordButtonListener() {
     	return m_buttonListenerRecord;
     }
@@ -152,6 +156,23 @@ System.out.println("Detail Button - not implemented yet");
                 setVisible(true);
             }
         };
+
+        m_buttonListenerQuit = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String action = ae.getActionCommand();
+                
+                if (action.equals(BUTTON_QUIT)) {
+            		if (m_bcRdr != null)
+            			m_bcRdr.dispose(); // Release system resources used by BarcodeReader
+            		setVisible(false);
+            		dispose(); // Dispose the frame
+            		System.exit(0);
+                } 
+                else {
+                    System.out.println(action);
+                }
+            }
+        };
         
         m_buttonListenerScanIndicator = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -185,15 +206,17 @@ System.out.println("Detail Button - not implemented yet");
     }
 
     protected void respondToScanEvent(String strBarcode) {
+    	// If a user is not logged in, the data object needs to load/parse
+    	if (getData().getLoggedInStaff() == null)
+    		getData().parse();
+    	
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
 		Staff staff = getData().getStaffByBarcode(strBarcode);
 		
 		// a staff person is logging in
-		if (staff != null) {
-			System.out.println("logging in/out: " + staff.getEmail());
+		if (staff != null)
 			processStaffBarcodeScan(staff);
-		}
 			
 		// a staff scanned something
 		else
@@ -230,7 +253,7 @@ System.out.println("Detail Button - not implemented yet");
 			d.getLogEntry().close();
         	d.clear();
 
-			drawDockScreen("Scanner ready to be DOCKED", true);
+			drawDockScreen(true);
 			setVisible(true);
 		} 
 		catch (IOException e) {
@@ -239,10 +262,14 @@ System.out.println("Detail Button - not implemented yet");
     }
     
     private void processStaffBarcodeScan(Staff staff) {
-    	if (getData().getLoggedInStaff() != null)
+    	if (getData().getLoggedInStaff() != null) {
+			System.out.println("logging out: " + staff.getEmail());
     		prepareToDock();
-    	else
+    	}
+    	else {
+			System.out.println("logging in: " + staff.getEmail());
     		signIn(staff);
+    	}
     }
     
     private void respondToScanEvent() {
@@ -252,13 +279,12 @@ System.out.println("Detail Button - not implemented yet");
     
     private void signIn(Staff staff) {
         System.out.println("Start pressed");
-        drawDockScreen("loading...");
+        // TODO: create a new BUSY... screen to display
         
         try {
         	// Re-parse the XML from the server
         	DataInterface d = getData();
-        	d.setLoggedIntStaff(staff);
-        	d.parse();
+        	d.setLoggedInStaff(staff);
         	
         	// Create new XML file - this file gets
         	// posted to the server

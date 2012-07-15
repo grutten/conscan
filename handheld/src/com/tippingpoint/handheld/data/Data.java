@@ -41,7 +41,6 @@ public class Data implements DataInterface {
 	
 	public Data(String strFilename) {
 		m_strScannerXmlPath = strFilename;
-		parse();
 	}
 	
 	public void clear() {
@@ -253,8 +252,8 @@ public class Data implements DataInterface {
 //	public void saveLocation(Location location){ ; /* asdf */ }
 //	public void saveOffender(Offender offender){ ; /* asdf */ }
 	public void setBarcode(String strBarcode){ m_strCurrentBarcode = strBarcode; }
-	public void clearLoggedInStaff() { setLoggedIntStaff(null); }
-	public void setLoggedIntStaff(Staff staff) { m_staff = staff; }
+	public void clearLoggedInStaff() { setLoggedInStaff(null); }
+	public void setLoggedInStaff(Staff staff) { m_staff = staff; }
 	
 	private void addScannable(Location l) {
 		Scannable s = new Scannable();
