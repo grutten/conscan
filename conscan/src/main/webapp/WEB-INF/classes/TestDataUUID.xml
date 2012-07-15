@@ -6,7 +6,7 @@
 		<column name="firstname">Axel</column>
 		<column name="lastname">Foley</column>
 		<column name="badgenumber">12345</column>
-		<column name="barcode">073854016330</column>
+		<column name="barcode">073854016337</column>
 		<column name="email">afoley@jail.com</column>
 		<column name="password">1234</column>
 	</item>
