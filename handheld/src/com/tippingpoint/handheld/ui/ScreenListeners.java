@@ -249,6 +249,7 @@ System.out.println("Detail Button - not implemented yet");
     private void prepareToDock() {
     	try {
         	DataInterface d = getData();
+        	// TODO: do we need to verify that the badge scanning out is the same as the one that scanned in?
         	d.clearLoggedInStaff();
 			d.getLogEntry().close();
         	d.clear();
