@@ -35,7 +35,6 @@ public class ScreenLayout extends ScreenListeners {
 		
         setData(d);
         
-        populateActivities(m_choiceActivity, getData().getActivities());
         m_choiceActivity.addItemListener(getActivityChoiceListener());
 
         // NOTE: the listener that responds to a scan event populates the
@@ -73,7 +72,7 @@ public class ScreenLayout extends ScreenListeners {
 		super.draw();
 
         add(m_panelBottom, BorderLayout.SOUTH);
-		drawActivityScreen();
+		drawDockScreen("DOCK this device or SCAN your badge to login", true);
 
 		setVisible(true);
 	}
