@@ -74,6 +74,10 @@ public class Data implements DataInterface {
 		hm = (HashMap)m_hashLookup.get(INDEX_OFFENDER);
 		hm.clear();
 		
+		// Staff
+		hm = (HashMap)m_hashLookup.get(INDEX_STAFF);
+		hm.clear();
+		
 		m_hashLookup.clear();
 		m_hashRoot.clear();
 		m_stackCurrObj.clear();
