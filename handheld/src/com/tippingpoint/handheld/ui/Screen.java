@@ -83,11 +83,13 @@ public class Screen extends Frame {
     
     protected int m_screenState;
 
+    static final String STR_VERSION_STRING = "V " + HandheldVersion.VERSIONSTRING + "   ";
+    
     // provides access to data configuration
     private DataInterface m_data;
     
 	Screen() {
-    	super("TPSS v " + HandheldVersion.VERSIONSTRING);
+		super(STR_VERSION_STRING);
     	
     	m_screenState = SCREEN_STATE_ACTIVITY;
     	

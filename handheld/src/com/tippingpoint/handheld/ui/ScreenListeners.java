@@ -29,6 +29,9 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -3820130245162337695L;
+	
+	private long lCurrFreeMemory = 0;  // These 2 variables track memory between login scans
+	private long lPriorFreeMemory = 0;
 
 	ScreenListeners(boolean bIsRunningOnHandheld) {
 		super();
@@ -249,6 +252,9 @@ System.out.println("Detail Button - not implemented yet");
     private void prepareToDock() {
     	try {
         	DataInterface d = getData();
+        	
+        	lPriorFreeMemory = lCurrFreeMemory;
+        	
         	// TODO: do we need to verify that the badge scanning out is the same as the one that scanned in?
         	d.clearLoggedInStaff();
 			d.getLogEntry().close();
@@ -256,6 +262,9 @@ System.out.println("Detail Button - not implemented yet");
 
 			drawDockScreen(true);
 			setVisible(true);
+	        Runtime.getRuntime().gc();
+			Long l = new Long(Runtime.getRuntime().freeMemory());
+			setTitle(l.toString());
 		} 
 		catch (IOException e) {
 			Screen.logError(e);
@@ -297,5 +306,9 @@ System.out.println("Detail Button - not implemented yet");
 		refreshActivityList();
         drawActivityScreen();
         setVisible(true);
+        lCurrFreeMemory = Runtime.getRuntime().freeMemory();
+        Long lPrior = new Long(lPriorFreeMemory);
+        Long lCurr = new Long(lCurrFreeMemory);
+        setTitle(lPrior.toString() + "-" + lCurr.toString());
     }
 }
