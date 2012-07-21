@@ -1,5 +1,6 @@
 package com.tippingpoint.handheld.ui;
 
+import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -210,8 +211,16 @@ System.out.println("Detail Button - not implemented yet");
 
     protected void respondToScanEvent(String strBarcode) {
     	// If a user is not logged in, the data object needs to load/parse
-    	if (getData().getLoggedInStaff() == null)
-    		getData().parse();
+    	// the XML file from the server.
+    	if (getData().getLoggedInStaff() == null) {
+    		try {
+    			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    			getData().parse();
+    		}
+    		finally {
+    			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    		}
+    	}
     	
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
@@ -292,7 +301,6 @@ System.out.println("Detail Button - not implemented yet");
         // TODO: create a new BUSY... screen to display
         
         try {
-        	// Re-parse the XML from the server
         	DataInterface d = getData();
         	d.setLoggedInStaff(staff);
         	
