@@ -232,6 +232,19 @@ System.out.println("Detail Button - not implemented yet");
         setVisible(true);
     }
     
+    /**
+     * Do not try and optimize the following sign-in scenario:
+     * User scans an activity barcode before signing in.  
+     * 
+     * You might be tempted to try and keep the scanner's XML
+     * file loaded in memory so that the user can scan their
+     * sign-in barcode and not have to wait for the XML file to
+     * be parsed again.  However, in the event that the user has
+     * just generated a new XML file from the server, the new
+     * file would not have an opportunity to load if didn't re-parse
+     * the file EVERY time the user tried to log-in.
+     * @param strBarcode
+     */
     protected void respondToScanEvent(String strBarcode) {
     	// If a user is not logged in, the data object needs to load/parse
     	// the XML file from the server.  Note: the data object must be
