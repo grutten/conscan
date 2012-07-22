@@ -234,7 +234,9 @@ System.out.println("Detail Button - not implemented yet");
     
     protected void respondToScanEvent(String strBarcode) {
     	// If a user is not logged in, the data object needs to load/parse
-    	// the XML file from the server.
+    	// the XML file from the server.  Note: the data object must be
+    	// loaded to authenticate a user that is logging in.
+    	boolean bUserAuthenticated = false;
     	if (getData().getLoggedInStaff() == null) {
     		try {
     			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -244,6 +246,8 @@ System.out.println("Detail Button - not implemented yet");
     			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     		}
     	}
+    	else
+    		bUserAuthenticated = true;
     	
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity a = findActivity(strSelection); 
@@ -252,10 +256,14 @@ System.out.println("Detail Button - not implemented yet");
 		// a staff person is logging in
 		if (staff != null)
 			processStaffBarcodeScan(staff);
-			
 		// a staff scanned something
-		else
+		else if (bUserAuthenticated)
 			getData().populateScannables(strBarcode, a);
+		else
+			// If 'bUserAuthenticated' is false and something other than a staff 
+			// barcode was scanned, then the user is trying to scan activities without 
+			// having signed in.
+			getData().clear();
     }
 
     private void prepareToDock() {
