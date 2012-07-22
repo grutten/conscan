@@ -244,7 +244,7 @@
 				<column name="name">default</column>
 			</table>
 		</column>
-		<column name="savetype">2</column>
+		<column name="savetype">1</column>
 		<column name="scantype">2</column>
 		<column name="compliancetype">1</column>
 		<column name="displayorder">1</column>
