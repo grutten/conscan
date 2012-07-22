@@ -83,6 +83,9 @@ public class ScreenLayout extends ScreenListeners {
 	protected void drawActivityScreen() {
 		m_screenState = SCREEN_STATE_ACTIVITY;
 
+		boolean bDisplayRecordButton = false;
+		boolean bPerformAutomaticRecord = false;
+		
 		String strSelection = m_choiceActivity.getSelectedItem();
 		Activity activity = findActivity(strSelection); 
 
@@ -116,6 +119,11 @@ public class ScreenLayout extends ScreenListeners {
         		nRow = drawDynamicFields(s, activity, nRow, s.getComplianceControl());
         	// TODO: detect a null scannable and add a message to the screen.
         	// Determine how to handle elegantly.
+        	
+        	if (activity.isSavetypeManual())
+        		bDisplayRecordButton = true;
+        	else
+        		bPerformAutomaticRecord = true;
         }
         if (i.hasNext()) {
         	// Draw the SECOND scannable set of fields
@@ -129,8 +137,6 @@ public class ScreenLayout extends ScreenListeners {
         	// TODO: detect a null scannable and add a message to the screen.
         	// Determine how to handle elegantly.
         }
-        
-        
 
 		// DEV only - scan code
         m_labelBarcode.setText(getData().getBarcode());
@@ -140,14 +146,19 @@ public class ScreenLayout extends ScreenListeners {
         m_labelFeedback.setText(strFeedback);
         if (strFeedback != null && strFeedback.length() > 0) 
             addLabel(m_panelBodyActivity, m_labelFeedback, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
-        	
-		drawButtons(nRow);
 		
+    	m_panelBottom.removeAll();
+        if (bDisplayRecordButton)
+            m_panelBottom.add(m_buttonRecord);
+        
 		// TODO: workaround - removing tab/focus from all of the buttons introduced
 		// a bug where selecting an activity removes focus from the activity/choice
 		// after the screen re-draws itself.  Study the AWT focus sub-system to figure
 		// out what could be causing this.  Here's the band-aid for now:
 		m_choiceActivity.requestFocus();
+		
+		if (bPerformAutomaticRecord)
+			addLogEntry();
 	}
  
     protected void drawDetailScreen() {

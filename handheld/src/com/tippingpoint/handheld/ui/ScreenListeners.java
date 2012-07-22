@@ -209,6 +209,29 @@ System.out.println("Detail Button - not implemented yet");
         
     }
 
+    protected void addLogEntry() {
+		LogEntry logEntry = Util.addLogEntry(getData(), m_choiceActivity.getSelectedItem());
+    	
+		// show detail briefly
+		drawDetailScreen();
+		setVisible(true);
+		
+		
+		try {
+			Thread.sleep(2000);
+		}
+		catch (Exception e) {
+			// eat it
+		}
+
+		logEntry.clear();
+		getData().reset();
+		
+		// go back to the activity screen for another scan
+        drawActivityScreen();
+        setVisible(true);
+    }
+    
     protected void respondToScanEvent(String strBarcode) {
     	// If a user is not logged in, the data object needs to load/parse
     	// the XML file from the server.
@@ -235,29 +258,6 @@ System.out.println("Detail Button - not implemented yet");
 			getData().populateScannables(strBarcode, a);
     }
 
-    private void addLogEntry() {
-		LogEntry logEntry = Util.addLogEntry(getData(), m_choiceActivity.getSelectedItem());
-    	
-		// show detail briefly
-		drawDetailScreen();
-		setVisible(true);
-		
-		
-		try {
-			Thread.sleep(2000);
-		}
-		catch (Exception e) {
-			// eat it
-		}
-
-		logEntry.clear();
-		getData().reset();
-		
-		// go back to the activity screen for another scan
-        drawActivityScreen();
-        setVisible(true);
-    }
-    
     private void prepareToDock() {
     	try {
         	DataInterface d = getData();

@@ -31,6 +31,7 @@ public class Activity implements DisplayOrderInterface {
 	public boolean isManualSave() { return SAVETYPE_MANUAL.equalsIgnoreCase(m_strSaveType); }
 	public boolean isOffenderCompliance() { return COMPLIANCETYPE_OFFENDER.equalsIgnoreCase(m_strComplianceType); }
 	public boolean isOffenderScan() {return SCANTYPE_OFFENDER.equalsIgnoreCase(m_strScanType); }
+	public boolean isSavetypeManual(){ return SAVETYPE_MANUAL.equalsIgnoreCase(m_strSaveType); }
 	public void setActivityId(String strId) { m_strActivityId = strId; } 
 	public void setComplianceId(String strId) { m_strComplianceId = strId; }
 	public void setCompliancetype(String strCompliancetype) { m_strComplianceType = strCompliancetype; }
