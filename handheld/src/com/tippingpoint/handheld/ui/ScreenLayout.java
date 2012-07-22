@@ -100,7 +100,6 @@ public class ScreenLayout extends ScreenListeners {
         
 		// Documentation
 		final Checkbox cbDocumentation = new Checkbox("Notes");
-//		addField(m_panelBodyActivity, cbDocumentation, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         addItem(m_panelBodyActivity, cbDocumentation, 0, nRow++, 1, 1, 1.0, 0.0, 0, 15, 15, 15, GridBagConstraints.NORTHWEST);
 
         ArrayList arrScannables = getData().getScannables();
@@ -142,9 +141,7 @@ public class ScreenLayout extends ScreenListeners {
         if (strFeedback != null && strFeedback.length() > 0) 
             addLabel(m_panelBodyActivity, m_labelFeedback, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         	
-        	
-//		drawButtons(m_panelBodyActivity, nRow);
-		drawButtons(null, nRow);
+		drawButtons(nRow);
 		
 		// TODO: workaround - removing tab/focus from all of the buttons introduced
 		// a bug where selecting an activity removes focus from the activity/choice
@@ -172,7 +169,7 @@ public class ScreenLayout extends ScreenListeners {
         	addLabel(m_panelBodyDetail, new Label("Compliance: " + logEntry.getComplianceValue().getValue()), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         addLabel(m_panelBodyDetail, new Label("Creation Date: " + logEntry.getDateCreated()), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 
-    	drawButtons(m_panelBodyDetail, 4);
+    	drawButtons(4);
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
 
@@ -192,7 +189,7 @@ public class ScreenLayout extends ScreenListeners {
         addLabel(m_panelBodyDetail, new Label(strMessage), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 
         if (bShowButtons)
-        	drawButtons(m_panelBodyDetail, nRow);
+        	drawButtons(nRow);
         
     	addBodyPanel(m_panelBodyDetail, BorderLayout.NORTH);
     }
@@ -234,7 +231,7 @@ public class ScreenLayout extends ScreenListeners {
         m_labelBarcode.setText(getData().getBarcode());
 //        addLabel(m_panelBodyActivity, m_labelBarcode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         
-		drawButtons(null, nRow);
+		drawButtons(nRow);
 	}
 
 	protected void refreshActivityList() {
@@ -242,7 +239,7 @@ public class ScreenLayout extends ScreenListeners {
       populateActivities(m_choiceActivity, getData().getActivities());
 	}
 	
-    private void drawButtons(Panel p, int nRow) {
+    private void drawButtons(int nRow) {
     	m_panelBottom.removeAll();
     	
         switch (m_screenState) {
@@ -266,8 +263,6 @@ public class ScreenLayout extends ScreenListeners {
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
 	    }
-        
-//        addField(p, m_panelBottom, 0, nRow, 1, 1, GridBagConstraints.SOUTHWEST);
     }
     
     private int drawDynamicFields(Scannable scannable, Activity activity, int nRow, DataChoice cCompliance) {
@@ -325,7 +320,6 @@ public class ScreenLayout extends ScreenListeners {
      * @param listActivities
      */
     private void populateCompliance(DataChoice choice, Activity a, HashMap mapCompliance) {
-//    	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)m_hashCompliance.get(a.getComplianceId());
     	ComplianceConfiguration complianceConfiguration = (ComplianceConfiguration)mapCompliance.get(a.getComplianceId());
     	ArrayList listValues = complianceConfiguration.getValues();
     	Iterator i = listValues.iterator();

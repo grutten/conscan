@@ -180,7 +180,7 @@ System.out.println("Detail Button - not implemented yet");
         
         m_buttonListenerScanIndicator = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                System.out.println("Scan Indicator pressed");
+                System.out.println("Find Offender pressed");
                 drawFindOffenderScreen();
                 setVisible(true);
             }
@@ -297,9 +297,6 @@ System.out.println("Detail Button - not implemented yet");
     }
     
     private void signIn(Staff staff) {
-        System.out.println("Start pressed");
-        // TODO: create a new BUSY... screen to display
-        
         try {
         	DataInterface d = getData();
         	d.setLoggedInStaff(staff);
@@ -314,6 +311,8 @@ System.out.println("Detail Button - not implemented yet");
 		refreshActivityList();
         drawActivityScreen();
         setVisible(true);
+        
+        // Java heap memory available - displays in title bar of window
         lCurrFreeMemory = Runtime.getRuntime().freeMemory();
         Long lPrior = new Long(lPriorFreeMemory);
         Long lCurr = new Long(lCurrFreeMemory);
