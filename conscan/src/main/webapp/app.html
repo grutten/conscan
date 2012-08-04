@@ -26,17 +26,17 @@
 			<div class="menu">
 				<h3>Menu</h3>
 				<ul>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.staff">staff</span></li>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.compliance">compliance</span></li>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.activity">activity</span></li>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.location">location</span></li>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.offender">offender</span></li>
-					<li class="curvedblocksmall linkable"><span class="lookupterm" term="menu.scannerlog">scannerlog</span></li>
+					<li class="curvedblocksmall linkable" id="menu.staff"><span class="lookupterm">staff</span></li>
+					<li class="curvedblocksmall linkable" id="menu.compliance"><span class="lookupterm">compliance</span></li>
+					<li class="curvedblocksmall linkable" id="menu.activity"><span class="lookupterm">activity</span></li>
+					<li class="curvedblocksmall linkable" id="menu.location"><span class="lookupterm">location</span></li>
+					<li class="curvedblocksmall linkable" id="menu.offender"><span class="lookupterm">offender</span></li>
+					<li class="curvedblocksmall linkable" id="menu.scannerlog"><span class="lookupterm">scannerlog</span></li>
 				</ul>
 				<h3>Report</h3>
 				<ul>
-					<li class="curvedblocksmall report"><span class="lookupterm" term="menu.activity">activity</span></li>
-					<li class="curvedblocksmall report"><span class="lookupterm" term="menu.security">security</span></li>
+					<li class="curvedblocksmall report" id="menu.activity"><span class="lookupterm">activity</span></li>
+					<li class="curvedblocksmall report" id="menu.security"><span class="lookupterm">security</span></li>
 				</ul>
 			</div>
 			<div class="field">
@@ -448,10 +448,10 @@
 				};
 				var oDataTable = jQuery('#aDataTable').dataTable(options);
 			}
-			
+
 			function displayTableComplete() {
 				// alert("Table loaded!");
-				
+
 				replaceTerms();
 			}
 
@@ -544,6 +544,14 @@
 				});
 			}
 
+			function getMenuTerm(tagObject) {
+				var item = getTerm(tagObject);
+				if (startsWith(item, "menu."))
+					item = item.substr(5);
+
+				return item;
+			}
+
 			function getObjectOptions(name) {
 				var options = objectoptions[name];
 
@@ -631,9 +639,9 @@
 			}
 
 			function getTableColumnName(table, name) {
-				return '<span class="lookupterm" term="header.'+ table + '.' + name + '">' + name + '</span>';
+				return '<span class="lookupterm" id="header.'+ table + '.' + name + '">' + name + '</span>';
 			}
-			
+
 			function getTableColumns(table) {
 				var tablecolumns = new Array();
 				tablecolumns.push({"sTitle": "", "bSortable": false, "sWidth": "40px"});
@@ -659,6 +667,12 @@
 				}
 
 				return tablecolumns;
+			}
+
+			function getTerm(tagObject) {
+				var term = tagObject.closest('[id]').attr('id');
+				//alert('Returning term ' + term);
+				return term;
 			}
 
 			function loadReferencedValues(tableName, columnName, value) {
@@ -756,33 +770,6 @@
 				});
 			}
 
-			function replaceTerms() {
-				//alert('Replacing terms on the page.');
-				jQuery('span.lookupterm').each(function() {
-					replaceTerm(jQuery(this));
-				});
-			}
-
-			function replaceTerm(termObject) {
-				// determine the term of the object by looking at ther term attribute or the text of the object
-				var term = termObject.attr('term');
-				if(typeof term == 'undefined') {
-					term = termObject.text();
-				}
-
-				// look up the term in the dictionary
-				var definition = lookupTerm(term);
-
-				// if something was returned, replace the text with the definition
-				if(typeof definition != 'undefined') {
-					// alert('Replacing ' + term + ' with definition ' + definition.definition);
-
-					termObject.html(definition.definition);
-				}
-
-				termObject.removeClass('lookupterm');
-			}
-
 			function lookupTerm(term) {
 				var lookup = dictionary[term];
 
@@ -806,9 +793,10 @@
 			}
 
 			function menuItemClick(event) {
-				var menuitem = event.target.innerHTML;
-				var item = menuitem.toLowerCase();
-				
+				var tagObject = jQuery(event.target);
+				var menuitem = tagObject.text();
+				var item = getMenuTerm(tagObject);
+
 				// set the title of the field to the same as the menu item
 				jQuery('#fieldtitle').html(menuitem + ' <span class="curvedblocksmall linkable shrink" type="' + item + '">+ Add</span>');
 
@@ -953,16 +941,61 @@
 				});
 			}
 
-			function reportItemClick(event) {
-				var report = event.target.innerHTML;
+			function replaceTerm(termObject) {
+				// determine the term of the object by looking at ther term attribute
+				var term = getTerm(termObject);
+				if(typeof term == 'undefined') {
+					// if not found, look to see if the parent has a termn object
+					term = getTerm(termObject.parent());
+					if(typeof term == 'undefined') {
+						// if not found, then use the text of the object
+						term = termObject.text();
+					}
+				}
 
+				// look up the term in the dictionary
+				var definition = lookupTerm(term);
+
+				// if something was returned, replace the text with the definition
+				if(typeof definition != 'undefined') {
+					// alert('Replacing ' + term + ' with definition ' + definition.definition);
+
+					termObject.html(definition.definition);
+				}
+
+				termObject.removeClass('lookupterm');
+			}
+
+			function replaceTerms() {
+				//alert('Replacing terms on the page.');
+				jQuery('span.lookupterm').each(function() {
+					replaceTerm(jQuery(this));
+				});
+			}
+
+			function reportItemClick(event) {
+				var tagObject = jQuery(event.target);
 				// set the title of the field to the same as the report
-				jQuery('#fieldtitle').html(report);
+				jQuery('#fieldtitle').html(tagObject.text());
 
 				// get the item list based on the menu item
-				report = report.toLowerCase();
+				var report = getMenuTerm(tagObject);
 
 				doReportOptions(report, 'div#fieldcontent');
+			}
+
+			function setUiDefaults() {
+				jQuery.blockUI.defaults.message = '<h2>Loading</h2>';
+				jQuery.blockUI.defaults.blockMsgClass = "curvedblock";
+				jQuery.blockUI.defaults.overlayCSS.backgroundColor = "#EEEEEE";
+				jQuery.blockUI.defaults.overlayCSS.opacity = 0.80;
+				jQuery.modal.defaults.opacity = 80;
+				jQuery.modal.defaults.overlayCss = {
+						backgroundColor:"#EEEEEE"
+				};
+				jQuery.modal.defaults.containerCss = {
+						backgroundColor:"#EEEEEE"
+				};
 			}
 
 			function showAddItem(event) {
@@ -1036,18 +1069,8 @@
 				}
 			}
 
-			function setUiDefaults() {
-				jQuery.blockUI.defaults.message = '<h2>Loading</h2>';
-				jQuery.blockUI.defaults.blockMsgClass = "curvedblock";
-				jQuery.blockUI.defaults.overlayCSS.backgroundColor = "#EEEEEE";
-				jQuery.blockUI.defaults.overlayCSS.opacity = 0.80;
-				jQuery.modal.defaults.opacity = 80;
-				jQuery.modal.defaults.overlayCss = {
-						backgroundColor:"#EEEEEE"
-				};
-				jQuery.modal.defaults.containerCss = {
-						backgroundColor:"#EEEEEE"
-				};
+			function startsWith(original, test) {
+			    return original.slice(0, test.length) == test;
 			}
 
 			jQuery(document).ready(function() {
