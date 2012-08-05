@@ -37,4 +37,7 @@
 <object name="activity" activityid="de3b9fd5-4e60-4a61-999f-5925e41c3d31"><field name="name">showers</field><field name="complianceid">ad542cc2-a5d2-4dca-9c79-fd743d16515f</field><field name="scantype">1</field><field name="compliancetype">1</field><field name="displayorder">4</field></object>
 <object name="activity" activityid="f3671a9c-77cf-4536-8aaa-b067bc997c2a"><field name="name">ddayroom/indoor recreation</field><field name="complianceid">ad542cc2-a5d2-4dca-9c79-fd743d16515f</field><field name="scantype">1</field><field name="compliancetype">1</field><field name="displayorder">7</field></object>
 </list>
+<list name="staff">
+<object name="staff" staffid="fe747d1e-f1cb-4f3c-989d-7d9d8032bec9"><field name="firstname">Harriet</field><field name="lastname">Terry</field><field name="badgenumber">11849</field><field name="email">bibendum.ullamcorper@Aliquam.ca</field><field name="barcode">0200000000246</field><field name="password">1234</field><field name="created"></field><field name="modified"></field></object>
+</list>
 </configuration>
