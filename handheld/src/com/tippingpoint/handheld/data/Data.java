@@ -33,7 +33,7 @@ public class Data implements DataInterface {
 	private ArrayList m_listScannablesForLogging = new ArrayList();  // Array of type Scannable
 	private String m_strCurrentBarcode;
 	private String m_strFeedback;
-	private String m_strScannerXmlPath;
+	protected String m_strScannerXmlPath;
 	private Staff m_staff;  // when null, show login screen
 	
 	// Persistence
@@ -85,6 +85,10 @@ public class Data implements DataInterface {
 		
 	}
 	
+	/**
+	 * Once this method has completed successfully, all the data in the XML file
+	 * can be found in memory in hashmaps, some of which behave as lookup indices.
+	 */
 	public void parse() {
 		try {
 			// The current object is the root hash map

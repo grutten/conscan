@@ -1,5 +1,5 @@
 package com.tippingpoint.handheld.data;
-
+/*
 import junit.framework.TestCase;
 
 public class TestData extends TestCase {
@@ -20,10 +20,14 @@ public class TestData extends TestCase {
     	String strConfigFile = "./xml/scanner.xml";  // MAC
 	    Data data = new Data(strConfigFile);
 
+	    if (data != null)
+	    	System.out.println("Data object IS OK");
 		Activity a = Util.findActivity(data, "security check"); 
+		System.out.println("findActivity() - complete");
 		data.populateScannables("0070718001170", a);
 	    Util.addLogEntry(data, "security check");
 	    
 	    System.out.println("The END");
 	}
 }
+*/

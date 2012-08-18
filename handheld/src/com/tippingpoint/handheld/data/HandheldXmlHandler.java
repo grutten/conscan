@@ -23,26 +23,8 @@ import com.tippingpoint.util.xml.SaxBaseHandler;
  * @author mgee
  *
  */
-public class HandheldXmlHandler extends SaxBaseHandler {
-	protected static final String ATTR_NAME = "name";
-	
-	protected static final String CLASS_LOCATION = "Location";
-	protected static final String CLASS_OFFENDER = "Offender";
-	
-	protected static final String OBJ_ACTIVITY = "activity";
-	protected static final String OBJ_COMPLIANCE = "compliance";
-	protected static final String OBJ_COMPLIANCEVALUE = "compliancevalue";
-	protected static final String OBJ_LOCATION = "location";
-	protected static final String OBJ_OFFENDER = "offender";
-	protected static final String OBJ_STAFF = "staff";
-	
-	protected static final String TAG_CONFIGURATION = "configuration";
-	protected static final String TAG_FIELD = "field";
-	protected static final String TAG_LIST = "list";
-	protected static final String TAG_OBJECT = "object";
-	
-	private DataInterface m_data;
-	private String m_strCurrentFieldName;
+public class HandheldXmlHandler extends XmlBaseHandler {
+	protected DataInterface m_data;
 	
 	HandheldXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, DataInterface d) {
 		super(parentHandler, reader);
@@ -53,7 +35,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
 	public void endElement (String uri, String name, String qName) {
 		// always pop the current object unless it's a field!!!
     	if (TAG_FIELD.equalsIgnoreCase(qName)) {
-    		setField(m_strCurrentFieldName, getCurrentTagValue());
+    		setField(m_strCurrentFieldName, getCurrentTagValue(), getData().getCurrentObject());
     		logEndElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + getCurrentTagValue());
     	}
     	else if (!TAG_FIELD.equalsIgnoreCase(qName)) {
@@ -88,7 +70,7 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     		String strObjectIdAttributeName = strCurrObjName + "id";
     		String strObjectIdValue = attrs.getValue(strObjectIdAttributeName);
     		if (StringFormat.isSpecified(strObjectIdValue))
-        		setField(strObjectIdAttributeName, strObjectIdValue);
+        		setField(strObjectIdAttributeName, strObjectIdValue, getData().getCurrentObject());
     		
     		logStartElement(qName, uri, name, strCurrObjNameValuePair);
     	}
@@ -119,8 +101,6 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     	return arrList;
     }
     
-    private DataInterface getData() { return m_data; }
-
     private Object createObject(String strObjectName) {
     	Object object = null;
     	
@@ -139,48 +119,6 @@ public class HandheldXmlHandler extends SaxBaseHandler {
     	
     	return object;
     }
-    
-	private void logEndElement(String strTagName, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("End element (" + strTagName + "): " + (qName != null ? qName : ""));
-		else
-			handheldLog("End element (" + strTagName + "): {" + uri + "}" + name);
-	}
-    
-	private void logStartElement(String strTagName, String uri, String name, String qName) {
-		if ("".equals (uri))
-			handheldLog("Start element (" + strTagName + "): " + (qName != null ? qName : ""));
-		else
-			handheldLog("Start element (" + strTagName + "): {" + uri + "}" + name);
-	}
-	
-	private void setField(String strFieldName, String strValue) {
-    	Object o = getData().getCurrentObject();
-		Class cls = o.getClass();
-		Method[] methods = cls.getDeclaredMethods();
-		Method methodToInvoke = null;
-		String strMethodName = "set" + strFieldName;
-		
-		// Find the method for the field being set
-		int nMethodCount = methods.length;
-		for (int i = 0; i < nMethodCount; ++i) {
-			Method m = methods[i];
-			
-			if (strMethodName.equalsIgnoreCase(m.getName()))
-				methodToInvoke = m;
-			if (methodToInvoke != null)
-				break;
-		}
-		
-		// Set the field's value if the method was found
-   		if (methodToInvoke != null) {
-			try {
-				methodToInvoke.invoke(o, new Object[] {strValue});
-			}
-			catch (Exception e) {
-				System.out.println(e.getStackTrace());
-			}
-		}
-	}
-    
+
+    private DataInterface getData() { return m_data; }
 }
