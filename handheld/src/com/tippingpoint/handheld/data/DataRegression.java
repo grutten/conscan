@@ -33,6 +33,11 @@ public class DataRegression extends Data {
 				
 			m_xmlreader.parse(new InputSource(reader));
 			reader.close();
+			
+			TestHarnessXmlHandler specialXmlHandler = (TestHarnessXmlHandler)saxHandler;
+			System.out.println(Integer.valueOf(specialXmlHandler.getNumberOfObjectsVerified()).toString() + 
+					"objects compared between XML(parsed) and LOOKUP(memory)");
+			System.out.println("Unit Test COMPLETE");
 		}
 		catch (SAXException e){
 			
