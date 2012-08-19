@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface DataInterface {
-	public ArrayList getActivities();
+	public ArrayList getActivityList();
 
 	public ArrayList addList(String strKeyName, ArrayList arrList);
 	public void addObject(String strName, Object obj);
 	public void clear();
 	public ArrayList createList(String strKeyName);
+	public HashMap getActivities();
 	public String getBarcode();
 	public HashMap getCompliance();
 	public Object getCurrentObject();

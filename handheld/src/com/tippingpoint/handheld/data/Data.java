@@ -156,8 +156,9 @@ public class Data implements DataInterface {
 		
 		return arrList;
 	}
-	
-	public ArrayList getActivities() { return (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY); }
+
+	public HashMap getActivities() { return (HashMap)m_hashLookup.get(INDEX_ACTIVITY); }
+	public ArrayList getActivityList() { return (ArrayList)m_hashRoot.get(HandheldXmlHandler.OBJ_ACTIVITY); }
 	public String getBarcode() { return m_strCurrentBarcode; }
 	public HashMap getCompliance() { return (HashMap)m_hashLookup.get(INDEX_COMPLIANCE); }
 	

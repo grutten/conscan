@@ -30,4 +30,6 @@ public class Staff {
 	public void setPassword(String str) {  m_strPassword = str; }
 	public void setCreated(String str) {  m_strCreated = str; }
 	public void setModified(String str) {  m_strModified= str; }
+	
+	public String toString() { return getLastName() + ", " + getFirstName(); }
 }

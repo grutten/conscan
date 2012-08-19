@@ -247,7 +247,7 @@ public class ScreenLayout extends ScreenListeners {
 
 	protected void refreshActivityList() {
       m_choiceActivity.removeAll();
-      populateActivities(m_choiceActivity, getData().getActivities());
+      populateActivities(m_choiceActivity, getData().getActivityList());
 	}
 	
     private void drawButtons(int nRow) {

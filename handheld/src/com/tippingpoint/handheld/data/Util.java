@@ -81,7 +81,7 @@ public class Util {
 	}
 	
     public static Activity findActivity(DataInterface d, String strActivity) {
-    	Iterator iActivities = d.getActivities().iterator();
+    	Iterator iActivities = d.getActivityList().iterator();
     	Activity searchResult = null;
     	while (searchResult == null && iActivities.hasNext()) {
     		Activity currentItem = (Activity)iActivities.next();

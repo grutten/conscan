@@ -42,10 +42,13 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
     		logEndElement(qName, uri, name, "field: " + m_strCurrentFieldName + " - " + getCurrentTagValue());
     	}
     	else if (TAG_OBJECT.equalsIgnoreCase(qName)) {
-    		// TODO: test the completed object here against the one found in the map
-    		verify(objCurrent);
+    		if (objCurrent instanceof Activity)
+    			verify(objCurrent);  // This is here for testing a specific object of your choice.  a debug brkpt
+    		else
+        		verify(objCurrent);
     
-    		testLog(Integer.toString(getNumberOfObjectsVerified()) + ": " + objCurrent.getClass().getName());
+    		testLog(Integer.toString(getNumberOfObjectsVerified()) + ": " + objCurrent.getClass().getName() +
+    				" - " + objCurrent.toString());
     		
     		// TODO: set the curr obj to Null
     		if (!m_stackCurrObj.empty()) {
@@ -167,14 +170,22 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
     private Object getProductionObject(Object obj, String strKey) {
     	Object objProduction = null;
     	
-    	if (obj instanceof Offender) {
+    	if (obj instanceof Offender)
     		objProduction = m_dataProduction.getOffenders().get(strKey);
-    	}
-    	
+    	else if (obj instanceof Location)
+    		objProduction = m_dataProduction.getLocations().get(strKey);
+    	else if (obj instanceof Staff)
+    		objProduction = m_dataProduction.getStaffByBarcode(strKey);
+    	else if (obj instanceof Activity)
+    		objProduction = m_dataProduction.getActivities().get(strKey);
+    	else if (obj instanceof ComplianceConfiguration)
+    		objProduction = m_dataProduction.getCompliance().get(strKey);
+
     	return objProduction;
     }
     
 	private boolean verify(Object obj) {
+		boolean bSuccess = false;
 		Method m = getLookupMethod(obj);
 		
 		if (m != null) {
@@ -193,11 +204,13 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
 			Object objFromProductionMap = getProductionObject(obj, strKey);
 
 			// compare string members of current object with that of production object
-			verifyObjectToObject(obj, objFromProductionMap);
+			bSuccess = verifyObjectToObject(obj, objFromProductionMap);
 			++nObjectsVerifiedCount;
 		}
+		else
+			testLog("AWAITING integration: " + obj.getClass().getName());
 		
-		return false;
+		return bSuccess;
 	}
 	
 	/**
@@ -216,7 +229,6 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
 		boolean bVerified = true;
 		Class cls = oReference.getClass();
 		Method[] methods = cls.getDeclaredMethods();
-		Method methodRefernceToInvoke = null;
 		Method methodProductionToInvoke = null;
 		
 		// Find the method for the field being set
@@ -292,6 +304,10 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
     		return findMethod(obj, "getBarcode");
     	else if (obj instanceof Staff)
     		return findMethod(obj, "getBarcode");
+    	else if (obj instanceof Activity)
+    		return findMethod(obj, "getName");
+    	else if (obj instanceof ComplianceConfiguration)
+    		return findMethod(obj, "getComplianceId");
     	
 		return null;
 	}
