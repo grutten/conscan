@@ -23,14 +23,13 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
 
 	private DataInterface m_dataProduction;
 	private String m_strCurrentFieldName;
-
+	private boolean m_bLoggingEnabled = true;
 	
 	TestHarnessXmlHandler(SaxBaseHandler parentHandler, XMLReader reader, DataInterface dataProductionObj) {
 		super(parentHandler, reader);
 		
 		m_dataProduction = dataProductionObj;
 	}
-	
 	
 	public void endElement (String uri, String name, String qName) {
 		Object objCurrent = null;
@@ -45,8 +44,8 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
     	else if (TAG_OBJECT.equalsIgnoreCase(qName)) {
     		// TODO: test the completed object here against the one found in the map
     		verify(objCurrent);
-    		if (objCurrent == null)
-    			System.out.println("FOUND");
+    
+    		testLog(Integer.toString(getNumberOfObjectsVerified()) + ": " + objCurrent.getClass().getName());
     		
     		// TODO: set the curr obj to Null
     		if (!m_stackCurrObj.empty()) {
@@ -210,7 +209,7 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
 	 */
 	protected boolean verifyObjectToObject(Object oReference, Object oProduction) {
 		if (oReference == null) {
-			System.out.println("Unexpected NULL object for XML object.");
+			testLog("Unexpected NULL object for XML object.");
 			return false;
 		}
 
@@ -231,14 +230,14 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
 						String strReferenceValue = (String)m.invoke(oReference, null);
 						
 						if (oProduction == null) {
-							System.out.println(oReference.getClass().getName() + "." + m.getName() + " - xml: <" +
+							testLog(oReference.getClass().getName() + "." + m.getName() + " - xml: <" +
 									strReferenceValue + "> lookup:the associated object in memory is null");
 						}
 						else {
 							methodProductionToInvoke = oProduction.getClass().getDeclaredMethod(m.getName(), null);
 							String strProductionValue = (String)methodProductionToInvoke.invoke(oProduction, null);
 							if (strReferenceValue != null && !strReferenceValue.equalsIgnoreCase(strProductionValue)) {
-								System.out.println(oReference.getClass().getName() + "." + m.getName() + " - xml: <" + 
+								testLog(oReference.getClass().getName() + "." + m.getName() + " - xml: <" + 
 										strReferenceValue + "> lookup: <" + 
 										(strProductionValue == null ? "null" : strProductionValue) + ">");
 								bVerified = false;
@@ -291,8 +290,15 @@ public class TestHarnessXmlHandler extends XmlBaseHandler {
     		return findMethod(obj, "getBarcode");
     	else if (obj instanceof Location)
     		return findMethod(obj, "getBarcode");
+    	else if (obj instanceof Staff)
+    		return findMethod(obj, "getBarcode");
     	
 		return null;
+	}
+	
+	private void testLog(String s) {
+		if (m_bLoggingEnabled)
+			System.out.println(s);
 	}
 	
 }

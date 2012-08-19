@@ -1,0 +1,1 @@
+255#"\SD Card\J9\PPRO11\bin\j9.exe" "-jcl:ppro11"  -Djava.library.path=\Windows -classpath "\SD Card\mgg\DataCollection.jar;\My Documents\handheld.jar" com.tippingpoint.handheld.ui.ApplicationRegression "\My Documents\scanner.xml"

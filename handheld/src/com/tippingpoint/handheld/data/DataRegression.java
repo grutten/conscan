@@ -17,8 +17,6 @@ public class DataRegression extends Data {
 	
 	public boolean verify(DataInterface dataProdcutionObj) {
 		try {
-			
-			
 			m_xmlreader = XMLReaderFactory.createXMLReader();
 			SaxBaseHandler saxHandler = new TestHarnessXmlHandler(null, m_xmlreader, dataProdcutionObj);
 			
@@ -35,8 +33,9 @@ public class DataRegression extends Data {
 			reader.close();
 			
 			TestHarnessXmlHandler specialXmlHandler = (TestHarnessXmlHandler)saxHandler;
-			System.out.println(Integer.valueOf(specialXmlHandler.getNumberOfObjectsVerified()).toString() + 
-					"objects compared between XML(parsed) and LOOKUP(memory)");
+			Integer i = new Integer(specialXmlHandler.getNumberOfObjectsVerified());
+			System.out.println(i.toString() + 
+					" objects compared between XML(parsed) and LOOKUP(memory)");
 			System.out.println("Unit Test COMPLETE");
 		}
 		catch (SAXException e){
