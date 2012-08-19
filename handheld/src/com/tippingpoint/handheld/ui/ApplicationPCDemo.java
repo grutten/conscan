@@ -6,7 +6,7 @@ import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
 import com.tippingpoint.handheld.data.Staff;
 
-public class Demo extends Frame {
+public class ApplicationPCDemo extends Frame {
 	static final long serialVersionUID = -1;
 	
     /**
@@ -18,17 +18,19 @@ public class Demo extends Frame {
      */
     public static void main(String[] args) {
 //    	String strConfigFile = "xml\\scanner.xml";
-    	String strConfigFile = "./xml/scanner.xml";
+		String strConfigFile = "xml/scanner.xml";  // mac
 
     	
    		DataInterface  d = new Data(strConfigFile);
+   		d.parse();
     	System.out.println("scanner.xml - step complete (may have completed with errors)");
 
-    	String strBarcode = "073854016336";
-		Staff s = d.getStaffByBarcode(strBarcode);
-		System.out.println("staff: " + s.getEmail());
+    	Screen mainFrame = null;
+    	boolean bEnvironmentIsHandheld = false;
+//        mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
+      mainFrame = new Simulator(d);
+        mainFrame.draw();
 
-    	
     }
 
 }
