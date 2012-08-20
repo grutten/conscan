@@ -37,7 +37,7 @@ public class SqlManagerSqlServer extends SqlManager {
 	 * @param strDatabaseName String containing the name of the database.
 	 * @param strTableName String containing the name of the table.
 	 */
-	@Override
+//	@Override
 	public String getTableDefinitionSql(final String strDatabaseName, final String strTableName) {
 		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + '.' + " +
 				"TABLE_NAME), COLUMN_NAME, 'IsIdentity') ID_COLUMN, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM " +

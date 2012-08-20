@@ -21,6 +21,7 @@ import com.tippingpoint.database.Schema;
 import com.tippingpoint.sql.base.SqlExecution;
 import com.tippingpoint.sql.base.SqlManager;
 import com.tippingpoint.sql.mysql.SqlManagerMySql;
+import com.tippingpoint.sql.oracle.SqlManagerOracle;
 import com.tippingpoint.sql.sqlserver.SqlManagerSqlServer;
 import com.tippingpoint.utilities.StringProperties;
 
@@ -208,6 +209,9 @@ public final class ConnectionManager {
 			}
 			else if (strDatabaseType.contains("Microsoft")) {
 				setManager(new SqlManagerSqlServer(m_idFactory));
+			}
+			else if (strDatabaseType.contains("Oracle")) {
+				setManager(new SqlManagerOracle(m_idFactory));
 			}
 			else {
 				throw new DatabaseException("Could not recognize database type '" + strDatabaseType + "'");
@@ -431,7 +435,7 @@ public final class ConnectionManager {
 			// load all of the commonly known drivers
 			loadDriver("com.mysql.jdbc.Driver");
 			loadDriver("net.sourceforge.jtds.jdbc.Driver");
-			// loadDriver("oracle.jdbc.OracleDriver");
+			loadDriver("oracle.jdbc.OracleDriver");
 		}
 
 		/**

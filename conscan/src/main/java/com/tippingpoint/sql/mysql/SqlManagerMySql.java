@@ -9,7 +9,7 @@ import com.tippingpoint.sql.base.SqlManager;
 
 public class SqlManagerMySql extends SqlManager {
 	/**
-	 * This method constructs a new MySQL builder.
+	 * This method constructs a new MySQL manager.
 	 */
 	public SqlManagerMySql(final IdFactory idFactory) {
 		super(idFactory);
@@ -37,7 +37,7 @@ public class SqlManagerMySql extends SqlManager {
 	 * @param strDatabaseName String containing the name of the database.
 	 * @param strTableName String containing the name of the table.
 	 */
-	@Override
+//	@Override
 	public String getTableDefinitionSql(final String strDatabaseName, final String strTableName) {
 		return "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, IF(EXTRA = 'auto_increment', 1, 0) ID_COLUMN, " +
 				"DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" +

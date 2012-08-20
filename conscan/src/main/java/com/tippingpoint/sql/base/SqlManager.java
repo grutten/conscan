@@ -291,7 +291,7 @@ public abstract class SqlManager {
 	 * @param strDatabaseName String containing the name of the database.
 	 * @param strTableName String containing the name of the table.
 	 */
-	public abstract String getTableDefinitionSql(String strDatabaseName, String strTableName);
+//	public abstract String getTableDefinitionSql(String strDatabaseName, String strTableName);
 
 	/**
 	 * This method returns the database specific type for the column.
