@@ -67,9 +67,11 @@ public class ScreenLayout extends ScreenListeners {
         m_panelBodyActivity = new Panel();
         m_panelBodyDetail = new Panel();
         m_panelNav = new Panel();
+        m_panelBottom = new Panel();
 		m_panelBodyActivity.setLayout(new GridBagLayout());
 		m_panelBodyDetail.setLayout(new GridBagLayout());
     	m_panelNav.setLayout(new GridBagLayout());
+    	m_panelBottom.setLayout(new BorderLayout());
     	
     	if (bLayoutDebugEnbaled) {
             Color cBackgroundLightRed = new Color(255, 200, 200);
@@ -79,13 +81,15 @@ public class ScreenLayout extends ScreenListeners {
             m_panelBodyActivity.setBackground(cBackgroundLightGreen);
             m_panelBodyDetail.setBackground(cBackgroundLightRed);
             m_panelNav.setBackground(cBackgroundLightBlue);
+            m_panelBottom.setBackground(Color.WHITE);
     	}
 	}
 	
 	public void draw() {
 		super.draw();
 
-        add(m_panelNav, BorderLayout.SOUTH);
+		m_panelBottom.add(m_panelNav, BorderLayout.NORTH);
+        add(m_panelBottom, BorderLayout.SOUTH);
 		drawDockScreen(true);
 
 		setVisible(true);

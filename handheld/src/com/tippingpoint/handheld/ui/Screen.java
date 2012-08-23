@@ -38,7 +38,8 @@ public class Screen extends Frame {
     // Panels
     protected Panel m_panelBodyActivity;	// The 'dialog' with controls for processing activities
     protected Panel m_panelBodyDetail;		// The 'dialog' for showing an activity detail or other configuration of controls
-    protected Panel m_panelNav;			// This is the portion of the screen for formatting the nav buttons
+    protected Panel m_panelNav;				// This is the portion of the screen for formatting the nav buttons
+    protected Panel m_panelBottom;			// This is used to configure the nav panel with the simulator controls
     protected Component m_panelCurrentBody;
 
     // Button names

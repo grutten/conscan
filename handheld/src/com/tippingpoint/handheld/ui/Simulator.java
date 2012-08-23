@@ -55,13 +55,13 @@ public class Simulator extends ScreenLayout {
 	public void draw() {
 		super.draw();
 		
-        Color cBackground = new Color(225, 225, 225);
+        Color cCN3greyBackground = new Color(75, 75, 75);
 		
 		Panel p = new Panel();
 		p.setLayout(new GridBagLayout());
-        p.setBackground(cBackground);
+        p.setBackground(cCN3greyBackground);
         p.setSize(this.m_panelWidthX, 200);
-		add(p, BorderLayout.CENTER);
+        m_panelBottom.add(p, BorderLayout.SOUTH);
 		
 		
 		
