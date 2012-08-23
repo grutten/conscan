@@ -21,19 +21,24 @@ import com.tippingpoint.version.HandheldVersion;
 
 public class Screen extends Frame {
 	static final long serialVersionUID = -1;
+
+	// Useful when funky background colors are needed to visualize the border regions
+	protected boolean bLayoutDebugEnbaled = false;  
 	
 	// Handheld dimensions
     protected static int CN3_X = 240;
     protected static int CN3_Y = 320;
+    protected int m_panelWidthX = CN3_X;
+    protected int m_panelHeightY = CN3_Y;
 
     // Scanner
 	protected BarcodeReader m_bcRdr;
 	protected boolean m_bRunningOnHandheld = true;
     
     // Panels
-    protected Panel m_panelBodyActivity;
-    protected Panel m_panelBodyDetail;
-    protected Panel m_panelBottom;
+    protected Panel m_panelBodyActivity;	// The 'dialog' with controls for processing activities
+    protected Panel m_panelBodyDetail;		// The 'dialog' for showing an activity detail or other configuration of controls
+    protected Panel m_panelBottom;			// This is the portion of the screen for formatting the nav buttons
     protected Component m_panelCurrentBody;
 
     // Button names
@@ -98,9 +103,9 @@ public class Screen extends Frame {
 	
     public void draw() {
     	setLayout(new BorderLayout());
-        Color cBackground = new Color(206, 231, 255); // cee7ff
-        setBackground(cBackground);
-        setSize(CN3_X, CN3_Y);
+        Color colorTippingPointBabyBlue = new Color(206, 231, 255); 
+        setBackground(colorTippingPointBabyBlue);
+        setSize(m_panelWidthX, m_panelHeightY);
         
 //        addFooterComponents();
     }

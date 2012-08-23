@@ -23,7 +23,6 @@ public class ApplicationPCDemo extends Frame {
     	
    		DataInterface  d = new Data(strConfigFile);
    		d.parse();
-    	System.out.println("scanner.xml - step complete (may have completed with errors)");
 
     	Screen mainFrame = null;
     	boolean bEnvironmentIsHandheld = false;

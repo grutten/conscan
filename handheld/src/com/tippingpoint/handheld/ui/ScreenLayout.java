@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Choice;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Label;
@@ -69,6 +70,16 @@ public class ScreenLayout extends ScreenListeners {
 		m_panelBodyActivity.setLayout(new GridBagLayout());
 		m_panelBodyDetail.setLayout(new GridBagLayout());
     	m_panelBottom.setLayout(new GridBagLayout());
+    	
+    	if (bLayoutDebugEnbaled) {
+            Color cBackgroundLightRed = new Color(255, 200, 200);
+            Color cBackgroundLightGreen = new Color(200, 255, 200);
+            Color cBackgroundLightBlue = new Color(200, 200, 255);
+
+            m_panelBodyActivity.setBackground(cBackgroundLightGreen);
+            m_panelBodyDetail.setBackground(cBackgroundLightRed);
+            m_panelBottom.setBackground(cBackgroundLightBlue);
+    	}
 	}
 	
 	public void draw() {
@@ -353,3 +364,4 @@ public class ScreenLayout extends ScreenListeners {
     }
     
 }
+

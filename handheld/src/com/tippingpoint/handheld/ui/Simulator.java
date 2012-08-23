@@ -1,10 +1,14 @@
 package com.tippingpoint.handheld.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Label;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
 //import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,13 +22,18 @@ public class Simulator extends ScreenLayout {
 	private static final long serialVersionUID = 149027602440647456L;
 
 	protected Choice m_choiceBarcode;
+	protected Choice m_choiceLocation;
+	protected Choice m_choiceOffender;
 	
     protected ActionListener m_buttonListenerGoScan;
     
-//    private static String BUTTON_SCAN = "Scan Barcode";
+    private static String BUTTON_SCAN = "Scan Barcode";
     
     Simulator(DataInterface d) { 
     	super(d, false);
+    	
+    	m_panelWidthX = CN3_X + 200;
+    	m_panelHeightY = CN3_Y + 200;
     	
     	m_choiceBarcode = new Choice();
     }
@@ -46,14 +55,16 @@ public class Simulator extends ScreenLayout {
 	public void draw() {
 		super.draw();
 		
-        Color cBackground = new Color(255, 255, 255); // cee7ff
+        Color cBackground = new Color(225, 225, 225);
 		
 		Panel p = new Panel();
 		p.setLayout(new GridBagLayout());
         p.setBackground(cBackground);
-        p.setSize(CN3_X, 120);
-		add(p, BorderLayout.SOUTH);
-/*		
+        p.setSize(this.m_panelWidthX, 200);
+		add(p, BorderLayout.CENTER);
+		
+		
+		
         int nRow = 0;
      
         m_choiceBarcode.add("A - security check");
@@ -71,10 +82,11 @@ public class Simulator extends ScreenLayout {
         
         addListeners();
         btnScan.addActionListener(m_buttonListenerGoScan);
-*/
+        
+        setVisible(true);
 	}
 	
-/*
+
 	private void addListeners() {
         m_buttonListenerGoScan = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -109,6 +121,6 @@ public class Simulator extends ScreenLayout {
         };
 		
 	}
-*/	
+	
 	
 }
