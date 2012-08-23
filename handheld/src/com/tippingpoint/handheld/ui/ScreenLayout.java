@@ -66,10 +66,10 @@ public class ScreenLayout extends ScreenListeners {
         
         m_panelBodyActivity = new Panel();
         m_panelBodyDetail = new Panel();
-        m_panelBottom = new Panel();
+        m_panelNav = new Panel();
 		m_panelBodyActivity.setLayout(new GridBagLayout());
 		m_panelBodyDetail.setLayout(new GridBagLayout());
-    	m_panelBottom.setLayout(new GridBagLayout());
+    	m_panelNav.setLayout(new GridBagLayout());
     	
     	if (bLayoutDebugEnbaled) {
             Color cBackgroundLightRed = new Color(255, 200, 200);
@@ -78,14 +78,14 @@ public class ScreenLayout extends ScreenListeners {
 
             m_panelBodyActivity.setBackground(cBackgroundLightGreen);
             m_panelBodyDetail.setBackground(cBackgroundLightRed);
-            m_panelBottom.setBackground(cBackgroundLightBlue);
+            m_panelNav.setBackground(cBackgroundLightBlue);
     	}
 	}
 	
 	public void draw() {
 		super.draw();
 
-        add(m_panelBottom, BorderLayout.SOUTH);
+        add(m_panelNav, BorderLayout.SOUTH);
 		drawDockScreen(true);
 
 		setVisible(true);
@@ -158,9 +158,9 @@ public class ScreenLayout extends ScreenListeners {
         if (strFeedback != null && strFeedback.length() > 0) 
             addLabel(m_panelBodyActivity, m_labelFeedback, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
 		
-    	m_panelBottom.removeAll();
+    	m_panelNav.removeAll();
         if (bDisplayRecordButton)
-            m_panelBottom.add(m_buttonRecord);
+            m_panelNav.add(m_buttonRecord);
         
 		// TODO: workaround - removing tab/focus from all of the buttons introduced
 		// a bug where selecting an activity removes focus from the activity/choice
@@ -262,25 +262,25 @@ public class ScreenLayout extends ScreenListeners {
 	}
 	
     private void drawButtons(int nRow) {
-    	m_panelBottom.removeAll();
+    	m_panelNav.removeAll();
     	
         switch (m_screenState) {
 	        case SCREEN_STATE_DETAIL:
-	        	m_panelBottom.add(m_buttonGoActivity);
+	        	m_panelNav.add(m_buttonGoActivity);
 //	        	m_panelBottom.add(m_buttonPrev);
 //	        	m_panelBottom.add(m_buttonNext);
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
 	        case SCREEN_STATE_DOCK:
-	        	m_panelBottom.add(m_buttonQuit);
+	        	m_panelNav.add(m_buttonQuit);
 	        	break;
 	        case SCREEN_STATE_FIND_OFFENDER:
-	        	m_panelBottom.add(m_buttonReplace);
-	        	m_panelBottom.add(m_buttonGoActivity);
+	        	m_panelNav.add(m_buttonReplace);
+	        	m_panelNav.add(m_buttonGoActivity);
 	        	break;
 	        case SCREEN_STATE_ACTIVITY:
 	        default:
-	            m_panelBottom.add(m_buttonRecord);
+	            m_panelNav.add(m_buttonRecord);
 //	            m_panelBottom.add(m_buttonGoDetail);
 //	        	m_panelBottom.add(m_buttonGoHistory);
 	        	break;
