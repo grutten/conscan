@@ -81,13 +81,16 @@ public class Util {
 	}
 	
     public static Activity findActivity(DataInterface d, String strActivity) {
-    	Iterator iActivities = d.getActivityList().iterator();
     	Activity searchResult = null;
-    	while (searchResult == null && iActivities.hasNext()) {
-    		Activity currentItem = (Activity)iActivities.next();
-    		if (currentItem != null)
-    			if(currentItem.getName().equalsIgnoreCase(strActivity))
-    				searchResult = currentItem;
+    	ArrayList listActivity = d.getActivityList();
+    	if (listActivity != null) {
+	    	Iterator iActivities = listActivity.iterator();
+	    	while (searchResult == null && iActivities.hasNext()) {
+	    		Activity currentItem = (Activity)iActivities.next();
+	    		if (currentItem != null)
+	    			if(currentItem.getName().equalsIgnoreCase(strActivity))
+	    				searchResult = currentItem;
+	    	}
     	}
     	
     	return searchResult;

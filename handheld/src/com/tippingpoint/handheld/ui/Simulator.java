@@ -2,11 +2,11 @@ package com.tippingpoint.handheld.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
-import java.awt.Choice;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Label;
+import java.awt.List;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 //import java.awt.event.ActionEvent;
@@ -21,9 +21,7 @@ public class Simulator extends ScreenLayout {
 	 */
 	private static final long serialVersionUID = 149027602440647456L;
 
-	protected Choice m_choiceBarcode;
-	protected Choice m_choiceLocation;
-	protected Choice m_choiceOffender;
+	protected List m_listBarcode;
 	
     protected ActionListener m_buttonListenerGoScan;
     
@@ -32,26 +30,12 @@ public class Simulator extends ScreenLayout {
     Simulator(DataInterface d) { 
     	super(d, false);
     	
-    	m_panelWidthX = CN3_X + 200;
-    	m_panelHeightY = CN3_Y + 200;
+    	m_panelWidthX = CN3_X + 100;
+    	m_panelHeightY = CN3_Y + 280;
     	
-    	m_choiceBarcode = new Choice();
+    	m_listBarcode = new List();
     }
 	
-    public void drawSecurityCheck() {
-    	respondToScanEvent("0070718001170");
-    	drawActivityScreen();
-    	setVisible(true);
-    }
-    
-    public void drawCellSearch() {
-    	m_choiceActivity.select(1);
-    	respondToScanEvent("0070718001170");
-    	drawActivityScreen();
-    	setVisible(true);
-    	
-    }
-    
 	public void draw() {
 		super.draw();
 		
@@ -63,19 +47,17 @@ public class Simulator extends ScreenLayout {
         p.setSize(this.m_panelWidthX, 200);
         m_panelBottom.add(p, BorderLayout.SOUTH);
 		
-		
-		
         int nRow = 0;
      
-        m_choiceBarcode.add("A - security check");
-        m_choiceBarcode.add("A - bedding exchange");
-        m_choiceBarcode.add("A - showers");
-        m_choiceBarcode.add("C - T162-A-001L");
-        m_choiceBarcode.add("C - T162-A-002L");
-        m_choiceBarcode.add("O - Irving, 234567890");
-        m_choiceBarcode.add("O - Page, 123456789");
+        m_listBarcode.add("(rosewood)073854016336");
+        m_listBarcode.add("(foley)073854016337");
+        m_listBarcode.add("(irving)0832924005201");
+        m_listBarcode.add("(iverson)0812122010450");
+        m_listBarcode.add("(page)0812122010160");
+        m_listBarcode.add("(cell-1)0070718001170");
+        m_listBarcode.add("(cell-2)0052100746043");
         addLabel(p, new Label("BARCODE"), 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
-        addField(p, m_choiceBarcode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
+        addField(p, m_listBarcode, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
         
         Button btnScan = new Button(BUTTON_SCAN);
         addField(p, btnScan, 0, nRow++, 1, 1, GridBagConstraints.NORTHWEST);
@@ -93,26 +75,20 @@ public class Simulator extends ScreenLayout {
                 String action = ae.getActionCommand();
                 
                 if (action.equals(BUTTON_SCAN)) {
-            		String strSelection = m_choiceBarcode.getSelectedItem();
-            		switch(strSelection.charAt(0)) {
-	            		case 'A':
-	                        System.out.println("Scan: Activity");
-	                        m_choiceActivity.select(strSelection.substring(4));
-	                        
-	                        // the following lines simulate firing a change event
-	                    	drawActivityScreen();
-	                    	setVisible(true);
-	            			break;
-	            		case 'C':
-	                        System.out.println("Scan: Cell");
-	                        m_choiceLocation.select(strSelection.substring(4));
-	            			break;
-	            		case 'O': 
-	                        System.out.println("Scan: Offender");
-	                        m_choiceOffender.select(strSelection.substring(4));
-	            			break;
+            		String strSelection = m_listBarcode.getSelectedItem();
+            		int nBarcodeStart = strSelection.indexOf(")") + 1;
+            		String strBarcode = strSelection.substring(nBarcodeStart);
+            		respondToScanEvent(strBarcode);
             		
-            		}
+    				if (m_screenState == SCREEN_STATE_FIND_OFFENDER)
+    					drawFindOffenderScreen();
+    				else if (m_screenState == SCREEN_STATE_ACTIVITY)
+    					// Why doesn't ScreenListeners.barcodeRead() have to check
+    					// the screen state?  These 2 draw() invocations were
+    					// copied from there.
+    					drawActivityScreen();
+    					
+                    setVisible(true);
                 } 
                 else {
                     System.out.println(action);
