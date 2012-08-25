@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 
 import com.tippingpoint.handheld.data.DataInterface;
 
-public class Simulator extends ScreenLayout {
+public class SimulatorScreenLayout extends ScreenLayout {
 	
 	/**
 	 * 
@@ -27,7 +27,7 @@ public class Simulator extends ScreenLayout {
     
     private static String BUTTON_SCAN = "Scan Barcode";
     
-    Simulator(DataInterface d) { 
+    SimulatorScreenLayout(DataInterface d) { 
     	super(d, false);
     	
     	m_panelWidthX = CN3_X + 100;

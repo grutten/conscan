@@ -23,7 +23,7 @@ public class ApplicationPCDemo extends Frame {
    		DataInterface  d = new Data(strConfigFile);
    		d.parse();
 
-    	Screen mainFrame = new Simulator(d);
+    	Screen mainFrame = new SimulatorScreenLayout(d);
     	
         mainFrame.draw();
 

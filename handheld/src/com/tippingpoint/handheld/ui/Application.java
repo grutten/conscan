@@ -32,19 +32,9 @@ public class Application extends Frame {
 
         if (bEnvironmentIsHandheld)
             mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
-    	else
-            mainFrame = new Simulator(d);
         
         
         mainFrame.draw();
-        if (mainFrame instanceof Simulator) {
-        	mainFrame.drawSecurityCheck();
-//            	mainFrame.drawCellSearch();
-        	if (bEnvironmentIsHandheld) 
-        		System.out.println("");
-        }
-		
-
     }
 
 }
