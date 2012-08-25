@@ -1,6 +1,7 @@
 package com.tippingpoint.handheld.ui;
 
 import java.awt.Frame;
+import java.io.File;
 
 import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
@@ -17,19 +18,31 @@ public class ApplicationPCDemo extends Frame {
      * @param args
      */
     public static void main(String[] args) {
-//    	String strConfigFile = "xml\\scanner.xml";
-		String strConfigFile = "xml/scanner.xml";  // mac
-
+		String strConfigFile = getConfigFile();
     	
    		DataInterface  d = new Data(strConfigFile);
    		d.parse();
 
-    	Screen mainFrame = null;
-    	boolean bEnvironmentIsHandheld = false;
-//        mainFrame = new ScreenLayout(d, bEnvironmentIsHandheld);
-      mainFrame = new Simulator(d);
+    	Screen mainFrame = new Simulator(d);
+    	
         mainFrame.draw();
 
+    }
+    
+    private static String getConfigFile() {
+    	String strConfigFile = "xml\\scanner.xml";
+		File f = new File(strConfigFile);
+
+		if (!f.exists())
+			strConfigFile = "xml/scanner.xml";  // mac
+		
+		f = new File(strConfigFile);
+		if (!f.exists()) {
+			strConfigFile = "";
+			System.out.println("oops, couldn't find scanner.xml for MAC or Windows.");
+		}
+		
+		return strConfigFile;
     }
 
 }

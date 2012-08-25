@@ -82,7 +82,7 @@ public class Data implements DataInterface {
 		m_hashRoot.clear();
 		m_stackCurrObj.clear();
 		
-		
+		System.out.println("hash maps and indices cleared");
 	}
 	
 	/**
