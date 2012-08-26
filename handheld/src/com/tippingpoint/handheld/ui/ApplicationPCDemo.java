@@ -5,7 +5,6 @@ import java.io.File;
 
 import com.tippingpoint.handheld.data.Data;
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.Staff;
 
 public class ApplicationPCDemo extends Frame {
 	static final long serialVersionUID = -1;

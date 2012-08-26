@@ -81,7 +81,7 @@ public class ScreenListeners extends Screen implements BarcodeReadListener {
 				
 				if (m_screenState == SCREEN_STATE_FIND_OFFENDER)
 					drawFindOffenderScreen();
-				else
+				else if (m_screenState == SCREEN_STATE_ACTIVITY)
 					drawActivityScreen();
 					
                 setVisible(true);
