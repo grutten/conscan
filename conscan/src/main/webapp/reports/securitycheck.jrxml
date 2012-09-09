@@ -45,7 +45,7 @@ WHERE activity.name = 'security check' AND scannerlog.created > $P{StartDate}]]>
 			</textField>
 			<image>
 				<reportElement uuid="edabfa90-ec50-4560-a7c0-5f24a588c04d" x="584" y="9" width="90" height="90"/>
-				<imageExpression><![CDATA["http://localhost:8080/conscan/images/CA-CDCRlogo.png"]]></imageExpression>
+				<imageExpression><![CDATA["images/CA-CDCRlogo.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
