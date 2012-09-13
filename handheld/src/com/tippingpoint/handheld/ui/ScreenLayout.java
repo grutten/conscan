@@ -270,7 +270,7 @@ public class ScreenLayout extends ScreenListeners {
     	
         switch (m_screenState) {
 	        case SCREEN_STATE_DETAIL:
-	        	m_panelNav.add(m_buttonGoActivity);
+//	        	m_panelNav.add(m_buttonGoActivity);
 //	        	m_panelBottom.add(m_buttonPrev);
 //	        	m_panelBottom.add(m_buttonNext);
 //	        	m_panelBottom.add(m_buttonGoHistory);
