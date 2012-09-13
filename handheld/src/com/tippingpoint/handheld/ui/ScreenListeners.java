@@ -7,20 +7,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-
-import org.apache.commons.lang.time.DateFormatUtils;
-
 import com.intermec.datacollection.*;
 import com.tippingpoint.handheld.data.Activity;
-import com.tippingpoint.handheld.data.ComplianceValue;
 import com.tippingpoint.handheld.data.DataInterface;
-import com.tippingpoint.handheld.data.Location;
 import com.tippingpoint.handheld.data.LogEntry;
-import com.tippingpoint.handheld.data.Offender;
-import com.tippingpoint.handheld.data.Scannable;
 import com.tippingpoint.handheld.data.Staff;
 import com.tippingpoint.handheld.data.Util;
 
