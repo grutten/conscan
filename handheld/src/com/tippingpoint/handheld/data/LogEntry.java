@@ -82,7 +82,7 @@ public class LogEntry {
 	}
 	
 	public void write() throws IOException {
-		m_logOutputStream.write("<object name='scannerlog'>\n");
+		m_logOutputStream.write("<object name='scanlog'>\n");
 		writeTag("staffid", getStaffId());
 		writeTag("created", getDateCreated());
 		writeTag("barcode", getScannedBarcode());
