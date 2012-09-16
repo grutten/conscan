@@ -22,8 +22,8 @@
 		<column name="definition">Offender</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">menu.scannerlog</column>
-		<column name="definition">Scanner Log</column>
+		<column name="term">menu.scanlog</column>
+		<column name="definition">Scan Log</column>
 	</item>
 	<item name="dictionary">
 		<column name="term">menu.activity</column>
@@ -166,59 +166,59 @@
 		<column name="definition">Location</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.scannerlogid</column>
-		<column name="definition">scannerlogid</column>
+		<column name="term">header.scanlog.scanlogid</column>
+		<column name="definition">scanlogid</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.staffid</column>
+		<column name="term">header.scanlog.staffid</column>
 		<column name="definition">Staff</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.activityid</column>
+		<column name="term">header.scanlog.activityid</column>
 		<column name="definition">Activity</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.locationid</column>
+		<column name="term">header.scanlog.locationid</column>
 		<column name="definition">Location</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.offenderid</column>
+		<column name="term">header.scanlog.offenderid</column>
 		<column name="definition">Offender</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.compliancevalueid</column>
+		<column name="term">header.scanlog.compliancevalueid</column>
 		<column name="definition">compliancevalueid</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.barcode</column>
+		<column name="term">header.scanlog.barcode</column>
 		<column name="definition">Barcode</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.created</column>
+		<column name="term">header.scanlog.created</column>
 		<column name="definition">Create Date</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlog.modified</column>
+		<column name="term">header.scanlog.modified</column>
 		<column name="definition">Modified Date</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlogcomment.scannerlogcommentid</column>
-		<column name="definition">scannerlogcommentid</column>
+		<column name="term">header.scanlogremark.scanlogremarkid</column>
+		<column name="definition">scanlogremarkid</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlogcomment.scannerlogid</column>
-		<column name="definition">scannerlogid</column>
+		<column name="term">header.scanlogremark.scanlogid</column>
+		<column name="definition">scanlogid</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlogcomment.comment</column>
-		<column name="definition">Comment</column>
+		<column name="term">header.scanlogremark.remark</column>
+		<column name="definition">Remark</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlogcomment.created</column>
+		<column name="term">header.scanlogremark.created</column>
 		<column name="definition">Create Date</column>
 	</item>
 	<item name="dictionary">
-		<column name="term">header.scannerlogcomment.modified</column>
+		<column name="term">header.scanlogremark.modified</column>
 		<column name="definition">Modified Date</column>
 	</item>
 </data>
