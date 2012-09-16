@@ -20,12 +20,12 @@
 		<defaultValueExpression><![CDATA["MM/dd/yyyy HH:mm:ss"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT offender.firstname, offender.lastname, offender.bookingnumber, activity.name, scannerlog.created, compliancevalue.value
-FROM scannerlog scannerlog
-  INNER JOIN activity ON scannerlog.activityid = activity.activityid
-  INNER JOIN offender ON scannerlog.offenderid = offender.offenderid
-  INNER JOIN compliancevalue ON scannerlog.compliancevalueid = compliancevalue.compliancevalueid
-WHERE activity.name = 'security check' AND scannerlog.created > $P{StartDate}]]>
+		<![CDATA[SELECT offender.firstname, offender.lastname, offender.bookingnumber, activity.name, scanlog.created, compliancevalue.value
+FROM scanlog scanlog
+  INNER JOIN activity ON scanlog.activityid = activity.activityid
+  INNER JOIN offender ON scanlog.offenderid = offender.offenderid
+  INNER JOIN compliancevalue ON scanlog.compliancevalueid = compliancevalue.compliancevalueid
+WHERE activity.name = 'security check' AND scanlog.created > $P{StartDate}]]>
 	</queryString>
 	<field name="firstname" class="java.lang.String"/>
 	<field name="lastname" class="java.lang.String"/>
@@ -184,7 +184,7 @@ new SimpleDateFormat($P{DefaultTimestampFormat}).format($P{EndDate})]]></textFie
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[Powered by © Tipping Point Software Solutions]]></text>
+				<text><![CDATA[Powered by ¬© Tipping Point Software Solutions]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="Normal Text" x="576" y="4" width="100" height="20"/>
