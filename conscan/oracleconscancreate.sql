@@ -1,0 +1,3 @@
+DROP USER conscan CASCADE;
+CREATE USER conscan IDENTIFIED by p2gonaB9ll;
+GRANT ALL PRIVILEGES TO conscan;

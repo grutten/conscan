@@ -37,7 +37,7 @@ import com.tippingpoint.sql.SqlQuery;
 import com.tippingpoint.sql.SqlUpdate;
 
 public abstract class SqlManager {
-	public static final String BOOLEAN_CHECK_PREFIX = "CK_BOOL_";
+	public static final String BOOLEAN_CHECK_PREFIX = "CKBL_";
 	protected static final String KEYWORD_MODIFY_COLUMN = "modify.column";
 	protected static final String KEYWORD_MODIFY_CONSTRAINT = "modify.constraint";
 	static final String KEYWORD_COLUMN_DEFAULT = "column.default";
@@ -277,23 +277,6 @@ public abstract class SqlManager {
 	}
 
 	/**
-	 * This method returns the SQL used to query the database for the definitions of columns of the named table. The
-	 * columns returned should be:
-	 * <ul>
-	 * <li>COLUMN_NAME - String containing the name of the column</li>
-	 * <li>COLUMN_DEFAULT - Default value of the column</li>
-	 * <li>IS_NULLABLE - String containing a 'YES' or 'NO' indicating if the column is nullable</li>
-	 * <li>ID_COLUMN - int indicating if the column is an identity column</li>
-	 * <li>DATA_TYPE - String containing the type of column</li>
-	 * <li>CHARACTER_MAXIMUM_LENGTH - int containing the length of the text fields</li>
-	 * </ul>
-	 * 
-	 * @param strDatabaseName String containing the name of the database.
-	 * @param strTableName String containing the name of the table.
-	 */
-//	public abstract String getTableDefinitionSql(String strDatabaseName, String strTableName);
-
-	/**
 	 * This method returns the database specific type for the column.
 	 * 
 	 * @param column Column instance for which to create the type.
@@ -474,11 +457,23 @@ public abstract class SqlManager {
 	 * This class returns the string version of the type for booleans.
 	 */
 	protected static class BooleanColumnTypeConverter extends ColumnTypeConverter {
+		/** This member holds the database type for the database. */
+		private String m_realDatabaseType;
+		
 		/**
 		 * This method creates a new type converter.
 		 */
 		public BooleanColumnTypeConverter() {
+			this("tinyint");
+		}
+
+		/**
+		 * This method creates a new type converter.
+		 */
+		public BooleanColumnTypeConverter(String realDatabaseType) {
 			super(ColumnTypeBoolean.TYPE);
+			
+			m_realDatabaseType = realDatabaseType;
 		}
 
 		/**
@@ -488,7 +483,8 @@ public abstract class SqlManager {
 		public String get(final ColumnDefinition column) {
 			final StringBuilder strBuffer = new StringBuilder();
 
-			strBuffer.append("tinyint CONSTRAINT ");
+			strBuffer.append(m_realDatabaseType);
+			strBuffer.append(" CONSTRAINT ");
 			strBuffer.append(BOOLEAN_CHECK_PREFIX);
 			strBuffer.append(column.getTable().getName().toUpperCase());
 			strBuffer.append("_");
@@ -507,7 +503,7 @@ public abstract class SqlManager {
 		 */
 		@Override
 		public String getDatabaseType() {
-			return "tinyint";
+			return m_realDatabaseType;
 		}
 	}
 
