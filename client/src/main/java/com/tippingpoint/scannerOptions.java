@@ -163,7 +163,7 @@ public class scannerOptions extends Frame {
     private void postIt(String strFilenameWPath) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         try {
-            HttpPost httppost = new HttpPost("http://" + getIpAddress() + ":8080" + "/" + getAppName() + "/scannerlog");
+            HttpPost httppost = new HttpPost("http://" + getIpAddress() + ":8080" + "/" + getAppName() + "/scanlog");
 
             FileBody bin = new FileBody(new File(strFilenameWPath));
             StringBody comment = new StringBody("A binary file of some kind");

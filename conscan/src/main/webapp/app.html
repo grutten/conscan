@@ -31,7 +31,7 @@
 					<li class="curvedblocksmall linkable" id="menu.activity"><span class="lookupterm">activity</span></li>
 					<li class="curvedblocksmall linkable" id="menu.location"><span class="lookupterm">location</span></li>
 					<li class="curvedblocksmall linkable" id="menu.offender"><span class="lookupterm">offender</span></li>
-					<li class="curvedblocksmall linkable" id="menu.scannerlog"><span class="lookupterm">scannerlog</span></li>
+					<li class="curvedblocksmall linkable" id="menu.scanlog"><span class="lookupterm">scanlog</span></li>
 				</ul>
 				<h3>Report</h3>
 				<ul>
@@ -76,7 +76,7 @@
 		<div class="hidden wideborder curvedblock" id="notesdialog">
 			<div class="errormsg"></div>
 			<form id="notesdialogform">
-				<input type="hidden" name="scannerlogguid" value="asdf" id="idhiddenscannerlogguid"></input>
+				<input type="hidden" name="scanlogguid" value="asdf" id="idhiddenscanlogguid"></input>
 				<table class="noborder">
 					<tbody>
 					<tr>
@@ -432,7 +432,7 @@
 							dataObject.push(object[column.name]);
 					}
 
-					if ("scannerlog" == table.name) {
+					if ("scanlog" == table.name) {
 						dataObject.push('<span class="ui-icon ui-icon-pencil"></span>');
 					}
 				}
@@ -662,7 +662,7 @@
 					tablecolumns.push(definition);
 				}
 
-				if ("scannerlog" == table.name) {
+				if ("scanlog" == table.name) {
 					tablecolumns.push({"sTitle": "", "bSortable": false});
 				}
 
@@ -886,23 +886,23 @@
 			}
 
 			function processNotes(responseXML, statusText, xhr, form) {
-				var strScannerLogId;
-				var strComment;
+				var strScanLogId;
+				var strRemark;
 
 				jQuery(responseXML).find("field").each(function() {
-					if (jQuery(this).attr('name') == "scannerlogid")
-						strScannerLogId = jQuery(this).text();
-					else if (jQuery(this).attr('name') == "comment")
-						strComment = jQuery(this).text();
+					if (jQuery(this).attr('name') == "scanlogid")
+						strScanLogId = jQuery(this).text();
+					else if (jQuery(this).attr('name') == "remark")
+						strRemark = jQuery(this).text();
 				});
 
 				// Display the note that was just persisted
-				var strSpanId = "span#notes-" + strScannerLogId;
-				var row = jQuery("span.identifier:contains('" + strScannerLogId +"')").parents('tr');
+				var strSpanId = "span#notes-" + strScanLogId;
+				var row = jQuery("span.identifier:contains('" + strScanLogId +"')").parents('tr');
 				if (typeof row != 'undefined') {
-					jQuery(row).find('td:last').append(strComment);
+					jQuery(row).find('td:last').append(strRemark);
 				}
-				jQuery(strSpanId).html(strComment);
+				jQuery(strSpanId).html(strRemark);
 
 				// Close the layer
 				jQuery.modal.close();
@@ -1031,16 +1031,16 @@
 			}
 
 			function showNotes() {
-				var strScannerLogId = findIdForRow(jQuery(this).parents('tr'));
+				var strScanLogId = findIdForRow(jQuery(this).parents('tr'));
 
 				jQuery("#notesdialog").modal({
 					onShow: function (dialog) {
 						var modal = this;
-						jQuery("#idhiddenscannerlogguid").attr('value', strScannerLogId);
+						jQuery("#idhiddenscanlogguid").attr('value', strScanLogId);
 
 						// prepare Options Object
 						var options = {
-							url: 'scannerlogcomment',
+							url: 'scanlogremark',
 							type: 'POST',
 							dataType: 'xml',
 							success: processNotes,

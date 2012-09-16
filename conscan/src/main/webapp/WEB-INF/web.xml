@@ -115,23 +115,23 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>ScannerLog</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLog</servlet-class>
+    <servlet-name>ScanLog</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.ScanLog</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ScannerLog</servlet-name>
-    <url-pattern>/scannerlog/*</url-pattern>
+    <servlet-name>ScanLog</servlet-name>
+    <url-pattern>/scanlog/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>ScannerLogComment</servlet-name>
-    <servlet-class>com.tippingpoint.conscan.servlet.ScannerLogCommentService</servlet-class>
+    <servlet-name>ScanLogRemark</servlet-name>
+    <servlet-class>com.tippingpoint.conscan.servlet.ScanLogRemarkService</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ScannerLogComment</servlet-name>
-    <url-pattern>/scannerlogcomment/*</url-pattern>
+    <servlet-name>ScanLogRemark</servlet-name>
+    <url-pattern>/scanlogremark/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

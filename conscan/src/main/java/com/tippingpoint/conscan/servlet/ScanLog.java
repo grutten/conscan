@@ -22,13 +22,13 @@ import org.apache.commons.logging.LogFactory;
 import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.xml.Data;
 
-public class ScannerLog extends BaseTableService {
+public class ScanLog extends BaseTableService {
 	private static final long serialVersionUID = 8403913752494861335L;
 
-	private static Log m_log = LogFactory.getLog(ScannerLogService.class);
+	private static Log m_log = LogFactory.getLog(ScanLogService.class);
 	
-	public ScannerLog() {
-		super("scannerlog");
+	public ScanLog() {
+		super("scanlog");
 	}
 	
 	/**

@@ -10,11 +10,11 @@ import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.sql.SqlBaseException;
 
-public class ScannerLogCommentService extends BaseTableService {
+public class ScanLogRemarkService extends BaseTableService {
 	private static final long serialVersionUID = 2318703620281811532L;
 
-	public ScannerLogCommentService() {
-		super("scannerlogcomment");
+	public ScanLogRemarkService() {
+		super("scanlogremark");
 	}
 
 	@Override
@@ -22,13 +22,13 @@ public class ScannerLogCommentService extends BaseTableService {
 		final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
 
 		final Map<String, String> mapParameters = getParameterMap(request);
-		final String strScannerLogGuid = mapParameters.get("scannerlogguid");
+		final String strScannerLogGuid = mapParameters.get("scanlogguid");
 		final String strNotes = mapParameters.get("notes");
 
 		try {
-			final BusinessObject boLogComment = getScannerLogComment(strScannerLogGuid, strNotes);
-			if (boLogComment != null) {
-				writeObject(out, boLogComment, false);
+			final BusinessObject boLogRemark = getScannerLogRemark(strScannerLogGuid, strNotes);
+			if (boLogRemark != null) {
+				writeObject(out, boLogRemark, false);
 			}
 		}
 		catch (final SqlBaseException e) {
@@ -41,21 +41,21 @@ public class ScannerLogCommentService extends BaseTableService {
 	 * 
 	 * @throws SqlBaseException
 	 */
-	private BusinessObject getScannerLogComment(final String strScannerLogId, final String strNoteText)
+	private BusinessObject getScannerLogRemark(final String strScannerLogId, final String strNoteText)
 			throws SqlBaseException {
-		BusinessObject boScannerLogComment = null;
+		BusinessObject boScannerLogRemark = null;
 		if (strScannerLogId != null) {
 			if (strNoteText != null) {
 				final BusinessObjectBuilder builder =
-					BusinessObjectBuilderFactory.get().getBuilder("scannerlogcomment");
-				boScannerLogComment = builder.get();
-				boScannerLogComment.setValue("scannerlogid", strScannerLogId);
-				boScannerLogComment.setValue("comment", strNoteText);
-				boScannerLogComment.save();
+					BusinessObjectBuilderFactory.get().getBuilder("scanlogremark");
+				boScannerLogRemark = builder.get();
+				boScannerLogRemark.setValue("scanlogid", strScannerLogId);
+				boScannerLogRemark.setValue("remark", strNoteText);
+				boScannerLogRemark.save();
 			}
 		}
 
-		return boScannerLogComment;
+		return boScannerLogRemark;
 	}
 
 }
