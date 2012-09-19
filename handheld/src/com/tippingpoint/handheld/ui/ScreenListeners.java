@@ -327,6 +327,11 @@ System.out.println("Detail Button - not implemented yet");
         lCurrFreeMemory = Runtime.getRuntime().freeMemory();
         Long lPrior = new Long(lPriorFreeMemory);
         Long lCurr = new Long(lCurrFreeMemory);
-        setTitle(lPrior.toString() + "-" + lCurr.toString());
+        if (bMemoryDebugEnabled)
+        	setTitle(lPrior.toString() + "-" + lCurr.toString());
+        else {
+        	String strDisplayUser = staff.getFirstName().substring(0, 1) + staff.getLastName();
+        	setTitle(strDisplayUser);
+        }
     }
 }

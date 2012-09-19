@@ -22,6 +22,8 @@ import com.tippingpoint.version.HandheldVersion;
 public class Screen extends Frame {
 	static final long serialVersionUID = -1;
 
+	protected boolean bMemoryDebugEnabled = false;
+	
 	// Useful when funky background colors are needed to visualize the border regions
 	protected boolean bLayoutDebugEnbaled = false;  
 	
