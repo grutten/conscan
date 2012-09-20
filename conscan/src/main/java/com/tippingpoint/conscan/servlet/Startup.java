@@ -135,7 +135,6 @@ public final class Startup extends Services {
 	}
 
 	static {
-		Startup.register(Scanner.class, METHOD_OPTIONS, null);
 		Startup.register(Database.class, METHOD_GET, null);
 		Startup.register(Database.class, METHOD_DELETE, null);
 		Startup.register(Database.class, METHOD_OPTIONS, null);
