@@ -3,6 +3,7 @@ package com.tippingpoint.sql.oracle;
 import com.tippingpoint.database.ColumnDefinition;
 import com.tippingpoint.database.ColumnTypeDate;
 import com.tippingpoint.database.ColumnTypeId;
+import com.tippingpoint.database.ColumnTypeString;
 import com.tippingpoint.database.ColumnTypeText;
 import com.tippingpoint.database.IdFactory;
 import com.tippingpoint.sql.base.SqlManager;
@@ -16,8 +17,9 @@ public class SqlManagerOracle extends SqlManager {
 		
 		register(new IdColumnTypeConverter(idFactory));
 		register(new StaticColumnTypeConverter(ColumnTypeText.TYPE, "CLOB"));
-		register(new StaticColumnTypeConverter(ColumnTypeDate.TYPE, "TIMESTAMP"));
+		register(new StaticColumnTypeConverter(ColumnTypeDate.TYPE, "TIMESTAMP(6)"));
 		register(new BooleanColumnTypeConverter("INTEGER"));
+		register(new StaticColumnTypeConverter(ColumnTypeString.TYPE, "VARCHAR2"));
 
 		setSqlSchema(new SqlSchemaOracle(this));
 	}
