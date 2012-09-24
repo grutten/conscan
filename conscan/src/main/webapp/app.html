@@ -195,6 +195,7 @@
 			}
 
 			function checkLogin() {
+				// TODO: rest
 				jQuery.ajax({
 					url: 'user',
 					type: 'GET',
@@ -556,6 +557,7 @@
 				var options = objectoptions[name];
 
 				if (typeof options == 'undefined') {
+					// TODO: rest
 					jQuery.ajax({
 						type: 'OPTIONS',
 						url: 'database/' + name,
@@ -756,6 +758,7 @@
 			}
 
 			function logout() {
+				// TODO: rest
 				jQuery.ajax({
 					url: 'user',
 					type: 'DELETE',
@@ -815,6 +818,7 @@
 
 			function onShowLogin() {
 				// prepare Options Object
+				// TODO: rest
 				var options = {
 					url: 'user',
 					type: 'PUT',
@@ -1039,6 +1043,7 @@
 						jQuery("#idhiddenscanlogguid").attr('value', strScanLogId);
 
 						// prepare Options Object
+						// TODO: rest
 						var options = {
 							url: 'scanlogremark',
 							type: 'POST',
