@@ -304,7 +304,7 @@ public class SqlSchema {
 				final int nPosition = rs.getInt("ORDINAL_POSITION");
 				final String strConstraintType = rs.getString("CONSTRAINT_TYPE");
 				final String strColumnName = rs.getString("COLUMN_NAME");
-				final String strKeyName = rs.getString("CONSTRAINT_NAME");
+				final String strKeyName = rs.getString("CONSTRAINT_NAME").toLowerCase();
 
 				if (nPosition == 1) {
 					if (constraint != null) {

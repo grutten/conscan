@@ -34,12 +34,14 @@ public final class ConstraintFactory {
 	public Constraint get(final String strType) {
 		Constraint constraint = null;
 
-		final Constraint.ConstraintFactory factory = m_mapTypes.get(strType.toUpperCase());
-		if (factory != null) {
-			constraint = factory.get();
-		}
-		else {
-			constraint = new Constraint(strType);
+		if (strType != null) {
+			final Constraint.ConstraintFactory factory = m_mapTypes.get(strType.toUpperCase());
+			if (factory != null) {
+				constraint = factory.get();
+			}
+			else {
+				constraint = new Constraint(strType);
+			}
 		}
 
 		return constraint;
