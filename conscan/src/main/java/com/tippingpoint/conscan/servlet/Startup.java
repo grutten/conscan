@@ -104,36 +104,6 @@ public final class Startup extends Services {
 		}
 	}
 
-	/**
-	 * This method executes the options command; which is used to return the services available to the current user.
-	 */
-	@Override
-	protected void doOptions(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-
-		writer.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "service")));
-
-		final Iterator<LocalService> iterServices = m_mapServices.iterator();
-		if (iterServices != null && iterServices.hasNext()) {
-			while (iterServices.hasNext()) {
-				final LocalService localService = iterServices.next();
-
-				writer.write(XmlUtilities.open(XmlTags.TAG_OBJECT, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "service")));
-
-				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "path"),
-						localService.getPath()));
-				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "method"),
-						localService.getMethod()));
-				writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD, new NameValuePair(XmlTags.ATTRIBUTE_NAME, "description"),
-						localService.getDescription()));
-
-				writer.write(XmlUtilities.close(XmlTags.TAG_OBJECT));
-			}
-		}
-
-		writer.write(XmlUtilities.close(XmlTags.TAG_LIST));
-	}
-
 	static {
 		Startup.register(Database.class, METHOD_GET, null);
 		Startup.register(Database.class, METHOD_DELETE, null);
