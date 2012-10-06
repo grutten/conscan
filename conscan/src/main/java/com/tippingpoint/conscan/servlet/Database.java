@@ -161,50 +161,6 @@ public final class Database extends Services {
 	}
 
 	/**
-	 * This method executes the options command; which is used to return the definitions from the database.
-	 * 
-	 * @throws IOException
-	 */
-	@Override
-	protected void doOptions(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		final String strObjects = request.getPathInfo();
-
-		m_log.debug("Options: " + strObjects);
-
-		try {
-			final List<Element> listElements = getElements(strObjects);
-			switch (listElements.size()) {
-			case 0:
-				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
-				processSchema(manager.getSchema(), response);
-			break;
-
-			case 1:
-				final Element element = listElements.get(0);
-				if (element instanceof Table) {
-					processTable(request, (Table)element, response);
-				}
-
-			default:
-				// FUTURE: possibly alter to drop columns
-			break;
-			}
-		}
-		catch (final DatabaseException e) {
-			m_log.error("Database error retrieving table definition.", e);
-			processException(response, e);
-		}
-		catch (final SqlExecutionException e) {
-			m_log.error("Database error retrieving table definition.", e);
-			processException(response, e);
-		}
-		catch (final SQLException e) {
-			m_log.error("SQL error deleting table.", e);
-			processException(response, e);
-		}
-	}
-
-	/**
 	 * This method performs the post action.
 	 * 
 	 * @throws IOException
@@ -284,63 +240,6 @@ public final class Database extends Services {
 			catch (final SqlBaseException e) {
 				m_log.error("SQL error inserting row into table.", e);
 				processException(response, e);
-			}
-		}
-	}
-
-	/**
-	 * This method processes returning all the tables in the schema.
-	 * 
-	 * @param response HttpServletResponse where the results are to be returned.
-	 * @throws IOException
-	 */
-	private void processSchema(final Schema schema, final HttpServletResponse response) throws IOException {
-		final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-
-		writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-		writer.append(XmlUtilities.open(Schema.TAG_NAME, new NameValuePair(Element.ATTRIBUTE_NAME, schema.getName())));
-
-		final Iterator<Table> iterTables = schema.getTables();
-		if (iterTables != null && iterTables.hasNext()) {
-			while (iterTables.hasNext()) {
-				iterTables.next().writeXml(writer, false);
-			}
-		}
-
-		writer.append(XmlUtilities.close(Schema.TAG_NAME));
-	}
-
-	/**
-	 * This method processes returning the specified table.
-	 * 
-	 * @param request HttpServletRequest which is making the request.
-	 * @param response HttpServletResponse where the results are to be returned.
-	 * @throws IOException
-	 */
-	private void processTable(final HttpServletRequest request, final Table table, final HttpServletResponse response)
-			throws IOException {
-		final List<MimeType> listAccepts = getAccepts(request);
-
-		for (final MimeType mimeType : listAccepts) {
-			if (MIME_ALL.match(mimeType) || MIME_XML.match(mimeType)) {
-				final PrintWriter writer = returnXml(response, HttpServletResponse.SC_OK);
-
-				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-				table.writeXml(writer);
-				break;
-			}
-			else if (MIME_JSON.match(mimeType)) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.setContentType(MIME_JSON.toString());
-
-				final PrintWriter out = response.getWriter();
-
-				final JsonTable jsonTable = new JsonTable(table);
-
-				jsonTable.get().writeJSONString(out);
-				break;
 			}
 		}
 	}
