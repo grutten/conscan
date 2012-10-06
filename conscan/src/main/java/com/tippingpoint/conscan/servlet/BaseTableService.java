@@ -111,7 +111,7 @@ public class BaseTableService extends Services {
 			m_log.debug("Post: " + m_strTableName);
 
 			try {
-				final List<Element> listElements = getElements(m_strTableName);
+				final List<Element> listElements = ServiceBase.getElements(m_strTableName);
 				switch (listElements.size()) {
 				case 1:
 					final Element element = listElements.get(0);

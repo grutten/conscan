@@ -66,7 +66,7 @@ public final class Database extends Services {
 		m_log.debug("Delete: " + strObjects);
 
 		try {
-			final List<Element> listElements = getElements(strObjects);
+			final List<Element> listElements = ServiceBase.getElements(strObjects);
 			if (listElements != null && !listElements.isEmpty()) {
 				final ConnectionManager manager = ConnectionManagerFactory.getFactory().getDefaultManager();
 				switch (listElements.size()) {
@@ -125,7 +125,7 @@ public final class Database extends Services {
 		m_log.debug("Get: " + strObjects);
 
 		try {
-			final List<Element> listElements = getElements(strObjects);
+			final List<Element> listElements = ServiceBase.getElements(strObjects);
 			switch (listElements.size()) {
 			case 1:
 				final Element element = listElements.get(0);
@@ -214,7 +214,7 @@ public final class Database extends Services {
 			m_log.debug("Post: " + strObjects);
 
 			try {
-				final List<Element> listElements = getElements(strObjects);
+				final List<Element> listElements = ServiceBase.getElements(strObjects);
 				switch (listElements.size()) {
 				case 1:
 					final Element element = listElements.get(0);
