@@ -109,11 +109,6 @@ public final class Startup extends Services {
 		Startup.register(Database.class, METHOD_DELETE, null);
 		Startup.register(Database.class, METHOD_OPTIONS, null);
 		Startup.register(Database.class, METHOD_POST, null);
-		Startup.register(Activity.class, METHOD_GET, null);
-		Startup.register(ComplianceValue.class, METHOD_GET, null);
-		Startup.register(Location.class, METHOD_GET, null);
-		Startup.register(Offender.class, METHOD_GET, null);
-		Startup.register(Staff.class, METHOD_GET, null);
 		Startup.register(ScanLog.class, METHOD_GET, null);
 		Startup.register(User.class, METHOD_GET, null);
 	}
