@@ -184,6 +184,10 @@
 				request.setRequestHeader("Accept", "application/pdf");
 			}
 
+			function addXmlAccepts(request) {
+				request.setRequestHeader("Accept", "application/xml");
+			}
+			
 			function ajaxComplete() {
 				//alert("In ajaxStop");
 				jQuery.unblockUI();
@@ -398,11 +402,12 @@
 							var strGuid = object[column.name];
 							var nTokenLocation = column.name.indexOf("id");
 							var strFkTable = column.name.substring(0, nTokenLocation);
-							var strUrl = strFkTable + '/' + strGuid;
-
+							var strUrl = 'rest/' + strFkTable + '/' + strGuid;
 							jQuery.ajax({
 								async: false,
 								type: 'GET',
+								datatype: 'xml',
+								beforeSend: addXmlAccepts,
 								url: strUrl,
 								success: replaceGuidWithMeaningfulString
 							});
@@ -509,7 +514,6 @@
 
 			function getItem(itemType, id) {
 				var item;
-
 				jQuery.ajax({
 					async: false,
 					type: 'GET',

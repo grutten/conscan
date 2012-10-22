@@ -2,6 +2,7 @@ package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -218,6 +219,113 @@ public abstract class ServiceBase {
 		return output;
 	}
 
+	/**
+	 * This method returns the staff object by id.
+	 * 
+	 * @throws SqlBaseException
+	 */
+	@GET
+	@Path("/{id:[a-f0-9\\-]+}")
+	@Produces(MediaType.APPLICATION_XML)
+	public StreamingOutput getXmlObjectById(@PathParam("id") final String strId) throws SqlBaseException {
+		final BusinessObject businessObject = getObjectById(strId);
+		StreamingOutput output = null;
+		if (businessObject != null)
+			output = new ServiceOutputObjectXml(businessObject, false);
+		
+		return output;
+	}
+	
+	/**
+	 * This class is used generate the output of the business object. The specific format is deferred to child classes.
+	 */
+	protected class ServiceOutputObjectXml implements StreamingOutput {
+		protected BusinessObject m_object;
+		protected boolean m_bDeep;
+
+		/**
+		 * This method constructs the stream object used for rendering web pages.
+		 * 
+		 * @param strObjetName
+		 */
+		public ServiceOutputObjectXml(final BusinessObject object, boolean bDeep) {
+			m_object = object;
+			m_bDeep = bDeep;
+		}
+
+		@Override
+		public void write(final OutputStream writer) throws IOException {
+			if (m_object != null) {
+				final List<NameValuePair> listAttributes = new ArrayList<NameValuePair>();
+
+				listAttributes.add(new NameValuePair(XmlTags.ATTRIBUTE_NAME, m_object.getType()));
+
+				final FieldValue fvIdentifier = m_object.getIdentifierField();
+				if (fvIdentifier != null) {
+					listAttributes.add(new NameValuePair(fvIdentifier.getName(), XmlUtilities.getValue(fvIdentifier
+							.getValue())));
+				}
+
+				writer.write(XmlUtilities.open(XmlTags.TAG_OBJECT, listAttributes).getBytes());
+
+				final Iterator<FieldValue> iterValues = m_object.getValues();
+				if (iterValues != null && iterValues.hasNext()) {
+					while (iterValues.hasNext()) {
+						final FieldValue fieldValue = iterValues.next();
+						if (fvIdentifier == null || !fieldValue.getName().equals(fvIdentifier.getName())) {
+							writer.write(XmlUtilities.tag(XmlTags.TAG_FIELD,
+									new NameValuePair(XmlTags.ATTRIBUTE_NAME, fieldValue.getName()),
+									XmlUtilities.getValue(fieldValue.getValue())).getBytes());
+						}
+					}
+				}
+
+				if (m_bDeep) {
+					final List<String> listRelatedNames = m_object.getRelatedNames();
+					if (listRelatedNames != null && !listRelatedNames.isEmpty()) {
+						for (final String strRelatedName : listRelatedNames) {
+							try {
+								final List<BusinessObject> listRelatedObjects =
+									m_object.getReleatedObjects(strRelatedName);
+								if (listRelatedObjects != null && !listRelatedObjects.isEmpty()) {
+									writer.write(XmlUtilities.open(XmlTags.TAG_LIST, new NameValuePair(XmlTags.ATTRIBUTE_NAME, strRelatedName)).getBytes());
+									for (final BusinessObject businessRelatedObject : listRelatedObjects) {
+										write(writer);
+									}
+	
+									writer.write(XmlUtilities.close(XmlTags.TAG_LIST).getBytes());
+								}
+							}
+							catch (final SqlBaseException e) {
+								throw new IllegalStateException(e);
+							}
+
+						}
+					}
+				}
+
+				writer.write(XmlUtilities.close(XmlTags.TAG_OBJECT).getBytes());
+			}
+			else {
+				writer.write(XmlUtilities.tag(XmlTags.TAG_OBJECT).getBytes());
+			}
+		}
+
+	}
+
+	/**
+	 * This method writes the business object to the writer.
+	 * 
+	 * @param writer Writer used for writing out the XML.
+	 * @param businessObject BusinessObject which is being written to the XML.
+	 * @param bDeep boolean indicating if related objects should be retrieved at the same time.
+	 * @throws IOException
+	 * @throws SqlBaseException
+	 */
+	protected void writeObject(final Writer writer, final BusinessObject businessObject, final boolean bDeep)
+			throws IOException, SqlBaseException {
+	}
+	
 	/**
 	 * This method returns a collection of objects.
 	 */
