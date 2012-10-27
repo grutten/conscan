@@ -2,15 +2,12 @@ package com.tippingpoint.conscan.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
@@ -22,15 +19,21 @@ import com.tippingpoint.sql.ConnectionManager;
 import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SchemaComparison;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.StringProperties;
 import com.tippingpoint.utilities.SystemProperties;
-import com.tippingpoint.utilities.XmlUtilities;
 
 /**
  * This class is used to load the application.
  */
-public final class Startup extends Services {
+public final class Startup extends HttpServlet {
+	protected static final String METHOD_DELETE = "DELETE";
+	protected static final String METHOD_GET = "GET";
+	protected static final String METHOD_HEAD = "HEAD";
+	protected static final String METHOD_OPTIONS = "OPTIONS";
+	protected static final String METHOD_POST = "POST";
+	protected static final String METHOD_PUT = "PUT";
+
+	
 	private static final String APPLICATION_NAME = "ConScan";
 	private static Log m_log = LogFactory.getLog(Startup.class);
 
@@ -119,7 +122,7 @@ public final class Startup extends Services {
 	 * @param clsService Class that is providing the service.
 	 * @param strMethod String containing the method parameter for the service.
 	 */
-	public static void register(final Class<? extends Services> clsService, final String strMethod,
+	private static void register(final Class<? extends Services> clsService, final String strMethod,
 			final String strDescription) {
 		String strPath = clsService.getSimpleName().toLowerCase();
 		if (strPath.endsWith(SERVICE_SUFFIX)) {

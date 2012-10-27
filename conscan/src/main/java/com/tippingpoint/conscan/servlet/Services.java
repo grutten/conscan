@@ -29,16 +29,8 @@ import com.tippingpoint.conscan.objects.BusinessObject;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilder;
 import com.tippingpoint.conscan.objects.BusinessObjectBuilderFactory;
 import com.tippingpoint.conscan.objects.FieldValue;
-import com.tippingpoint.database.ColumnDefinition;
-import com.tippingpoint.database.Constraint;
-import com.tippingpoint.database.DatabaseElementException;
-import com.tippingpoint.database.Element;
-import com.tippingpoint.database.Schema;
 import com.tippingpoint.database.Table;
-import com.tippingpoint.sql.ConnectionManager;
-import com.tippingpoint.sql.ConnectionManagerFactory;
 import com.tippingpoint.sql.SqlBaseException;
-import com.tippingpoint.sql.SqlExecutionException;
 import com.tippingpoint.utilities.NameValuePair;
 import com.tippingpoint.utilities.XmlUtilities;
 
@@ -46,13 +38,6 @@ import com.tippingpoint.utilities.XmlUtilities;
  * This class is the base class for service based servlets.
  */
 public abstract class Services extends HttpServlet {
-	protected static final String METHOD_DELETE = "DELETE";
-	protected static final String METHOD_GET = "GET";
-	protected static final String METHOD_HEAD = "HEAD";
-	protected static final String METHOD_OPTIONS = "OPTIONS";
-	protected static final String METHOD_POST = "POST";
-	protected static final String METHOD_PUT = "PUT";
-
 	protected static MimeType MIME_ALL;
 	protected static MimeType MIME_JSON;
 	protected static MimeType MIME_XML;
