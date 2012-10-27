@@ -50,7 +50,7 @@ public class Element {
 	 * @param strName The name to set.
 	 */
 	public void setName(final String strName) {
-		m_strName = strName;
+		m_strName = strName != null ? strName.toLowerCase() : null;
 	}
 
 	/**

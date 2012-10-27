@@ -113,7 +113,7 @@ public class Table extends Element {
 	 * This method returns a named column in the table.
 	 */
 	public ColumnDefinition getColumn(final String strName) {
-		return m_columns.get(strName);
+		return m_columns.get(strName.toLowerCase());
 	}
 
 	/**
@@ -135,8 +135,10 @@ public class Table extends Element {
 	 * 
 	 * @param strName String containing the name of the constraint to search.
 	 */
-	public Constraint getConstraint(final String strName) {
+	public Constraint getConstraint(String strName) {
 		Constraint constraint = null;
+
+		strName = (strName != null ? strName.toLowerCase() : strName);
 
 		if (m_constraintPrimaryKey != null && strName.equals(m_constraintPrimaryKey.getName())) {
 			constraint = m_constraintPrimaryKey;

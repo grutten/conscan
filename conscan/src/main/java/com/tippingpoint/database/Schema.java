@@ -42,7 +42,7 @@ public final class Schema extends Element {
 	 * This method returns a named table in the schema.
 	 */
 	public Table getTable(final String strName) {
-		final Table table = m_tables.get(strName);
+		final Table table = m_tables.get(strName.toLowerCase());
 		if (table == null) {
 			m_log.error("Error retreiving table '" + strName + "'");
 		}
@@ -70,6 +70,6 @@ public final class Schema extends Element {
 	 * This method returns if the named table exists.
 	 */
 	public boolean hasTable(final String strName) {
-		return m_tables.containsKey(strName);
+		return m_tables.containsKey(strName.toLowerCase());
 	}
 }
