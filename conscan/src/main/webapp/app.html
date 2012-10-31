@@ -199,9 +199,8 @@
 			}
 
 			function checkLogin() {
-				// TODO: rest
 				jQuery.ajax({
-					url: 'user',
+					url: 'rest/user',
 					type: 'GET',
 					success: processUser,
 					error: showLogin
