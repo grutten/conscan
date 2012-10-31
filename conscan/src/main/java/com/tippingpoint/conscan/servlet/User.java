@@ -28,71 +28,6 @@ public class User extends Services {
 	private static Log m_log = LogFactory.getLog(User.class);
 	private static final long serialVersionUID = 2641405874048058605L;
 
-	public static void setCookieExpiration(final HttpServletRequest request, final HttpServletResponse response, int nExpirationInSeconds) {
-		// find the cookie to get the logged in user
-		final Cookie cookie = getCookie(request);
-		if (cookie != null) {
-			// kill the cookie
-			cookie.setMaxAge(0);
-
-			response.addCookie(cookie);
-		}
-	}
-	
-	/**
-	 * This method executes the delete command; which is used to log a user out of the system.
-	 * 
-	 * @throws IOException
-	 */
-	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		m_log.debug("Delete");
-
-		// remove authentication object from session
-		request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
-
-		setCookieExpiration(request, response, 0);
-	}
-
-	/**
-	 * This method executes the get command; which is used to return the current information used to identify the
-	 * currently logged in user.
-	 * 
-	 * @throws IOException
-	 */
-	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		final String strPathInfo = request.getPathInfo();
-
-		m_log.debug("Get: " + strPathInfo);
-
-		final List<String> listElements = getObjects(strPathInfo);
-		if (listElements == null || listElements.isEmpty()) {
-			String strEmail = null;
-
-			final Cookie cookie = getCookie(request);
-			if (cookie != null) {
-				strEmail = cookie.getValue();
-			}
-
-			try {
-				final BusinessObject boUser = getUser(strEmail, null);
-				if (boUser != null) {
-					final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
-
-					writeObject(out, boUser, false);
-				}
-				else {
-					returnXml(response, HttpServletResponse.SC_NOT_FOUND);
-				}
-			}
-			catch (final SqlBaseException e) {
-				m_log.error("Database error reading the current user.", e);
-				processException(response, e);
-			}
-		}
-	}
-
 	/**
 	 * This method executes the put command; which is used to log a user into the system.
 	 * 
@@ -134,25 +69,6 @@ public class User extends Services {
 				processException(response, e);
 			}
 		}
-	}
-
-	/**
-	 * This method returns the user cookie from the request.
-	 */
-	private static Cookie getCookie(final HttpServletRequest request) {
-		Cookie foundCookie = null;
-
-		final Cookie[] aCookies = request.getCookies();
-		if (aCookies != null && aCookies.length > 0) {
-			for (final Cookie cookie : aCookies) {
-				if (COOKIE_NAME.equals(cookie.getName())) {
-					foundCookie = cookie;
-					break;
-				}
-			}
-		}
-
-		return foundCookie;
 	}
 
 	/**

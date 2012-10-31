@@ -7,10 +7,15 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -40,42 +45,12 @@ public class UserService extends ServiceBase {
 		super("user");
 	}
 	
-	public static void setCookieExpiration(final HttpServletRequest request, final HttpServletResponse response, int nExpirationInSeconds) {
-		// find the cookie to get the logged in user
-		final Cookie cookie = getCookie(request);
-		if (cookie != null) {
-			// kill the cookie
-			cookie.setMaxAge(0);
-
-			response.addCookie(cookie);
-		}
-	}
-	
 	/**
-	 * This method executes the delete command; which is used to log a user out of the system.
-	 * 
-	 * @throws IOException
+	 * This method returns the currently logged in user.
 	 */
-//	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		m_log.debug("Delete");
-
-		// remove authentication object from session
-		request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
-
-		setCookieExpiration(request, response, 0);
-	}
-
-	/**
-	 * This method executes the get command; which is used to return the current information used to identify the
-	 * currently logged in user.
-	 * 
-	 * @throws IOException
-	 */
-//	@Override
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public StreamingOutput getUser(@CookieParam(COOKIE_NAME) String strEmail) throws IOException {
+	public StreamingOutput getUser(@CookieParam(COOKIE_NAME) String strEmail) {
 		StreamingOutput output = null;
 
 		try {
@@ -88,35 +63,56 @@ public class UserService extends ServiceBase {
 //			processException(response, e);
 		}
 		
-		
 		return output;
 	}
 
+	/**
+	 * This method clears the session object.
+	 */
+	@DELETE
+	public void logout(@Context HttpServletRequest request) {
+		m_log.debug("Delete");
+
+		// remove authentication object from session
+		request.getSession().setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, null);
+	}
+
+	public static void setCookieExpiration(final HttpServletRequest request, final HttpServletResponse response, int nExpirationInSeconds) {
+		// find the cookie to get the logged in user
+		final Cookie cookie = getCookie(request);
+		if (cookie != null) {
+			// kill the cookie
+			cookie.setMaxAge(0);
+
+			response.addCookie(cookie);
+		}
+	}
+	
 	/**
 	 * This method executes the put command; which is used to log a user into the system.
 	 * 
 	 * @throws IOException
 	 */
-//	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		/*
-		final Map<String, String> mapParameters = getParameterMap(request);
-
-		final String strUser = mapParameters.get("user");
-		final String strPassword = mapParameters.get("password");
+	@PUT
+	@Produces(MediaType.APPLICATION_XML)
+	public StreamingOutput login(@Context HttpServletRequest request, 
+			@QueryParam("user") final String strUser, 
+			@QueryParam("password") final String strPassword) { 
+		StreamingOutput output = null;
 
 		if (strUser != null) {
 			try {
-				final PrintWriter out = returnXml(response, HttpServletResponse.SC_OK);
 				final BusinessObject boUser = getUser(strUser, strPassword);
 				if (boUser != null) {
-					writeObject(out, boUser, false);
+					output = new ServiceOutputObjectXml(boUser, false);
+
+//					writeObject(out, boUser, false);
 					final FieldValue fieldEmail = boUser.getValue("email");
 					if (fieldEmail != null) {
 						// Add session object
 						HttpSession session = request.getSession();
 						session.setAttribute(AuthenticationFilter.AUTH_OBJECT_NAME, Long.valueOf(session.getLastAccessedTime()));
-
+/*
 			    		StringProperties sp = SystemProperties.getSystemProperties().getStringProperties();
 			    		String strTimeout = sp.getValue("authentication.timeout.minutes");
 			    		int intAuthTimeout = Integer.valueOf(strTimeout == null ? "5" : strTimeout).intValue() * 60;
@@ -124,17 +120,16 @@ public class UserService extends ServiceBase {
 						final Cookie cookie = new Cookie(COOKIE_NAME, fieldEmail.getValue().toString());
 						cookie.setMaxAge(intAuthTimeout); // set it as a session cookie
 						response.addCookie(cookie);
+*/						
 					}
-				}
-				else {
-					returnXml(response, HttpServletResponse.SC_NO_CONTENT);
 				}
 			}
 			catch (final SqlBaseException e) {
-				processException(response, e);
+//				processException(response, e);
 			}
 		}
-		*/
+		
+		return output;
 	}
 
 	/**

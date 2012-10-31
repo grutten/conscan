@@ -15,6 +15,7 @@
 		<!-- <script type="text/javascript" src="js/jquery-ui-1.8.20.js"></script> -->
 		<script type="text/javascript" src="js/jquery-ui-timepicker-addon.1.0.0.js"></script>
 		<script type="text/javascript" src="js/jquery.blockUI.2.42.js"></script>
+		<script type="text/javascript" src="js/jquery.cookie.1.3.js"></script>
 	</head>
 	<body>
 		<h1>ConScan</h1>
@@ -756,15 +757,29 @@
 			function loginSuccess(responseXML, statusText, xhr, form) {
 				//alert('login success: ' + statusText);
 				processUser(responseXML);
+				
+//				var email
+//				jQuery(xml).find("field").each(function() {
+//					if (jQuery(this).attr('name') == "email") {
+//						email = jQuery(this).text();
+//					} 
+//				});
+//				alert("email: " + email);
+
+				var date = new Date();
+				date.setTime(date.getTime() + (5 * 60 * 1000));
+//				$.cookie("user", email, { expires: date });
+				
 				jQuery.modal.close();
 			}
 
 			function logout() {
-				// TODO: rest
 				jQuery.ajax({
-					url: 'user',
+					url: 'rest/user',
 					type: 'DELETE',
 					success: function() {
+						$.removeCookie('user');
+						
 						jQuery('span#loginlink').html('No User');
 
 						checkLogin();
